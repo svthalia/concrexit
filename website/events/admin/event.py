@@ -1,7 +1,6 @@
 """Registers admin interfaces for the event model."""
 
 from django.contrib import admin
-from django.db.models import Count, Q
 from django.template.defaultfilters import date as _date
 from django.urls import path, reverse
 from django.utils import timezone
@@ -104,16 +103,7 @@ class EventAdmin(DoNextModelAdmin):
     )
 
     def get_queryset(self, request):
-        return (
-            super()
-            .get_queryset(request)
-            .annotate(
-                participant_count=Count(
-                    "eventregistration",
-                    filter=~Q(eventregistration__date_cancelled__lt=timezone.now()),
-                )
-            )
-        )
+        return super().get_queryset(request).select_properties("participant_count")
 
     def get_form(self, request, obj=None, change=False, **kwargs):
         form = super().get_form(request, obj, change, **kwargs)
@@ -159,7 +149,7 @@ class EventAdmin(DoNextModelAdmin):
 
     def num_participants(self, obj):
         """Pretty-print the number of participants."""
-        num = obj.participant_count  # from annotation
+        num = obj.participant_count  # prefetched aggregateproperty
         if not obj.max_participants:
             return f"{num}/∞"
         return f"{num}/{obj.max_participants}"

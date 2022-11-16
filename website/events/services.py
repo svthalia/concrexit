@@ -3,6 +3,7 @@ from collections import OrderedDict
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.datetime_safe import date
+from django.utils.formats import localize
 from django.utils.translation import gettext_lazy as _
 
 from events import emails
@@ -12,6 +13,7 @@ from events.models import (
     EventRegistration,
     RegistrationInformationField,
     categories,
+    status,
 )
 from payments.api.v1.fields import PaymentTypeField
 from payments.services import create_payment, delete_payment
@@ -29,6 +31,117 @@ def is_user_registered(member, event):
         return None
 
     return event.registrations.filter(member=member, date_cancelled=None).exists()
+
+
+def cancel_status(event: Event, registration: EventRegistration):
+    if event.after_cancel_deadline:
+        # Deadline passed
+        if registration and registration.queue_position:
+            return status.CANCEL_WAITINGLIST
+        return status.CANCEL_LATE
+
+    if not event.registration_allowed and not event.optional_registrations:
+        return status.CANCEL_FINAL
+    return status.CANCEL_NORMAL
+
+
+def cancel_info_string(event: Event, cancel_status, reg_status):
+    if reg_status not in [
+        status.STATUS_OPEN,
+        status.STATUS_WAITINGLIST,
+        status.STATUS_REGISTERED,
+    ]:
+        return ""
+    infos = {
+        status.CANCEL_NORMAL: _(""),
+        status.CANCEL_FINAL: _(
+            "Note: if you cancel, you will not be able to re-register."
+        ),
+        status.CANCEL_LATE: _(
+            "Cancellation is not allowed anymore without having to pay the full costs of €{fine}. You will also not be able to re-register."
+        ),
+        status.CANCEL_WAITINGLIST: _(
+            "Cancellation while on the waiting list will not result in a fine. However, you will not be able to re-register."
+        ),
+    }
+    return infos[cancel_status].format(fine=event.fine)
+
+
+def registration_status(event: Event, registration: EventRegistration, member):
+    now = timezone.now()
+
+    if not event.registration_required and not event.optional_registration_allowed:
+        return status.STATUS_NONE
+
+    if not member or not member.is_authenticated:
+        if event.optional_registration_allowed:
+            return status.STATUS_OPTIONAL
+        return status.STATUS_LOGIN
+
+    if registration:
+        if registration.date_cancelled:
+            if event.optional_registration_allowed:
+                # Optional registrations are not meaningfully cancelled
+                return status.STATUS_OPTIONAL
+            if registration.is_late_cancellation():
+                return status.STATUS_CANCELLED_LATE
+            if event.registration_allowed:
+                return status.STATUS_CANCELLED
+            return status.STATUS_CANCELLED_FINAL
+
+        if registration.queue_position:
+            return status.STATUS_WAITINGLIST
+        if event.optional_registration_allowed:
+            return status.STATUS_OPTIONAL_REGISTERED
+
+        return status.STATUS_REGISTERED
+    if event.optional_registration_allowed:
+        return status.STATUS_OPTIONAL
+
+    if event.reached_participants_limit():
+        return status.STATUS_FULL
+    if event.registration_allowed:
+        return status.STATUS_OPEN
+
+    if not event.registration_started:
+        return status.STATUS_WILL_OPEN
+    if not event.registration_allowed:
+        return status.STATUS_EXPIRED
+
+    raise Exception("invalid/unexpected registration status")
+
+
+def show_cancel_status(registration_status):
+    return registration_status not in [
+        status.STATUS_CANCELLED,
+        status.STATUS_CANCELLED_LATE,
+        status.STATUS_LOGIN,
+    ]
+
+
+def registration_status_string(status, event: Event, registration: EventRegistration):
+    if not status:
+        return None
+
+    status_msg = getattr(
+        event,
+        event.STATUS_MESSAGE_FIELDS.get(status) or "",
+        event.DEFAULT_STATUS_MESSAGE[status],
+    )
+    if not status_msg:
+        status_msg = event.DEFAULT_STATUS_MESSAGE[status]
+
+    # registration = event.registrations.get(member=member, date_cancelled=None)
+    if registration:
+        queue_pos = registration.queue_position
+    else:
+        queue_pos = None
+
+    return status_msg.format(
+        fine=event.fine,
+        pos=queue_pos,
+        regstart=localize(timezone.localtime(event.registration_start)),
+    )
 
 
 def user_registration_pending(member, event):
@@ -63,12 +176,13 @@ def is_user_present(member, event):
     ).exists()
 
 
-def event_permissions(member, event, name=None):
+def event_permissions(member, event, name=None, registration_prefetch=False):
     """Return a dictionary with the available event permissions of the user.
 
     :param member: the user
     :param event: the event
     :param name: the name of a non member registration
+    :param registration_prefetch: if the registrations for the member are already prefetched into an attribute "member_registration"
     :return: the permission dictionary
     """
     perms = {
@@ -83,12 +197,16 @@ def event_permissions(member, event, name=None):
         return perms
 
     registration = None
-    try:
-        registration = EventRegistration.objects.get(
-            event=event, member=member, name=name
-        )
-    except EventRegistration.DoesNotExist:
-        pass
+    if registration_prefetch:
+        if len(event.member_registration) > 0:
+            registration = event.member_registration[-1]
+    else:
+        try:
+            registration = EventRegistration.objects.get(
+                event=event, member=member, name=name
+            )
+        except EventRegistration.DoesNotExist:
+            pass
 
     perms["create_registration"] = (
         (registration is None or registration.date_cancelled is not None)

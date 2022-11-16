@@ -4,15 +4,19 @@ from django.conf import settings
 from django.core import validators
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import models, router
+from django.db.models import Count, Q
 from django.db.models.deletion import Collector
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import format_lazy
 from django.utils.translation import gettext_lazy as _
 
+from queryable_properties.managers import QueryablePropertiesManager
+from queryable_properties.properties import AggregateProperty
 from tinymce.models import HTMLField
 
 from announcements.models import Slide
+from events.models import status
 from events.models.categories import EVENT_CATEGORIES
 from members.models import Member
 from payments.models import PaymentAmountField
@@ -21,6 +25,8 @@ from pushnotifications.models import Category, ScheduledMessage
 
 class Event(models.Model):
     """Describes an event."""
+
+    objects = QueryablePropertiesManager()
 
     DEFAULT_NO_REGISTRATION_MESSAGE = _("No registration required")
 
@@ -249,12 +255,18 @@ class Event(models.Model):
     def has_fields(self):
         return self.registrationinformationfield_set.count() > 0
 
+    participant_count = AggregateProperty(
+        Count(
+            "eventregistration",
+            filter=~Q(eventregistration__date_cancelled__lt=timezone.now()),
+        )
+    )
+
     def reached_participants_limit(self):
         """Is this event up to capacity?."""
         return (
             self.max_participants is not None
-            and self.max_participants
-            <= self.eventregistration_set.filter(date_cancelled=None).count()
+            and self.max_participants <= self.participant_count
         )
 
     @property
@@ -527,6 +539,179 @@ class Event(models.Model):
 
     def __str__(self):
         return f"{self.title}: {timezone.localtime(self.start):%Y-%m-%d %H:%M}"
+
+    DEFAULT_STATUS_MESSAGE = {
+        status.STATUS_WILL_OPEN: _("Registration will open {regstart}."),
+        status.STATUS_EXPIRED: _("Registration is not possible anymore."),
+        status.STATUS_OPEN: _("You can register now."),
+        status.STATUS_FULL: _(
+            "Registrations are full, but you can join the waiting list."
+        ),
+        status.STATUS_WAITINGLIST: _("You are in queue position {pos}."),
+        status.STATUS_REGISTERED: _("You are registered for this event."),
+        status.STATUS_CANCELLED: _(
+            "Your registration for this event is cancelled. You may still re-register."
+        ),
+        status.STATUS_CANCELLED_FINAL: _(
+            "Your registration for this event is cancelled. Note that you cannot re-register."
+        ),
+        status.STATUS_CANCELLED_LATE: _(
+            "Your registration is cancelled after the deadline and you will pay a fine of €{fine}."
+        ),
+        status.STATUS_OPTIONAL: _("You can optionally register for this event."),
+        status.STATUS_OPTIONAL_REGISTERED: _(
+            "You are optionally registered for this event."
+        ),
+        status.STATUS_NONE: DEFAULT_NO_REGISTRATION_MESSAGE,
+        status.STATUS_LOGIN: _(
+            "You have to log in before you can register for this event."
+        ),
+    }
+
+    STATUS_MESSAGE_FIELDS = {
+        status.STATUS_WILL_OPEN: "registration_msg_will_open",
+        status.STATUS_EXPIRED: "registration_msg_expired",
+        status.STATUS_OPEN: "registration_msg_open",
+        status.STATUS_FULL: "registration_msg_full",
+        status.STATUS_WAITINGLIST: "registration_msg_waitinglist",
+        status.STATUS_REGISTERED: "registration_msg_registered",
+        status.STATUS_CANCELLED_FINAL: "registration_msg_cancelled_final",
+        status.STATUS_CANCELLED: "registration_msg_cancelled",
+        status.STATUS_CANCELLED_LATE: "registration_msg_cancelled_late",
+        status.STATUS_OPTIONAL: "registration_msg_optional",
+        status.STATUS_OPTIONAL_REGISTERED: "registration_msg_optional_registered",
+        status.STATUS_NONE: "no_registration_message",
+    }
+
+    registration_msg_will_open = models.CharField(
+        _(
+            "message when registrations are still closed (and the user is not registered)"
+        ),
+        max_length=200,
+        blank=True,
+        null=True,
+        help_text=format_lazy(
+            "{} {}",
+            _("Default:"),
+            DEFAULT_STATUS_MESSAGE[status.STATUS_WILL_OPEN],
+        ),
+    )
+    registration_msg_expired = models.CharField(
+        _(
+            "message when the registration deadline expired and the user is not registered"
+        ),
+        max_length=200,
+        blank=True,
+        null=True,
+        help_text=format_lazy(
+            "{} {}",
+            _("Default:"),
+            DEFAULT_STATUS_MESSAGE[status.STATUS_EXPIRED],
+        ),
+    )
+    registration_msg_open = models.CharField(
+        _("message when registrations are open and the user is not registered"),
+        max_length=200,
+        blank=True,
+        null=True,
+        help_text=format_lazy(
+            "{} {}",
+            _("Default:"),
+            DEFAULT_STATUS_MESSAGE[status.STATUS_OPEN],
+        ),
+    )
+    registration_msg_full = models.CharField(
+        _(
+            "message when registrations are open, but full and the user is not registered"
+        ),
+        max_length=200,
+        blank=True,
+        null=True,
+        help_text=format_lazy(
+            "{} {}",
+            _("Default:"),
+            DEFAULT_STATUS_MESSAGE[status.STATUS_FULL],
+        ),
+    )
+    registration_msg_waitinglist = models.CharField(
+        _("message when user is on the waiting list"),
+        max_length=200,
+        blank=True,
+        null=True,
+        help_text=format_lazy(
+            "{} {}",
+            _("Default:"),
+            DEFAULT_STATUS_MESSAGE[status.STATUS_WAITINGLIST],
+        ),
+    )
+    registration_msg_registered = models.CharField(
+        _("message when user is registered"),
+        max_length=200,
+        blank=True,
+        null=True,
+        help_text=format_lazy(
+            "{} {}",
+            _("Default:"),
+            DEFAULT_STATUS_MESSAGE[status.STATUS_REGISTERED],
+        ),
+    )
+    registration_msg_cancelled = models.CharField(
+        _("message when user cancelled their registration in time"),
+        max_length=200,
+        blank=True,
+        null=True,
+        help_text=format_lazy(
+            "{} {}",
+            _("Default:"),
+            DEFAULT_STATUS_MESSAGE[status.STATUS_CANCELLED],
+        ),
+    )
+    registration_msg_cancelled_final = models.CharField(
+        _(
+            "message when user cancelled their registration in time and cannot re-register"
+        ),
+        max_length=200,
+        blank=True,
+        null=True,
+        help_text=format_lazy(
+            "{} {}",
+            _("Default:"),
+            DEFAULT_STATUS_MESSAGE[status.STATUS_CANCELLED_FINAL],
+        ),
+    )
+    registration_msg_cancelled_late = models.CharField(
+        _("message when user cancelled their registration late and will pay a fine"),
+        max_length=200,
+        blank=True,
+        null=True,
+        help_text=format_lazy(
+            "{} {}",
+            _("Default:"),
+            DEFAULT_STATUS_MESSAGE[status.STATUS_CANCELLED_LATE],
+        ),
+    )
+    registration_msg_optional = models.CharField(
+        _("message when registrations are optional and the user is not registered"),
+        max_length=200,
+        blank=True,
+        null=True,
+        help_text=format_lazy(
+            "{} {}",
+            _("Default:"),
+            DEFAULT_STATUS_MESSAGE[status.STATUS_OPTIONAL],
+        ),
+    )
+    registration_msg_optional_registered = models.CharField(
+        _("message when registrations are optional and the user is registered"),
+        max_length=200,
+        blank=True,
+        null=True,
+        help_text=format_lazy(
+            "{} {}",
+            _("Default:"),
+            DEFAULT_STATUS_MESSAGE[status.STATUS_OPTIONAL_REGISTERED],
+        ),
+    )
 
     class Meta:
         ordering = ("-start",)
