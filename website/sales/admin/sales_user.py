@@ -2,12 +2,12 @@ from django.contrib import admin
 from django.contrib.admin import register
 
 from sales import services
-from sales.admin import OrderInline
-from sales.models.order import SalesUser
+from sales.models.order import Order
+from sales.models.sales_user import SalesUser
 
 
-class SalesUserOrderInline(OrderInline):
-    fk_name = "payer"
+class SalesUserOrderInline(admin.TabularInline):
+    model = Order
 
     def has_change_permission(self, request, obj=None):
         return False

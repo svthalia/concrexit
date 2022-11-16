@@ -19,13 +19,6 @@ from sales.models.product import ProductListItem
 from sales.models.shift import Shift
 
 
-class SalesUser(Member):
-    class Meta:
-        verbose_name = _("Sales user")
-        verbose_name_plural = _("Sales users")
-        proxy = True
-
-
 def default_order_shift():
     return Shift.objects.filter(active=True).first()
 
