@@ -111,9 +111,11 @@
     {% elif request.user and request.user.profile and not request.user.profile.photo %}
         <div class="announcement">
             <p>
+                {% url "members:edit-profile" as profile_url %}
+                <i class="fas fa-address-card me-2"></i>
                 {% blocktrans trimmed %}
-                You don't have a profile picture yet! Upload one on your
-                <a href="https://thalia.nu/user/edit-profile/">profile page</a> so that the other members know who you are. :)
+                    You don't have a profile picture yet! Upload one on your
+                    <a href="{{ profile_url }}">profile page</a> so that the other members know who you are.
                 {% endblocktrans %}
             </p>
         </div>
