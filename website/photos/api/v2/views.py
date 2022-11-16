@@ -1,3 +1,5 @@
+from django.db.models import Count, Prefetch, Q
+
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework import filters, status
 from rest_framework.exceptions import PermissionDenied
@@ -27,7 +29,6 @@ class AlbumDetailView(RetrieveAPIView):
     """Returns the details of an album."""
 
     serializer_class = AlbumSerializer
-    queryset = Album.objects.filter(hidden=False)
     permission_classes = [
         IsAuthenticatedOrTokenHasScope,
     ]
@@ -38,6 +39,16 @@ class AlbumDetailView(RetrieveAPIView):
         if not services.is_album_accessible(request, self.get_object()):
             raise PermissionDenied
         return super().retrieve(request, *args, **kwargs)
+
+    def get_queryset(self):
+        photos = Photo.objects.select_properties("num_likes")
+        if self.request.member:
+            photos = photos.annotate(
+                member_likes=Count("likes", filter=Q(likes__member=self.request.member))
+            )
+        return Album.objects.filter(hidden=False).prefetch_related(
+            Prefetch("photo_set", queryset=photos)
+        )
 
 
 class PhotoLikeView(APIView):

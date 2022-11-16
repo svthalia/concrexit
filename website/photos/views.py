@@ -63,7 +63,10 @@ def index(request):
 
 def _render_album_page(request, album):
     """Render album.html for a specified album."""
-    context = {"album": album, "photos": album.photo_set.filter(hidden=False)}
+    context = {
+        "album": album,
+        "photos": album.photo_set.filter(hidden=False).select_properties("num_likes"),
+    }
     return render(request, "photos/album.html", context)
 
 
@@ -120,6 +123,10 @@ def shared_download(request, slug, token, filename):
 
 @login_required
 def liked_photos(request):
-    photos = Photo.objects.filter(likes__member=request.member, album__hidden=False)
+    photos = (
+        Photo.objects.filter(likes__member=request.member, album__hidden=False)
+        .select_related("album")
+        .select_properties("num_likes")
+    )
     context = {"photos": photos}
     return render(request, "photos/liked-photos.html", context)
