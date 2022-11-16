@@ -119,16 +119,6 @@ def show_cancel_status(registration_status):
     ]
 
 
-def user_registration_status(member, event: Event):
-    if not member.is_authenticated:
-        if not event.registration_required and not event.optional_registrations:
-            return status.STATUS_NONE
-        return status.STATUS_LOGIN
-
-    registration = event.eventregistration_set.get(member=member)
-    return registration_status(event, registration, member)
-
-
 def registration_status_string(status, event: Event, registration: EventRegistration):
     if not status:
         return None
