@@ -61,3 +61,35 @@ def notify_organiser(event, registration):
             for organiser in event.organisers.all()
         ],
     ).send()
+
+
+def notify_waiting(event, registration):
+    text_template = get_template("events/more_places_email.txt")
+    subject = _("[THALIA] Notification about your registration for '{}'").format(
+        event.title
+    )
+    text_message = text_template.render(
+        {
+            "event": event,
+            "registration": registration,
+            "member": registration.member,
+            "base_url": settings.BASE_URL,
+        }
+    )
+    EmailMessage(subject, text_message, to=[registration.email]).send()
+
+
+def notify_cancelled(event, registration):
+    text_template = get_template("events/less_places_email.txt")
+    subject = _("[THALIA] Notification about your registration for '{}'").format(
+        event.title
+    )
+    text_message = text_template.render(
+        {
+            "event": event,
+            "registration": registration,
+            "member": registration.member,
+            "base_url": settings.BASE_URL,
+        }
+    )
+    EmailMessage(subject, text_message, to=[registration.email]).send()

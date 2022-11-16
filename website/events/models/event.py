@@ -16,6 +16,7 @@ from queryable_properties.properties import AggregateProperty
 from tinymce.models import HTMLField
 
 from announcements.models import Slide
+from events import emails
 from events.models import status
 from events.models.categories import EVENT_CATEGORIES
 from members.models import Member
@@ -451,6 +452,21 @@ class Event(models.Model):
 
         if not self.pk:
             super().save(**kwargs)
+
+        if self.pk:
+            prev: Event = Event.objects.get(pk=self.pk) if self.pk else None
+            if prev.max_participants < self.max_participants:
+                # We have more spots! Email the users that can now join
+                diff = self.max_participants - prev.max_participants
+                joiners = prev.queue[:diff]
+                for registration in joiners:
+                    emails.notify_waiting(self, registration)
+
+            elif prev.max_participants > self.max_participants:
+                diff = self.max_participants - prev.max_participants
+                leavers = prev.registrations[self.max_participants :]
+                for registration in leavers:
+                    emails.notify_cancelled(self, registration)
 
         if self.published:
             if self.registration_required:
