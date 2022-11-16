@@ -208,6 +208,36 @@ STATIC_URL = "/static/"
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-root
 STATIC_ROOT = from_env("STATIC_ROOT", development=os.path.join(BASE_DIR, "static"))
 
+DJANGO_DRF_FILEPOND_UPLOAD_TMP = from_env(
+    "DJANGO_DRF_FILEPOND_UPLOAD_TMP",
+    development=os.path.join(BASE_DIR, "filepond-temp-uploads"),
+)
+DJANGO_DRF_FILEPOND_FILE_STORE_PATH = from_env(
+    "DJANGO_DRF_FILEPOND_FILE_STORE_PATH",
+    development=os.path.join(BASE_DIR, "filepond-uploaded"),
+)
+DJANGO_DRF_FILEPOND_ALLOW_EXTERNAL_UPLOAD_DIR = True
+DJANGO_DRF_FILEPOND_PERMISSION_CLASSES = {
+    "GET_FETCH": [
+        "oauth2_provider.contrib.rest_framework.IsAuthenticatedOrTokenHasScope",
+    ],
+    "GET_LOAD": [
+        "oauth2_provider.contrib.rest_framework.IsAuthenticatedOrTokenHasScope",
+    ],
+    "POST_PROCESS": [
+        "oauth2_provider.contrib.rest_framework.IsAuthenticatedOrTokenHasScope",
+    ],
+    "GET_RESTORE": [
+        "oauth2_provider.contrib.rest_framework.IsAuthenticatedOrTokenHasScope",
+    ],
+    "DELETE_REVERT": [
+        "oauth2_provider.contrib.rest_framework.IsAuthenticatedOrTokenHasScope",
+    ],
+    "PATCH_PATCH": [
+        "oauth2_provider.contrib.rest_framework.IsAuthenticatedOrTokenHasScope",
+    ],
+}
+
 SENDFILE_BACKEND = setting(
     development="django_sendfile.backends.development",
     production="django_sendfile.backends.nginx",
@@ -426,6 +456,8 @@ INSTALLED_APPS = [
     "compressor",
     "debug_toolbar",
     "admin_auto_filters",
+    "django_drf_filepond",
+    "django_filepond_widget",
     # Our apps
     # Directly link to the app config when applicable as recommended
     # by the docs: https://docs.djangoproject.com/en/2.0/ref/applications/

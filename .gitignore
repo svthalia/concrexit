@@ -12,6 +12,7 @@ db.sqlite3
 *.egg-info
 
 website/media/
+website/filepond-temp-uploads/
 website/static/
 covhtml/
 .make

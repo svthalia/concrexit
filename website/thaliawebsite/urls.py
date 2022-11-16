@@ -186,6 +186,7 @@ urlpatterns = [
         r"^media/private/(?P<request_path>.*)$", private_media, name="private-media"
     ),
     path("", include("shortlinks.urls")),
+    re_path(r"^fp/", include("django_drf_filepond.urls")),
 ] + static(
     settings.PUBLIC_MEDIA_URL,
     document_root=os.path.join(settings.MEDIA_ROOT, settings.PUBLIC_MEDIA_LOCATION),
