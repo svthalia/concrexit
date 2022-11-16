@@ -41,7 +41,4 @@ class PhotoListSerializer(PhotoSerializer):
     liked = serializers.SerializerMethodField("_liked")
 
     def _liked(self, instance):
-        return (
-            self.context["request"].member
-            and instance.likes.filter(member=self.context["request"].member).exists()
-        )
+        return self.context["request"].member and instance.member_likes > 0
