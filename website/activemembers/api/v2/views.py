@@ -8,7 +8,7 @@ from activemembers.api.v2.serializers.member_group import (
     MemberGroupListSerializer,
     MemberGroupSerializer,
 )
-from activemembers.models import Board, MemberGroup, MemberGroupMembership
+from activemembers.models import MemberGroup, MemberGroupMembership
 
 
 class MemberGroupListView(ListAPIView):
