@@ -210,7 +210,7 @@ in
   };
 
   systemd.tmpfiles.rules = [
-    "d /var/lib/concrexit/ 0755 root root - -"
+    "d /var/lib/concrexit/ 0755 deploy root - -"
   ];
 
   services.nginx = {
