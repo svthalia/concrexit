@@ -57,7 +57,7 @@ Faker = "15.3.2"
 coverage = {extras = ["toml"], version = "^6.0.0"}
 isort = "5.10.1"
 black = "22.10.0"
-pylint = "2.15.5"
+pylint = "2.15.6"
 pylint-django = "2.5.3"
 pre-commit = "2.20.0"
 
