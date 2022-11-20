@@ -1,12 +1,12 @@
 """Utility views."""
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 from django.core import signing
 from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
 from django.core.files.storage import get_storage_class
 from django.core.signing import BadSignature
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import redirect
 from django.utils import timezone
 
@@ -14,6 +14,7 @@ import sentry_sdk
 from django_sendfile import sendfile
 from PIL import Image, ImageOps
 
+from utils.media.cloudfront import CloudFrontUtil
 from utils.media.services import save_image
 
 
@@ -144,3 +145,11 @@ def get_thumbnail(request, request_path):
     ) as span:
         url = storage.url(sig_info["thumb_path"])
     return redirect(url)
+
+def create_cookies(request):
+    expire_at = datetime.now() + timedelta(minutes=30)
+    cfu = CloudFrontUtil()
+
+    response = HttpResponse()
+    response.status_code = 204
+    return cfu.modify_response(response, "*", expire_at)

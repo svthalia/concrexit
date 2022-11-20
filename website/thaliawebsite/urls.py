@@ -54,7 +54,7 @@ from singlepages.sitemaps import sitemap as singlepages_sitemap
 from thabloid.sitemaps import sitemap as thabloid_sitemap
 from thaliawebsite.forms import AuthenticationForm
 from thaliawebsite.views import IndexView, TestCrashView
-from utils.media.views import get_thumbnail, private_media
+from utils.media.views import get_thumbnail, private_media, create_cookies
 
 from .sitemaps import StaticViewSitemap
 
@@ -184,6 +184,9 @@ urlpatterns = [
     ),
     re_path(
         r"^media/private/(?P<request_path>.*)$", private_media, name="private-media"
+    ),
+    path(
+        "media/set-cookies/", create_cookies, name="create-cookies-media"
     ),
     path("", include("shortlinks.urls")),
     re_path(r"^fp/", include("django_drf_filepond.urls")),
