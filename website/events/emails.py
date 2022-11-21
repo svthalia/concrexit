@@ -4,8 +4,6 @@ from django.core.mail import EmailMessage
 from django.template.loader import get_template
 from django.utils.translation import gettext_lazy as _
 
-from events.models import EventRegistration
-
 
 def notify_first_waiting(event):
     """Send an email to the first person on the waiting list when someone cancels their registration.
@@ -14,12 +12,12 @@ def notify_first_waiting(event):
     """
     if (
         event.max_participants is not None
-        and EventRegistration.objects.filter(event=event, date_cancelled=None).count()
+        and event.eventregistration_set.filter(date_cancelled=None).count()
         > event.max_participants
     ):
         # Prepare email to send to the first person on the waiting list
-        first_waiting = EventRegistration.objects.filter(
-            event=event, date_cancelled=None
+        first_waiting = event.eventregistration_set.filter(
+            date_cancelled=None
         ).order_by("date")[event.max_participants]
         first_waiting_member = first_waiting.member
 
