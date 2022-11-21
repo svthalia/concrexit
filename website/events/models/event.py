@@ -455,9 +455,14 @@ class Event(models.Model):
 
         try:
             if self.pk:
-                prev: Event = Event.objects.get(pk=self.pk) if self.pk else None
-                prev_limit = prev.max_participants or prev.participant_count
-                self_limit = self.max_participants or self.participant_count
+                prev: Event = Event.objects.get(pk=self.pk)
+                prev_limit = prev.max_participants
+                self_limit = self.max_participants
+                if prev_limit is None:
+                    prev_limit = prev.participant_count
+                if self_limit is None:
+                    self_limit = self.participant_count
+
                 if prev_limit < self_limit:
                     # We have more spots! Email the users that can now join
                     diff = self_limit - prev_limit
