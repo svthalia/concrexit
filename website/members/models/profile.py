@@ -245,16 +245,13 @@ class Profile(models.Model):
         default=True,
     )
 
-    # Begin Lisanne
     photo_permissions = models.BooleanField(
         verbose_name=_("Opt-in social media pictures"),
         help_text=_(
             "Consent to all your photos being shared across social media platforms."
         ),
         blank=False,
-        null=True,
     )
-    # End Lisanne
 
     receive_newsletter = models.BooleanField(
         verbose_name=_("Receive newsletter"),

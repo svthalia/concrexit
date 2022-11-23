@@ -22,6 +22,9 @@
                            placeholder="{% trans "What are you looking for?" %}" aria-label="{% trans "Search the Thalia's photo albums" %}" aria-describedby="photoalbums-search-button">
                     <input id="photoalbums-search-button" class="btn btn-lg btn-primary col-12 mt-2 mt-md-0 col-md-3 ms-0" type="submit"
                            value="{% trans "Search" %}"/>
+                </div class="opt-in_photos">
+                <div>
+                    <li><span>{% trans "Opt-in for photos" %}: </span> {{ request.member.profile.event_permissions }}</li>
                 </div>
                 <a href="{% url 'photos:liked-photos' %}" class="btn btn-lg btn-primary ms-2 text-center d-flex align-items-center">
                     <i class="fas fa-heart"></i>
