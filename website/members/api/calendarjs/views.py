@@ -1,7 +1,7 @@
 import copy
 
 from rest_framework.generics import ListAPIView
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 
 from members.api.calendarjs.serializers import MemberBirthdaySerializer
 from members.models import Member
@@ -12,7 +12,7 @@ class CalendarJSBirthdayListView(ListAPIView):
     """Define a custom route that outputs the correctly formatted events information for CalendarJS, published events only."""
 
     serializer_class = MemberBirthdaySerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated]
     pagination_class = None
 
     def _get_birthdays(self, member, start, end):
