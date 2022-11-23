@@ -9,7 +9,6 @@ from education.views import (
     CourseIndexView,
     ExamCreateView,
     ExamDetailView,
-    StudentParticipantView,
     SummaryCreateView,
     SummaryDetailView,
 )
@@ -69,11 +68,6 @@ urlpatterns = [
                             path("", CourseIndexView.as_view(), name="courses"),
                         ]
                     ),
-                ),
-                path(
-                    "student-participation/",
-                    StudentParticipantView.as_view(),
-                    name="student-participation",
                 ),
                 path(
                     "",

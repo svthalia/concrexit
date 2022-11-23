@@ -67,7 +67,7 @@ MAIN_MENU = [
             {"title": _("Book Sale"), "name": "education:books"},
             {
                 "title": _("Student Participation"),
-                "name": "education:student-participation",
+                "name": "singlepages:student-participation",
             },
             {
                 "title": _("Student well-being"),

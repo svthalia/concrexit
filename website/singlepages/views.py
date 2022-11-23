@@ -52,3 +52,9 @@ class StudentWellBeingView(TemplateView):
     """Static page with info on student well-being."""
 
     template_name = "singlepages/student_well-being.html"
+
+
+class StudentParticipantView(TemplateView):
+    """Renders a page with information about student information."""
+
+    template_name = "singlepages/student_participation.html"
