@@ -75,6 +75,14 @@ in
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEblHIN5uaooHczkiqbXa6V7H7bfhgGTVLKA0sUggBkP wouter@wouterdoeland.nl"
     ];
   };
+  users.users.dirk = {
+    isNormalUser = true;
+    description = "Dirk Doesburg";
+    extraGroups = [ "wheel" ];
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIgMsOXBM1i1/GHoZIJpXQIm+dU5SRMat7HtZSKVrl5T dirk"
+    ];
+  };
 
   # Automatic deployment settings
   security.polkit = {
