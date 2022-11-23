@@ -4,9 +4,7 @@ let
   production = hostName == "production";
   useSSL = hostName == "production" || hostName == "staging";
 
-  productionEnvFile = ./infra/docker/production/concrexit-production-public.env;
-  stagingEnvFile = ./infra/docker/staging/concrexit-staging-public.env;
-  envFile = if production then productionEnvFile else stagingEnvFile;
+  envFile = "/var/lib/concrexit/public.env";
 
   productionSecrets = ./infra/secrets/concrexit-production.env.age;
   stagingSecrets = ./infra/secrets/concrexit-staging.env.age;
@@ -212,7 +210,7 @@ in
   };
 
   systemd.tmpfiles.rules = [
-    "d /var/lib/concrexit/ 0755 root root - -"
+    "d /var/lib/concrexit/ 0755 deploy root - -"
   ];
 
   services.nginx = {
