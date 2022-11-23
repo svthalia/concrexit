@@ -250,7 +250,8 @@ class Profile(models.Model):
         help_text=_(
             "Consent to all your photos being shared across social media platforms."
         ),
-        blank=False,
+        blank=True,
+        null=True,
     )
 
     receive_newsletter = models.BooleanField(

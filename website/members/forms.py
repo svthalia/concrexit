@@ -35,6 +35,7 @@ class ProfileForm(forms.ModelForm):
             "email_gsuite_only",
         ]
         model = Profile
+        widgets = {"photo_permissions": forms.CheckboxInput}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
