@@ -16,7 +16,6 @@ from queryable_properties.properties import AggregateProperty
 from tinymce.models import HTMLField
 
 from announcements.models import Slide
-from events import emails
 from events.models import status
 from events.models.categories import EVENT_CATEGORIES
 from members.models import Member
