@@ -453,32 +453,6 @@ class Event(models.Model):
         if not self.pk:
             super().save(**kwargs)
 
-        try:
-            if self.pk:
-                prev: Event = Event.objects.get(pk=self.pk)
-                prev_limit = prev.max_participants
-                self_limit = self.max_participants
-                if prev_limit is None:
-                    prev_limit = prev.participant_count
-                if self_limit is None:
-                    self_limit = self.participant_count
-
-                if prev_limit < self_limit:
-                    # We have more spots! Email the users that can now join
-                    diff = self_limit - prev_limit
-                    joiners = prev.queue[:diff]
-                    for registration in joiners:
-                        emails.notify_waiting(self, registration)
-
-                elif prev_limit > self_limit:
-                    diff = self_limit - prev_limit
-                    leavers = prev.registrations[self_limit:]
-                    for registration in leavers:
-                        emails.notify_cancelled(self, registration)
-        except Event.DoesNotExist:
-            # In tests, we specifiy a PK but do not have a previous object
-            pass
-
         if self.published:
             if self.registration_required:
                 registration_reminder_time = (

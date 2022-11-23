@@ -1,4 +1,4 @@
-{% load i18n %}{% blocktrans with event_title=event.title baseurl=base_url event_url=event.get_absolute_url registration_date=registration.date|date:"SHORT_DATETIME_FORMAT" cancel_deadline=event.cancel_deadline|date:"SHORT_DATETIME_FORMAT" name=member.first_name organiser_name=event.organiser.name organiser_mail=event.organiser.contact_address %}Hi {{ name }},
+{% load i18n %}{% blocktrans with event_title=event.title baseurl=base_url event_url=event.get_absolute_url registration_date=registration.date|date:"SHORT_DATETIME_FORMAT" cancel_deadline=event.cancel_deadline|date:"SHORT_DATETIME_FORMAT" organiser_name=event.organiser.name organiser_mail=event.organiser.contact_address %}Hi {{ name }},
 
 You registered for the event '{{ event_title }}' on {{ registration_date }} and unfortunately you were placed on the waiting list.
 However some more spots were added and we would like to let you know that you'll be able to attend now!
