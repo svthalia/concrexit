@@ -1,5 +1,4 @@
 import datetime
-from unittest import mock
 
 from django.core.exceptions import ValidationError
 from django.test import TestCase, override_settings
