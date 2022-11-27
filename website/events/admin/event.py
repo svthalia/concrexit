@@ -207,8 +207,6 @@ class EventAdmin(DoNextModelAdmin):
             if self_limit is None:
                 self_limit = obj.participant_count
 
-            # raise Exception((prev_limit, self_limit))
-
             if prev_limit < self_limit and prev_limit < obj.participant_count:
                 diff = self_limit - prev_limit
                 joiners = prev.queue[:diff]

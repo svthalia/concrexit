@@ -299,19 +299,3 @@ class RegistrationTest(TestCase):
         # Test situation where the event status is REGISTRATION_OPEN_NO_CANCEL
         self.assertTrue(self.r1.event.registration_allowed)
         self.assertTrue(self.r1.would_cancel_after_deadline())
-
-    @mock.patch("events.emails.notify_waiting")
-    @mock.patch("events.emails.notify_cancelled")
-    def test_email(self, notify_cancelled_mock, notify_waiting_mock):
-        self.event.max_participants = 0
-        self.event.max_participants = 0
-        self.event.save()
-        self.assertEqual(notify_cancelled_mock.call_count, 2)
-        notify_cancelled_mock.assert_any_call(self.event, self.r1)
-        notify_cancelled_mock.assert_any_call(self.event, self.r2)
-
-        self.event.max_participants = 2
-        self.event.save()
-        self.assertEqual(notify_waiting_mock.call_count, 2)
-        notify_waiting_mock.assert_any_call(self.event, self.r1)
-        notify_waiting_mock.assert_any_call(self.event, self.r2)
