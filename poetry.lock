@@ -419,7 +419,7 @@ sqlparse = ">=0.2"
 
 [[package]]
 name = "django-drf-filepond"
-version = "0.4.1"
+version = "0.5.0"
 description = "Filepond server app for Django REST Framework"
 category = "main"
 optional = false
@@ -1741,7 +1741,7 @@ postgres = ["psycopg2"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "e2b7f1c3ada03a581b673192b1dee99e86d6f29c418a1312f8a5af96f54bb2d8"
+content-hash = "0529e61b56efe5a7acac8fcccad4fe284bc6aa20c2fb306250f8dca344130175"
 
 [metadata.files]
 alabaster = [
@@ -2068,8 +2068,8 @@ django-debug-toolbar = [
     {file = "django_debug_toolbar-3.8.1.tar.gz", hash = "sha256:24ef1a7d44d25e60d7951e378454c6509bf536dce7e7d9d36e7c387db499bc27"},
 ]
 django-drf-filepond = [
-    {file = "django-drf-filepond-0.4.1.tar.gz", hash = "sha256:a32c46fd54982d88aeb4f3825973a194eb9d5d01b031c53bfe2770fc98895873"},
-    {file = "django_drf_filepond-0.4.1-py2.py3-none-any.whl", hash = "sha256:e91303795d5d2f3cbb96cc28a5a6a70b5322eaa54ed7b1997ba6a7cb3a4aa609"},
+    {file = "django-drf-filepond-0.5.0.tar.gz", hash = "sha256:360abcbcfdc016398435679dcc768b0c2d6b29a92db46fe3430ad31176251a13"},
+    {file = "django_drf_filepond-0.5.0-py2.py3-none-any.whl", hash = "sha256:55d64c3272c716f0811f2e67877cc005b8927e96bb34ba7f7105202d6bd5a647"},
 ]
 django-filepond-widget = [
     {file = "django-filepond-widget-0.7.0.tar.gz", hash = "sha256:292ac0e7ed4582fe6712175f0c8e4ae3f9636edae838e93284aacc18b7aeb661"},
