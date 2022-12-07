@@ -23,8 +23,8 @@ class PromotionRequestAdmin(admin.ModelAdmin):
     actions = ["mark_not_started", "mark_started", "mark_finished", "mark_published"]
 
     def has_change_permission(self, request, obj=None):
-        if obj is not None and not is_organiser(request.member, obj.event):
-            return False
+        if obj is not None and obj.event and is_organiser(request.member, obj.event):
+            return True
         return super().has_change_permission(request, obj)
 
     def mark_not_started(self, request, queryset):
