@@ -182,7 +182,7 @@ class RegistrationTest(TestCase):
     def test_registration_register_not_required(self):
         response = self.client.post("/events/1/registration/register/", follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(self.event.participants.count(), 1)
+        self.assertEqual(self.event.participant_count, 1)
 
     def test_registration_register(self):
         self.event.registration_start = timezone.now() - datetime.timedelta(hours=1)
@@ -191,7 +191,7 @@ class RegistrationTest(TestCase):
         self.event.save()
         response = self.client.post("/events/1/registration/register/", follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(self.event.participants.count(), 1)
+        self.assertEqual(self.event.participant_count, 1)
         self.assertEqual(self.event.eventregistration_set.first().member, self.member)
 
     def test_registration_register_twice(self):
@@ -203,7 +203,7 @@ class RegistrationTest(TestCase):
         self.assertEqual(response.status_code, 200)
         response = self.client.post("/events/1/registration/register/", follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(self.event.participants.count(), 1)
+        self.assertEqual(self.event.participant_count, 1)
 
     def test_registration_register_closed(self):
         self.event.registration_start = timezone.now() - datetime.timedelta(hours=2)
@@ -212,7 +212,7 @@ class RegistrationTest(TestCase):
         self.event.save()
         response = self.client.post("/events/1/registration/register/", follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(self.event.participants.count(), 0)
+        self.assertEqual(self.event.participant_count, 0)
 
     def test_registration_cancel(self):
         self.event.registration_start = timezone.now() - datetime.timedelta(hours=1)
@@ -222,7 +222,7 @@ class RegistrationTest(TestCase):
         EventRegistration.objects.create(event=self.event, member=self.member)
         response = self.client.post("/events/1/registration/cancel/", follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(self.event.participants.count(), 0)
+        self.assertEqual(self.event.participant_count, 0)
 
     def test_registration_register_no_fields(self):
         self.event.registration_start = timezone.now() - datetime.timedelta(hours=1)
@@ -261,7 +261,7 @@ class RegistrationTest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
 
-        self.assertEqual(self.event.participants.count(), 1)
+        self.assertEqual(self.event.participant_count, 1)
         registration = self.event.eventregistration_set.first()
         self.assertEqual(field1.get_value_for(registration), None)
         self.assertEqual(field2.get_value_for(registration), None)
@@ -301,7 +301,7 @@ class RegistrationTest(TestCase):
         self.assertEqual(response.status_code, 200)
         template_names = [template.name for template in response.templates]
         self.assertIn("events/registration.html", template_names)
-        self.assertEqual(self.event.participants.count(), 1)
+        self.assertEqual(self.event.participant_count, 1)
 
     def test_registration_register_fields_required(self):
         self.event.registration_start = timezone.now() - datetime.timedelta(hours=1)
@@ -320,7 +320,7 @@ class RegistrationTest(TestCase):
         self.assertEqual(response.status_code, 200)
         template_names = [template.name for template in response.templates]
         self.assertIn("events/registration.html", template_names)
-        self.assertEqual(self.event.participants.count(), 1)
+        self.assertEqual(self.event.participant_count, 1)
 
     def test_registration_update_form_load_not_changes_fields(self):
         self.event.registration_start = timezone.now() - datetime.timedelta(hours=1)
@@ -428,7 +428,7 @@ class RegistrationTest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
 
-        self.assertEqual(self.event.participants.count(), 1)
+        self.assertEqual(self.event.participant_count, 1)
         registration = self.event.eventregistration_set.first()
         self.assertEqual(field1.get_value_for(registration), False)
         self.assertEqual(field2.get_value_for(registration), 1337)
@@ -443,7 +443,7 @@ class RegistrationTest(TestCase):
         EventRegistration.objects.create(event=self.event, member=self.member)
         response = self.client.post("/events/1/registration/cancel/", follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(self.event.participants.count(), 0)
+        self.assertEqual(self.event.participant_count, 0)
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(
             mail.outbox[0].to,
