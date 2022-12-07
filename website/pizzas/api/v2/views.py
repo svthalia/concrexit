@@ -1,3 +1,5 @@
+from django.db.models import Prefetch
+
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework import filters as framework_filters
 from rest_framework import status
@@ -11,6 +13,7 @@ from rest_framework.generics import (
 )
 from rest_framework.response import Response
 
+from events.models.event_registration import EventRegistration
 from payments.exceptions import PaymentError
 from payments.services import delete_payment
 from pizzas.api.v2 import filters
@@ -45,11 +48,24 @@ class FoodEventDetailView(RetrieveAPIView):
     """Returns one single food event."""
 
     serializer_class = FoodEventSerializer
-    queryset = FoodEvent.objects.all()
     permission_classes = [
         IsAuthenticatedOrTokenHasScope,
     ]
     required_scopes = ["food:read"]
+
+    def get_queryset(self):
+        events = FoodEvent.objects.all()
+        if self.request.member:
+            events = events.prefetch_related(
+                Prefetch(
+                    "event__eventregistration_set",
+                    to_attr="member_registration",
+                    queryset=EventRegistration.objects.filter(
+                        member=self.request.member
+                    ).select_properties("queue_position"),
+                )
+            )
+        return events
 
 
 class FoodEventProductsListView(ListAPIView):
