@@ -129,8 +129,7 @@ class ExamDetailView(DetailView):
         exam.save()
 
         ext = os.path.splitext(exam.file.name)[1]
-        filename = f"{exam.course.name}-exam{exam.year}{ext}"
-        return redirect(get_media_url(exam.file, filename))
+        return redirect(get_media_url(exam.file, True))
 
 
 @method_decorator(login_required, "dispatch")
@@ -147,8 +146,7 @@ class SummaryDetailView(DetailView):
         obj.save()
 
         ext = os.path.splitext(obj.file.name)[1]
-        filename = f"{obj.course.name}-summary{obj.year}{ext}"
-        return redirect(get_media_url(obj.file, filename))
+        return redirect(get_media_url(obj.file, True))
 
 
 @method_decorator(login_required, "dispatch")
