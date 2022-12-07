@@ -4,15 +4,13 @@ let
   production = hostName == "production";
   useSSL = hostName == "production" || hostName == "staging";
 
-  productionEnvFile = ./infra/docker/production/concrexit-production-public.env;
-  stagingEnvFile = ./infra/docker/staging/concrexit-staging-public.env;
-  envFile = if production then productionEnvFile else stagingEnvFile;
+  envFile = "/var/lib/concrexit/public.env";
 
   productionSecrets = ./infra/secrets/concrexit-production.env.age;
   stagingSecrets = ./infra/secrets/concrexit-staging.env.age;
   secretsFile = if production then productionSecrets else stagingSecrets;
 
-  dockerImage = "ghcr.io/svthalia/concrexit:${if production then "release-43" else "master"}";
+  dockerImage = "ghcr.io/svthalia/concrexit:${if production then "latest" else "master"}";
 
   staticdir = "/var/lib/concrexit/static/";
   mediadir = "/var/lib/concrexit/media/";
@@ -75,6 +73,22 @@ in
     extraGroups = [ "wheel" ];
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEblHIN5uaooHczkiqbXa6V7H7bfhgGTVLKA0sUggBkP wouter@wouterdoeland.nl"
+    ];
+  };
+  users.users.dirk = {
+    isNormalUser = true;
+    description = "Dirk Doesburg";
+    extraGroups = [ "wheel" ];
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIgMsOXBM1i1/GHoZIJpXQIm+dU5SRMat7HtZSKVrl5T dirk"
+    ];
+  };
+  users.users.job = {
+    isNormalUser = true;
+    description = "Job Doesburg";
+    extraGroups = [ "wheel" ];
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJylC3OVDYt+JqJv1LStZpogMv04lr2XRW4yfddAT5JR MacBook-Pro-van-Job"
     ];
   };
 
@@ -212,7 +226,7 @@ in
   };
 
   systemd.tmpfiles.rules = [
-    "d /var/lib/concrexit/ 0755 root root - -"
+    "d /var/lib/concrexit/ 0755 deploy root - -"
   ];
 
   services.nginx = {

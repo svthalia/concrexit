@@ -258,7 +258,7 @@ class Event(models.Model):
     participant_count = AggregateProperty(
         Count(
             "eventregistration",
-            filter=~Q(eventregistration__date_cancelled__lt=timezone.now()),
+            filter=Q(eventregistration__date_cancelled=None),
         )
     )
 

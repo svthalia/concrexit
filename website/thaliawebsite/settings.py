@@ -705,8 +705,8 @@ REST_FRAMEWORK = {
         "thaliawebsite.api.throttling.UserRateThrottle",
     ],
     "DEFAULT_THROTTLE_RATES": setting(
-        production={"anon": "30/min", "user": "30/min"},
-        staging={"anon": "30/min", "user": "30/min"},
+        production={"anon": "30/min", "user": "60/min"},
+        staging={"anon": "30/min", "user": "60/min"},
         development={"anon": None, "user": None},
     ),
 }
@@ -783,9 +783,9 @@ PHOTO_UPLOAD_SIZE = 2560, 1440
 TINYMCE_DEFAULT_CONFIG = {
     "max_height": 500,
     "menubar": False,
-    "plugins": "autolink autoresize link image code media paste",
-    "toolbar": "h2 h3 | bold italic underline strikethrough | image media | link unlink | "
-    "bullist numlist | undo redo | code",
+    "plugins": "autolink autoresize link image code media paste lists",
+    "toolbar": "h2 h3 | bold italic underline strikethrough | image media | link unlink "
+    "| bullist numlist | undo redo | code",
     "contextmenu": "bold italic underline strikethrough | link",
     "paste_as_text": True,
     "relative_urls": False,
