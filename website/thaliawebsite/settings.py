@@ -705,8 +705,8 @@ REST_FRAMEWORK = {
         "thaliawebsite.api.throttling.UserRateThrottle",
     ],
     "DEFAULT_THROTTLE_RATES": setting(
-        production={"anon": "30/min", "user": "30/min"},
-        staging={"anon": "30/min", "user": "30/min"},
+        production={"anon": "30/min", "user": "60/min"},
+        staging={"anon": "30/min", "user": "60/min"},
         development={"anon": None, "user": None},
     ),
 }
