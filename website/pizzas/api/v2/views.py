@@ -32,7 +32,6 @@ class FoodEventListView(ListAPIView):
     """Returns an overview of all food events."""
 
     serializer_class = FoodEventSerializer
-    queryset = FoodEvent.objects.all()
     filter_backends = (
         framework_filters.OrderingFilter,
         filters.FoodEventDateFilterBackend,
@@ -42,6 +41,20 @@ class FoodEventListView(ListAPIView):
         IsAuthenticatedOrTokenHasScope,
     ]
     required_scopes = ["food:read"]
+
+    def get_queryset(self):
+        events = FoodEvent.objects.all()
+        if self.request.member:
+            events = events.prefetch_related(
+                Prefetch(
+                    "event__eventregistration_set",
+                    to_attr="member_registration",
+                    queryset=EventRegistration.objects.filter(
+                        member=self.request.member
+                    ).select_properties("queue_position"),
+                )
+            )
+        return events
 
 
 class FoodEventDetailView(RetrieveAPIView):
