@@ -66,7 +66,7 @@ class Shift(models.Model):
         super().clean()
         errors = {}
 
-        if self.pk and self.orders.filter(created_at__lt=self.start):
+        if self.pk is not None and self.orders.filter(created_at__lt=self.start):
             errors.update(
                 {
                     "start": _(
