@@ -83,6 +83,14 @@ in
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIgMsOXBM1i1/GHoZIJpXQIm+dU5SRMat7HtZSKVrl5T dirk"
     ];
   };
+  users.users.job = {
+    isNormalUser = true;
+    description = "Job Doesburg";
+    extraGroups = [ "wheel" ];
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJylC3OVDYt+JqJv1LStZpogMv04lr2XRW4yfddAT5JR MacBook-Pro-van-Job"
+    ];
+  };
 
   # Automatic deployment settings
   security.polkit = {
