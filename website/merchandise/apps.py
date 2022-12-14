@@ -9,3 +9,16 @@ class MerchandiseConfig(AppConfig):
 
     name = "merchandise"
     verbose_name = _("Merchandise")
+
+    def menu_items(self):
+        return {
+            "categories": [{"name": "association", "title": "Association", "key": 1}],
+            "items": [
+                {
+                    "category": "association",
+                    "title": "Merchandise",
+                    "viewname": "merchandise:index",
+                    "key": 4,
+                },
+            ],
+        }

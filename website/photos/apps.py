@@ -13,3 +13,16 @@ class PhotosConfig(AppConfig):
         super().ready()
         # pylint: disable=unused-import,import-outside-toplevel
         from . import signals
+
+    def menu_items(self):
+        return {
+            "categories": [{"name": "members", "title": "For Members", "key": 2}],
+            "items": [
+                {
+                    "category": "members",
+                    "title": "Photos",
+                    "viewname": "photos:index",
+                    "key": 1,
+                }
+            ],
+        }

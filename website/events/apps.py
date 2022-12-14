@@ -14,3 +14,21 @@ class EventsConfig(AppConfig):
         from .payables import register
 
         register()
+
+    def menu_items(self):
+        return {
+            "categories": [{"name": "association", "title": "Association", "key": 1}],
+            "items": [
+                {
+                    "category": "association",
+                    "title": "Alumni",
+                    "viewname": "events:alumni",
+                    "key": 7,
+                },
+                {
+                    "title": "Calendar",
+                    "viewname": "events:index",
+                    "key": 3,
+                },
+            ],
+        }

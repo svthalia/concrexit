@@ -7,3 +7,22 @@ class PartnersConfig(AppConfig):
 
     name = "partners"
     verbose_name = _("Partners")
+
+    def menu_items(self):
+        return {
+            "categories": [{"name": "career", "title": "Career", "key": 4}],
+            "items": [
+                {
+                    "category": "career",
+                    "title": "Partners",
+                    "viewname": "partners:index",
+                    "key": 0,
+                },
+                {
+                    "category": "career",
+                    "title": "Vacancies",
+                    "viewname": "partners:vacancies",
+                    "key": 1,
+                },
+            ],
+        }
