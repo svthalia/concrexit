@@ -10,7 +10,7 @@ FROM base as builder
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
     PIP_NO_CACHE_DIR=1
 
-RUN pip install "poetry==1.1.13"
+RUN pip install "poetry==1.3.1"
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
