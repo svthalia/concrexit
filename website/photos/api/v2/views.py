@@ -8,7 +8,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from photos import services
-from photos.api.v2.serializers.album import AlbumListSerializer, AlbumSerializer
+from photos.api.v2.serializers.album import (
+    AlbumListSerializer,
+    AlbumSerializer,
+    PhotoListSerializer,
+)
 from photos.models import Album, Like, Photo
 
 
@@ -48,6 +52,36 @@ class AlbumDetailView(RetrieveAPIView):
             )
         return Album.objects.filter(hidden=False).prefetch_related(
             Prefetch("photo_set", queryset=photos)
+        )
+
+
+class LikedPhotosListView(ListAPIView):
+    """Returns the details the liked album."""
+
+    serializer_class = PhotoListSerializer
+    permission_classes = [
+        IsAuthenticatedOrTokenHasScope,
+    ]
+    required_scopes = ["photos:read"]
+
+    def get_queryset(self):
+        if self.request.member:
+            return (
+                Photo.objects.filter(
+                    likes__member=self.request.member, album__hidden=False
+                )
+                .annotate(
+                    member_likes=Count(
+                        "likes", filter=Q(likes__member=self.request.member)
+                    )
+                )
+                .select_properties("num_likes")
+            )
+        return Response(
+            data={
+                "detail": "You need to be a member in order to view your liked photos."
+            },
+            status=status.HTTP_400_BAD_REQUEST,
         )
 
 
