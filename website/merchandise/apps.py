@@ -1,6 +1,7 @@
 """Contains the appconfig for the merchandise module."""
 
 from django.apps import AppConfig
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 
@@ -17,7 +18,7 @@ class MerchandiseConfig(AppConfig):
                 {
                     "category": "association",
                     "title": "Merchandise",
-                    "viewname": "merchandise:index",
+                    "url": reverse("merchandise:index"),
                     "key": 4,
                 },
             ],

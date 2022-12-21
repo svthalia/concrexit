@@ -1,5 +1,6 @@
 """Configuration for the members package."""
 from django.apps import AppConfig
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 
@@ -14,13 +15,13 @@ class MembersConfig(AppConfig):
                 {
                     "category": "members",
                     "title": "Member list",
-                    "viewname": "members:index",
+                    "url": reverse("members:index"),
                     "key": 0,
                 },
                 {
                     "category": "members",
                     "title": "Statistics",
-                    "viewname": "members:statistics",
+                    "url": reverse("members:statistics"),
                     "key": 2,
                 },
                 {

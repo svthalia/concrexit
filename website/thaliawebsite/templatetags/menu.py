@@ -4,7 +4,6 @@ from functools import cache
 
 from django import template
 from django.apps import apps
-from django.urls import reverse
 
 register = template.Library()
 
@@ -24,7 +23,7 @@ def collect_menus():
                         categories[category["name"]] = {"items": [], **category}
 
             for item in menu["items"]:
-                assert "viewname" in item or "url" in item, item
+                assert "url" in item, item
                 if "category" not in item:
                     # Main item
                     main_menu.append(item)
@@ -58,10 +57,10 @@ def render_main_menu(context):
     main_menu = collect_menus()
 
     for item in main_menu:
-        active = "viewname" in item and reverse(item["viewname"]) == path
+        active = "url" in item and item["url"] == path
         if not active and "submenu" in item:
             for subitem in item["submenu"]:
-                if "viewname" in subitem and reverse(subitem["viewname"]) == path:
+                if subitem["url"] == path:
                     subitem["active"] = True
                     active = True
                 else:

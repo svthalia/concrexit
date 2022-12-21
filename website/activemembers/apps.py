@@ -1,5 +1,6 @@
 """Configuration for the activemembers package."""
 from django.apps import AppConfig
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 
@@ -21,19 +22,19 @@ class ActiveMembersConfig(AppConfig):
                 {
                     "category": "association",
                     "title": "Board",
-                    "viewname": "activemembers:boards",
+                    "url": reverse("activemembers:boards"),
                     "key": 0,
                 },
                 {
                     "category": "association",
                     "title": "Committees",
-                    "viewname": "activemembers:committees",
+                    "url": reverse("activemembers:committees"),
                     "key": 1,
                 },
                 {
                     "category": "association",
                     "title": "Societies",
-                    "viewname": "activemembers:societies",
+                    "url": reverse("activemembers:societies"),
                     "key": 2,
                 },
             ],

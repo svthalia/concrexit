@@ -1,4 +1,5 @@
 from django.apps import AppConfig
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 
@@ -15,13 +16,13 @@ class PartnersConfig(AppConfig):
                 {
                     "category": "career",
                     "title": "Partners",
-                    "viewname": "partners:index",
+                    "url": reverse("partners:index"),
                     "key": 0,
                 },
                 {
                     "category": "career",
                     "title": "Vacancies",
-                    "viewname": "partners:vacancies",
+                    "url": reverse("partners:vacancies"),
                     "key": 1,
                 },
             ],

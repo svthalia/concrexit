@@ -1,4 +1,5 @@
 from django.apps import AppConfig
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 
@@ -21,7 +22,7 @@ class PhotosConfig(AppConfig):
                 {
                     "category": "members",
                     "title": "Photos",
-                    "viewname": "photos:index",
+                    "url": reverse("photos:index"),
                     "key": 1,
                 }
             ],

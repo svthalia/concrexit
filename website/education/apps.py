@@ -1,5 +1,6 @@
 """Configuration for the education package."""
 from django.apps import AppConfig
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 
@@ -16,13 +17,13 @@ class EducationConfig(AppConfig):
                 {
                     "category": "education",
                     "title": "Summaries & Exams",
-                    "viewname": "education:courses",
+                    "url": reverse("education:courses"),
                     "key": 0,
                 },
                 {
                     "category": "education",
                     "title": "Book Sale",
-                    "viewname": "education:books",
+                    "url": reverse("education:books"),
                     "key": 1,
                 },
             ],

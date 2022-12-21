@@ -1,4 +1,5 @@
 from django.apps import AppConfig
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 
@@ -15,7 +16,7 @@ class ThabloidConfig(AppConfig):
                 {
                     "category": "members",
                     "title": "Thabloid",
-                    "viewname": "thabloid:index",
+                    "url": reverse("thabloid:index"),
                     "key": 5,
                 }
             ],

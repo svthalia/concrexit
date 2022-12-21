@@ -1,4 +1,5 @@
 from django.apps import AppConfig
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 
@@ -13,7 +14,7 @@ class DocumentsConfig(AppConfig):
                 {
                     "category": "association",
                     "title": "Documents",
-                    "viewname": "documents:index",
+                    "url": reverse("documents:index"),
                     "key": 3,
                 },
             ],

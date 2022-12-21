@@ -1,4 +1,5 @@
 from django.apps import AppConfig
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 
@@ -17,36 +18,36 @@ class SinglepagesConfig(AppConfig):
                 {
                     "category": "association",
                     "title": "Sibling Associations",
-                    "viewname": "singlepages:sibling-associations",
+                    "url": reverse("singlepages:sibling-associations"),
                     "key": 5,
                 },
                 {
                     "category": "members",
                     "title": "Styleguide",
-                    "viewname": "singlepages:styleguide",
+                    "url": reverse("singlepages:styleguide"),
                     "key": 4,
                 },
                 {
                     "category": "members",
                     "title": "Become Active",
-                    "viewname": "singlepages:become-active",
+                    "url": reverse("singlepages:become-active"),
                     "key": 6,
                 },
                 {
                     "category": "education",
                     "title": "Student Participation",
-                    "viewname": "singlepages:student-participation",
+                    "url": reverse("singlepages:student-participation"),
                     "key": 2,
                 },
                 {
                     "category": "education",
                     "title": "Student well-being",
-                    "viewname": "singlepages:student-well-being",
+                    "url": reverse("singlepages:student-well-being"),
                     "key": 3,
                 },
                 {
                     "title": "Contact",
-                    "viewname": "singlepages:contact",
+                    "url": reverse("singlepages:contact"),
                     "key": 6,
                 },
             ],
