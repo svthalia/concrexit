@@ -220,7 +220,7 @@ class EventAdmin(DoNextModelAdmin):
                 diff = self_limit - prev_limit
                 leavers = prev.registrations[self_limit:]
                 address = map(lambda r: r.email, leavers)
-                link = "mailto:" + ",".join(address)
+                link = "mailto:?bcc=" + ",".join(address)
                 messages.warning(
                     request,
                     format_html(
