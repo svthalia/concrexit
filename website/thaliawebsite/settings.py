@@ -500,6 +500,7 @@ MIDDLEWARE = [
     "django.middleware.locale.LocaleMiddleware",
     # Our middleware
     "members.middleware.MemberMiddleware",
+    "announcements.middleware.AnnouncementMiddleware",
 ]
 
 if DJANGO_ENV in ("development", "testing"):
