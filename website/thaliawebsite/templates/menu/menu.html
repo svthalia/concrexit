@@ -1,7 +1,6 @@
 <ul class="navbar-nav">
     {% for item in menu %}
         {% if not item.authenticated or request.user.is_authenticated %}
-            {% url item.name as path %}
             {% if 'submenu' in item %}
                 <li class="nav-item dropdown{% if item.active %} active{% endif %}">
                     <a class="nav-link dropdown-toggle" href="#" role="button"
@@ -13,8 +12,7 @@
                     <div class="dropdown-menu" aria-labelledby="dropdown-{{ item.title }}">
                         {% for subitem in item.submenu %}
                             {% if not subitem.authenticated or request.user.is_authenticated %}
-                                {% url subitem.name as path %}
-                                <a href="{% if path %}{{ path }}{% else %}{{ subitem.url }}{% endif %}"
+                                <a href="{{ subitem.url }}"
                                    target="_self"
                                    class="dropdown-item{% if subitem.active %} active{% endif %}">
                                     {{ subitem.title }}
@@ -25,7 +23,7 @@
                 </li>
             {% else %}
                 <li class="nav-item{% if item.active %} active{% endif %}">
-                    <a href="{% if path %}{{ path }}{% else %}{{ item.url }}{% endif %}"
+                    <a href="{{ item.url }}"
                        target="_self" class="nav-link">
                         {{ item.title }}
                     </a>

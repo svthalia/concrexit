@@ -1,10 +1,47 @@
 """Provides a template handler that renders the menu."""
-from django import template
-from django.urls import reverse
+from collections import defaultdict
+from functools import cache
 
-from ..menus import MAIN_MENU
+from django import template
+from django.apps import apps
 
 register = template.Library()
+
+
+@cache
+def collect_menus():
+    categories = defaultdict(lambda: [])
+    main_menu = []
+
+    for app in apps.get_app_configs():
+        if hasattr(app, "menu_items"):
+            menu = app.menu_items()
+            if "categories" in menu:
+                for category in menu["categories"]:
+                    assert "key" in category
+                    if category["name"] not in categories:
+                        categories[category["name"]] = {"items": [], **category}
+
+            for item in menu["items"]:
+                assert "url" in item, item
+                if "category" not in item:
+                    # Main item
+                    main_menu.append(item)
+                else:
+                    assert item["category"] in categories
+
+                    categories[item["category"]]["items"].append(item)
+
+    for category in categories.values():
+        main_menu.append(
+            {
+                "submenu": sorted(
+                    category["items"], key=lambda x: (x["key"], x["title"])
+                ),
+                **category,
+            }
+        )
+    return sorted(main_menu, key=lambda x: (x["key"], x["title"]))
 
 
 @register.inclusion_tag("menu/menu.html", takes_context=True)
@@ -17,15 +54,17 @@ def render_main_menu(context):
     if "request" in context:
         path = context.get("request").path
 
-    for item in MAIN_MENU:
-        active = "name" in item and reverse(item["name"]) == path
+    main_menu = collect_menus()
+
+    for item in main_menu:
+        active = "url" in item and item["url"] == path
         if not active and "submenu" in item:
             for subitem in item["submenu"]:
-                if "name" in subitem and reverse(subitem["name"]) == path:
+                if subitem["url"] == path:
                     subitem["active"] = True
                     active = True
                 else:
                     subitem["active"] = False
         item["active"] = active
 
-    return {"menu": MAIN_MENU, "request": context.get("request")}
+    return {"menu": main_menu, "request": context.get("request")}
