@@ -1,13 +1,13 @@
 """Registers admin interfaces for the event model."""
 
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.template.defaultfilters import date as _date
 from django.urls import path, reverse
 from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
-from events import models, services
+from events import emails, models, services
 from events.admin.filters import LectureYearFilter
 from events.admin.forms import EventAdminForm, RegistrationInformationFieldForm
 from events.admin.inlines import (
@@ -196,6 +196,39 @@ class EventAdmin(DoNextModelAdmin):
             ]
         )
         form.instance.save()
+
+    def save_model(self, request, obj, form, change):
+        if change and "max_participants" in form.changed_data:
+            prev = self.model.objects.get(id=obj.id)
+            prev_limit = prev.max_participants
+            self_limit = obj.max_participants
+            if prev_limit is None:
+                prev_limit = prev.participant_count
+            if self_limit is None:
+                self_limit = obj.participant_count
+
+            if prev_limit < self_limit and prev_limit < obj.participant_count:
+                diff = self_limit - prev_limit
+                joiners = prev.queue[:diff]
+                for registration in joiners:
+                    emails.notify_waiting(obj, registration)
+                messages.info(
+                    request,
+                    "The maximum number of participants was increased. Any members that moved from the waiting list to the participants list have been notified.",
+                )
+            elif self_limit < prev_limit and self_limit < obj.participant_count:
+                diff = self_limit - prev_limit
+                leavers = prev.registrations[self_limit:]
+                address = map(lambda r: r.email, leavers)
+                link = "mailto:?bcc=" + ",".join(address)
+                messages.warning(
+                    request,
+                    format_html(
+                        "The maximum number of participants was decreased and some members moved to the waiting list. <a href='{}' style='text-decoration: underline;'>Use this link to send them an email.</a>",
+                        link,
+                    ),
+                )
+        super().save_model(request, obj, form, change)
 
     def get_actions(self, request):
         actions = super().get_actions(request)

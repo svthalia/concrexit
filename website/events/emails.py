@@ -4,8 +4,6 @@ from django.core.mail import EmailMessage
 from django.template.loader import get_template
 from django.utils.translation import gettext_lazy as _
 
-from events.models import EventRegistration
-
 
 def notify_first_waiting(event):
     """Send an email to the first person on the waiting list when someone cancels their registration.
@@ -14,14 +12,13 @@ def notify_first_waiting(event):
     """
     if (
         event.max_participants is not None
-        and EventRegistration.objects.filter(event=event, date_cancelled=None).count()
+        and event.eventregistration_set.filter(date_cancelled=None).count()
         > event.max_participants
     ):
         # Prepare email to send to the first person on the waiting list
-        first_waiting = EventRegistration.objects.filter(
-            event=event, date_cancelled=None
+        first_waiting = event.eventregistration_set.filter(
+            date_cancelled=None
         ).order_by("date")[event.max_participants]
-        first_waiting_member = first_waiting.member
 
         text_template = get_template("events/member_email.txt")
 
@@ -32,7 +29,7 @@ def notify_first_waiting(event):
             {
                 "event": event,
                 "registration": first_waiting,
-                "member": first_waiting_member,
+                "name": first_waiting.name or first_waiting.member.first_name,
                 "base_url": settings.BASE_URL,
             }
         )
@@ -61,3 +58,19 @@ def notify_organiser(event, registration):
             for organiser in event.organisers.all()
         ],
     ).send()
+
+
+def notify_waiting(event, registration):
+    text_template = get_template("events/more_places_email.txt")
+    subject = _("[THALIA] Notification about your registration for '{}'").format(
+        event.title
+    )
+    text_message = text_template.render(
+        {
+            "event": event,
+            "registration": registration,
+            "name": registration.name or registration.member.first_name,
+            "base_url": settings.BASE_URL,
+        }
+    )
+    EmailMessage(subject, text_message, to=[registration.email]).send()
