@@ -17,4 +17,8 @@ def announcements(request):
         for a in Announcement.objects.all()
         if a.is_visible and a.pk not in closed_announcements
     ]
-    return {"announcements": announcements_list}
+    persistent_announcements = getattr(request, "_announcements", [])
+    return {
+        "announcements": announcements_list,
+        "persistent_announcements": persistent_announcements,
+    }
