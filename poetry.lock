@@ -2060,14 +2060,14 @@ Pillow = "*"
 
 [[package]]
 name = "pydocstyle"
-version = "6.2.1"
+version = "6.2.2"
 description = "Python docstring style checker"
 category = "main"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "pydocstyle-6.2.1-py3-none-any.whl", hash = "sha256:e034023706489a5786778d21bd25e951052616b260d83e163f09d559dcd647b9"},
-    {file = "pydocstyle-6.2.1.tar.gz", hash = "sha256:5ddccabe3c9555d4afaabdba909ca2de4fa24ac31e2eede4ab3d528a4bcadd52"},
+    {file = "pydocstyle-6.2.2-py3-none-any.whl", hash = "sha256:021b33525927b43b4469c2715694c38082cb98146b52342df652b30806e3cb61"},
+    {file = "pydocstyle-6.2.2.tar.gz", hash = "sha256:5714e3a96f6ece848a1c35f581e89f3164867733609f0dd8a99f7e7c6b526bdd"},
 ]
 
 [package.dependencies]
@@ -2937,4 +2937,4 @@ postgres = ["psycopg2"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "f4eed068700cba3cc23c63e6bbdf2951551fbfada7fcc8f9fd80d9f374edcf62"
+content-hash = "f4986c3c4165461ef8bd6e4b0924cd4faef02f57a8953a8f21bceacc54a6ae17"
