@@ -2060,21 +2060,21 @@ Pillow = "*"
 
 [[package]]
 name = "pydocstyle"
-version = "6.1.1"
+version = "6.2.0"
 description = "Python docstring style checker"
 category = "main"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "pydocstyle-6.1.1-py3-none-any.whl", hash = "sha256:6987826d6775056839940041beef5c08cc7e3d71d63149b48e36727f70144dc4"},
-    {file = "pydocstyle-6.1.1.tar.gz", hash = "sha256:1d41b7c459ba0ee6c345f2eb9ae827cab14a7533a88c5c6f7e94923f72df92dc"},
+    {file = "pydocstyle-6.2.0-py3-none-any.whl", hash = "sha256:39573fa08919ac492b063724af39a1afdcfea8cdaa2c7b8018ca0dfff5d7e36f"},
+    {file = "pydocstyle-6.2.0.tar.gz", hash = "sha256:b2d280501a4c0d9feeb96e9171dc3f6f7d0064c55270f4c7b1baa18452019fd9"},
 ]
 
 [package.dependencies]
-snowballstemmer = "*"
+snowballstemmer = ">=2.2.0"
 
 [package.extras]
-toml = ["toml"]
+toml = ["toml (>=0.10.2)"]
 
 [[package]]
 name = "pygments"
@@ -2937,4 +2937,4 @@ postgres = ["psycopg2"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "c05edf7bddecfe8509dbba749e664617f560a02d4873b76ce31e06e9f70ad551"
+content-hash = "f67e691212c57f7f8cdb07e0e80e8220c615ab424e6e1f7cfc4afbc1049fbc4f"
