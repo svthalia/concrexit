@@ -80,7 +80,6 @@ graph TD;
     newsletters --> members;
     newsletters --> partners;
     photos --> events;
-    photos --> members;
     pizzas --> events;
     pizzas --> members;
     pizzas --> payments;
@@ -110,6 +109,7 @@ graph TD;
     %% 2752
     education --> members;
     payments --> members; 
+    photos --> members;
     sales --> members;
 
     %% #2753
