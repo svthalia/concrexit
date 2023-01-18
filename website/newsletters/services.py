@@ -34,16 +34,7 @@ def write_to_file(pk, lang, html_message):
 def save_to_disk(newsletter):
     """Write the newsletter as HTML to file (in all languages)."""
     main_partner = Partner.objects.filter(is_main_partner=True).first()
-    all_local_partners = Partner.objects.filter(is_local_partner=True).order_by("?")
-    local_partner_count = len(all_local_partners)
-    local_partners = []
-    for i in range(math.floor(local_partner_count / 2)):
-        local_partners.append(
-            [all_local_partners[i * 2], all_local_partners[i * 2 + 1]]
-        )
-
-    if local_partner_count % 2 != 0:
-        local_partners.append([all_local_partners[local_partner_count - 1]])
+    local_partners = split_local_partners()
 
     html_template = get_template("newsletters/email.html")
 
@@ -116,3 +107,18 @@ def send_newsletter(newsletter):
     message.send()
 
     save_to_disk(newsletter)
+
+
+def split_local_partners():
+    all_local_partners = Partner.objects.filter(is_local_partner=True).order_by("?")
+    local_partner_count = len(all_local_partners)
+    local_partners = []
+    for i in range(math.floor(local_partner_count / 2)):
+        local_partners.append(
+            [all_local_partners[i * 2], all_local_partners[i * 2 + 1]]
+        )
+
+    if local_partner_count % 2 != 0:
+        local_partners.append([all_local_partners[local_partner_count - 1]])
+
+    return local_partners
