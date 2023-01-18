@@ -1,3 +1,4 @@
+import uuid
 from decimal import Decimal
 
 from django.conf import settings
@@ -13,7 +14,6 @@ from django.utils.translation import gettext_lazy as _
 from queryable_properties.managers import QueryablePropertiesManager
 from queryable_properties.properties import AnnotationProperty
 
-from members.models import Member, uuid
 from payments.models import Payment, PaymentAmountField
 from sales.models.product import ProductListItem
 from sales.models.shift import Shift
@@ -42,7 +42,7 @@ class Order(models.Model):
     )
 
     created_by = models.ForeignKey(
-        Member,
+        settings.AUTH_USER_MODEL,
         models.SET_NULL,
         verbose_name=_("created by"),
         related_name="sales_orders_created",
@@ -83,7 +83,7 @@ class Order(models.Model):
     )
 
     payer = models.ForeignKey(
-        Member,
+        settings.AUTH_USER_MODEL,
         models.SET_NULL,
         verbose_name=_("payer"),
         related_name="sales_order",

@@ -1,10 +1,10 @@
 """The models defined by the education package."""
+from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from members.models import Member
 from utils.snippets import datetime_to_lectureyear
 
 
@@ -82,7 +82,7 @@ class Exam(models.Model):
     name = models.CharField(max_length=255, verbose_name=_("exam name"), blank=True)
 
     uploader = models.ForeignKey(
-        Member,
+        settings.AUTH_USER_MODEL,
         verbose_name=_("uploader"),
         on_delete=models.SET_NULL,
         null=True,
@@ -151,7 +151,7 @@ class Summary(models.Model):
     )
 
     uploader = models.ForeignKey(
-        Member,
+        settings.AUTH_USER_MODEL,
         verbose_name=_("uploader"),
         on_delete=models.SET_NULL,
         null=True,
