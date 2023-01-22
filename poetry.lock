@@ -688,14 +688,14 @@ Django = ">=3.2"
 
 [[package]]
 name = "django-compressor"
-version = "4.3"
-description = "Compresses linked and inline JavaScript or CSS into single cached files."
+version = "4.3.1"
+description = "('Compresses linked and inline JavaScript or CSS into single cached files.',)"
 category = "main"
 optional = false
 python-versions = "*"
 files = [
-    {file = "django_compressor-4.3-py2.py3-none-any.whl", hash = "sha256:9a1df0104b399a8fa9b6d64c8f14e5f1a49b7be95b8beabdc2950dce7b1e46d5"},
-    {file = "django_compressor-4.3.tar.gz", hash = "sha256:26da1f4141157dd5307a6f19b5a144039758375b89241be2354ff72a1633e285"},
+    {file = "django_compressor-4.3.1-py2.py3-none-any.whl", hash = "sha256:2c451174acb6f083054af7c8089376599b22d6380bd60311f78ec3fed79acc8e"},
+    {file = "django_compressor-4.3.1.tar.gz", hash = "sha256:68858c0da6cc099cc29a022d86c3ba8aed114da9d709eeceb0d7b8181b5f8942"},
 ]
 
 [package.dependencies]
@@ -2958,4 +2958,4 @@ postgres = ["psycopg2"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "1a7e861f90c39be2cee5e80d76d8b9e3b83ead7e77994e6d32596df21a1d282c"
+content-hash = "686b92133c65ca71714017fdc506c24410451d152dc3169e8d71bfeb8a5db3d1"
