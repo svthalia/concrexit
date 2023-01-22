@@ -157,17 +157,6 @@ class Member(User):
             if x.current_membership and x.current_membership.type == membership_type
         ]
 
-    @property
-    def can_attend_events(self):
-        """May this user attend events."""
-        if not self.profile:
-            return False
-
-        return (
-            self.profile.event_permissions in ("all", "no_drinks")
-            and self.current_membership is not None
-        )
-
     def get_member_groups(self):
         """Get the groups this user is a member of."""
         return MemberGroup.objects.filter(
