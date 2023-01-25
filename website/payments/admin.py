@@ -91,7 +91,7 @@ class PaymentAdmin(admin.ModelAdmin):
     @staticmethod
     def _member_link(user: PaymentUser) -> str:
         url = reverse(
-            "admin:%s_%s_change" % (user._meta.app_label, user._meta.model_name),
+            f"admin:{user._meta.app_label}_{user._meta.model_name}_change",
             args=[user.id],
         )
         return (
