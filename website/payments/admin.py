@@ -565,6 +565,9 @@ class BankAccountInline(admin.TabularInline):
     def has_change_permission(self, request, obj=None):
         return False
 
+    def has_delete_permission(self, request, obj=None):
+        return False
+
 
 class PaymentInline(admin.TabularInline):
     model = Payment
@@ -587,6 +590,9 @@ class PaymentInline(admin.TabularInline):
         return False
 
     def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
         return False
 
 
