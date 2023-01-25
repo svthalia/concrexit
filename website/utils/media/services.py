@@ -32,7 +32,7 @@ def get_media_url(file, attachment=False):
     If the file is private a signature will be added.
     Do NOT use this with user input
     :param file: the file field
-    :param attachment: True if the file is a forced download
+    :param attachment: filename to use for the attachment or False to not download as attachment
     :return: the url of the media
     """
     storage = DefaultStorage()
