@@ -62,6 +62,74 @@ Or for macOS:
 brew install ghostscript
 ```
 
+## Apps and dependencies
+We try to keep concrexit modular to improve maintainability for the future. This is roughly how the current apps depend on each other. It is important to keep this graph as simple as possible, especially when considering the building of new features.
+
+This graph leaves out the `thaliawebsite` and `utils` app as they are special apps with a lot of cross dependencies.
+
+```mermaid
+graph TD;
+    activemembers --> members;
+    activemembers --> mailinglists;
+    events --> activemembers;
+    events --> members;
+    events --> payments;
+    mailinglists --> activemembers;
+    mailinglists --> members;
+    newsletters --> events;
+    newsletters --> members;
+    newsletters --> partners;
+    photos --> events;
+    pizzas --> events;
+    pizzas --> members;
+    pizzas --> payments;
+    promotion --> events;
+    registrations --> members;
+    registrations --> payments;
+    sales --> payments;
+    sales --> activemembers;
+
+    documents;
+    partners;
+    announcements;
+    pushnotifications;
+    shortlinks;
+    singlepages;
+    thabloid;
+    
+    %% Current dependencies that are problematic and for which issues exist for fixing 
+    %% 2757
+    documents --> activemembers;
+    documents --> events;
+
+    %% 2754
+    merchandise --> payments;
+    newsletters --> payments;
+
+    %% 2752
+    education --> members;
+    payments --> members; 
+    photos --> members;
+    sales --> members;
+
+    %% #2753
+    events --> pizzas; 
+    events --> promotion;
+
+    %% #2756
+    members --> activemembers;
+
+    %% #2579
+    events --> announcements; 
+
+    %% 2758
+    newsletters --> pushnotifications;
+    events --> pushnotifications;
+    photos --> pushnotifications;
+    pizzas --> pushnotifications;
+```
+
+
 ## Language
 
 Make sure to use British English.
