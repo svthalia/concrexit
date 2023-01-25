@@ -102,10 +102,6 @@ graph TD;
     documents --> activemembers;
     documents --> events;
 
-    %% 2754
-    merchandise --> payments;
-    newsletters --> payments;
-
     %% #2753
     events --> pizzas;
     events --> promotion;

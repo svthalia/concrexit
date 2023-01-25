@@ -1,7 +1,6 @@
 """Models for the merchandise database tables."""
 from django.db import models
 
-from payments.models import PaymentAmountField
 from thaliawebsite.storage.backend import get_public_storage
 
 
@@ -15,7 +14,10 @@ class MerchandiseItem(models.Model):
     name = models.CharField(max_length=200)
 
     #: Price of the merchandise item
-    price = PaymentAmountField()
+    price = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+    )
 
     #: Description of the merchandise item
     description = models.TextField()
