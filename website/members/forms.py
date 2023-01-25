@@ -37,6 +37,14 @@ class ProfileForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        for field in [
+            "address_street",
+            "address_city",
+            "address_postal_code",
+            "address_city",
+            "address_country",
+        ]:
+            self.fields[field].required = True
         if not kwargs["instance"].user.is_staff:
             self.fields["email_gsuite_only"].widget = self.fields[
                 "email_gsuite_only"

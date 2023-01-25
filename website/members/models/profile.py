@@ -92,6 +92,7 @@ class Profile(models.Model):
         ],
         verbose_name=_("Street and house number"),
         null=True,
+        blank=True,
     )
 
     address_street2 = models.CharField(
@@ -105,12 +106,14 @@ class Profile(models.Model):
         max_length=10,
         verbose_name=_("Postal code"),
         null=True,
+        blank=True,
     )
 
     address_city = models.CharField(
         max_length=40,
         verbose_name=_("City"),
         null=True,
+        blank=True,
     )
 
     address_country = models.CharField(
@@ -118,6 +121,7 @@ class Profile(models.Model):
         choices=countries.EUROPE,
         verbose_name=_("Country"),
         null=True,
+        blank=True,
     )
 
     phone_number = models.CharField(
@@ -160,7 +164,7 @@ class Profile(models.Model):
 
     # ---- Personal information ------
 
-    birthday = models.DateField(verbose_name=_("Birthday"), null=True)
+    birthday = models.DateField(verbose_name=_("Birthday"), null=True, blank=True)
 
     show_birthday = models.BooleanField(
         verbose_name=_("Display birthday"),
@@ -268,9 +272,9 @@ class Profile(models.Model):
         default=False,
     )
 
-    @property
-    def is_minimised(self):
-        return self.address_city == "<removed>"
+    is_minimized = models.BooleanField(
+        verbose_name="The data from this profile has been minimized", default=False
+    )
 
     def display_name(self):
         # pylint: disable=too-many-return-statements
@@ -312,6 +316,15 @@ class Profile(models.Model):
         super().clean()
         errors = {}
 
+        if not self.is_minimized and not (
+            self.address_street
+            or self.address_postal_code
+            or self.address_city
+            or self.address_country
+            or self.birthday
+        ):
+            raise ValidationError("Field cannot be blank")
+
         if self.display_name_preference in ("nickname", "fullnick", "nicklast"):
             if not self.nickname:
                 errors.update(
@@ -331,6 +344,22 @@ class Profile(models.Model):
     def save(self, **kwargs):
         super().save(**kwargs)
         storage = self.photo.storage
+
+        if any(
+            [
+                self.student_number,
+                self.phone_number,
+                self.address_street,
+                self.address_street2,
+                self.address_postal_code,
+                self.address_city,
+                self.address_country,
+                self.birthday,
+                self.emergency_contact_phone_number,
+                self.emergency_contact,
+            ]
+        ):
+            self.is_minimized = False
 
         if self._orig_image and not self.photo:
             storage.delete(self._orig_image)
