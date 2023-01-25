@@ -117,6 +117,7 @@ endif
 # are colors and some are bold or underscore. To learn about using colors in the
 # terminal you can read this page:
 # https://misc.flogisoft.com/bash/tip_colors_and_formatting
+.PHONY: help
 help:
 	@echo "\033[1mUSAGE\033[0m"
 	@echo "  \033[4mmake\033[0m [options] <target>"
@@ -150,11 +151,13 @@ help:
 
 # Before the steps from `run` can be executed first we must have created
 # .make/deps and website/db.sqlite3
+# This is also a PHONY target, because it doesn't create a file called `run`.
+.PHONY: run
 run: .make/deps website/db.sqlite3 ## Run a local webserver on PORT
 	poetry run website/manage.py runserver $(PORT)
 
-# Sentinel file remembers if this recipe was run after poetry.lock, pyproject.toml 
-# and .pre-commit-config.yaml where changed. If those files are changed again, 
+# Sentinel file remembers if this recipe was run after poetry.lock, pyproject.toml
+# and .pre-commit-config.yaml where changed. If those files are changed again,
 # this recipe is run again.
 .make/deps: .make poetry.lock pyproject.toml .pre-commit-config.yaml
 	poetry install $(POETRY_FLAGS)
@@ -162,6 +165,7 @@ run: .make/deps website/db.sqlite3 ## Run a local webserver on PORT
 	@touch .make/deps
 
 # Nice name for the sentinel file
+.PHONY: deps
 deps: .make/deps ## Install all the required dependencies
 
 # This recipe depends on all the migrations, which were collected above using
@@ -170,15 +174,23 @@ deps: .make/deps ## Install all the required dependencies
 website/db.sqlite3: .make/deps $(MIGRATIONS)
 	poetry run website/manage.py migrate
 
+.PHONY: migrate
 migrate: ## Run all database migrations
 	poetry run website/manage.py migrate
 
+.PHONY: migrations
 migrations: ## Automatically create migration scripts
 	poetry run website/manage.py makemigrations
 
+.PHONY: superuser
 superuser: .make/deps website/db.sqlite3 ## Create a superuser for your local concrexit
 	poetry run website/manage.py createsuperuser
 
+.PHONY: member
+member: .make/deps website/db.sqlite3 ## Create a member for your local concrexit
+	poetry run website/manage.py createmember
+
+.PHONY: fixtures
 fixtures: .make/deps website/db.sqlite3 ## Create dummy database entries
 	poetry run website/manage.py createfixtures -a
 
@@ -189,11 +201,14 @@ fixtures: .make/deps website/db.sqlite3 ## Create dummy database entries
 	poetry run black $(BLACK_FLAGS) website
 	@touch .make/fmt
 
+.PHONY: fmt
 fmt: .make/fmt ## Format python code with black
 
+.PHONY: isortcheck
 isortcheck: .make/deps $(PYTHONFILES) ## Check if python imports are sorted
 	poetry run isort --check website
 
+.PHONY: blackcheck
 blackcheck: .make/deps $(PYTHONFILES) ## Check if everything is formatted correctly
 	poetry run black $(BLACK_FLAGS) --check website
 
@@ -201,41 +216,49 @@ blackcheck: .make/deps $(PYTHONFILES) ## Check if everything is formatted correc
 	poetry run pylint website
 	@touch .make/pylint
 
+.PHONY: pylint
 pylint: .make/pylint ## Check python code with pylint
 
 .make/pydocstyle: .make .make/deps $(PYTHONFILES)
 	poetry run pydocstyle --match-dir='(?!migrations).*' --add-ignore D100,D101,D102,D103,D104,D105,D106,D107 --add-select D212 website/
 
+.PHONY: pydocstyle
 pydocstyle: .make/pydocstyle
 
 .make/check: .make .make/deps $(PYTHONFILES)
 	poetry run python website/manage.py check
 	@touch .make/check
 
+.PHONY: check
 check: .make/check ## Run internal Django tests
 
 .make/templatecheck: .make .make/deps $(TEMPLATEFILES)
 	poetry run python website/manage.py templatecheck --project-only
 	@touch .make/templatecheck
 
+.PHONY: templatecheck
 templatecheck: .make/templatecheck ## Test the templates
 
 .make/migrationcheck: .make .make/deps $(PYTHONFILES)
 	poetry run python website/manage.py makemigrations --no-input --check --dry-run
 	@touch .make/migrationcheck
 
+.PHONY: migrationcheck
 migrationcheck: .make/migrationcheck ## Check if migrations are created
 
 .coverage: .make/deps $(PYTHONFILES)
 	poetry run coverage run website/manage.py test website/
 
+.PHONY: tests
 tests: .coverage ## Run tests with coverage
 
+.PHONY: coverage
 coverage: .coverage ## Generate a coverage report after running the tests
 	poetry run coverage report --fail-under=100 --omit "website/registrations/urls.py" website/registrations/**.py
 	poetry run coverage report --fail-under=100 --omit "website/payments/urls.py" website/payments/**.py
 	poetry run coverage report
 
+.PHONY: covhtml
 covhtml: .coverage ## Generate an HTML coverage report
 	poetry run coverage html --directory=covhtml --no-skip-covered --title="Coverage Report"
 
@@ -243,42 +266,46 @@ covhtml: .coverage ## Generate an HTML coverage report
 	poetry install $(POETRY_FLAGS) --extras "docs"
 	@touch .make/docsdeps
 
+.PHONY: apidocs
 apidocs: ## Generate API docs
 	cd docs && poetry run sphinx-apidoc -M -f -o . ../website ../website/*/migrations ../website/*/tests* ../website/manage.py
 
 .make/doctest: .make/docsdeps
 	cd docs && poetry run sphinx-build -M doctest . _build
 
+.PHONY: doctest
 doctest: .make/doctest ## Run doctests
 
 # This could be a recipe which checks the modification date of input files, but
 # that would be too complicated and this isn't run that often anyways.
+.PHONY: docs
 docs: ## Generate docs HTML files
 	cd docs && poetry run sphinx-build -M html . _build
 
+.PHONY: apidocscheck
 apidocscheck: apidocs # Check whether new apidocs are generated
 	@git diff --name-only | grep 'docs/' >/dev/null && (echo "WARNING: you have uncommitted apidocs changes"; exit 1) || exit 0
 
 .make/docker: .make
 	docker build $(DOCKER_FLAGS) --build-arg "source_commit=$$(git rev-parse HEAD)" --tag "thalia/concrexit:$$(git rev-parse HEAD)" .
 
+.PHONY: docker
 docker: .make/docker
 
+.PHONY: lint
 lint: blackcheck pylint pydocstyle ## Run all linters
 
+.PHONY: test
 test: check templatecheck migrationcheck tests ## Run every kind of test
 
+.PHONY: ci
 ci: isortcheck blackcheck pydocstyle coverage doctest docs apidocscheck ## Do all the checks the GitHub Actions CI does
 
 # Sometimes you don't want make to do the whole modification time checking thing
 # so this cleans up the whole repository and allows you to start over from
 # scratch. If you just want to force rerun a make recipe, it's easiest to copy
 # the commands in the recipe steps by hand.
+.PHONY: clean
 clean: ## Remove all generated files
 	rm -f .coverage website/db.sqlite3
 	rm -rf website/media website/static docs/_build .make
-
-# .PHONY gives the list of all the recipes which aren't named after files
-.PHONY: ci help run deps migrate createsuperuser createfixtures fmt check \
-		templatecheck migrationcheck tests coverage covhtml doctest docs \
-		docker lint test clean pydocstyle apidocscheck
