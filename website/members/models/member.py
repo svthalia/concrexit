@@ -168,6 +168,13 @@ class Member(User):
             and self.current_membership is not None
         )
 
+    @property
+    def can_attend_alumni_events(self):
+        if not self.profile:
+            return False
+
+        return self.profile.event_permissions in ("all", "no_drinks")
+
     def get_member_groups(self):
         """Get the groups this user is a member of."""
         return MemberGroup.objects.filter(

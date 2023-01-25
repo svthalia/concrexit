@@ -214,7 +214,14 @@ def event_permissions(member, event, name=None, registration_prefetch=False):
             event.registration_allowed
             or (event.optional_registration_allowed and not event.registration_required)
         )
-        and (name or member.can_attend_events or event.registration_without_membership)
+        and (
+            name
+            or member.can_attend_events
+            or (
+                event.registration_without_membership
+                and member.can_attend_alumni_events
+            )
+        )
     )
     perms["cancel_registration"] = (
         registration is not None
@@ -234,7 +241,14 @@ def event_permissions(member, event, name=None, registration_prefetch=False):
             event.registration_allowed
             or (event.optional_registration_allowed and not event.registration_required)
         )
-        and (name or member.can_attend_events or event.registation_without_membership)
+        and (
+            name
+            or member.can_attend_events
+            or (
+                event.registration_without_membership
+                and member.can_attend_alumni_events
+            )
+        )
     )
     return perms
 
