@@ -95,7 +95,7 @@ class PaymentAdminTest(TestCase):
 
         self.assertEqual(
             self.admin.paid_by_link(payment),
-            f"<a href='/members/profile/{self.user.pk}'>Sébastiaan Versteeg</a>",
+            f"<a href='/admin/payments/paymentuser/{self.user.pk}/change/'>Sébastiaan Versteeg</a>",
         )
 
     def test_processed_by_link(self) -> None:
@@ -106,7 +106,7 @@ class PaymentAdminTest(TestCase):
 
         self.assertEqual(
             self.admin.processed_by_link(payment1),
-            f"<a href='/members/profile/{self.user.pk}'>Sébastiaan Versteeg</a>",
+            f"<a href='/admin/payments/paymentuser/{self.user.pk}/change/'>Sébastiaan Versteeg</a>",
         )
 
     def test_delete_model_succeed(self) -> None:
