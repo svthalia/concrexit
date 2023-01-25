@@ -335,7 +335,7 @@ class Event(models.Model):
         can be retrieved from self.changed_data
         """
         errors = {}
-        if self.published:
+        if self.published or self.participant_count > 0:
             for field in ("price", "registration_start"):
                 if (
                     field in changed_data
