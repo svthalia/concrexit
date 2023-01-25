@@ -170,6 +170,7 @@ in
 
     path = with pkgs; [ docker ];
     script = ''
+      docker system prune -f || true
       docker rm concrexit || true
       out=$(docker pull ${dockerImage} | tee >(cat >&2))
 
