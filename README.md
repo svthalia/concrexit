@@ -88,6 +88,7 @@ graph TD;
     registrations --> payments;
     sales --> payments;
     sales --> activemembers;
+    sales --> members;
 
     documents;
     partners;
@@ -96,8 +97,8 @@ graph TD;
     shortlinks;
     singlepages;
     thabloid;
-    
-    %% Current dependencies that are problematic and for which issues exist for fixing 
+
+    %% Current dependencies that are problematic and for which issues exist for fixing
     %% 2757
     documents --> activemembers;
     documents --> events;
@@ -106,21 +107,15 @@ graph TD;
     merchandise --> payments;
     newsletters --> payments;
 
-    %% 2752
-    education --> members;
-    payments --> members; 
-    photos --> members;
-    sales --> members;
-
     %% #2753
-    events --> pizzas; 
+    events --> pizzas;
     events --> promotion;
 
     %% #2756
     members --> activemembers;
 
     %% #2579
-    events --> announcements; 
+    events --> announcements;
 
     %% 2758
     newsletters --> pushnotifications;

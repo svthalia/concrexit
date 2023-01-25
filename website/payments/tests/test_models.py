@@ -547,5 +547,5 @@ class BlacklistedPaymentUserTest(TestCase):
         member.disallow_tpay()
         self.assertEqual(
             str(member.blacklistedpaymentuser),
-            "Thom Wiggers (thom) (blacklisted from using Thalia Pay)",
+            "thom (blacklisted from using Thalia Pay)",
         )
