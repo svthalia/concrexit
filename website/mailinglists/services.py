@@ -55,6 +55,13 @@ def get_automatic_lists():
     )
     mentors = _get_members_email_addresses([x.member for x in active_mentorships])
 
+    alumni = [
+        m
+        for m in Member.objects.all()
+        if m.current_membership_type == Membership.HONORARY
+        or (m.has_been_member() and not m.has_active_membership())
+    ]
+
     lists = [
         {
             "name": "members",
@@ -84,6 +91,14 @@ def get_automatic_lists():
             "addresses": _get_members_email_addresses(
                 Member.all_with_membership(Membership.HONORARY)
             ),
+            "moderated": True,
+        },
+        {
+            "name": "alumni",
+            "description": "Automatic moderated mailinglist that can be used "
+            "to send mail to all former members, including honorary members. "
+            "Current members and benefactors are filtered out.",
+            "addresses": _get_members_email_addresses(alumni),
             "moderated": True,
         },
         {
@@ -165,9 +180,6 @@ def get_automatic_lists():
             ],
             "moderated": True,
         },
-    ]
-
-    lists.append(
         {
             "name": "newsletter",
             "description": "Automatic moderated mailinglist that can be used to send newsletters",
@@ -175,8 +187,8 @@ def get_automatic_lists():
                 Member.current_members.all().filter(profile__receive_newsletter=True)
             ),
             "moderated": True,
-        }
-    )
+        },
+    ]
 
     all_previous_board_members = []
 
