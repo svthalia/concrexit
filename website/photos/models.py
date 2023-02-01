@@ -13,6 +13,8 @@ from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 
+from thumbnails.fields import ImageField
+
 from queryable_properties.managers import QueryablePropertiesManager
 from queryable_properties.properties import AnnotationProperty
 
@@ -43,7 +45,7 @@ class Photo(models.Model):
         "Album", on_delete=models.CASCADE, verbose_name=_("album")
     )
 
-    file = models.ImageField(_("file"), upload_to=photo_uploadto)
+    file = ImageField(_("file"), upload_to=photo_uploadto)
 
     rotation = models.IntegerField(
         verbose_name=_("rotation"),

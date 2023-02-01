@@ -458,6 +458,7 @@ INSTALLED_APPS = [
     "admin_auto_filters",
     "django_drf_filepond",
     "django_filepond_widget",
+    "thumbnails",
     # Our apps
     # Directly link to the app config when applicable as recommended
     # by the docs: https://docs.djangoproject.com/en/2.0/ref/applications/
@@ -532,7 +533,6 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "announcements.context_processors.announcements",
-                "thaliawebsite.context_processors.thumbnail_sizes",
                 "thaliawebsite.context_processors.aprilfools",
                 "thaliawebsite.context_processors.lustrum_styling",
             ],
@@ -775,6 +775,34 @@ THUMBNAIL_SIZES = {
     "slide_small": "500x108",
     "slide_medium": "1000x215",
     "slide": "2000x430",
+}
+
+THUMBNAILS = {
+    'METADATA': {
+        'BACKEND': 'thumbnails.backends.metadata.DatabaseBackend',
+    },
+    'STORAGE': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+        # You can also use Amazon S3 or any other Django storage backends
+    },
+    "SIZES": {
+        "small": {
+            "PROCESSORS": [
+                {"PATH": "thumbnails.processors.resize", "width": 10, "height": 10},
+                {"PATH": "thumbnails.processors.crop", "width": 80, "height": 80},
+            ],
+        },
+        "medium": {
+            "PROCESSORS": [
+                {"PATH": "thumbnails.processors.resize", "width": 20, "height": 20},
+            ],
+        },
+        "large": {
+            "PROCESSORS": [
+                {"PATH": "thumbnails.processors.resize", "width": 20, "height": 20},
+            ],
+        },
+    }
 }
 
 # Photos settings

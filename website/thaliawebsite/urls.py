@@ -178,11 +178,6 @@ urlpatterns = [
     path("crash/", TestCrashView.as_view()),
     # Custom media paths
     re_path(
-        r"^media/thumbnail/(?P<request_path>.*)",
-        get_thumbnail,
-        name="get-thumbnail",
-    ),
-    re_path(
         r"^media/private/(?P<request_path>.*)$", private_media, name="private-media"
     ),
     path("", include("shortlinks.urls")),

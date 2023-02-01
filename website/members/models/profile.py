@@ -10,6 +10,7 @@ from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 
 from PIL import Image
+from thumbnails.fields import ImageField
 
 from thaliawebsite.storage.backend import get_public_storage
 from utils import countries
@@ -219,7 +220,7 @@ class Profile(models.Model):
         default="full",
     )
 
-    photo = models.ImageField(
+    photo = ImageField(
         verbose_name=_("Photo"),
         upload_to=_profile_image_path,
         storage=get_public_storage,
