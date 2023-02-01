@@ -15,7 +15,7 @@ django-ical = "1.8.3"
 django-libsass = "0.8.0"
 python-magic = "0.4.27"
 Pillow = "9.4.0"
-Django = "4.1.5"
+Django = "4.1.6"
 django-compressor = "4.3.1"
 psycopg2 = {version = "2.9.5", optional = true}
 bcrypt = "4.0.1"
