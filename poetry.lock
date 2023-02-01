@@ -575,6 +575,18 @@ ssh = ["bcrypt (>=3.1.5)"]
 test = ["hypothesis (>=1.11.4,!=3.79.2)", "iso8601", "pretend", "pytest (>=6.2.0)", "pytest-benchmark", "pytest-cov", "pytest-subtests", "pytest-xdist", "pytz"]
 
 [[package]]
+name = "da-vinci"
+version = "0.3.0"
+description = "A simple image manipulation library aiming to make common image tasks easy."
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "da-vinci-0.3.0.tar.gz", hash = "sha256:294f2aed5b41fe92d313b575f8221d2c457ed8007ef84b5960f5f74b45cdba8c"},
+    {file = "da_vinci-0.3.0-py3-none-any.whl", hash = "sha256:aded66359f49a39ea4d62986988072a2e97ef09d0a27a55369f7ebc40d088e46"},
+]
+
+[[package]]
 name = "deprecated"
 version = "1.2.13"
 description = "Python @deprecated decorator to deprecate old python classes, functions or methods."
@@ -735,14 +747,14 @@ sqlparse = ">=0.2"
 
 [[package]]
 name = "django-drf-filepond"
-version = "0.5.0"
+version = "0.4.1"
 description = "Filepond server app for Django REST Framework"
 category = "main"
 optional = false
 python-versions = "*"
 files = [
-    {file = "django-drf-filepond-0.5.0.tar.gz", hash = "sha256:360abcbcfdc016398435679dcc768b0c2d6b29a92db46fe3430ad31176251a13"},
-    {file = "django_drf_filepond-0.5.0-py2.py3-none-any.whl", hash = "sha256:55d64c3272c716f0811f2e67877cc005b8927e96bb34ba7f7105202d6bd5a647"},
+    {file = "django-drf-filepond-0.4.1.tar.gz", hash = "sha256:a32c46fd54982d88aeb4f3825973a194eb9d5d01b031c53bfe2770fc98895873"},
+    {file = "django_drf_filepond-0.4.1-py2.py3-none-any.whl", hash = "sha256:e91303795d5d2f3cbb96cc28a5a6a70b5322eaa54ed7b1997ba6a7cb3a4aa609"},
 ]
 
 [package.dependencies]
@@ -755,13 +767,13 @@ six = ">=1.14.0"
 
 [[package]]
 name = "django-filepond-widget"
-version = "0.8.0"
+version = "0.7.0"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3"
 files = [
-    {file = "django-filepond-widget-0.8.0.tar.gz", hash = "sha256:86dce1daaa817f63fbdaad631d95d386c6a1ea8d50ddf6f3c9413b0a837a6794"},
+    {file = "django-filepond-widget-0.7.0.tar.gz", hash = "sha256:292ac0e7ed4582fe6712175f0c8e4ae3f9636edae838e93284aacc18b7aeb661"},
 ]
 
 [package.dependencies]
@@ -922,6 +934,27 @@ files = [
 
 [package.dependencies]
 django = ">=1.8"
+
+[[package]]
+name = "django-thumbnails"
+version = "0.7.0"
+description = "A simple Django app to manage image/photo thumbnails. Supports remote/cloud storage systems like Amazon S3."
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "django-thumbnails-0.7.0.tar.gz", hash = "sha256:0c26ff03762beb7b6bec01edc6f012eba05085bc235cdc598d388487c3542e61"},
+    {file = "django_thumbnails-0.7.0-py3-none-any.whl", hash = "sha256:ffcc1223da4c0d4eb764ca28cd79f702dff62936ab583d8f59b5ec07e0ce2365"},
+]
+
+[package.dependencies]
+da-vinci = "*"
+django = ">=2.0"
+pillow = "*"
+shortuuid = "*"
+
+[package.extras]
+redis = ["redis"]
 
 [[package]]
 name = "django-tinymce"
@@ -2957,4 +2990,4 @@ postgres = ["psycopg2"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "195414f00d2ebde65beb442b28fb9f5573273f912f3c2e91f738de37fec3b684"
+content-hash = "c67362209836a92a09d10b51c48562cdfdf436a8352b242ea062ca4287cfc0c4"
