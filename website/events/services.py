@@ -219,7 +219,7 @@ def event_permissions(member, event, name=None, registration_prefetch=False):
             or member.can_attend_events
             or (
                 event.registration_without_membership
-                and member.can_attend_alumni_events
+                and member.can_attend_events_without_membership
             )
         )
     )
@@ -246,7 +246,7 @@ def event_permissions(member, event, name=None, registration_prefetch=False):
             or member.can_attend_events
             or (
                 event.registration_without_membership
-                and member.can_attend_alumni_events
+                and member.can_attend_events_without_membership
             )
         )
     )

@@ -169,7 +169,7 @@ class Member(User):
         )
 
     @property
-    def can_attend_alumni_events(self):
+    def can_attend_events_without_membership(self):
         if not self.profile:
             return False
 
