@@ -33,7 +33,6 @@ class EventRegistration(models.Model):
         models.CASCADE,
         blank=True,
         null=True,
-        limit_choices_to=registration_member_choices_limit,
     )
 
     name = models.CharField(

@@ -105,6 +105,16 @@ class Event(models.Model):
         ),
     )
 
+    registration_without_membership = models.BooleanField(
+        _("registration without membership"),
+        default=False,
+        help_text=_(
+            "Users without a currently active membership (such as past members) "
+            "are allowed to register for this event. This is useful for "
+            "events aimed at alumni, for example."
+        ),
+    )
+
     optional_registrations = models.BooleanField(
         _("allow optional registrations"),
         default=True,
