@@ -45,17 +45,6 @@ def get_media_url(file, attachment=False):
 
 
 def get_thumbnail_url(file, size, fit=True):
-    """Get the thumbnail url of a media file, NEVER use this with user input.
-
-    If the thumbnail exists this function will return the url of the
-    media file, with signature if necessary. Does it not yet exist a route
-    that executes the :func:`utils.media.views.generate_thumbnail`
-    will be the output.
-    :param file: the file field
-    :param size: size of the image
-    :param fit: False to keep the aspect ratio, True to crop
-    :return: get-thumbnail path
-    """
     storage = DefaultStorage()
     name = file
 
@@ -64,24 +53,8 @@ def get_thumbnail_url(file, size, fit=True):
         name = file.name
 
     is_public = isinstance(storage, get_storage_class(settings.PUBLIC_FILE_STORAGE))
-    size_fit = f"{size}_{int(fit)}"
 
     if name.endswith(".svg") and is_public:
         return storage.url(name)
 
-    sig_info = {
-        "size": size,
-        "fit": int(fit),
-        "name": name,
-        "thumb_path": f"thumbnails/{size_fit}/{name}",
-        "serve_path": f"thumbnails/{size_fit}/{name}",
-        "storage": f"{storage.__class__.__module__}.{storage.__class__.__name__}",
-    }
-
-    # We provide a URL instead of calling it as a function, so that using
-    # it means kicking off a new GET request. If we would need to check all files for the
-    # thumbnails inline, loading an album overview would have high latency.
-    return (
-        reverse("get-thumbnail", args=[os.path.join(size_fit, sig_info["name"])])
-        + f"?sig={signing.dumps(sig_info)}"
-    )
+    return file.thumbnails.medium.url
