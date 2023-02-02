@@ -64,24 +64,23 @@ class LikedPhotosListView(ListAPIView):
     ]
     required_scopes = ["photos:read"]
 
-    def get_queryset(self):
-        if self.request.member:
-            return (
-                Photo.objects.filter(
-                    likes__member=self.request.member, album__hidden=False
-                )
-                .annotate(
-                    member_likes=Count(
-                        "likes", filter=Q(likes__member=self.request.member)
-                    )
-                )
-                .select_properties("num_likes")
+    def get(self, request, *args, **kwargs):
+        if not self.request.member:
+            return Response(
+                data={
+                    "detail": "You need to be a member in order to view your liked photos."
+                },
+                status=status.HTTP_403_FORBIDDEN,
             )
-        return Response(
-            data={
-                "detail": "You need to be a member in order to view your liked photos."
-            },
-            status=status.HTTP_400_BAD_REQUEST,
+        return self.list(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return (
+            Photo.objects.filter(likes__member=self.request.member, album__hidden=False)
+            .annotate(
+                member_likes=Count("likes", filter=Q(likes__member=self.request.member))
+            )
+            .select_properties("num_likes")
         )
 
 
