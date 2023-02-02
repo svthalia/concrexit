@@ -99,7 +99,7 @@ class EventAdmin(DoNextModelAdmin):
         ),
         (
             _("Extra"),
-            {"fields": ("slide", "documents", "shift"), "classes": ("collapse",)},
+            {"fields": ("documents", "shift"), "classes": ("collapse",)},
         ),
     )
 
