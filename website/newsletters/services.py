@@ -15,10 +15,10 @@ from bs4 import BeautifulSoup
 from PIL import Image
 
 from events.models import Event
-from members.models import Member
 from newsletters import emails
 from partners.models import Partner
-from pushnotifications.models import Category, Message
+
+from .signals import sent_newsletter
 
 logger = logging.getLogger(__name__)
 
@@ -98,14 +98,8 @@ def send_newsletter(newsletter):
     emails.send_newsletter(newsletter)
     newsletter.sent = True
     newsletter.save()
-    message = Message.objects.create(
-        title=newsletter.title,
-        body="Tap to view",
-        url=settings.BASE_URL + newsletter.get_absolute_url(),
-        category=Category.objects.get(key=Category.NEWSLETTER),
-    )
-    message.users.set(Member.current_members.all())
-    message.send()
+
+    sent_newsletter.send(sender=None, newsletter=newsletter)
 
     save_to_disk(newsletter)
 

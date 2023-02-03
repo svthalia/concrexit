@@ -3,10 +3,12 @@ from django.db.models.signals import post_save
 from django.utils import timezone
 
 from members.models import Member
+from newsletters.models import Newsletter
+from newsletters.signals import sent_newsletter
 from photos.models import Album
 from utils.models.signals import suspendingreceiver
 
-from .models import Category, NewAlbumMessage
+from .models import Category, Message, NewAlbumMessage
 
 
 @suspendingreceiver(
@@ -40,3 +42,19 @@ def schedule_new_album_pushnotification(sender, instance: Album, **kwargs):
         message.save()
 
         message.users.set(Member.current_members.all())
+
+
+@suspendingreceiver(
+    sent_newsletter,
+    dispatch_uid="send_newsletter_pushnotification",
+)
+def send_newsletter_pushnotification(sender, newsletter: Newsletter, **kwargs):
+    """Send a push notification for the sent newsletter."""
+    message = Message.objects.create(
+        title=newsletter.title,
+        body="Tap to view",
+        url=settings.BASE_URL + newsletter.get_absolute_url(),
+        category=Category.objects.get(key=Category.NEWSLETTER),
+    )
+    message.users.set(Member.current_members.all())
+    message.send()
