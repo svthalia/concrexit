@@ -36,7 +36,6 @@ class AlbumForm(forms.ModelForm):
             "date",
             "slug",
             "hidden",
-            "new_album_notification",
             "shareable",
             "_cover",
         )

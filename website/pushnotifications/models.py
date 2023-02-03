@@ -208,3 +208,19 @@ class ScheduledMessage(Message):
     scheduled = models.BooleanField(default=True)
     time = models.DateTimeField()
     executed = models.DateTimeField(null=True)
+
+
+class NewAlbumMessageManager(models.Manager):
+    """Returns new album messages only."""
+
+
+class NewAlbumMessage(ScheduledMessage):
+    """A scheduled message to notify users of a new album."""
+
+    objects = NewAlbumMessageManager()
+
+    album = models.OneToOneField(
+        "photos.Album",
+        related_name="new_album_notification",
+        on_delete=models.deletion.CASCADE,
+    )

@@ -8,3 +8,9 @@ class PushNotificationsConfig(AppConfig):
 
     name = "pushnotifications"
     verbose_name = _("Push Notifications")
+
+    def ready(self):
+        """Import the signals when the app is ready."""
+        super().ready()
+        # pylint: disable=unused-import,import-outside-toplevel
+        from . import signals
