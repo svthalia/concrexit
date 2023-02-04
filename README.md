@@ -84,6 +84,11 @@ graph TD;
     pizzas --> members;
     pizzas --> payments;
     promotion --> events;
+    pushnotifications --> events;
+    pushnotifications --> members;
+    pushnotifications --> photos;
+    pushnotifications --> newsletters;
+    pushnotifications --> pizzas;
     registrations --> members;
     registrations --> payments;
     sales --> payments;
@@ -92,7 +97,6 @@ graph TD;
 
     documents;
     partners;
-    pushnotifications;
     shortlinks;
     singlepages;
     thabloid;
@@ -108,12 +112,6 @@ graph TD;
 
     %% #2756
     members --> activemembers;
-
-    %% 2758
-    newsletters --> pushnotifications;
-    events --> pushnotifications;
-    photos --> pushnotifications;
-    pizzas --> pushnotifications;
 ```
 
 
