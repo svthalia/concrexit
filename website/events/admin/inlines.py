@@ -29,7 +29,6 @@ class PizzaEventInline(admin.StackedInline):
     """The inline for pizza events in the Event admin."""
 
     model = FoodEvent
-    exclude = ("end_reminder",)
     extra = 0
     max_num = 1
 

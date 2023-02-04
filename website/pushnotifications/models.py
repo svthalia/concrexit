@@ -224,3 +224,19 @@ class NewAlbumMessage(ScheduledMessage):
         related_name="new_album_notification",
         on_delete=models.deletion.CASCADE,
     )
+
+
+class FoodOrderReminderMessageManager(models.Manager):
+    """Returns food event order end messages only."""
+
+
+class FoodOrderReminderMessage(ScheduledMessage):
+    """A scheduled message to notify users of a food order reminder."""
+
+    objects = FoodOrderReminderMessageManager()
+
+    food_event = models.OneToOneField(
+        "pizzas.FoodEvent",
+        related_name="end_reminder",
+        on_delete=models.deletion.CASCADE,
+    )
