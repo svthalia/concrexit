@@ -240,3 +240,35 @@ class FoodOrderReminderMessage(ScheduledMessage):
         related_name="end_reminder",
         on_delete=models.deletion.CASCADE,
     )
+
+
+class RegistrationReminderManager(models.Manager):
+    """Returns event registration reminders only."""
+
+
+class RegistrationReminder(ScheduledMessage):
+    """A scheduled message to notify users of something related to an event."""
+
+    objects = RegistrationReminderManager()
+
+    event = models.OneToOneField(
+        "events.Event",
+        related_name="registration_reminder",
+        on_delete=models.deletion.CASCADE,
+    )
+
+
+class EventStartReminderManager(models.Manager):
+    """Returns event start reminders only."""
+
+
+class EventStartReminder(ScheduledMessage):
+    """A scheduled message to notify users of an event start."""
+
+    objects = EventStartReminderManager()
+
+    event = models.OneToOneField(
+        "events.Event",
+        related_name="start_reminder",
+        on_delete=models.deletion.CASCADE,
+    )

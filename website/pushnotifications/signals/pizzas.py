@@ -1,58 +1,11 @@
-from django.conf import settings
 from django.db.models.signals import post_save, pre_delete, pre_save
 from django.utils import timezone
 
 from events.models import EventRegistration
 from members.models import Member
-from newsletters.signals import sent_newsletter
 from utils.models.signals import suspendingreceiver
 
-from .models import Category, FoodOrderReminderMessage, Message, NewAlbumMessage
-
-
-@suspendingreceiver(
-    post_save,
-    sender="photos.Album",
-    dispatch_uid="schedule_new_album_pushnotification",
-)
-def schedule_new_album_pushnotification(sender, instance, **kwargs):
-    """Create, update or delete a scheduled message for the saved album if necessary."""
-    message = getattr(instance, "new_album_notification", None)
-
-    if instance.hidden:
-        # Remove existing not-sent notification if there is one.
-        if message is not None and not message.sent:
-            message.delete()
-    elif message is None or not message.sent:
-        # Update existing notification or create new one.
-
-        if message is None:
-            message = NewAlbumMessage(album=instance)
-
-        message.title = "New album uploaded"
-        message.body = f"A new photo album '{instance.title}' has just been uploaded"
-        message.url = f"{settings.BASE_URL}{instance.get_absolute_url()}"
-        message.time = timezone.now() + timezone.timedelta(hours=1)
-        message.category = Category.objects.get(key=Category.PHOTO)
-        message.save()
-
-        message.users.set(Member.current_members.all())
-
-
-@suspendingreceiver(
-    sent_newsletter,
-    dispatch_uid="send_newsletter_pushnotification",
-)
-def send_newsletter_pushnotification(sender, newsletter, **kwargs):
-    """Send a push notification for the sent newsletter."""
-    message = Message.objects.create(
-        title=newsletter.title,
-        body="Tap to view",
-        url=settings.BASE_URL + newsletter.get_absolute_url(),
-        category=Category.objects.get(key=Category.NEWSLETTER),
-    )
-    message.users.set(Member.current_members.all())
-    message.send()
+from ..models import Category, FoodOrderReminderMessage
 
 
 @suspendingreceiver(
@@ -67,6 +20,7 @@ def schedule_food_order_reminder_pushnotification(sender, instance, **kwargs):
     if not instance.send_notification:
         # Remove existing not-sent notification if there is one.
         if message is not None and not message.sent:
+            instance.end_reminder = None
             message.delete()
     else:
         # Update existing notification or create new one.
