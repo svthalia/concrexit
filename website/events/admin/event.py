@@ -86,6 +86,7 @@ class EventAdmin(DoNextModelAdmin):
                     "fine",
                     "tpay_allowed",
                     "max_participants",
+                    "registration_without_membership",
                     "registration_start",
                     "registration_end",
                     "cancel_deadline",

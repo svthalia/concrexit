@@ -25,7 +25,6 @@ def default_order_shift():
 
 
 class Order(models.Model):
-
     objects = QueryablePropertiesManager()
 
     class Meta:

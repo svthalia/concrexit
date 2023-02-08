@@ -113,11 +113,9 @@ def get_unused_media(storage, minimum_file_age=None):
 
 
 class Command(BaseCommand):
-
     help = "Clean unused media files which have no reference in models"
 
     def add_arguments(self, parser):
-
         parser.add_argument(
             "--noinput",
             "--no-input",
