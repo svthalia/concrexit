@@ -4,7 +4,7 @@ from django.template.defaultfilters import date
 from django.urls import reverse
 
 from thaliawebsite.templatetags.grid_item import grid_item
-from utils.media.services import get_thumbnail_url, get_media_url
+from utils.media.services import get_media_url, get_thumbnail_url
 
 register = template.Library()
 

@@ -10,8 +10,8 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from thumbnails.fields import ImageField
 
+from thumbnails.fields import ImageField
 from tinymce.models import HTMLField
 
 from thaliawebsite.storage.backend import get_public_storage

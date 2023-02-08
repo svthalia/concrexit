@@ -13,10 +13,9 @@ from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 
-from thumbnails.fields import ImageField
-
 from queryable_properties.managers import QueryablePropertiesManager
 from queryable_properties.properties import AnnotationProperty
+from thumbnails.fields import ImageField
 
 from events.models import Event
 from members.models import Member

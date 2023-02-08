@@ -5,6 +5,7 @@ from django.core.files.base import ContentFile
 from django.core.files.storage import DefaultStorage, get_storage_class
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models.fields.files import FieldFile, ImageFieldFile
+
 from thumbnails.images import Thumbnail
 
 
@@ -55,4 +56,11 @@ def get_thumbnail_url(file, size, fit=True):
     if name.endswith(".svg") and is_public:
         return storage.url(name)
 
-    return get_media_url(file.thumbnails.medium)
+    if size == "full":
+        return get_media_url(file)
+    if size == "large":
+        return get_media_url(file.thumbnails.large)
+    if size == "medium":
+        return get_media_url(file.thumbnails.medium)
+    if size == "small":
+        return get_media_url(file.thumbnails.small)
