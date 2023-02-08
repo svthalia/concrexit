@@ -69,7 +69,7 @@ class PaymentAdminViewTest(TestCase):
     @mock.patch("django.contrib.messages.success")
     @mock.patch("django.shortcuts.resolve_url")
     @mock.patch("payments.services.create_payment")
-    @mock.patch("payments.payables.get_payable")
+    @mock.patch("payments.payables.payables.get_payable")
     def test_post(
         self, get_payable, create_payment, resolve_url, messages_success, messages_error
     ):

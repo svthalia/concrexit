@@ -106,7 +106,7 @@ class PaymentProcessViewTest(TestCase):
         )
 
     @mock.patch("payments.services.create_payment")
-    @mock.patch("payments.payables.get_payable")
+    @mock.patch("payments.payables.payables.get_payable")
     def test_creates_payment(self, get_payable, create_payment):
         def set_payments_side_effect(*args, **kwargs):
             self.payable.model.payment = Payment.objects.create(amount=8)
