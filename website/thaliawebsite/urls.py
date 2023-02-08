@@ -54,7 +54,7 @@ from singlepages.sitemaps import sitemap as singlepages_sitemap
 from thabloid.sitemaps import sitemap as thabloid_sitemap
 from thaliawebsite.forms import AuthenticationForm
 from thaliawebsite.views import IndexView, TestCrashView
-from utils.media.views import get_thumbnail, private_media
+from utils.media.views import private_media
 
 from .sitemaps import StaticViewSitemap
 

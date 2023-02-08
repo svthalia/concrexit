@@ -168,7 +168,7 @@ class Command(BaseCommand):
         icon = igen.generate(
             board.name, 480, 480, padding=(10, 10, 10, 10), output_format="jpeg"
         )  # 620x620 pixels, with 10 pixels padding on each side
-        board.photo.save(f"{board.name}.jpeg", ContentFile(icon))
+        board.photo.save(f"{board.name}.jpg", ContentFile(icon))
 
         board.since = date(year=lecture_year, month=9, day=1)
         board.until = date(year=lecture_year + 1, month=8, day=31)
@@ -212,7 +212,7 @@ class Command(BaseCommand):
             padding=(10, 10, 10, 10),
             output_format="jpeg",
         )  # 620x620 pixels, with 10 pixels padding on each side
-        member_group.photo.save(member_group.name + ".jpeg", ContentFile(icon))
+        member_group.photo.save(member_group.name + ".jpg", ContentFile(icon))
 
         member_group.since = _faker.date_time_between("-10y", "+30d")
 
@@ -339,7 +339,7 @@ class Command(BaseCommand):
             padding=(10, 10, 10, 10),
             output_format="jpeg",
         )  # 620x620 pixels, with 10 pixels padding on each side
-        partner.logo.save(partner.name + ".jpeg", ContentFile(icon))
+        partner.logo.save(partner.name + ".jpg", ContentFile(icon))
 
         partner.address = _faker.street_address()
         partner.zip_code = _faker.postcode()
@@ -386,7 +386,7 @@ class Command(BaseCommand):
             padding=(10, 10, 10, 10),
             output_format="jpeg",
         )  # 620x620 pixels, with 10 pixels padding on each side
-        profile.photo.save(fakeprofile["username"] + ".jpeg", ContentFile(icon))
+        profile.photo.save(fakeprofile["username"] + ".jpg", ContentFile(icon))
 
         membership = Membership()
         membership.user_id = user.id
@@ -432,7 +432,7 @@ class Command(BaseCommand):
                 padding=(10, 10, 10, 10),
                 output_format="jpeg",
             )  # 620x620 pixels, with 10 pixels padding on each side
-            vacancy.company_logo.save(vacancy.company_name + ".jpeg", ContentFile(icon))
+            vacancy.company_logo.save(vacancy.company_name + ".jpg", ContentFile(icon))
 
         vacancy.save()
 
@@ -631,7 +631,7 @@ class Command(BaseCommand):
             padding=(10, 10, 10, 10),
             output_format="jpeg",
         )  # 620x620 pixels, with 10 pixels padding on each side
-        photo.file.save(f"{name}.jpeg", ContentFile(icon))
+        photo.file.save(f"{name}.jpg", ContentFile(icon))
 
         photo.save()
 

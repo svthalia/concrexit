@@ -12,9 +12,6 @@ from django.utils import timezone
 
 import sentry_sdk
 from django_sendfile import sendfile
-from PIL import Image, ImageOps
-
-from utils.media.services import save_image
 
 
 def get_thumb_modified_time(storage, path):
@@ -52,11 +49,9 @@ def private_media(request, request_path):
     # raises PermissionDenied if bad signature
     sig_info = _get_signature_info(request)
     storage = get_storage_class(sig_info["storage"])()
+    serve_path = sig_info["serve_path"]
 
-    if (
-        not storage.exists(sig_info["serve_path"])
-        or not sig_info["serve_path"] == request_path
-    ):
+    if not storage.exists(serve_path) or not serve_path == request_path:
         # 404 if the file does not exist
         raise Http404("Media not found.")
 
@@ -73,74 +68,7 @@ def private_media(request, request_path):
         )
     return sendfile(
         request,
-        sig_info["serve_path"],
+        serve_path,
         attachment=bool(sig_info.get("attachment", False)),
         attachment_filename=sig_info.get("attachment", None),
     )
-
-
-def get_thumbnail(request, request_path):
-    """Generate thumbnail and redirect user to new location.
-
-    The thumbnails are generated with this route. Because the
-    thumbnails will be generated in parallel, it will not block
-    page load when many thumbnails need to be generated.
-    After it is done, the user is redirected to the new location
-    of the thumbnail.
-
-    :param HttpRequest request: the request
-    :return: HTTP Redirect to thumbnail
-    """
-    # Get image information from signature
-    # raises PermissionDenied if bad signature
-    sig_info = _get_signature_info(request)
-    storage = get_storage_class(sig_info["storage"])()
-
-    if not sig_info["thumb_path"].endswith(request_path):
-        # 404 if the file does not exist
-        raise Http404("Media not found.")
-
-    original_modified_time = get_thumb_modified_time(storage, sig_info["name"])
-    thumb_modified_time = get_thumb_modified_time(storage, sig_info["thumb_path"])
-
-    if original_modified_time.timestamp() <= 0:
-        raise Http404
-
-    # Check if directory for thumbnail exists, if not create it
-    # os.makedirs(os.path.dirname(full_thumb_path), exist_ok=True)
-    # Skip generating the thumbnail if it exists
-    if original_modified_time > thumb_modified_time:
-        with sentry_sdk.start_span(
-            op="generate_new_thumbnail",
-            description="Loads or downloads the full media file, generates a thumbnail locally using Pillow and stores or uploads the thumbnail",
-        ) as span:
-            storage.delete(sig_info["thumb_path"])
-
-            # Create a thumbnail from the original_path, saved to thumb_path
-            with storage.open(sig_info["name"], "rb") as original_file:
-                image = Image.open(original_file)
-                format = image.format
-                size = tuple(int(dim) for dim in sig_info["size"].split("x"))
-                if not sig_info["fit"]:
-                    ratio = min(a / b for a, b in zip(size, image.size))
-                    size = tuple(int(ratio * x) for x in image.size)
-
-                if size[0] != image.size[0] and size[1] != image.size[1]:
-                    image = ImageOps.fit(image, size, Image.ANTIALIAS)
-
-                save_image(storage, image, sig_info["thumb_path"], format)
-                cache.set(
-                    f"thumbnails_{sig_info['thumb_path']}",
-                    original_modified_time,
-                    60 * 60,
-                )
-
-    # Redirect to the serving url of the image
-    # for public images this goes via a static file server (i.e. nginx)
-    # for private images this is a call to private_media
-    with sentry_sdk.start_span(
-        op="generate_thumbnail_url",
-        description="Signs the url with the specified storage backend, either local file or s3",
-    ) as span:
-        url = storage.url(sig_info["thumb_path"])
-    return redirect(url)

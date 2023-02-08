@@ -55,7 +55,7 @@ def photo_card(photo):
         f" data-likeUrl={reverse('api:v2:photos:photo-like', args=[photo.pk])}"
     )
 
-    image_url = get_media_url(photo.file.thumbnails.medium.url)
+    image_url = get_media_url(photo.file.thumbnails.medium)
 
     if photo.rotation > 0:
         class_name += f" rotate{photo.rotation}"

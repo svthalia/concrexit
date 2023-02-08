@@ -1,13 +1,11 @@
 import io
-import os
 
 from django.conf import settings
-from django.core import signing
 from django.core.files.base import ContentFile
 from django.core.files.storage import DefaultStorage, get_storage_class
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models.fields.files import FieldFile, ImageFieldFile
-from django.urls import reverse
+from thumbnails.images import Thumbnail
 
 
 def save_image(storage, image, path, format):
@@ -37,11 +35,11 @@ def get_media_url(file, attachment=False):
     """
     storage = DefaultStorage()
     file_name = file
-    if isinstance(file, (ImageFieldFile, FieldFile)):
+    if isinstance(file, (ImageFieldFile, FieldFile, Thumbnail)):
         storage = file.storage
         file_name = file.name
 
-    return f"{storage.url(file_name, attachment)}"
+    return str(storage.url(file_name, attachment))
 
 
 def get_thumbnail_url(file, size, fit=True):
@@ -57,4 +55,4 @@ def get_thumbnail_url(file, size, fit=True):
     if name.endswith(".svg") and is_public:
         return storage.url(name)
 
-    return file.thumbnails.medium.url
+    return get_media_url(file.thumbnails.medium)

@@ -778,31 +778,44 @@ THUMBNAIL_SIZES = {
 }
 
 THUMBNAILS = {
-    'METADATA': {
-        'BACKEND': 'thumbnails.backends.metadata.DatabaseBackend',
+    "METADATA": {
+        "BACKEND": "thumbnails.backends.metadata.DatabaseBackend",
     },
-    'STORAGE': {
-        'BACKEND': 'django.core.files.storage.FileSystemStorage',
-        # You can also use Amazon S3 or any other Django storage backends
+    "STORAGE": {
+        "BACKEND": DEFAULT_FILE_STORAGE,
     },
     "SIZES": {
         "small": {
             "PROCESSORS": [
-                {"PATH": "thumbnails.processors.resize", "width": 10, "height": 10},
-                {"PATH": "thumbnails.processors.crop", "width": 80, "height": 80},
+                {
+                    "PATH": "thumbnails.processors.resize",
+                    "width": 300,
+                    "height": 300,
+                    "method": "fit",
+                },
             ],
         },
         "medium": {
             "PROCESSORS": [
-                {"PATH": "thumbnails.processors.resize", "width": 20, "height": 20},
+                {
+                    "PATH": "thumbnails.processors.resize",
+                    "width": 600,
+                    "height": 600,
+                    "method": "fit",
+                },
             ],
         },
         "large": {
             "PROCESSORS": [
-                {"PATH": "thumbnails.processors.resize", "width": 20, "height": 20},
+                {
+                    "PATH": "thumbnails.processors.resize",
+                    "width": 900,
+                    "height": 900,
+                    "method": "fit",
+                },
             ],
         },
-    }
+    },
 }
 
 # Photos settings
