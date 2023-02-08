@@ -69,7 +69,6 @@ def send_information_request(dry_run=False):
         for member in members:
             logger.info("Sent email to %s (%s)", member.get_full_name(), member.email)
             if not dry_run:
-
                 email_context = {
                     k: x if x else ""
                     for k, x in {
@@ -132,7 +131,6 @@ def send_expiration_announcement(dry_run=False):
         for member in members:
             logger.info("Sent email to %s (%s)", member.get_full_name(), member.email)
             if not dry_run:
-
                 renewal_url = settings.BASE_URL + reverse("registrations:renew")
                 email_body = loader.render_to_string(
                     "members/email/expiration_announcement.txt",

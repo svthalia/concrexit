@@ -10,7 +10,6 @@ logger = logging.getLogger(__name__)
 
 
 def send_weekly_overview():
-
     new_requests = PromotionRequest.new_requests.all()
     upcoming_requests = PromotionRequest.upcoming_requests.all()
 
