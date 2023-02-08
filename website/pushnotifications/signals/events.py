@@ -26,7 +26,7 @@ def schedule_event_start_reminder(sender, instance, **kwargs):
 
         # Don't update if the message has already been sent or the reminder time has passed.
         if (message is not None and message.sent) or reminder_time < timezone.now():
-            return  # TODO: add similar check to other signals.
+            return
 
         if message is None:
             message = EventStartReminder(event=instance)
