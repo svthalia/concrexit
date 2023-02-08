@@ -31,6 +31,7 @@ def notify_first_waiting(event):
                 "registration": first_waiting,
                 "name": first_waiting.name or first_waiting.member.first_name,
                 "base_url": settings.BASE_URL,
+                "organisers": event.organisers.values_list("contact_email", flat=True),
             }
         )
 
