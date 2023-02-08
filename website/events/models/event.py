@@ -17,9 +17,7 @@ from tinymce.models import HTMLField
 
 from events.models import status
 from events.models.categories import EVENT_CATEGORIES
-from members.models import Member
 from payments.models import PaymentAmountField
-from pushnotifications.models import Category, ScheduledMessage
 
 
 class Event(models.Model):

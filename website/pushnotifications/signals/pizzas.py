@@ -23,6 +23,12 @@ def schedule_food_order_reminder_pushnotification(sender, instance, **kwargs):
             instance.end_reminder = None
             message.delete()
     else:
+        reminder_time = instance.end - timezone.timedelta(minutes=10)
+
+        # Don't update if the message has already been sent or the reminder time has passed.
+        if (message is not None and message.sent) or reminder_time < timezone.now():
+            return
+
         # Update existing notification or create new one.
         if message is None:
             message = FoodOrderReminderMessage(food_event=instance)
@@ -30,7 +36,7 @@ def schedule_food_order_reminder_pushnotification(sender, instance, **kwargs):
         message.title = f"{instance.event.title}: Order food"
         message.body = "You can order food for 10 more minutes"
         message.category = Category.objects.get(key=Category.PIZZA)
-        message.time = instance.end - timezone.timedelta(minutes=10)
+        message.time = reminder_time
         message.save()
 
         if instance.event.registration_required:

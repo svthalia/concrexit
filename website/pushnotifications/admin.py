@@ -1,10 +1,20 @@
 """The admin interfaces registered by the pushnotifications package."""
-from django.contrib import admin
-from django.contrib.admin import ModelAdmin
+from django.conf import settings
+from django.contrib import admin, messages
+from django.contrib.admin import ModelAdmin, helpers
+from django.contrib.admin.views.decorators import staff_member_required
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import path
+from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
+from django.views.generic import FormView
 
-from pushnotifications import models
-from pushnotifications.models import Message
+from events.admin.event import EventAdmin as BaseEventAdmin
+from events.decorators import organiser_only
+from events.models import Event
+
+from .forms import EventMessageForm
+from .models import Category, Device, Message, ScheduledMessage
 
 
 class MessageSentFilter(admin.SimpleListFilter):
@@ -32,7 +42,7 @@ class MessageSentFilter(admin.SimpleListFilter):
         return queryset
 
 
-@admin.register(models.Device)
+@admin.register(Device)
 class DeviceAdmin(admin.ModelAdmin):
     """Manage the devices."""
 
@@ -64,7 +74,7 @@ class DeviceAdmin(admin.ModelAdmin):
     name.admin_order_field = "user__first_name"
 
 
-@admin.register(models.Message)
+@admin.register(Message)
 class MessageAdmin(ModelAdmin):
     """Manage normal messages."""
 
@@ -112,7 +122,7 @@ class MessageAdmin(ModelAdmin):
         return super().change_view(request, object_id, form_url, {"message": obj})
 
 
-@admin.register(models.ScheduledMessage)
+@admin.register(ScheduledMessage)
 class ScheduledMessageAdmin(ModelAdmin):
     """Manage scheduled messages."""
 
@@ -159,3 +169,89 @@ class ScheduledMessageAdmin(ModelAdmin):
                 "executed",
             )
         return ("executed",)
+
+
+@method_decorator(staff_member_required, name="dispatch")
+@method_decorator(organiser_only, name="dispatch")
+class EventMessageView(FormView):
+    """View used to create a pushnotification for all users registered to an event."""
+
+    form_class = EventMessageForm
+    template_name = "admin/pushnotifications/event_message_form.html"
+    admin = None
+    event = None
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(
+            {
+                **self.admin.admin_site.each_context(self.request),
+                "add": False,
+                "change": True,
+                "has_view_permission": True,
+                "has_add_permission": False,
+                "has_change_permission": self.request.user.has_perms(
+                    ["events.change_event"]
+                ),
+                "has_delete_permission": False,
+                "has_editable_inline_admin_formsets": False,
+                "app_label": "events",
+                "opts": self.event._meta,
+                "is_popup": False,
+                "save_as": False,
+                "save_on_top": False,
+                "original": self.event,
+                "obj_id": self.event.pk,
+                "title": _("Send push notification"),
+                "adminform": helpers.AdminForm(
+                    context["form"],
+                    ((None, {"fields": context["form"].fields.keys()}),),
+                    {},
+                ),
+            }
+        )
+        return context
+
+    def form_valid(self, form):
+        values = form.cleaned_data
+        if not values["url"]:
+            values["url"] = f"{settings.BASE_URL}{self.event.get_absolute_url()}"
+
+        message = Message(
+            title=values["title"],
+            body=values["body"],
+            url=values["url"],
+            category=Category.objects.get(key=Category.EVENT),
+        )
+        message.save()
+        message.users.set([r.member for r in self.event.participants if r.member])
+        message.send()
+
+        messages.success(self.request, _("Message sent successfully."))
+
+        if "_save" in self.request.POST:
+            return redirect("admin:events_event_details", self.event.pk)
+        return super().form_valid(form)
+
+    def dispatch(self, request, *args, **kwargs):
+        self.event = get_object_or_404(Event, pk=self.kwargs["pk"])
+        return super().dispatch(request, *args, **kwargs)
+
+
+class EventAdmin(BaseEventAdmin):
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path(
+                "<int:pk>/message/",
+                self.admin_site.admin_view(EventMessageView.as_view(admin=self)),
+                name="events_event_message",
+            ),
+        ]
+        return custom_urls + urls
+
+
+# Unregister the original EventAdmin and register
+# the new one with pushnotifications functionality.
+admin.site.unregister(Event)
+admin.site.register(Event, EventAdmin)

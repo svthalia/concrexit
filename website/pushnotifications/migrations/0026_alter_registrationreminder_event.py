@@ -13,20 +13,20 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name="registrationreminder",
+            model_name="eventstartreminder",
             name="event",
-            field=models.ForeignKey(
+            field=models.OneToOneField(
                 on_delete=django.db.models.deletion.CASCADE,
-                related_name="registration_reminder",
+                related_name="start_reminder",
                 to="events.event",
             ),
         ),
         migrations.AlterField(
             model_name="registrationreminder",
             name="event",
-            field=models.ForeignKey(
+            field=models.OneToOneField(
                 on_delete=django.db.models.deletion.CASCADE,
-                related_name="start_reminder",
+                related_name="registration_reminder",
                 to="events.event",
             ),
         ),
