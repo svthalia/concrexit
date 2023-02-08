@@ -62,5 +62,4 @@ def get_thumbnail_url(file, size, fit=True):
         return get_media_url(file.thumbnails.large)
     if size == "medium":
         return get_media_url(file.thumbnails.medium)
-    if size == "small":
-        return get_media_url(file.thumbnails.small)
+    return get_media_url(file.thumbnails.small)
