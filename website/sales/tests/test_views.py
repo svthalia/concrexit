@@ -16,7 +16,6 @@ from sales.models.shift import Shift
 
 @freeze_time("2019-01-01")
 class SalesOrderPaymentView(TestCase):
-
     fixtures = [
         "members.json",
         "bank_accounts.json",

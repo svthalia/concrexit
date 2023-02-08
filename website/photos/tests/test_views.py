@@ -13,7 +13,6 @@ from photos.services import save_photo
 
 @override_settings(SUSPEND_SIGNALS=True)
 class AlbumIndexTest(TestCase):
-
     fixtures = ["members.json"]
 
     @classmethod
@@ -98,7 +97,7 @@ class AlbumIndexTest(TestCase):
             slug="test_album3",
         )
 
-        for (count, keywords) in [(3, ""), (2, "1"), (1, "12"), (1, "3")]:
+        for count, keywords in [(3, ""), (2, "1"), (1, "12"), (1, "3")]:
             with self.subTest(keywords=keywords):
                 response = self.client.get(
                     reverse("photos:index") + f"?keywords={keywords}"
@@ -136,7 +135,6 @@ class AlbumIndexTest(TestCase):
 
 @override_settings(SUSPEND_SIGNALS=True)
 class AlbumTest(TestCase):
-
     fixtures = ["members.json"]
 
     @classmethod
@@ -204,7 +202,6 @@ class AlbumTest(TestCase):
 
 @override_settings(SUSPEND_SIGNALS=True)
 class SharedAlbumTest(TestCase):
-
     fixtures = ["members.json"]
 
     @classmethod
@@ -250,7 +247,6 @@ class SharedAlbumTest(TestCase):
 
 @override_settings(SUSPEND_SIGNALS=True)
 class DownloadTest(TestCase):
-
     fixtures = ["members.json"]
 
     @classmethod
@@ -331,7 +327,6 @@ class _DownloadBaseTestCase(TestCase):
 
 @override_settings(SUSPEND_SIGNALS=True)
 class SharedDownloadTest(_DownloadBaseTestCase):
-
     fixtures = ["members.json"]
 
     @classmethod

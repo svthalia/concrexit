@@ -5,7 +5,6 @@ from thaliawebsite.api.v1.cleaned_model_serializer import CleanedModelSerializer
 
 
 class DeviceSerializer(CleanedModelSerializer):
-
     receive_category = ManyRelatedField(
         allow_empty=True,
         required=False,

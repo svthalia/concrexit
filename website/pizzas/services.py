@@ -15,7 +15,6 @@ def gen_stats_pizza_orders() -> dict:
     }
 
     for product in Product.objects.all():
-
         orders = FoodOrder.objects.filter(product=product).count()
 
         if orders > 0:
