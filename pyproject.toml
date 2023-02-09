@@ -43,7 +43,7 @@ recommonmark = { version = "0.7.1", optional = true }
 sphinx = { version = "6.1.3", optional = true }
 qrcode = {version = "^7.3.1", extras = ["pil"]}
 django-drf-filepond = "^0.5.0"
-django-filepond-widget = "^0.8.0"
+django-filepond-widget = "^0.9.0"
 
 [tool.poetry.extras]
 docs = ["recommonmark", "sphinx"]

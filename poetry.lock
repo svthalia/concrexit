@@ -766,13 +766,13 @@ six = ">=1.14.0"
 
 [[package]]
 name = "django-filepond-widget"
-version = "0.8.0"
+version = "0.9.0"
 description = ""
 category = "main"
 optional = false
 python-versions = ">=3"
 files = [
-    {file = "django-filepond-widget-0.8.0.tar.gz", hash = "sha256:86dce1daaa817f63fbdaad631d95d386c6a1ea8d50ddf6f3c9413b0a837a6794"},
+    {file = "django-filepond-widget-0.9.0.tar.gz", hash = "sha256:b1dd1218e21c458a6af07bfb5bd994cb27949773c2fdafb5f655db67873fc47c"},
 ]
 
 [package.dependencies]
@@ -2976,4 +2976,4 @@ postgres = ["psycopg2"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "9d0aff7d74aaf8223fde6b1f5b40498019e6f5e72c12ba1cf96db4a32ef697f1"
+content-hash = "fbc574cfd9a9c0f3ecdf14e2ce84d86e97f90e28b564a060c00df4bf4492d791"
