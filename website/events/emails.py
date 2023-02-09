@@ -25,12 +25,19 @@ def notify_first_waiting(event):
         subject = _("[THALIA] Notification about your registration for '{}'").format(
             event.title
         )
+
+        organiser_emails = [
+            organiser.contact_address
+            for organiser in event.organisers.all()
+            if organiser.contact_address is not None
+        ]
         text_message = text_template.render(
             {
                 "event": event,
                 "registration": first_waiting,
                 "name": first_waiting.name or first_waiting.member.first_name,
                 "base_url": settings.BASE_URL,
+                "organisers": organiser_emails,
             }
         )
 
