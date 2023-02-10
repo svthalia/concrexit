@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.utils import timezone
 
+from events import payables
 from events.models import Event, EventRegistration
 from members.models import Member, Membership, Profile
 
@@ -23,6 +24,9 @@ class TestEventNotifications(TestCase):
 
         cls.not_current_member = Member.objects.create(username="user3")
         Profile.objects.create(user=cls.not_current_member)
+
+    def setUp(self):
+        payables.register()
 
     def test_create_event_and_update_registrations_start_reminder(self):
         """Creating an event schedules a start reminder for the right users.

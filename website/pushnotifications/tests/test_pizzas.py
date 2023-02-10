@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.utils import timezone
 
+from events import payables
 from events.models import Event, EventRegistration
 from members.models import Member, Membership, Profile
 from pizzas.models import FoodEvent, FoodOrder, Product
@@ -33,6 +34,9 @@ class TestFoodEventNotifications(TestCase):
         )
 
         cls.product = Product.objects.create(name="Test product", price=10)
+
+    def setUp(self):
+        payables.register()
 
     def test_create_food_event_schedules_notification(self):
         """Creating a food event schedules a notification with the right users."""
