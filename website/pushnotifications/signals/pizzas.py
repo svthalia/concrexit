@@ -25,6 +25,16 @@ def schedule_food_order_reminder_pushnotification(sender, instance, **kwargs):
     else:
         reminder_time = instance.end - timezone.timedelta(minutes=10)
 
+        # Delete reminder if the event is changed so that the reminder time has now passed.
+        if (
+            message is not None
+            and message.time != reminder_time
+            and reminder_time < timezone.now()
+        ):
+            instance.end_reminder = None
+            message.delete()
+            return
+
         # Don't update if the message has already been sent or the reminder time has passed.
         if (message is not None and message.sent) or reminder_time < timezone.now():
             return

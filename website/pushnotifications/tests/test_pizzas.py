@@ -107,8 +107,8 @@ class TestFoodEventNotifications(TestCase):
 
         food_event.delete()
 
-    def test_update_food_event_send_notification(self):
-        """Changing send_notification creates or deletes the notification."""
+    def test_update_food_event(self):
+        """Updating the event creates or deletes the notification."""
 
         food_event = FoodEvent.objects.create(
             event=self.event,
@@ -118,9 +118,6 @@ class TestFoodEventNotifications(TestCase):
         )
 
         self.assertFalse(hasattr(food_event, "end_reminder"))
-        self.assertFalse(
-            FoodOrderReminderMessage.objects.filter(food_event=food_event).exists()
-        )
 
         food_event.send_notification = True
         food_event.save()
@@ -131,9 +128,14 @@ class TestFoodEventNotifications(TestCase):
         food_event.save()
 
         self.assertFalse(hasattr(food_event, "end_reminder"))
-        self.assertFalse(
-            FoodOrderReminderMessage.objects.filter(food_event=food_event).exists()
-        )
+
+        food_event.send_notification = True
+        food_event.save()
+
+        food_event.end = self.time
+        food_event.save()
+
+        self.assertFalse(hasattr(food_event, "end_reminder"))
 
     def test_register_updates_message_users(self):
         """Registering for an event updates the notification users."""

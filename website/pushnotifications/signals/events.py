@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.db.models.signals import post_save
+from django.db.models.signals import post_delete, post_save
 from django.utils import timezone
 
 from events.models import Event, EventRegistration
@@ -23,6 +23,16 @@ def schedule_event_start_reminder(sender, instance, **kwargs):
             message.delete()
     else:
         reminder_time = instance.start - timezone.timedelta(hours=1)
+
+        # Delete reminder if the event is changed so that the reminder time has now passed.
+        if (
+            message is not None
+            and message.time != reminder_time
+            and reminder_time < timezone.now()
+        ):
+            instance.start_reminder = None
+            message.delete()
+            return
 
         # Don't update if the message has already been sent or the reminder time has passed.
         if (message is not None and message.sent) or reminder_time < timezone.now():
@@ -60,6 +70,16 @@ def schedule_registration_reminder(sender, instance, **kwargs):
     else:
         reminder_time = instance.registration_start - timezone.timedelta(hours=1)
 
+        # Delete reminder if the event is changed so that the reminder time has now passed.
+        if (
+            message is not None
+            and message.time != reminder_time
+            and reminder_time < timezone.now()
+        ):
+            instance.registration_reminder = None
+            message.delete()
+            return
+
         # Don't update if the message has already been sent or the reminder time has passed.
         if (message is not None and message.sent) or reminder_time < timezone.now():
             return
@@ -80,9 +100,9 @@ def schedule_registration_reminder(sender, instance, **kwargs):
 @suspendingreceiver(
     post_save,
     sender=EventRegistration,
-    dispatch_uid="update_event_start_reminder_users",
+    dispatch_uid="update_event_start_reminder_users_on_registration_save",
 )
-def update_event_start_reminder_users(sender, instance, **kwargs):
+def update_event_start_reminder_users_on_registration_save(sender, instance, **kwargs):
     """Add or remove the member from the event start reminder."""
     message = getattr(instance.event, "start_reminder", None)
 
@@ -95,3 +115,22 @@ def update_event_start_reminder_users(sender, instance, **kwargs):
                 message.users.remove(instance.member)
             else:
                 message.users.add(instance.member)
+
+
+@suspendingreceiver(
+    post_delete,
+    sender=EventRegistration,
+    dispatch_uid="update_event_start_reminder_users_on_registration_delete",
+)
+def update_event_start_reminder_users_on_registration_delete(
+    sender, instance, **kwargs
+):
+    """Remove the member from the event start reminder if registration is required."""
+    message = getattr(instance.event, "start_reminder", None)
+
+    if message is None or message.sent:
+        return
+
+    if instance.member is not None:
+        if instance.event.registration_required:
+            message.users.remove(instance.member)
