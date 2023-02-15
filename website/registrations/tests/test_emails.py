@@ -8,7 +8,6 @@ from django.template.defaultfilters import floatformat
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import translation
-from django.utils.translation import gettext_lazy as _
 
 from members.models import Member, Profile
 from registrations import emails
@@ -32,10 +31,10 @@ class EmailsTest(TestCase):
         emails.send_registration_email_confirmation(reg)
 
         send_email.assert_called_once_with(
-            reg.email,
-            _("Confirm email address"),
-            "registrations/email/registration_confirm_mail.txt",
-            {
+            to=[reg.email],
+            subject="Confirm email address",
+            txt_template="registrations/email/registration_confirm_mail.txt",
+            context={
                 "name": reg.get_full_name(),
                 "confirm_link": (
                     "https://thalia.localhost"
@@ -57,10 +56,13 @@ class EmailsTest(TestCase):
         emails.send_registration_accepted_message(reg)
 
         send_email.assert_called_once_with(
-            reg.email,
-            _("Registration accepted"),
-            "registrations/email/registration_accepted.txt",
-            {"name": reg.get_full_name(), "fees": floatformat(reg.contribution, 2)},
+            to=[reg.email],
+            subject="Registration accepted",
+            txt_template="registrations/email/registration_accepted.txt",
+            context={
+                "name": reg.get_full_name(),
+                "fees": floatformat(reg.contribution, 2),
+            },
         )
 
     @mock.patch("registrations.emails.send_email")
@@ -75,10 +77,10 @@ class EmailsTest(TestCase):
         emails.send_registration_rejected_message(reg)
 
         send_email.assert_called_once_with(
-            reg.email,
-            _("Registration rejected"),
-            "registrations/email/registration_rejected.txt",
-            {"name": reg.get_full_name()},
+            to=[reg.email],
+            subject="Registration rejected",
+            txt_template="registrations/email/registration_rejected.txt",
+            context={"name": reg.get_full_name()},
         )
 
     @mock.patch("registrations.emails.send_email")
@@ -93,10 +95,10 @@ class EmailsTest(TestCase):
         emails.send_new_registration_board_message(registration)
 
         send_email.assert_called_once_with(
-            settings.BOARD_NOTIFICATION_ADDRESS,
-            "New registration",
-            "registrations/email/registration_board.txt",
-            {
+            to=[settings.BOARD_NOTIFICATION_ADDRESS],
+            subject="New registration",
+            txt_template="registrations/email/registration_board.txt",
+            context={
                 "name": registration.get_full_name(),
                 "url": (
                     "https://thalia.localhost"
@@ -122,10 +124,10 @@ class EmailsTest(TestCase):
         emails.send_renewal_accepted_message(renewal)
 
         send_email.assert_called_once_with(
-            renewal.member.email,
-            _("Renewal accepted"),
-            "registrations/email/renewal_accepted.txt",
-            {
+            to=[renewal.member.email],
+            subject="Renewal accepted",
+            txt_template="registrations/email/renewal_accepted.txt",
+            context={
                 "name": renewal.member.get_full_name(),
                 "fees": floatformat(renewal.contribution, 2),
                 "thalia_pay_enabled": settings.THALIA_PAY_ENABLED_PAYMENT_METHOD,
@@ -152,10 +154,10 @@ class EmailsTest(TestCase):
         emails.send_renewal_rejected_message(renewal)
 
         send_email.assert_called_once_with(
-            renewal.member.email,
-            _("Renewal rejected"),
-            "registrations/email/renewal_rejected.txt",
-            {"name": renewal.member.get_full_name()},
+            to=[renewal.member.email],
+            subject="Renewal rejected",
+            txt_template="registrations/email/renewal_rejected.txt",
+            context={"name": renewal.member.get_full_name()},
         )
 
     @mock.patch("registrations.emails.send_email")
@@ -172,10 +174,10 @@ class EmailsTest(TestCase):
         emails.send_renewal_complete_message(renewal)
 
         send_email.assert_called_once_with(
-            renewal.member.email,
-            _("Renewal successful"),
-            "registrations/email/renewal_complete.txt",
-            {"name": renewal.member.get_full_name()},
+            to=[renewal.member.email],
+            subject="Renewal successful",
+            txt_template="registrations/email/renewal_complete.txt",
+            context={"name": renewal.member.get_full_name()},
         )
 
     @mock.patch("registrations.emails.send_email")
@@ -192,10 +194,10 @@ class EmailsTest(TestCase):
         emails.send_new_renewal_board_message(renewal)
 
         send_email.assert_called_once_with(
-            settings.BOARD_NOTIFICATION_ADDRESS,
-            "New renewal",
-            "registrations/email/renewal_board.txt",
-            {
+            to=[settings.BOARD_NOTIFICATION_ADDRESS],
+            subject="New renewal",
+            txt_template="registrations/email/renewal_board.txt",
+            context={
                 "name": renewal.member.get_full_name(),
                 "url": (
                     "https://thalia.localhost"
@@ -217,10 +219,10 @@ class EmailsTest(TestCase):
             emails.send_references_information_message(registration)
 
             send_email.assert_called_once_with(
-                "test@example.org",
-                "Information about references",
-                "registrations/email/references_information.txt",
-                {
+                to=["test@example.org"],
+                subject="Information about references",
+                txt_template="registrations/email/references_information.txt",
+                context={
                     "name": registration.get_full_name(),
                     "reference_link": (
                         "https://thalia.localhost"
@@ -244,10 +246,10 @@ class EmailsTest(TestCase):
             emails.send_references_information_message(renewal)
 
             send_email.assert_called_once_with(
-                "test@example.org",
-                "Information about references",
-                "registrations/email/references_information.txt",
-                {
+                to=["test@example.org"],
+                subject="Information about references",
+                txt_template="registrations/email/references_information.txt",
+                context={
                     "name": renewal.member.get_full_name(),
                     "reference_link": (
                         "https://thalia.localhost"
@@ -258,9 +260,9 @@ class EmailsTest(TestCase):
 
     def test_send_email(self):
         send_email(
+            to=["test@example.org"],
             subject="Subject",
-            to="test@example.org",
-            body_template="registrations/email/renewal_board.txt",
+            txt_template="registrations/email/renewal_board.txt",
             context={
                 "name": "name",
                 "url": "",

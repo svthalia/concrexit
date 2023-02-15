@@ -217,4 +217,6 @@ class EmailsTest(TestCase):
 
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].to, ["test1@example.org"])
-        self.assertEqual(mail.outbox[0].subject, "Welcome to Study Association Thalia")
+        self.assertEqual(
+            mail.outbox[0].subject, "[THALIA] Welcome to Study Association Thalia"
+        )

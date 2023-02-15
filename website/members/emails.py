@@ -4,15 +4,14 @@ from datetime import timedelta
 
 from django.conf import settings
 from django.core import mail
-from django.core.mail import EmailMultiAlternatives
 from django.template import loader
 from django.template.defaultfilters import floatformat
-from django.template.loader import get_template
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext as _
 
 from members.models import Member, Membership
+from utils.snippets import send_email
 
 logger = logging.getLogger(__name__)
 
@@ -34,18 +33,14 @@ def send_membership_announcement(dry_run=False):
         for member in members:
             logger.info("Sent email to %s (%s)", member.get_full_name(), member.email)
             if not dry_run:
-                email_body = loader.render_to_string(
-                    "members/email/membership_announcement.txt",
-                    {"name": member.get_full_name()},
-                )
-                mail.EmailMessage(
-                    f"[THALIA] {_('Membership announcement')}",
-                    email_body,
-                    settings.DEFAULT_FROM_EMAIL,
-                    [member.email],
+                send_email(
+                    to=[member.email],
                     bcc=[settings.BOARD_NOTIFICATION_ADDRESS],
+                    subject="Membership announcement",
+                    txt_template="members/email/membership_announcement.txt",
+                    context={"name": member.get_full_name()},
                     connection=connection,
-                ).send()
+                )
 
         if not dry_run:
             mail.mail_managers(
@@ -69,39 +64,32 @@ def send_information_request(dry_run=False):
         for member in members:
             logger.info("Sent email to %s (%s)", member.get_full_name(), member.email)
             if not dry_run:
-                email_context = {
-                    k: x if x else ""
-                    for k, x in {
-                        "name": member.first_name,
-                        "username": member.username,
-                        "full_name": member.get_full_name(),
-                        "address_street": member.profile.address_street,
-                        "address_street2": member.profile.address_street2,
-                        "address_postal_code": member.profile.address_postal_code,
-                        "address_city": member.profile.address_city,
-                        "address_country": member.profile.get_address_country_display(),
-                        "phone_number": member.profile.phone_number,
-                        "birthday": member.profile.birthday,
-                        "email": member.email,
-                        "student_number": member.profile.student_number,
-                        "starting_year": member.profile.starting_year,
-                        "programme": member.profile.get_programme_display(),
-                    }.items()
-                }
-                html_template = get_template("members/email/information_check.html")
-                text_template = get_template("members/email/information_check.txt")
-                subject = "[THALIA] " + _("Membership information check")
-                html_message = html_template.render(email_context)
-                text_message = text_template.render(email_context)
-
-                msg = EmailMultiAlternatives(
-                    subject,
-                    text_message,
-                    settings.DEFAULT_FROM_EMAIL,
-                    [member.email],
+                send_email(
+                    to=[member.email],
+                    subject="Membership information check",
+                    txt_template="members/email/information_check.txt",
+                    html_template="members/email/information_check.html",
+                    connection=connection,
+                    context={
+                        k: x if x else ""
+                        for k, x in {
+                            "name": member.first_name,
+                            "username": member.username,
+                            "full_name": member.get_full_name(),
+                            "address_street": member.profile.address_street,
+                            "address_street2": member.profile.address_street2,
+                            "address_postal_code": member.profile.address_postal_code,
+                            "address_city": member.profile.address_city,
+                            "address_country": member.profile.get_address_country_display(),
+                            "phone_number": member.profile.phone_number,
+                            "birthday": member.profile.birthday,
+                            "email": member.email,
+                            "student_number": member.profile.student_number,
+                            "starting_year": member.profile.starting_year,
+                            "programme": member.profile.get_programme_display(),
+                        }.items()
+                    },
                 )
-                msg.attach_alternative(html_message, "text/html")
-                msg.send()
 
         if not dry_run:
             mail.mail_managers(
@@ -131,25 +119,21 @@ def send_expiration_announcement(dry_run=False):
         for member in members:
             logger.info("Sent email to %s (%s)", member.get_full_name(), member.email)
             if not dry_run:
-                renewal_url = settings.BASE_URL + reverse("registrations:renew")
-                email_body = loader.render_to_string(
-                    "members/email/expiration_announcement.txt",
-                    {
+                send_email(
+                    to=[member.email],
+                    bcc=[settings.BOARD_NOTIFICATION_ADDRESS],
+                    subject="Membership expiration announcement",
+                    txt_template="members/email/expiration_announcement.txt",
+                    connection=connection,
+                    context={
                         "name": member.get_full_name(),
                         "membership_price": floatformat(
                             settings.MEMBERSHIP_PRICES["year"], 2
                         ),
-                        "renewal_url": renewal_url,
+                        "renewal_url": settings.BASE_URL
+                        + reverse("registrations:renew"),
                     },
                 )
-                mail.EmailMessage(
-                    f"[THALIA] {_('Membership expiration announcement')}",
-                    email_body,
-                    settings.DEFAULT_FROM_EMAIL,
-                    [member.email],
-                    bcc=[settings.BOARD_NOTIFICATION_ADDRESS],
-                    connection=connection,
-                ).send()
 
         if not dry_run:
             mail.mail_managers(
@@ -163,21 +147,22 @@ def send_expiration_announcement(dry_run=False):
 
 
 def send_welcome_message(user, password):
-    """Send an email to a new mail welcoming them.
+    """Send an email to a new user welcoming them.
 
     :param user: the new user
     :param password: randomly generated password
     """
-    email_body = loader.render_to_string(
-        "members/email/welcome.txt",
-        {
+    send_email(
+        to=[user.email],
+        subject="Welcome to Study Association Thalia",
+        txt_template="members/email/welcome.txt",
+        context={
             "full_name": user.get_full_name(),
             "username": user.username,
             "password": password,
             "url": settings.BASE_URL,
         },
     )
-    user.email_user(_("Welcome to Study Association Thalia"), email_body)
 
 
 def send_email_change_confirmation_messages(change_request):
@@ -191,35 +176,29 @@ def send_email_change_confirmation_messages(change_request):
         "members:email-change-confirm",
         args=[change_request.confirm_key],
     )
-    mail.EmailMessage(
-        f"[THALIA] {_('Please confirm your email change')}",
-        loader.render_to_string(
-            "members/email/email_change_confirm.txt",
-            {
-                "confirm_link": confirm_link,
-                "name": member.first_name,
-            },
-        ),
-        settings.DEFAULT_FROM_EMAIL,
-        [member.email],
-    ).send()
+    send_email(
+        to=[member.email],
+        subject="Please confirm your email change",
+        txt_template="members/email/email_change_confirm.txt",
+        context={
+            "confirm_link": confirm_link,
+            "name": member.first_name,
+        },
+    )
 
     confirm_link = settings.BASE_URL + reverse(
         "members:email-change-verify",
         args=[change_request.verify_key],
     )
-    mail.EmailMessage(
-        f"[THALIA] {_('Please verify your email address')}",
-        loader.render_to_string(
-            "members/email/email_change_verify.txt",
-            {
-                "confirm_link": confirm_link,
-                "name": member.first_name,
-            },
-        ),
-        settings.DEFAULT_FROM_EMAIL,
-        [change_request.email],
-    ).send()
+    send_email(
+        to=[change_request.email],
+        subject="Please verify your email address",
+        txt_template="members/email/email_change_verify.txt",
+        context={
+            "confirm_link": confirm_link,
+            "name": member.first_name,
+        },
+    )
 
 
 def send_email_change_completion_message(change_request):
@@ -227,10 +206,11 @@ def send_email_change_completion_message(change_request):
 
     :param change_request the email change request entered by the user
     """
-    change_request.member.email_user(
-        f"[THALIA] {_('Your email address has been changed')}",
-        loader.render_to_string(
-            "members/email/email_change_completed.txt",
-            {"name": change_request.member.first_name},
-        ),
+    send_email(
+        to=[change_request.member.email],
+        subject="Your email address has been changed",
+        txt_template="members/email/email_change_completed.txt",
+        context={
+            "name": change_request.member.first_name,
+        },
     )

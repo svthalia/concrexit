@@ -4,10 +4,11 @@ import hmac
 from base64 import urlsafe_b64decode, urlsafe_b64encode
 from collections import namedtuple
 from hashlib import sha1
+from typing import Optional
 
 from django.conf import settings
 from django.contrib.admin.models import LogEntry
-from django.core import mail
+from django.core.mail import EmailMultiAlternatives
 from django.template import loader
 from django.template.defaultfilters import urlencode
 from django.templatetags.static import static
@@ -204,23 +205,29 @@ def overlaps(check, others, can_equal=True):
 
 
 def send_email(
-    to: str, subject: str, txt_template: str, context: dict, html_template = None
+    to: list[str],
+    subject: str,
+    txt_template: str,
+    context: dict,
+    html_template: Optional[str] = None,
+    bcc: Optional[list[str]] = None,
+    connection=None,
 ) -> None:
-    """Easily send an email with the right subject and a body template.
+    txt_message = loader.render_to_string(txt_template, context)
 
-    :param to: where should the email go?
-    :param subject: what is the email about?
-    :param txt_template: txt template to use
-    :param context: context to render the template
-    :param html_template: html template to use
-    """
-    mail.send_mail(
+    mail = EmailMultiAlternatives(
         subject=f"[THALIA] {subject}",
-        message=loader.render_to_string(txt_template, context),
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        recipient_list=[to],
-        html_message=loader.render_to_string(html_template, context) if html_template else None,
+        body=txt_message,
+        to=to,
+        bcc=bcc,
+        connection=connection,
     )
+
+    if html_template is not None:
+        html_message = loader.render_to_string(html_template, context)
+        mail.attach_alternative(html_message, "text/html")
+
+    mail.send()
 
 
 def minimise_logentries_data(dry_run=False):
