@@ -177,6 +177,7 @@ disable = [
     "consider-using-any-or-all",
     "unsupported-binary-operation",
     "docstring-first-line-empty",
+    "consider-alternative-union-syntax",
 ]
 
 # Enable the message, report, category or checker with the given id(s). You can

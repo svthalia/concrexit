@@ -7,7 +7,7 @@ from django.core.management import BaseCommand
 try:
     from faker import Factory as FakerFactory
 except ImportError as error:
-    raise Exception(
+    raise ValueError(
         f"Have you installed the dev-requirements? Failed importing {error}"
     ) from error
 
