@@ -61,6 +61,10 @@
                     </li>
                 {% endif %}
 
+                {% if member.profile.website %}
+                    <li><span>{% trans "Shoe size" %}: </span> {{ member.profile.shoe_size }}</li>
+                {% endif %}
+
                 {% if member.profile.show_birthday and member.profile.birthday %}
                     <li><strong>{% trans "Birthday" %}: </strong> {{ member.profile.birthday }}</li>
                 {% endif %}

@@ -4,6 +4,7 @@ import os
 from django.conf import settings
 from django.core import validators
 from django.core.exceptions import ValidationError
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils import timezone
 from django.utils.crypto import get_random_string
@@ -203,6 +204,14 @@ class Profile(models.Model):
         verbose_name=_("Nickname"),
         blank=True,
         null=True,
+    )
+
+    shoe_size = models.IntegerField(
+        verbose_name=_("Shoe size"),
+        help_text=_("This is how big the feet are. Very important for bowling"),
+        blank=True,
+        null=True,
+        validators=[MinValueValidator(39), MaxValueValidator(47)],
     )
 
     display_name_preference = models.CharField(

@@ -32,6 +32,7 @@ class ProfileForm(forms.ModelForm):
             "receive_newsletter",
             "receive_magazine",
             "email_gsuite_only",
+            "shoe_size",
         ]
         model = Profile
 
