@@ -108,7 +108,7 @@ def registration_status(event: Event, registration: EventRegistration, member):
     if not event.registration_allowed:
         return status.STATUS_EXPIRED
 
-    raise Exception("invalid/unexpected registration status")
+    raise ValueError("invalid/unexpected registration status")
 
 
 def show_cancel_status(registration_status):
@@ -492,7 +492,7 @@ def generate_category_statistics() -> dict:
 def execute_data_minimisation(dry_run=False):
     """Delete information about very old events."""
     # Sometimes years are 366 days of course, but better delete 1 or 2 days early than late
-    deletion_period = timezone.now().date() - timezone.timedelta(days=(365 * 5))
+    deletion_period = timezone.now().date() - timezone.timedelta(days=365 * 5)
 
     queryset = EventRegistration.objects.filter(event__end__lte=deletion_period).filter(
         Q(payment__isnull=False) | Q(member__isnull=False) | ~Q(name__exact="<removed>")

@@ -41,7 +41,7 @@ try:
     from faker import Factory as FakerFactory
     from pydenticon import Generator as IconGenerator
 except ImportError as error:
-    raise Exception(
+    raise ValueError(
         f"Have you installed the dev-requirements? Failed importing {error}"
     ) from error
 
