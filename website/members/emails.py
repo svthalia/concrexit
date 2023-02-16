@@ -87,6 +87,7 @@ def send_information_request(dry_run=False):
                             "student_number": member.profile.student_number,
                             "starting_year": member.profile.starting_year,
                             "programme": member.profile.get_programme_display(),
+                            "base_url": settings.BASE_URL,
                         }.items()
                     },
                 )
@@ -156,11 +157,13 @@ def send_welcome_message(user, password):
         to=[user.email],
         subject="Welcome to Study Association Thalia",
         txt_template="members/email/welcome.txt",
+        html_template="members/email/welcome.html",
         context={
             "full_name": user.get_full_name(),
             "username": user.username,
             "password": password,
             "url": settings.BASE_URL,
+            "base_url": settings.BASE_URL,
         },
     )
 

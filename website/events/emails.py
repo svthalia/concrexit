@@ -1,8 +1,8 @@
 """The emails defined by the events package."""
 from django.conf import settings
-from django.core.mail import EmailMessage
-from django.template.loader import get_template
 from django.utils.translation import gettext_lazy as _
+
+from utils.snippets import send_email
 
 
 def notify_first_waiting(event):
@@ -20,28 +20,25 @@ def notify_first_waiting(event):
             date_cancelled=None
         ).order_by("date")[event.max_participants]
 
-        text_template = get_template("events/member_email.txt")
-
-        subject = _("[THALIA] Notification about your registration for '{}'").format(
-            event.title
-        )
-
         organiser_emails = [
             organiser.contact_address
             for organiser in event.organisers.all()
             if organiser.contact_address is not None
         ]
-        text_message = text_template.render(
-            {
+
+        send_email(
+            to=[first_waiting.email],
+            subject=f"Notification about your registration for '{event.title}'",
+            txt_template="events/email/member_email.txt",
+            html_template="events/email/member_email.html",
+            context={
                 "event": event,
                 "registration": first_waiting,
                 "name": first_waiting.name or first_waiting.member.first_name,
                 "base_url": settings.BASE_URL,
                 "organisers": organiser_emails,
-            }
+            },
         )
-
-        EmailMessage(subject, text_message, to=[first_waiting.email]).send()
 
 
 def notify_organiser(event, registration):
@@ -53,40 +50,34 @@ def notify_organiser(event, registration):
     if not event.organisers.exists():
         return
 
-    text_template = get_template("events/organiser_email.txt")
-    subject = f"Registration for {event.title} cancelled by member"
-    text_message = text_template.render({"event": event, "registration": registration})
-
-    EmailMessage(
-        subject,
-        text_message,
+    send_email(
         to=[
             organiser.contact_mailinglist.name + "@" + settings.SITE_DOMAIN
             for organiser in event.organisers.all()
         ],
-    ).send()
+        subject=f"Registration for {event.title} cancelled by member",
+        txt_template="events/email/organiser_email.txt",
+        context={"event": event, "registration": registration},
+    )
 
 
 def notify_waiting(event, registration):
-    text_template = get_template("events/more_places_email.txt")
-    subject = _("[THALIA] Notification about your registration for '{}'").format(
-        event.title
-    )
-
     organiser_emails = [
         organiser.contact_address
         for organiser in event.organisers.all()
         if organiser.contact_address is not None
     ]
 
-    text_message = text_template.render(
-        {
+    send_email(
+        to=[registration.email],
+        subject=f"Notification about your registration for '{event.title}'",
+        txt_template="events/email/more_places_email.txt",
+        html_template="events/email/more_places_email.html",
+        context={
             "event": event,
             "registration": registration,
             "name": registration.name or registration.member.first_name,
             "base_url": settings.BASE_URL,
             "organisers": organiser_emails,
-        }
+        },
     )
-
-    EmailMessage(subject, text_message, to=[registration.email]).send()

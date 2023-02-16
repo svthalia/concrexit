@@ -1,4 +1,4 @@
-{% load i18n %}{% blocktrans %}Dear {{ full_name }},
+Dear {{ full_name }},
 
 Our records show that you have become an active member of Thalia. Awesome!
 This means you now get access to Thalia's G Suite organisation.
@@ -15,4 +15,4 @@ The board of Study Association Thalia
 
 ————
 
-This email was automatically generated.{% endblocktrans %}
+This email was automatically generated.

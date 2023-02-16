@@ -1,23 +1,16 @@
 {% extends "email/html_email.html" %}
 
-{% load i18n %}
-{% load baseurl %}
-{% load static %}
-
 {% block content %}
-    {% blocktrans %}Dear {{ name }}{% endblocktrans %},<br />
-    {% blocktrans %}
-    <p>Welcome to Study Association Thalia! You now have an account and can
-        log in at {{ url }}.</p>
+    Dear {{ name }},<br />
+    
+    <p>Welcome to Study Association Thalia! You now have an account and can log in at {{ url }}.</p>
 
     <p>Your username is:   {{ username }}<br/>
     Your password is:   {{ password }}</p>
 
     <p>Please also check the information on your profile. You can also add more information about yourself, including a profile picture.
-        This can be done here: <a href="{% url "members:edit-profile" %}">{% url "members:edit-profile" %}</a>.</p>
+    This can be done here: <a href="{{ base_url }}{% url "members:edit-profile" %}">{{ base_url }}{% url "members:edit-profile" %}</a>.</p>
 
     <p>Now that you're a member, you can join the official Thalia Promotion WhatsApp group.<br/>
-    Through this group you will be kept up to date with Thalia events and other matters
-        in the association. You can join the group via the following link: <a href="https://thalia.nu/whatsapp/">https://thalia.nu/whatsapp/</a>.</p>
-    {% endblocktrans %}
+    Through this group you will be kept up to date with Thalia events and other matters in the association. You can join the group via the following link: <a href="https://thalia.nu/whatsapp/">https://thalia.nu/whatsapp/</a>.</p>
 {% endblock %}
