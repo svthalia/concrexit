@@ -211,6 +211,7 @@ def send_email(
     context: dict,
     html_template: Optional[str] = None,
     bcc: Optional[list[str]] = None,
+    from_email: Optional[str] = None,
     connection=None,
 ) -> None:
     txt_message = loader.render_to_string(txt_template, context)
@@ -220,6 +221,7 @@ def send_email(
         body=txt_message,
         to=to,
         bcc=bcc,
+        from_email=from_email,
         connection=connection,
     )
 
