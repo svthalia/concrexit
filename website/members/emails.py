@@ -38,6 +38,7 @@ def send_membership_announcement(dry_run=False):
                     bcc=[settings.BOARD_NOTIFICATION_ADDRESS],
                     subject="Membership announcement",
                     txt_template="members/email/membership_announcement.txt",
+                    html_template="members/email/membership_announcement.html",
                     context={"name": member.get_full_name()},
                     connection=connection,
                 )
@@ -125,6 +126,7 @@ def send_expiration_announcement(dry_run=False):
                     bcc=[settings.BOARD_NOTIFICATION_ADDRESS],
                     subject="Membership expiration announcement",
                     txt_template="members/email/expiration_announcement.txt",
+                    html_template="members/email/expiration_announcement.html",
                     connection=connection,
                     context={
                         "name": member.get_full_name(),
@@ -183,6 +185,7 @@ def send_email_change_confirmation_messages(change_request):
         to=[member.email],
         subject="Please confirm your email change",
         txt_template="members/email/email_change_confirm.txt",
+        html_template="members/email/email_change_confirm.html",
         context={
             "confirm_link": confirm_link,
             "name": member.first_name,
@@ -197,6 +200,7 @@ def send_email_change_confirmation_messages(change_request):
         to=[change_request.email],
         subject="Please verify your email address",
         txt_template="members/email/email_change_verify.txt",
+        html_template="members/email/email_change_verify.html",
         context={
             "confirm_link": confirm_link,
             "name": member.first_name,
@@ -213,6 +217,7 @@ def send_email_change_completion_message(change_request):
         to=[change_request.member.email],
         subject="Your email address has been changed",
         txt_template="members/email/email_change_completed.txt",
+        html_template="members/email/email_change_completed.html",
         context={
             "name": change_request.member.first_name,
         },
