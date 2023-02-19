@@ -3,11 +3,11 @@
 {% block content %}
   Dear {{ name }},<br>
 
-  <p>You registered for the event '{{ event.title }}' on {{ registration.date|date:"SHORT_DATETIME_FORMAT" }} and unfortunately you were placed on the waiting list.</br>
+  <p>You registered for the event '{{ event.title }}' on {{ registration.date|date:"SHORT_DATETIME_FORMAT" }} and unfortunately you were placed on the waiting list.<br>
   However, some more spots were added and we would like to let you know that you'll be able to attend now!</p>
 
   <p>You can find more information about the event on the website: {{ base_url }}{{ event.get_absolute_url }}</p>
 
-  <p>We're assuming that you'll be there, but you're still able to unregister until {{ event.cancel_deadline|date:"SHORT_DATETIME_FORMAT" }}.</br>
+  <p>We're assuming that you'll be there, but you're still able to unregister until {{ event.cancel_deadline|date:"SHORT_DATETIME_FORMAT" }}.<br>
   If this date has already passed you can contact the organisers via {{ organisers|join:", " }}.</p>
 {% endblock %}

@@ -1,23 +1,22 @@
-{% load i18n %}
 {% load baseurl %}
 {% load static %}
 
 <html style="background-color: #F0F0F0;">
-<body style="background-color: #F0F0F0; border-spacing:0px; font-size:15px; font-family:Arial;">
-<div style="background-color: white; max-width:700px; margin-left:auto; margin-right: auto;">
-    <div style="background-color:#E6227A; color:white; text-align:center; padding:20px;">
+  <body style="background-color: #F0F0F0; border-spacing:0px; font-size:15px; font-family:Arial;">
+    <div style="background-color: white; max-width:700px; margin-left:auto; margin-right: auto;">
+      <div style="background-color:#E6227A; color:white; text-align:center; padding:20px;">
         <img src="{% baseurl %}{% static 'img/logo-magenta-bg-en.png' %}" style="max-width:200px;" />
-    </div>
-    <div style="background-color: white; max-width:700px; margin-left:auto; margin-right: auto; padding:20px">
+      </div>
+      <div style="background-color: white; max-width:700px; margin-left:auto; margin-right: auto; padding:20px">
         {% block content %}
 
         {% endblock %}
-        <br /><br />
-        {% trans "With kind regards" %},<br />
-        <br />
-        {% trans "The board of Study Association Thalia" %}<br />
+        <br><br>
+        With kind regards,<br>
+        <br>
+        The board of Study Association Thalia<br>
+      </div>
     </div>
-</div>
-<p style="text-align: center;margin: 20px;"><em>{% trans "This email was automatically generated." %}</em></p>
-</body>
+    <p style="text-align: center;margin: 20px;"><em>This email was automatically generated.</em></p>
+  </body>
 </html>
