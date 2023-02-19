@@ -1,6 +1,5 @@
 """The emails defined by the events package."""
 from django.conf import settings
-from django.utils.translation import gettext_lazy as _
 
 from utils.snippets import send_email
 

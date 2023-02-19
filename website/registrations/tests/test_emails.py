@@ -34,6 +34,7 @@ class EmailsTest(TestCase):
             to=[reg.email],
             subject="Confirm email address",
             txt_template="registrations/email/registration_confirm_mail.txt",
+            html_template="registrations/email/registration_confirm_mail.html",
             context={
                 "name": reg.get_full_name(),
                 "confirm_link": (
@@ -59,6 +60,7 @@ class EmailsTest(TestCase):
             to=[reg.email],
             subject="Registration accepted",
             txt_template="registrations/email/registration_accepted.txt",
+            html_template="registrations/email/registration_accepted.html",
             context={
                 "name": reg.get_full_name(),
                 "fees": floatformat(reg.contribution, 2),
@@ -80,6 +82,7 @@ class EmailsTest(TestCase):
             to=[reg.email],
             subject="Registration rejected",
             txt_template="registrations/email/registration_rejected.txt",
+            html_template="registrations/email/registration_rejected.html",
             context={"name": reg.get_full_name()},
         )
 
@@ -127,6 +130,7 @@ class EmailsTest(TestCase):
             to=[renewal.member.email],
             subject="Renewal accepted",
             txt_template="registrations/email/renewal_accepted.txt",
+            html_template="registrations/email/renewal_accepted.html",
             context={
                 "name": renewal.member.get_full_name(),
                 "fees": floatformat(renewal.contribution, 2),
@@ -157,6 +161,7 @@ class EmailsTest(TestCase):
             to=[renewal.member.email],
             subject="Renewal rejected",
             txt_template="registrations/email/renewal_rejected.txt",
+            html_template="registrations/email/renewal_rejected.html",
             context={"name": renewal.member.get_full_name()},
         )
 
@@ -177,6 +182,7 @@ class EmailsTest(TestCase):
             to=[renewal.member.email],
             subject="Renewal successful",
             txt_template="registrations/email/renewal_complete.txt",
+            html_template="registrations/email/renewal_complete.html",
             context={"name": renewal.member.get_full_name()},
         )
 
@@ -222,6 +228,7 @@ class EmailsTest(TestCase):
                 to=["test@example.org"],
                 subject="Information about references",
                 txt_template="registrations/email/references_information.txt",
+                html_template="registrations/email/references_information.html",
                 context={
                     "name": registration.get_full_name(),
                     "reference_link": (
@@ -249,6 +256,7 @@ class EmailsTest(TestCase):
                 to=["test@example.org"],
                 subject="Information about references",
                 txt_template="registrations/email/references_information.txt",
+                html_template="registrations/email/references_information.html",
                 context={
                     "name": renewal.member.get_full_name(),
                     "reference_link": (

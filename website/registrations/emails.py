@@ -4,7 +4,6 @@ from typing import Union
 from django.conf import settings
 from django.template.defaultfilters import floatformat
 from django.urls import reverse
-from django.utils.translation import gettext_lazy as _
 
 from registrations.models import Registration, Renewal
 from utils.snippets import send_email

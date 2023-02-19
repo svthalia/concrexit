@@ -178,7 +178,6 @@ def derive_next_mandate_no(member) -> str:
 def send_tpay_batch_processing_emails(batch):
     """Send withdrawal notice emails to all members in a batch."""
     member_payments = batch.payments_set.values("paid_by").annotate(total=Sum("amount"))
-    # TODO: connection
     with mail.get_connection() as connection:
         for member_row in member_payments:
             member = PaymentUser.objects.get(pk=member_row["paid_by"])

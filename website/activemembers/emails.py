@@ -1,6 +1,4 @@
 from django.conf import settings
-from django.template import loader
-from django.utils.translation import gettext_lazy as _
 
 from utils.snippets import send_email
 
