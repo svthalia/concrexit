@@ -1,0 +1,20 @@
+{% extends "email/html_email.html" %}
+
+{% block content %}
+  Dear {{ name }},<br>
+
+  <p>We have some wonderful news for you: your membership renewal has been accepted!</p>
+
+  <p>Unfortunately there is still one little thing that we have to take care of before you get access to everything Thalia has to offer once again: paying your membership fees.</p>
+
+  <p>The membership fees are €{{ fees }}. Those can be paid in a few ways:<p>
+  <ul>
+    {% if thalia_pay_enabled %}
+    <li>You can let us withdraw the money from your bank account via Thalia Pay. For this, you will need to have a bank account added to your account and have signed a direct debit mandate. To pay with Thalia Pay, go to <a href="{{ url }}">{{ url }}</a>.</li>
+    {% endif %}
+    <li>You can transfer the amount of €{{ fees }} to NL 23 INGB 0006 2341 84 with the description "Contribution {{ name }}". Once your payment is processed by us, you will receive a confirmation email.</li>
+    <li>You can pay using debit card or cash by visiting the Thalia board room (M1.0.08) during the lunch break (12:15-13:15).</li>
+  </ul>
+
+  <p>If you have any questions, then don't hesitate and send an email to info@thalia.nu.</p>
+{% endblock %}

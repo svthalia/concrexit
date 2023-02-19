@@ -1,0 +1,12 @@
+{% extends "email/html_email.html" %}
+
+{% block content %}
+  Dear {{ name }},<br>
+
+  <p>Before we can review your membership registration we need confirmation that the email address you entered during the registration process is valid.</p>
+
+  <p>Please open the following link in your web browser to confirm your email address:<br>
+  <a href="{{ confirm_link }}">{{ confirm_link }}</a></p>
+
+  <p>If you have any questions, then don't hesitate and send an email to info@thalia.nu.</p>
+{% endblock %}

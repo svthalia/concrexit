@@ -188,6 +188,7 @@ def send_tpay_batch_processing_emails(batch):
                 to=[member.email],
                 subject="Thalia Pay withdrawal notice",
                 txt_template="payments/email/tpay_withdrawal_notice_mail.txt",
+                html_template="payments/email/tpay_withdrawal_notice_mail.html",
                 connection=connection,
                 context={
                     "name": member.get_full_name(),

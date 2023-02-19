@@ -1,0 +1,16 @@
+{% extends "email/html_email.html" %}
+
+{% block content %}
+  Dear {{ name }},<br>
+
+  <p>We have some wonderful news for you: your membership registration has been accepted!</p>
+
+  <p>Unfortunately there is still one little thing that we have to take care of before you get access to everything Thalia has to offer: paying your membership fees.</p>
+
+  <p>If possible, please visit us during lunch break (12:15-13:15) in M1.0.08 so that we can make sure your registration is completed.</p>
+
+  <p>The membership fees are €{{ fees }} and can be paid using cash, a debit card or via wire transfer. You can transfer the amount of €{{ fees }} to NL 23 INGB 0006 2341 84 with the description "Contribution {{ name }}".<br>
+  Once your payment is processed by us, you will receive an email with your login credentials. In the case you want to pay using a different method you can send an email to treasurer@thalia.nu.</p>
+
+  <p>If you have any other questions, then don't hesitate and send an email to info@thalia.nu.</p>
+{% endblock %}

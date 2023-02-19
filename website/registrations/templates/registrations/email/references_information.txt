@@ -1,4 +1,4 @@
-{% load i18n %}{% blocktrans %}Dear {{ name }},
+Dear {{ name }},
 
 Our information indicates that you're not an iCIS employee or
 a former Thalia member.
@@ -17,4 +17,4 @@ The board of Study Association Thalia
 
 ————
 
-This email was automatically generated.{% endblocktrans %}
+This email was automatically generated.

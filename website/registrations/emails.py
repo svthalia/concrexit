@@ -19,6 +19,7 @@ def send_registration_email_confirmation(registration: Registration) -> None:
         to=[registration.email],
         subject="Confirm email address",
         txt_template="registrations/email/registration_confirm_mail.txt",
+        html_template="registrations/email/registration_confirm_mail.html",
         context={
             "name": registration.get_full_name(),
             "confirm_link": (
@@ -38,6 +39,7 @@ def send_registration_accepted_message(registration: Registration) -> None:
         to=[registration.email],
         subject="Registration accepted",
         txt_template="registrations/email/registration_accepted.txt",
+        html_template="registrations/email/registration_accepted.html",
         context={
             "name": registration.get_full_name(),
             "fees": floatformat(registration.contribution, 2),
@@ -54,6 +56,7 @@ def send_registration_rejected_message(registration: Registration) -> None:
         to=[registration.email],
         subject="Registration rejected",
         txt_template="registrations/email/registration_rejected.txt",
+        html_template="registrations/email/registration_rejected.html",
         context={"name": registration.get_full_name()},
     )
 
@@ -88,6 +91,7 @@ def send_renewal_accepted_message(renewal: Renewal) -> None:
         to=[renewal.member.email],
         subject="Renewal accepted",
         txt_template="registrations/email/renewal_accepted.txt",
+        html_template="registrations/email/renewal_accepted.html",
         context={
             "name": renewal.member.get_full_name(),
             "fees": floatformat(renewal.contribution, 2),
@@ -111,6 +115,7 @@ def send_renewal_rejected_message(renewal: Renewal) -> None:
         to=[renewal.member.email],
         subject="Renewal rejected",
         txt_template="registrations/email/renewal_rejected.txt",
+        html_template="registrations/email/renewal_rejected.html",
         context={"name": renewal.member.get_full_name()},
     )
 
@@ -124,6 +129,7 @@ def send_renewal_complete_message(renewal: Renewal) -> None:
         to=[renewal.member.email],
         subject="Renewal successful",
         txt_template="registrations/email/renewal_complete.txt",
+        html_template="registrations/email/renewal_complete.html",
         context={"name": renewal.member.get_full_name()},
     )
 
@@ -166,6 +172,7 @@ def send_references_information_message(entry: Union[Registration, Renewal]) -> 
         to=[email],
         subject="Information about references",
         txt_template="registrations/email/references_information.txt",
+        html_template="registrations/email/references_information.html",
         context={
             "name": name,
             "reference_link": (

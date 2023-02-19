@@ -1,4 +1,4 @@
-{% load i18n %}{% blocktrans %}Dear {{ full_name }},
+Dear {{ full_name }},
 
 Welcome to Study Association Thalia! You now have an account and can
 log in at {{ url }}.
@@ -19,4 +19,4 @@ The board of Study Association Thalia
 
 ————
 
-This email was automatically generated.{% endblocktrans %}
+This email was automatically generated.

@@ -1,4 +1,4 @@
-{% load i18n %}{% blocktrans %}Dear {{ name }},
+Dear {{ name }},
 
 We've received a request to change the email address of your account.
 If you did not submit such a request then please ignore this email.
@@ -14,4 +14,4 @@ The board of Study Association Thalia
 
 ————
 
-This email was automatically generated.{% endblocktrans %}
+This email was automatically generated.
