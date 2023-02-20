@@ -35,6 +35,7 @@ class EventAdmin(DoNextModelAdmin):
         PizzaEventInline,
         PromotionRequestInline,
     )
+
     list_display = (
         "overview_link",
         "event_date",

@@ -2,6 +2,8 @@
 from django.contrib import admin
 from django.template.defaultfilters import striptags
 
+from events.admin.event import EventAdmin as BaseEventAdmin
+from events.models import Event
 from thaliawebsite.templatetags.bleach_tags import bleach
 
 from .models import Announcement, FrontpageArticle, Slide
@@ -60,3 +62,19 @@ class SlideAdmin(admin.ModelAdmin):
         return obj.is_visible
 
     visible.boolean = True
+
+
+class SlideInline(admin.StackedInline):
+    model = Slide
+    extra = 0
+    classes = ("collapse",)
+
+
+class EventAdmin(BaseEventAdmin):
+    def get_inlines(self, request, obj=None):
+        return [*super().get_inlines(request, obj), SlideInline]
+
+
+# Unregister the original EventAdmin and register the new one with SlideInline.
+admin.site.unregister(Event)
+admin.site.register(Event, EventAdmin)
