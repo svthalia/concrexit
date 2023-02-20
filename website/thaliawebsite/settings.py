@@ -464,6 +464,8 @@ INSTALLED_APPS = [
     "thaliawebsite.apps.ThaliaWebsiteConfig",  # include for admin settings
     # Load django.contrib.admin after thaliawebsite so the admin page gets modified
     "django.contrib.admin",
+    # Our apps ordered such that templates in the first
+    # apps can override those used by the later apps.
     "pushnotifications.apps.PushNotificationsConfig",
     "announcements.apps.AnnouncementsConfig",
     "promotion.apps.PromotionConfig",
