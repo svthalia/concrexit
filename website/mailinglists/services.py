@@ -57,7 +57,7 @@ def get_automatic_lists():
 
     oldmembers = [
         m
-        for m in Member.objects.all()
+        for m in Member.objects.filter(profile__receive_oldmembers=True)
         if (
             m.current_membership is None
             or m.current_membership.type != Membership.MEMBER

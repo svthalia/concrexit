@@ -31,6 +31,7 @@ class ProfileForm(forms.ModelForm):
             "receive_optin",
             "receive_newsletter",
             "receive_magazine",
+            "receive_oldmembers",
             "email_gsuite_only",
         ]
         model = Profile
