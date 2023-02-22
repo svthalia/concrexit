@@ -5,8 +5,8 @@ from django.core.files.base import ContentFile
 from django.core.files.storage import DefaultStorage, get_storage_class
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models.fields.files import FieldFile, ImageFieldFile
-from thumbnails.files import ThumbnailedImageFile
 
+from thumbnails.files import ThumbnailedImageFile
 from thumbnails.images import Thumbnail
 
 
