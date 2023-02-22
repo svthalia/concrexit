@@ -72,10 +72,11 @@ class PaymentSettledFilter(filters.BaseFilterBackend):
 
         if settled is None:
             return queryset
-        elif strtobool(settled):
+
+        if strtobool(settled):
             return queryset.filter(batch__processed=True)
-        else:
-            return queryset.exclude(batch__processed=True)
+
+        return queryset.exclude(batch__processed=True)
 
     def get_schema_operation_parameters(self, view):
         return [
