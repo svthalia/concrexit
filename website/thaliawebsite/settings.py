@@ -767,16 +767,6 @@ STATIC_PRECOMPILER_LIST_FILES = True
 # See utils/model/signals.py for explanation
 SUSPEND_SIGNALS = False
 
-THUMBNAIL_SIZES = {
-    "small": "300x300",
-    "medium": "600x600",
-    "large": "1200x900",
-    "avatar_large": "900x900",
-    "slide_small": "500x108",
-    "slide_medium": "1000x215",
-    "slide": "2000x430",
-}
-
 THUMBNAILS = {
     "METADATA": {
         "BACKEND": "thumbnails.backends.metadata.DatabaseBackend",
@@ -809,14 +799,65 @@ THUMBNAILS = {
             "PROCESSORS": [
                 {
                     "PATH": "thumbnails.processors.resize",
+                    "width": 1200,
+                    "height": 900,
+                    "method": "fit",
+                },
+            ],
+        },
+        "avatar_large": {
+            "PROCESSORS": [
+                {
+                    "PATH": "thumbnails.processors.resize",
                     "width": 900,
                     "height": 900,
                     "method": "fit",
                 },
             ],
         },
+        "slide_small": {
+            "PROCESSORS": [
+                {
+                    "PATH": "thumbnails.processors.resize",
+                    "width": 500,
+                    "height": 108,
+                    "method": "fit",
+                },
+            ],
+        },
+        "slide_medium": {
+            "PROCESSORS": [
+                {
+                    "PATH": "thumbnails.processors.resize",
+                    "width": 1000,
+                    "height": 215,
+                    "method": "fit",
+                },
+            ],
+        },
+        "slide": {
+            "PROCESSORS": [
+                {
+                    "PATH": "thumbnails.processors.resize",
+                    "width": 200,
+                    "height": 430,
+                    "method": "fit",
+                },
+            ],
+        },
     },
 }
+
+THUMBNAIL_SIZES = {
+    "small": "small",
+    "medium": "medium",
+    "large": "large",
+    "avatar_large": "avatar_large",
+    "slide_small": "slide_small",
+    "slide_medium": "slide_medium",
+    "slide": "slide",
+}
+
 
 # Photos settings
 PHOTO_UPLOAD_SIZE = 2560, 1440
