@@ -16,8 +16,6 @@ from django.core.management.commands import makemessages
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from moneybird.webhooks.events import WebhookEvent
-
 logger = logging.getLogger(__name__)
 
 # Sentinel objects that are distinct from None
@@ -475,7 +473,6 @@ INSTALLED_APPS = [
     "utils",
     "mailinglists.apps.MailinglistsConfig",
     "merchandise.apps.MerchandiseConfig",
-    "moneybird.apps.MoneybirdConfig",
     "moneybirdsynchronization.apps.MoneybirdsynchronizationConfig",
     "thabloid.apps.ThabloidConfig",
     "partners.apps.PartnersConfig",
@@ -822,18 +819,6 @@ makemessages.Command.xgettext_options.append("--add-location=file")
 
 MONEYBIRD_ADMINISTRATION_ID = 380475297324075003
 MONEYBIRD_API_KEY = "-Xw8P1CfYFAA8Z0VEEnOgDvXiNNb8mgdBCgEMl05Yus"
-MONEYBIRD_RESOURCE_TYPES = [
-    "moneybirdsynchronization.moneybird_resources.ContactResourceType",
-]
-
-# If you want to receive webhook events, you should define the following:
-MONEYBIRD_WEBHOOK_EVENTS = [
-    WebhookEvent.CONTACT,
-]
-MONEYBIRD_WEBHOOK_ID = os.environ.get("MONEYBIRD_WEBHOOK_ID")
-MONEYBIRD_WEBHOOK_TOKEN = os.environ.get("MONEYBIRD_WEBHOOK_TOKEN")
-MONEYBIRD_WEBHOOK_SITE_DOMAIN = os.environ.get("MONEYBIRD_WEBHOOK_SITE_DOMAIN") # e.g. "https://example.com"
-MONEYBIRD_WEBHOOK_ALLOW_INSECURE = False # Set to False for testing purposes only
 
 MONEYBIRD_AUTO_PUSH = True # Push changes to Moneybird automatically (so you don't have to call `instance.push_to_moneybird()` manually)
 MONEYBIRD_FETCH_BEFORE_PUSH = False # Fetch the latest data from Moneybird before pushing changes. This is useful if you want to avoid overwriting changes made in Moneybird, but it will slow down your application. With webhooks, this is likely not necessary.

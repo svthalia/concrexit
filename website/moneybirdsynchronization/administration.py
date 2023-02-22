@@ -16,7 +16,7 @@ from urllib.parse import urljoin
 import requests
 from django.utils import timezone
 
-from moneybird.settings import settings
+from thaliawebsite import settings
 
 
 class Administration(ABC):
