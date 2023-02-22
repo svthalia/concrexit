@@ -1,0 +1,66 @@
+# This file is distributed under the same license as the django-moneybird package.
+# Job Doesburg <job.doesburg@gmail.com>, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-10-16 14:46+0200\n"
+"PO-Revision-Date: 2023-02-21 13:40+0100\n"
+"Last-Translator: Job Doesburg <job.doesburg@gmail.com>\n"
+"Language-Team: \n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.2.2\n"
+
+#: moneybird/admin.py:25
+#, python-format
+msgid "Error pushing %s to Moneybird: %s"
+msgstr "Fout tijdens het pushen van %s naar Moneybird: %s"
+
+#: moneybird/admin.py:36
+#, python-format
+msgid "%d object was successfully pushed to Moneybird."
+msgid_plural "%d objects were successfully pushed to Moneybird."
+msgstr[0] "%d object is succesvol naar Moneybird gepusht."
+msgstr[1] "%d objecten zijn succesvol naar Moneybird gepusht."
+
+#: moneybird/admin.py:108
+#, python-format
+msgid "Error pushing to Moneybird: %s"
+msgstr "Fout tijdens het pushen naar Moneybird: %s"
+
+#: moneybird/apps.py:8
+msgid "Moneybird"
+msgstr "Moneybird"
+
+#: moneybird/models.py:14
+msgid "Moneybird ID"
+msgstr "Moneybird ID"
+
+#: moneybird/models.py:21
+msgid "Synced with Moneybird"
+msgstr "Gesynchroniseerd met MoneyBird"
+
+#: moneybird/models.py:22
+msgid "Latest changes have been pushed to Moneybird."
+msgstr "Laatste veranderingen zijn naar Moneybird gepusht."
+
+#: moneybird/models.py:26
+msgid "To be deleted from Moneybird"
+msgstr "Te verwijderen van Moneybird"
+
+#: moneybird/models.py:27
+msgid "Delete this object from Moneybird when syncing."
+msgstr "Verwijder dit object van Moneybird bij synchronisatie."
+
+#: moneybird/models.py:211
+msgid "Moneybird version"
+msgstr "Moneybird versie"
+
+#, python-format
+#~ msgid "Push selected %s to Moneybird"
+#~ msgstr "Push geselecteerde %s naar Moneybird"
