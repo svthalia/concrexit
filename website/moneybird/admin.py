@@ -104,6 +104,7 @@ class MoneybirdResourceModelAdminMixin:
             try:
                 obj.push_to_moneybird()
             except Exception as e:
+                print('Error pushing to Moneybird: %s' % type(e))
                 self.message_user(
                     request, _("Error pushing to Moneybird: %s") % e, messages.ERROR
                 )
