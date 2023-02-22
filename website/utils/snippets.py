@@ -221,7 +221,7 @@ def send_email(to: str, subject: str, body_template: str, context: dict) -> None
 
 def minimise_logentries_data(dry_run=False):
     # Sometimes years are 366 days of course, but better delete 1 or 2 days early than late
-    deletion_period = timezone.now().date() - timezone.timedelta(days=(365 * 7))
+    deletion_period = timezone.now().date() - timezone.timedelta(days=365 * 7)
 
     queryset = LogEntry.objects.filter(action_time__lte=deletion_period).exclude(
         user__isnull=True

@@ -33,8 +33,7 @@ class Payable:
             self.model.refresh_from_db(fields=["payment"])
         except ObjectDoesNotExist:
             return None
-        else:
-            return self.payment
+        return self.payment
 
     @property
     def payment_amount(self):

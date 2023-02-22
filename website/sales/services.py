@@ -25,7 +25,7 @@ def is_manager(member, shift):
 def execute_data_minimisation(dry_run=False):
     """Anonymizes orders older than 3 years."""
     # Sometimes years are 366 days of course, but better delete 1 or 2 days early than late
-    deletion_period = timezone.now().date() - timezone.timedelta(days=(365 * 3))
+    deletion_period = timezone.now().date() - timezone.timedelta(days=365 * 3)
 
     queryset = Order.objects.filter(created_at__lte=deletion_period).exclude(
         payer__isnull=True
