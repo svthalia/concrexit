@@ -53,7 +53,7 @@ postgres = ["psycopg2"]
 django-template-check = "0.4.0"
 factory_boy = "3.2.1"
 pydenticon = "0.3.1"
-Faker = "17.1.0"
+Faker = "17.3.0"
 coverage = {extras = ["toml"], version = "^7.0.0"}
 isort = "5.12.0"
 black = "23.1.0"
