@@ -446,7 +446,7 @@ class Event(models.Model):
             raise ValidationError(errors)
 
     def get_absolute_url(self):
-        return reverse("events:event", args=[str(self.pk)])
+        return reverse("events:event", kwargs={"slug": self.slug})
 
     def save(self, **kwargs):
         delete_collector = Collector(

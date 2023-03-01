@@ -59,7 +59,7 @@ class EventFeed(ICalFeed):
         return item.end
 
     def item_link(self, item):
-        return settings.BASE_URL + reverse("events:event", kwargs={"pk": item.id})
+        return settings.BASE_URL + reverse("events:event", kwargs={"slug": item.slug})
 
     def item_location(self, item):
         return f"{item.location} - {item.map_location}"

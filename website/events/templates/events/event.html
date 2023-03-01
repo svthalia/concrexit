@@ -144,7 +144,7 @@
                                             {% endblocktrans %}
                                         </p>
                                     {% endif %}
-                                    <form action="{% url 'events:register' event.id %}" method="post">{% csrf_token %}
+                                    <form action="{% url 'events:register' event.slug %}" method="post">{% csrf_token %}
                                         {% if event.reached_participants_limit %}
                                             <input type="submit" class="btn btn-primary"
                                                    value="{% trans "Put me on the waiting list" %}"/>
@@ -156,7 +156,7 @@
                                     </form>
                                 {% elif permissions.cancel_registration %}
                                     {# Special message to accept costs when cancelling after the deadline, unless member is on the waiting list #}
-                                    <form action="{% url 'events:cancel' event.id %}" method="post">{% csrf_token %}
+                                    <form action="{% url 'events:cancel' event.slug %}" method="post">{% csrf_token %}
                                         {% if registration.would_cancel_after_deadline %}
                                             <input type="submit" class="btn btn-primary"
                                                    value="{% trans "Cancel registration" %}"
