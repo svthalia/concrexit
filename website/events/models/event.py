@@ -15,7 +15,6 @@ from queryable_properties.managers import QueryablePropertiesManager
 from queryable_properties.properties import AggregateProperty
 from tinymce.models import HTMLField
 
-from announcements.models import Slide
 from events.models import status
 from events.models.categories import EVENT_CATEGORIES
 from members.models import Member
@@ -204,18 +203,6 @@ class Event(models.Model):
         "documents.Document",
         verbose_name=_("documents"),
         blank=True,
-    )
-
-    slide = models.ForeignKey(
-        Slide,
-        verbose_name="slide",
-        help_text=_(
-            "Change the header-image on the event's info-page to one "
-            "specific to this event."
-        ),
-        blank=True,
-        on_delete=models.deletion.SET_NULL,
-        null=True,
     )
 
     tpay_allowed = models.BooleanField(_("Allow Thalia Pay"), default=True)

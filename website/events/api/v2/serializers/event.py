@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
 from activemembers.api.v2.serializers.member_group import MemberGroupSerializer
-from announcements.api.v2.serializers import SlideSerializer
 from documents.api.v2.serializers.document import DocumentSerializer
 from events import services
 from events.api.v2.serializers.event_registration import EventRegistrationSerializer
@@ -45,7 +44,6 @@ class EventSerializer(CleanedModelSerializer):
             "user_permissions",
             "user_registration",
             "organisers",
-            "slide",
             "documents",
         )
 
@@ -57,7 +55,6 @@ class EventSerializer(CleanedModelSerializer):
     registration_status = serializers.SerializerMethodField("_registration_status")
     price = PaymentAmountSerializer()
     fine = PaymentAmountSerializer()
-    slide = SlideSerializer()
     documents = DocumentSerializer(many=True)
     user_permissions = serializers.SerializerMethodField("_user_permissions")
 

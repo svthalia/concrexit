@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n static django_bootstrap5 bleach_tags thumbnail member_card google_map_url grid_item alert document_cards slider payments %}
+{% load i18n static django_bootstrap5 bleach_tags member_card google_map_url grid_item alert document_cards slider payments %}
 
 
 {% block title %}{{ event.title }} — {% trans "Calendar"|capfirst %} — {{ block.super }}{% endblock %}
@@ -12,22 +12,6 @@
         <meta property="og:description" content="{{ event.description|striptags|truncatewords:10 }}"/>
     {% endif %}
 {% endblock %}
-
-
-
-{% block body_class %}event-slide{% endblock %}
-{% block header_image_container %}
-    {% if event.slide %}
-        <div id="announcements-slider" class="carousel slide w-100 h-100"
-             data-bs-ride="carousel">
-            <img class="image"
-                 src="{% thumbnail event.slide.content slide_size %}"
-                 alt="{{ event.slide.title }}">
-        </div>
-    {% else %}
-        {{ block.super }}
-    {% endif %}
-{% endblock header_image_container %}
 
 {% block body %}
     <section class="page-section" id="events-detail">
