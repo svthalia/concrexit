@@ -1,18 +1,20 @@
 """Register admin pages for the models."""
 import datetime
-from import_export.admin import ExportMixin
+
 from django.contrib import admin, messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.db.models import Count, Q
-from django.http import HttpResponse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from import_export.admin import ExportMixin
+
 from members import services
 from members.models import EmailChange, Member
-from .resources import UserEmailListResource, UserListResource
+
 from . import forms, models
+from .resources import MemberEmailListResource, MemberListResource
 
 
 class MembershipInline(admin.StackedInline):
@@ -135,7 +137,7 @@ class HasPermissionsFilter(admin.SimpleListFilter):
 
 
 class UserAdmin(ExportMixin, BaseUserAdmin):
-    resource_classes = (UserEmailListResource, UserListResource)
+    resource_classes = (MemberEmailListResource, MemberListResource)
     form = forms.UserChangeForm
     add_form = forms.UserCreationForm
 

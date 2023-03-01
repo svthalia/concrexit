@@ -10,14 +10,15 @@ from django.http import HttpRequest, HttpResponse
 from django.urls import path, reverse
 from django.utils import timezone
 from django.utils.html import format_html
-from django.utils.text import capfirst
 from django.utils.translation import gettext_lazy as _
+
 from import_export.admin import ExportActionMixin
 
 from payments import admin_views, services
 from payments.forms import BankAccountAdminForm, BatchPaymentInlineAdminForm
-from .models import Payment, BankAccount, Batch, PaymentUser
-from .resources import PaymentResource, BankAccountResource
+
+from .models import BankAccount, Batch, Payment, PaymentUser
+from .resources import BankAccountResource, PaymentResource
 
 
 def _show_message(

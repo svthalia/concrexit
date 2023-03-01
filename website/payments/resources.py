@@ -1,7 +1,7 @@
 from import_export import resources
 from import_export.fields import Field
 
-from .models import Payment, BankAccount
+from .models import BankAccount, Payment
 
 
 class PaymentResource(resources.ModelResource):

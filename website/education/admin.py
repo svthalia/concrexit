@@ -1,8 +1,8 @@
 """This module registers admin pages for the models."""
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
-from django.http import HttpResponse
 from django.utils.translation import gettext_lazy as _
+
 from import_export.admin import ExportActionMixin
 
 from . import models

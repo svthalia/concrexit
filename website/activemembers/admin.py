@@ -8,9 +8,11 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from import_export.admin import ExportActionMixin
+
 from activemembers import models
 from activemembers.forms import MemberGroupForm, MemberGroupMembershipForm
 from utils.snippets import datetime_to_lectureyear
+
 from .resources import MemberGroupMembershipResource
 
 
