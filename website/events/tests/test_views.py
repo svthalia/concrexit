@@ -40,6 +40,7 @@ class AdminTest(TestCase):
             map_location="test map location",
             price=0.00,
             fine=0.00,
+            slug="testevent-1",
         )
         cls.event.organisers.add(cls.committee)
         cls.member = Member.objects.filter(last_name="Wiggers").first()
@@ -164,13 +165,14 @@ class RegistrationTest(TestCase):
             map_location="test map location",
             price=0.00,
             fine=0.00,
+            slug="testevent-1",
         )
         cls.event.organisers.add(cls.committee)
         cls.member = Member.objects.filter(last_name="Wiggers").first()
         cls.mark_present_url = reverse(
             "events:mark-present",
             kwargs={
-                "pk": cls.event.pk,
+                "slug": cls.event.slug,
                 "token": cls.event.mark_present_url_token,
             },
         )
@@ -526,7 +528,7 @@ class RegistrationTest(TestCase):
             reverse(
                 "events:mark-present",
                 kwargs={
-                    "pk": self.event.pk,
+                    "slug": self.event.slug,
                     "token": "11111111-2222-3333-4444-555555555555",
                 },
             ),
@@ -575,13 +577,14 @@ class EventPageTest(TestCase):
             map_location="test map location",
             price=0.00,
             fine=0.00,
+            slug="testevent-1",
         )
         cls.event.organisers.add(cls.committee)
         cls.member = Member.objects.filter(last_name="Wiggers").first()
         cls.mark_present_url = reverse(
             "events:mark-present",
             kwargs={
-                "pk": cls.event.pk,
+                "slug": cls.event.slug,
                 "token": cls.event.mark_present_url_token,
             },
         )

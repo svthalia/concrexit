@@ -226,7 +226,7 @@ class Event(models.Model):
         return settings.BASE_URL + reverse(
             "events:mark-present",
             kwargs={
-                "pk": self.pk,
+                "slug": self.slug,
                 "token": self.mark_present_url_token,
             },
         )

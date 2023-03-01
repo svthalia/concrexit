@@ -283,6 +283,7 @@ class Command(BaseCommand):
         event.organisers.add(*random.sample(list(groups), random.randint(1, 3)))
         event.category = random.choice(EVENT_CATEGORIES)[0]
         event.fine = 5
+        event.slug = event.title.replace(" ", "-").lower() + "-" + str(event.start.year)
 
         if random.random() < 0.5:
             week = timedelta(days=7)

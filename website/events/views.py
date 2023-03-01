@@ -206,7 +206,7 @@ class MarkPresentView(View):
 
         Checks if the url is correct, the event has not ended yet, and the user is registered.
         """
-        event = get_object_or_404(Event, pk=kwargs["pk"])
+        event = get_object_or_404(Event, slug=kwargs["slug"])
         if kwargs["token"] != event.mark_present_url_token:
             messages.error(request, _("Invalid url."))
         elif not request.member or not is_user_registered(request.member, event):
