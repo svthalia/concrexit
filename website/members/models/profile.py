@@ -367,34 +367,12 @@ class Profile(models.Model):
             self._orig_image = None
 
         elif self.photo and self._orig_image != self.photo.name:
-            original_image_name = self.photo.name
-            logger.debug("Converting image %s", original_image_name)
-
-            with self.photo.open() as image_handle:
-                image = Image.open(image_handle)
-                image.load()
-
-            # Image.thumbnail does not upscale an image that is smaller
-            image.thumbnail(settings.PHOTO_UPLOAD_SIZE, Image.ANTIALIAS)
-
-            # Create new filename to store compressed image
-            image_name, _ext = os.path.splitext(original_image_name)
-            image_name = storage.get_available_name(f"{image_name}.jpg")
-
-            save_image(storage, image, image_name, "JPEG")
-
-            self.photo.name = image_name
             super().save(**kwargs)
-
-            # delete original upload.
-            storage.delete(original_image_name)
 
             if self._orig_image:
                 logger.info("deleting: %s", self._orig_image)
                 storage.delete(self._orig_image)
             self._orig_image = self.photo.name
-        else:
-            logging.info("We already had this image, skipping thumbnailing")
 
     def __str__(self):
         return _("Profile for {}").format(self.user)
