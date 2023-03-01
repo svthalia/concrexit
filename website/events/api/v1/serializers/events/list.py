@@ -4,7 +4,6 @@ from django.utils.html import strip_tags
 
 from rest_framework import serializers
 
-from announcements.api.v1.serializers import SlideSerializer
 from events import services
 from events.models import Event
 from thaliawebsite.api.v1.cleaned_model_serializer import CleanedModelSerializer
@@ -27,14 +26,12 @@ class EventListSerializer(CleanedModelSerializer):
             "present",
             "pizza",
             "registration_allowed",
-            "slide",
         )
 
     description = serializers.SerializerMethodField("_description")
     registered = serializers.SerializerMethodField("_registered")
     pizza = serializers.SerializerMethodField("_pizza")
     present = serializers.SerializerMethodField("_present")
-    slide = SlideSerializer()
 
     def _description(self, instance):
         return unescape(strip_tags(instance.description))

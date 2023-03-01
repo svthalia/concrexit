@@ -68,6 +68,7 @@ This graph leaves out the `thaliawebsite` and `utils` app as they are special ap
 
 ```mermaid
 graph TD;
+    announcements --> events;
     activemembers --> members;
     activemembers --> mailinglists;
     events --> activemembers;
@@ -91,7 +92,6 @@ graph TD;
 
     documents;
     partners;
-    announcements;
     pushnotifications;
     shortlinks;
     singlepages;
@@ -108,9 +108,6 @@ graph TD;
 
     %% #2756
     members --> activemembers;
-
-    %% #2579
-    events --> announcements;
 
     %% 2758
     newsletters --> pushnotifications;

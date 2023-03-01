@@ -201,6 +201,15 @@ class Slide(models.Model):
         default=False,
     )
 
+    event = models.OneToOneField(
+        "events.Event",
+        related_name="slide",
+        null=True,
+        blank=True,
+        help_text="This event's header image will be changed to this slide.",
+        on_delete=models.deletion.SET_NULL,
+    )
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.content:

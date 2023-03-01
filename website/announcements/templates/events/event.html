@@ -1,0 +1,18 @@
+{% extends "events/event.html" %}
+{% load thumbnail %}
+
+{% block body_class %}{% if event.slide %}event-slide{% else %}{{ block.super }}{% endif %}{% endblock %}
+
+
+{% block header_image_container %}
+    {% if event.slide %}
+        <div id="announcements-slider" class="carousel slide w-100 h-100"
+             data-bs-ride="carousel">
+            <img class="image"
+                 src="{% thumbnail event.slide.content slide_size %}"
+                 alt="{{ event.slide.title }}">
+        </div>
+    {% else %}
+        {{ block.super }}
+    {% endif %}
+{% endblock header_image_container %}
