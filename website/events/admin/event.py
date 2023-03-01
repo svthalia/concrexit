@@ -50,7 +50,10 @@ class EventAdmin(DoNextModelAdmin):
     actions = ("make_published", "make_unpublished")
     date_hierarchy = "start"
     search_fields = ("title", "description")
-    prepopulated_fields = {"map_location": ("location",)}
+    prepopulated_fields = {
+        "map_location": ("location",),
+    }
+
     filter_horizontal = ("documents", "organisers")
 
     fieldsets = (
@@ -59,6 +62,7 @@ class EventAdmin(DoNextModelAdmin):
             {
                 "fields": (
                     "title",
+                    "slug",
                     "published",
                     "organisers",
                 )

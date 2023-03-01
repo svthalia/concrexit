@@ -31,6 +31,13 @@ class Event(models.Model):
 
     title = models.CharField(_("title"), max_length=100)
 
+    slug = models.SlugField(
+        verbose_name=_("slug"),
+        unique=True,
+        blank=False,
+        null=False,
+    )
+
     description = HTMLField(
         _("description"),
     )

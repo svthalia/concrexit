@@ -20,8 +20,14 @@ urlpatterns = [
         include(
             [
                 path("<int:pk>/", EventDetail.as_view(), name="event"),
+                path("<slug:slug>/", EventDetail.as_view(), name="event"),
                 path(
                     "<int:pk>/registration/register/",
+                    EventRegisterView.as_view(),
+                    name="register",
+                ),
+                path(
+                    "<slug:slug>/registration/register/",
                     EventRegisterView.as_view(),
                     name="register",
                 ),
@@ -31,12 +37,27 @@ urlpatterns = [
                     name="cancel",
                 ),
                 path(
+                    "<slug:slug>/registration/cancel/",
+                    EventCancelView.as_view(),
+                    name="cancel",
+                ),
+                path(
                     "<int:pk>/mark-present/<uuid:token>/",
                     MarkPresentView.as_view(),
                     name="mark-present",
                 ),
                 path(
+                    "<slug:slug>/mark-present/<uuid:token>/",
+                    MarkPresentView.as_view(),
+                    name="mark-present",
+                ),
+                path(
                     "<int:pk>/registration/",
+                    RegistrationView.as_view(),
+                    name="registration",
+                ),
+                path(
+                    "<slug:slug>/registration/",
                     RegistrationView.as_view(),
                     name="registration",
                 ),
