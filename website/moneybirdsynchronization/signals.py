@@ -103,6 +103,7 @@ def post_payment_save(sender, instance, **kwargs):
                 "contact_id": contact.moneybird_id,
                 "reference": str(instance.id),
                 "date": instance.created_at.strftime("%Y-%m-%d"),
+                "source_url": settings.BASE_URL + instance.get_admin_url(),
                 "currency": "EUR",
                 "prices_are_incl_tax": True,
                 "details_attributes":[
@@ -120,6 +121,7 @@ def post_payment_save(sender, instance, **kwargs):
                 "contact_id": contact.moneybird_id,
                 "reference": str(instance.id),
                 "date": instance.created_at.strftime("%Y-%m-%d"),
+                "source_url": settings.BASE_URL + instance.get_admin_url(),
                 "currency": "EUR",
                 "prices_are_incl_tax": True,
                 "details_attributes":[
