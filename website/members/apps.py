@@ -35,7 +35,13 @@ class MembersConfig(AppConfig):
             ],
         }
 
-    def announcements(self, request):
+    def announcements(self, request) -> list[dict]:
+        # Skip announcements for anonymous users to prevent evaluating
+        # request.member too early for API requests, because DRF only sets
+        # the correct request.user after evaluating the middlewares.
+        if request.user.is_anonymous:
+            return []
+
         announcements = []
         if request.member and request.member.current_membership is None:
             announcements.append(
