@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("events", "0063_event_registration_without_membership_and_more"),
+        ("events", "0064_remove_event_slide"),
     ]
 
     operations = [

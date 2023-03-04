@@ -1,4 +1,5 @@
 """The admin interfaces registered by the pushnotifications package."""
+from django.apps import apps
 from django.conf import settings
 from django.contrib import admin, messages
 from django.contrib.admin import ModelAdmin, helpers
@@ -9,7 +10,6 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView
 
-from events.admin.event import EventAdmin as BaseEventAdmin
 from events.decorators import organiser_only
 from events.models import Event
 
@@ -236,6 +236,13 @@ class EventMessageView(FormView):
     def dispatch(self, request, *args, **kwargs):
         self.event = get_object_or_404(Event, pk=self.kwargs["pk"])
         return super().dispatch(request, *args, **kwargs)
+
+
+# Announcements also overrides the EventAdmin. We need to override the latest.
+if apps.is_installed("announcements"):
+    from announcements.admin import EventAdmin as BaseEventAdmin
+else:
+    from events.admin import EventAdmin as BaseEventAdmin  # pylint: disable=C0412
 
 
 class EventAdmin(BaseEventAdmin):
