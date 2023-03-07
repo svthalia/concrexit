@@ -119,8 +119,8 @@ class Shift(models.Model):
             "orders",
             filter=Q(orders___is_free=True)
             | Q(
-                orders__payment__isnull=False,  # or the order is free
-            ),
+                orders__payment__isnull=False,
+            ),  # or the order is free
         )
     )
 

@@ -182,6 +182,12 @@ class Profile(models.Model):
         blank=True,
         null=True,
     )
+    shoesize = models.IntegerField(
+        verbose_name=("Shoe size"),
+        validators=[validators.MinValueValidator(39), validators.MaxValueValidator(47)],
+        blank=True,
+        null=True,
+    )
 
     profile_description = models.TextField(
         verbose_name=_("Profile text"),
@@ -351,6 +357,7 @@ class Profile(models.Model):
                 self.phone_number,
                 self.address_street,
                 self.address_street2,
+                self.shoesize,
                 self.address_postal_code,
                 self.address_city,
                 self.address_country,

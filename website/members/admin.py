@@ -42,6 +42,7 @@ class ProfileInline(admin.StackedInline):
         "nickname",
         "display_name_preference",
         "profile_description",
+        "shoesize",
         "website",
         "photo",
         "emergency_contact",

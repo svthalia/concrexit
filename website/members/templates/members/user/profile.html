@@ -64,6 +64,11 @@
                 {% if member.profile.show_birthday and member.profile.birthday %}
                     <li><strong>{% trans "Birthday" %}: </strong> {{ member.profile.birthday }}</li>
                 {% endif %}
+
+                {% if member.profile.show_birthday and member.profile.birthday %}
+                    <li><strong>{% trans "Shoesize" %}: </strong> {{ member.profile.shoesize }}</li>
+                {% endif %}
+
             </ul>
 
             {% if achievements %}
