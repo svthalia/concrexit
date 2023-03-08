@@ -1,10 +1,9 @@
 from django import template
-from django.conf import settings
 from django.template.defaultfilters import date
 from django.urls import reverse
 
 from thaliawebsite.templatetags.grid_item import grid_item
-from utils.media.services import get_thumbnail_url
+from utils.media.services import get_media_url
 
 register = template.Library()
 
@@ -16,9 +15,7 @@ def album_card(album):
     image_url = ""
 
     if album.cover:
-        image_url = get_thumbnail_url(
-            album.cover.file, settings.THUMBNAIL_SIZES["medium"]
-        )
+        image_url = album.cover.file.thumbnails.medium.url
         if album.cover.rotation > 0:
             class_name += f" rotate{album.cover.rotation}"
 
@@ -57,7 +54,7 @@ def photo_card(photo):
         f" data-likeUrl={reverse('api:v2:photos:photo-like', args=[photo.pk])}"
     )
 
-    image_url = get_thumbnail_url(photo.file, settings.THUMBNAIL_SIZES["medium"])
+    image_url = get_media_url(photo.file.thumbnails.medium)
 
     if photo.rotation > 0:
         class_name += f" rotate{photo.rotation}"
@@ -68,7 +65,7 @@ def photo_card(photo):
     return grid_item(
         title="",
         meta_text=f"<p><i class='fas fa-heart me-2'></i>{photo.num_likes}</p>",
-        url=get_thumbnail_url(photo.file, settings.THUMBNAIL_SIZES["large"], fit=False),
+        url=photo.file.url,
         image_url=image_url,
         class_name=class_name,
         anchor_attrs=anchor_attrs,

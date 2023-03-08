@@ -11,6 +11,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from thumbnails.fields import ImageField
 from tinymce.models import HTMLField
 
 from thaliawebsite.storage.backend import get_public_storage
@@ -36,7 +37,7 @@ class MemberGroup(models.Model):
 
     description = HTMLField(verbose_name=_("Description"))
 
-    photo = models.ImageField(
+    photo = ImageField(
         verbose_name=_("Image"),
         upload_to="committeephotos/",
         storage=get_public_storage,
