@@ -4,6 +4,13 @@ from django.db import migrations
 import thumbnails.fields
 
 
+def create_thumbnail_sources(apps, _):
+    Source = apps.get_model("thumbnails", "Source")
+    Merchandise = apps.get_model("merchandise", "Merchandise")
+    for m in Merchandise.objects.all():
+        Source.objects.get_or_create(name=m.image.name)
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -16,4 +23,5 @@ class Migration(migrations.Migration):
             name="image",
             field=thumbnails.fields.ImageField(upload_to="merchandise"),
         ),
+        migrations.RunPython(create_thumbnail_sources, migrations.RunPython.noop)
     ]

@@ -5,8 +5,14 @@ import members.models.profile
 import thumbnails.fields
 
 
-class Migration(migrations.Migration):
+def create_thumbnail_sources(apps, _):
+    Source = apps.get_model("thumbnails", "Source")
+    Profile = apps.get_model("members", "Profile")
+    for p in Profile.objects.all():
+        Source.objects.get_or_create(name=p.photo.name)
 
+
+class Migration(migrations.Migration):
     dependencies = [
         ("members", "0042_profile_is_minimized_alter_profile_address_city_and_more"),
     ]
@@ -22,4 +28,5 @@ class Migration(migrations.Migration):
                 verbose_name="Photo",
             ),
         ),
+        migrations.RunPython(create_thumbnail_sources, migrations.RunPython.noop)
     ]

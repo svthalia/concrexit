@@ -4,8 +4,14 @@ from django.db import migrations
 import thumbnails.fields
 
 
-class Migration(migrations.Migration):
+def create_thumbnail_sources(apps, _):
+    Source = apps.get_model("thumbnails", "Source")
+    Membergroup = apps.get_model("activemembers", "Membergroup")
+    for m in Membergroup.objects.all():
+        Source.objects.get_or_create(name=m.photo.name)
 
+
+class Migration(migrations.Migration):
     dependencies = [
         ("activemembers", "0041_alter_membergroup_photo"),
     ]
@@ -21,4 +27,5 @@ class Migration(migrations.Migration):
                 verbose_name="Image",
             ),
         ),
+        migrations.RunPython(create_thumbnail_sources, migrations.RunPython.noop)
     ]

@@ -5,8 +5,14 @@ import photos.models
 import thumbnails.fields
 
 
-class Migration(migrations.Migration):
+def create_thumbnail_sources(apps, _):
+    Source = apps.get_model("thumbnails", "Source")
+    Photo = apps.get_model("photos", "Photo")
+    for photo in Photo.objects.all():
+        Source.objects.get_or_create(name=photo.file.name)
 
+
+class Migration(migrations.Migration):
     dependencies = [
         ("photos", "0018_alter_like_member"),
     ]
@@ -19,4 +25,5 @@ class Migration(migrations.Migration):
                 upload_to=photos.models.photo_uploadto, verbose_name="file"
             ),
         ),
+        migrations.RunPython(create_thumbnail_sources, migrations.RunPython.noop)
     ]

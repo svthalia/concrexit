@@ -4,8 +4,24 @@ from django.db import migrations
 import thumbnails.fields
 
 
-class Migration(migrations.Migration):
+def create_thumbnail_sources(apps, _):
+    Source = apps.get_model("thumbnails", "Source")
+    Partner = apps.get_model("partners", "Partner")
+    for p in Partner.objects.all():
+        Source.objects.get_or_create(name=p.logo.name)
+        Source.objects.get_or_create(name=p.alternate_logo.name)
+        Source.objects.get_or_create(name=p.site_header.name)
 
+    PartnerImage = apps.get_model("partners", "PartnerImage")
+    for p in PartnerImage.objects.all():
+        Source.objects.get_or_create(name=p.image.name)
+
+    Vacancy = apps.get_model("partners", "Vacancy")
+    for v in Vacancy.objects.all():
+        Source.objects.get_or_create(name=v.company_logo.name)
+
+
+class Migration(migrations.Migration):
     dependencies = [
         ("partners", "0026_partner_alternate_logo"),
     ]
@@ -48,4 +64,5 @@ class Migration(migrations.Migration):
                 verbose_name="company logo",
             ),
         ),
+        migrations.RunPython(create_thumbnail_sources, migrations.RunPython.noop)
     ]
