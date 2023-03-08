@@ -16,7 +16,20 @@
 {% block body %}
     <section class="page-section" id="events-detail">
         <div class="container">
-            <h1 class="section-title">{{ event.title }}</h1>
+
+            <h1 class="section-title">
+                {{ event.title }}
+                {% if permissions.manage_event %}
+                    <a href="{% url 'admin:events_event_change' event.pk %}"
+                        class="btn btn-primary first-right"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="first-right"
+                        title=""
+                        data-original-title="{% trans "Admin" %}">
+                        <i class="fas fa-cog"></i>
+                    </a>
+                {% endif %}
+            </h1>
 
             {% bootstrap_messages %}
 
