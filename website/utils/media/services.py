@@ -58,11 +58,6 @@ def get_thumbnail_url(file, size, fit=True):
         return storage.url(name)
 
     if isinstance(file, ThumbnailedImageFile):
-        if size == "small":
-            return get_media_url(file.thumbnails.small)
-        if size == "medium":
-            return get_media_url(file.thumbnails.medium)
-        if size == "large":
-            return get_media_url(file.thumbnails.large)
+        return get_media_url(getattr(file.thumbnails, size))
 
     return get_media_url(file)
