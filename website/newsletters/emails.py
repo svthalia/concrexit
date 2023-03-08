@@ -41,7 +41,7 @@ def send_newsletter(newsletter):
     text_template = get_template("newsletters/email.txt")
 
     main_partner = Partner.objects.filter(is_main_partner=True).first()
-    local_partners = Partner.objects.filter(is_local_partner=True)
+    local_partners = services.split_local_partners()
 
     with mail.get_connection() as connection:
         language = ("en", "English")

@@ -40,6 +40,7 @@ def preview(request, pk, lang=None):
 
     newsletter = get_object_or_404(Newsletter, pk=pk)
     events = services.get_agenda(newsletter.date) if newsletter.date else None
+    local_partners = services.split_local_partners()
 
     return render(
         request,
@@ -48,7 +49,7 @@ def preview(request, pk, lang=None):
             "newsletter": newsletter,
             "agenda_events": events,
             "main_partner": Partner.objects.filter(is_main_partner=True).first(),
-            "local_partners": Partner.objects.filter(is_local_partner=True),
+            "local_partners": local_partners,
             "lang_code": lang_code,
         },
     )

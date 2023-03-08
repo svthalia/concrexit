@@ -2,8 +2,6 @@ from rest_framework import serializers
 
 from activemembers.api.v2.serializers.member_group import MemberGroupSerializer
 from activemembers.models import MemberGroup
-from announcements.api.v2.serializers import SlideSerializer
-from announcements.models import Slide
 from documents.api.v2.serializers.document import DocumentSerializer
 from documents.models import Document
 from events.models import Event
@@ -30,9 +28,6 @@ class EventAdminSerializer(CleanedModelSerializer):
         self.fields["organisers"] = serializers.PrimaryKeyRelatedField(
             queryset=MemberGroup.active_objects.all()
         )
-        self.fields["slide"] = serializers.PrimaryKeyRelatedField(
-            queryset=Slide.objects.all()
-        )
         self.fields["documents"] = serializers.PrimaryKeyRelatedField(
             queryset=Document.objects.all(), many=True
         )
@@ -40,7 +35,6 @@ class EventAdminSerializer(CleanedModelSerializer):
 
     def to_representation(self, instance):
         self.fields["organisers"] = MemberGroupSerializer(many=True, read_only=True)
-        self.fields["slide"] = SlideSerializer(read_only=True)
         self.fields["documents"] = DocumentSerializer(many=True, read_only=True)
         return super().to_representation(instance)
 
@@ -70,7 +64,6 @@ class EventListAdminSerializer(serializers.ModelSerializer):
             "has_fields",
             "tpay_allowed",
             "organisers",
-            "slide",
         )
 
     description = CleanedHTMLSerializer()

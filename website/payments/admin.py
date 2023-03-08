@@ -89,12 +89,14 @@ class PaymentAdmin(admin.ModelAdmin):
     ]
 
     @staticmethod
-    def _member_link(member: PaymentUser) -> str:
+    def _member_link(user: PaymentUser) -> str:
+        url = reverse(
+            f"admin:{user._meta.app_label}_{user._meta.model_name}_change",
+            args=[user.id],
+        )
         return (
-            format_html(
-                "<a href='{}'>{}</a>", member.get_absolute_url(), member.get_full_name()
-            )
-            if member
+            format_html("<a href='{}'>{}</a>", url, user.get_full_name())
+            if user
             else None
         )
 
@@ -563,6 +565,9 @@ class BankAccountInline(admin.TabularInline):
     def has_change_permission(self, request, obj=None):
         return False
 
+    def has_delete_permission(self, request, obj=None):
+        return False
+
 
 class PaymentInline(admin.TabularInline):
     model = Payment
@@ -585,6 +590,9 @@ class PaymentInline(admin.TabularInline):
         return False
 
     def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
         return False
 
 

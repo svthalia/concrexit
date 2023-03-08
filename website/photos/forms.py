@@ -1,6 +1,8 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
+from django_filepond_widget.fields import FilePondField
+
 from photos.models import Album, Photo
 from photos.validators import ArchiveFileTypeValidator
 
@@ -18,10 +20,11 @@ class AlbumForm(forms.ModelForm):
         if "instance" in kwargs and "_cover" in self.fields:
             self.fields["_cover"].queryset = Photo.objects.filter(album=self.instance)
 
-    album_archive = forms.FileField(
+    album_archive = FilePondField(
         required=False,
         help_text=_("Uploading a zip or tar file adds all contained images as photos."),
         validators=[ArchiveFileTypeValidator()],
+        filepond_options={"chunkSize": 5000000},
     )
 
     class Meta:

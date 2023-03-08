@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n static django_bootstrap5 bleach_tags thumbnail member_card google_map_url grid_item alert document_cards slider payments %}
+{% load i18n static django_bootstrap5 bleach_tags member_card google_map_url grid_item alert document_cards slider payments %}
 
 
 {% block title %}{{ event.title }} — {% trans "Calendar"|capfirst %} — {{ block.super }}{% endblock %}
@@ -12,22 +12,6 @@
         <meta property="og:description" content="{{ event.description|striptags|truncatewords:10 }}"/>
     {% endif %}
 {% endblock %}
-
-
-
-{% block body_class %}event-slide{% endblock %}
-{% block header_image_container %}
-    {% if event.slide %}
-        <div id="announcements-slider" class="carousel slide w-100 h-100"
-             data-bs-ride="carousel">
-            <img class="image"
-                 src="{% thumbnail event.slide.content slide_size %}"
-                 alt="{{ event.slide.title }}">
-        </div>
-    {% else %}
-        {{ block.super }}
-    {% endif %}
-{% endblock header_image_container %}
 
 {% block body %}
     <section class="page-section" id="events-detail">
@@ -95,24 +79,6 @@
                                                     <div class="progress-bar progress{{ prc|floatformat:"0" }}"></div>
                                                 </div>
                                             {% endwith %}
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            {% endif %}
-                            {% if registration %}
-                                <tr>
-                                    <th>{% trans "registration status"|capfirst %}</th>
-                                    <td>
-                                        {% if registration.is_registered and not registration.queue_position %}
-                                            {% trans "You are registered" %}
-                                        {% elif registration.is_registered and registration.queue_position %}
-                                            {% blocktrans trimmed with pos=registration.queue_position %}
-                                                Waiting list position {{ pos }}
-                                            {% endblocktrans %}
-                                        {% elif not registration.is_registered and registration.is_late_cancellation %}
-                                            {% trans "Your registration is cancelled after the cancellation deadline" %}
-                                        {% else %}
-                                            {% trans "Your registration is cancelled" %}
                                         {% endif %}
                                     </td>
                                 </tr>
@@ -212,32 +178,10 @@
                             </td>
                             <td>
                                 <em>
-                                    {% if not request.user.is_authenticated and event.registration_required %}
-                                        {% trans "You have to log in before you can register for this event." %}
+                                    {% if show_cancel_status %}
+                                        <p>{{ registration_status }} {{cancel_info}}</p>
                                     {% else %}
-                                        {% if not event.registration_required %}
-                                            {% if event.no_registration_message %}
-                                                {{ event.no_registration_message | bleach }}
-                                            {% else %}
-                                                {% trans "No registration required" %}
-                                            {% endif %}
-                                        {% elif not event.registration_started %}
-                                            {% blocktrans trimmed with datetime=event.registration_start  %}
-                                                Registration will open {{ datetime }}
-                                            {% endblocktrans %}
-                                        {% elif not event.registration_allowed %}
-                                            {% blocktrans trimmed %}
-                                                Registration is not possible anymore.
-                                            {% endblocktrans %}
-                                        {% endif %}
-                                        {% if event.after_cancel_deadline and not registration.queue_position %}
-                                            {{ event.cancel_too_late_message }}
-                                        {% endif %}
-                                        {% if event.after_cancel_deadline and registration.queue_position %}
-                                            {% blocktrans trimmed with costs=event.fine %}
-                                                Cancellation while on the waiting list will not result in having to pay a fine.
-                                                Do note that you will be unable to re-register.{% endblocktrans %}
-                                        {% endif %}
+                                        <p>{{ registration_status }}</p>
                                     {% endif %}
                                 </em>
                             </td>

@@ -187,7 +187,7 @@
                         <a target="_blank" rel="noopener" href="https://www.instagram.com/thalia_nijmegen/" title="Instagram page for Thalia" style="width: 20px; height: 20px; text-decoration:none;">
                             <img src="{% baseurl %}{% static 'newsletters/square-instagram.png' %}" alt="Instagram logo" width="20" height="23">
                         </a>
-                        <a target="_blank" rel="noopener" href="http://www.linkedin.com/groups?gid=54887" title="LinkedIn group for Thalia" style="width: 20px; height: 20px; text-decoration:none;">
+                        <a target="_blank" rel="noopener" href="https://www.linkedin.com/company/study-association-thalia" title="LinkedIn page for Thalia" style="width: 20px; height: 20px; text-decoration:none;">
                             <img src="{% baseurl %}{% static 'newsletters/linkedin.png' %}" alt="Instagram logo" width="20" height="23">
                         </a>
                         <a target="_blank" rel="noopener" href="https://github.com/svthalia/" title="GitHub page for Thalia" style="width: 20px; height: 20px; text-decoration:none;" >
@@ -217,35 +217,33 @@
         </table>
     </div>
     {% endif %}
-    {% if local_partners.exists %}
-    <div style="width: 700px ; margin-top: 30px; margin-left: auto ; margin-right: auto;">
-        <table cellspacing="0" cellpadding="0">
-            {% if local_partners|length < 2 %}
-                <col width="700px">
-            {% elif local_partners|length < 3 %}
-                <col width="350px">
-                <col width="350px">
-            {% else %}
-                <col width="233px">
-                <col width="234px">
-                <col width="233px">
-            {% endif %}
-            <tr>
-                {% for local_partner in local_partners %}
-                    {% if local_partner and local_partner.is_active %}
-                    <td align="center" style="color: black; font-size: 12px;">
-                        <p style="margin: 10px; font-family: 'Gill Sans', 'Trebuchet MS', sans-serif;">
-                            <a href="{{ local_partner.link }}">
-                                <img src="{% baseurl %}{% thumbnail local_partner.logo THUMBNAIL_SIZE_MEDIUM fit=False %}" height="70" style="height: 70px; margin-bottom: 25px" alt="{{ local_partner.name }}"/>
-                            </a><br/>
-                            {% trans "our local partner"|upper %}
-                        </p>
-                    </td>
+    {% if local_partners|length > 0 %}
+        {% for local_partner_group in local_partners %}
+            <div style="width: 700px ; margin-top: 30px; margin-left: auto ; margin-right: auto;">
+                <table cellspacing="0" cellpadding="0">
+                    {% if local_partner_group|length < 2 %}
+                        <col width="700px">
+                    {% elif local_partner_group|length < 3 %}
+                        <col width="350px">
+                        <col width="350px">
                     {% endif %}
-                {% endfor %}
-            </tr>
-        </table>
-    </div>
+                    <tr>
+                        {% for local_partner in local_partner_group %}
+                            {% if local_partner and local_partner.is_active %}
+                            <td align="center" style="color: black; font-size: 12px;">
+                                <p style="margin: 10px; font-family: 'Gill Sans', 'Trebuchet MS', sans-serif;">
+                                    <a href="{{ local_partner.link }}">
+                                        <img src="{% baseurl %}{% thumbnail local_partner.logo THUMBNAIL_SIZE_MEDIUM fit=False %}" height="70" style="height: 70px; margin-bottom: 25px" alt="{{ local_partner.name }}"/>
+                                    </a><br/>
+                                    {% trans "our local partner"|upper %}
+                                </p>
+                            </td>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                </table>
+            </div>
+        {% endfor %}
     {% endif %}
 </body>
 </html>

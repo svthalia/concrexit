@@ -74,8 +74,10 @@
             <dd>{{ event.title }}</dd>
             <dt>{% trans "date"|capfirst %}</dt>
             <dd>{{ event.start }} <br>— {{ event.end }}</dd>
-            <dt>{% trans "organiser"|capfirst %}</dt>
-            <dd>{{ event.organiser }}</dd>
+            <dt>{% trans "organised by"|capfirst %}</dt>
+            {% for organiser in event.organisers.all %}
+            <dd>{{ organiser }}</dd>
+            {% endfor %}
             {% if event.registration_start %}
             <dt>{% trans "registration period"|capfirst %}</dt>
             <dd>{{ event.registration_start }} <br>— {{ event.registration_end }}</dd>

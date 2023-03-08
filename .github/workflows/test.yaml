@@ -69,7 +69,7 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
 
       - name: Run pylint
-        run: make pylint
+        run: mkdir -p website/filepond-temp-uploads website/filepond-uploaded && make pylint
 
   docstyle:
     name: Docstring style

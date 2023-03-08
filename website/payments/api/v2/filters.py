@@ -1,6 +1,6 @@
 from rest_framework import filters
 
-from utils.snippets import extract_date_range
+from utils.snippets import extract_date_range, strtobool
 
 
 class CreatedAtFilter(filters.BaseFilterBackend):
@@ -59,6 +59,34 @@ class PaymentTypeFilter(filters.BaseFilterBackend):
                 "description": "Filter by payment type, accepts a comma separated list",
                 "schema": {
                     "type": "string",
+                },
+            }
+        ]
+
+
+class PaymentSettledFilter(filters.BaseFilterBackend):
+    """Allows you to filter by settled status."""
+
+    def filter_queryset(self, request, queryset, view):
+        settled = request.query_params.get("settled", None)
+
+        if settled is None:
+            return queryset
+
+        if strtobool(settled):
+            return queryset.filter(batch__processed=True)
+
+        return queryset.exclude(batch__processed=True)
+
+    def get_schema_operation_parameters(self, view):
+        return [
+            {
+                "name": "settled",
+                "required": False,
+                "in": "query",
+                "description": "Filter by settled status",
+                "schema": {
+                    "type": "boolean",
                 },
             }
         ]

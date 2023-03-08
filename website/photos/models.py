@@ -13,6 +13,7 @@ from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 
+from queryable_properties.managers import QueryablePropertiesManager
 from queryable_properties.properties import AnnotationProperty
 
 from events.models import Event
@@ -35,6 +36,8 @@ def photo_uploadto(instance, filename):
 
 class Photo(models.Model):
     """Model for a Photo object."""
+
+    objects = QueryablePropertiesManager()
 
     album = models.ForeignKey(
         "Album", on_delete=models.CASCADE, verbose_name=_("album")
@@ -94,11 +97,11 @@ class Like(models.Model):
         on_delete=models.CASCADE,
     )
     member = models.ForeignKey(
-        Member,
+        settings.AUTH_USER_MODEL,
         verbose_name=_("Member"),
         null=True,
         blank=False,
-        on_delete=models.SET_NULL,
+        on_delete=models.SET_NULL
     )
 
     def __str__(self):

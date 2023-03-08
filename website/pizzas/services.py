@@ -15,7 +15,6 @@ def gen_stats_pizza_orders() -> dict:
     }
 
     for product in Product.objects.all():
-
         orders = FoodOrder.objects.filter(product=product).count()
 
         if orders > 0:
@@ -42,7 +41,7 @@ def can_change_order(member, food_event):
 def execute_data_minimisation(dry_run=False):
     """Anonymizes pizzas orders older than 3 years."""
     # Sometimes years are 366 days of course, but better delete 1 or 2 days early than late
-    deletion_period = timezone.now().date() - timezone.timedelta(days=(365 * 3))
+    deletion_period = timezone.now().date() - timezone.timedelta(days=365 * 3)
 
     queryset = FoodOrder.objects.filter(food_event__end__lte=deletion_period).exclude(
         name="<removed>"

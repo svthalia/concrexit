@@ -149,8 +149,13 @@ def process_batch(batch):
     payments = batch.payments_set.select_related("paid_by")
     for payment in payments:
         bank_account = payment.paid_by.bank_accounts.last()
-        bank_account.last_used = batch.withdrawal_date
-        bank_account.save()
+        if not bank_account:  # pragma: no cover
+            # This should not happen, cannot haver, does not happen (right... ;p), but if it does, we don't want to crash, but just remove the payment from the batch (make it unprocessed)
+            payment.batch = None
+            payment.save()
+        else:
+            bank_account.last_used = batch.withdrawal_date
+            bank_account.save()
 
     batch.save()
 
@@ -203,8 +208,8 @@ def send_tpay_batch_processing_emails(batch):
 def execute_data_minimisation(dry_run=False):
     """Anonymizes payments older than 7 years."""
     # Sometimes years are 366 days of course, but better delete 1 or 2 days early than late
-    payment_deletion_period = timezone.now().date() - timezone.timedelta(days=(365 * 7))
-    bankaccount_deletion_period = timezone.now() - datetime.timedelta(days=(31 * 13))
+    payment_deletion_period = timezone.now().date() - timezone.timedelta(days=365 * 7)
+    bankaccount_deletion_period = timezone.now() - datetime.timedelta(days=31 * 13)
 
     queryset_payments = Payment.objects.filter(
         created_at__lte=payment_deletion_period
@@ -215,7 +220,7 @@ def execute_data_minimisation(dry_run=False):
     queryset_bankaccounts = BankAccount.objects.all()
     queryset_bankaccounts = queryset_bankaccounts.filter(
         valid_until__lt=timezone.now()
-    )  # Keep valid bank accounts
+    )  # We must always keep valid bank accounts. so we only select the ones that are not valid anymore (valid_until < now)
     queryset_bankaccounts = queryset_bankaccounts.exclude(  # Also keep bank accounts that
         Q(
             owner__paid_payment_set__type=Payment.TPAY

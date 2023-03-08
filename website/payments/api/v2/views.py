@@ -31,6 +31,7 @@ class PaymentListView(ListAPIView):
         framework_filters.OrderingFilter,
         filters.CreatedAtFilter,
         filters.PaymentTypeFilter,
+        filters.PaymentSettledFilter,
     )
     ordering_fields = ("created_at",)
 

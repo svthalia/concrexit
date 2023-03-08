@@ -29,12 +29,12 @@ jobs:
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@v4.1.1
+        uses: docker/metadata-action@v4.3.0
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v3.2.0
+        uses: docker/build-push-action@v4.0.0
         with:
           context: .
           push: true
@@ -50,6 +50,8 @@ jobs:
       name: staging
       url: https://staging.thalia.nu
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
       - name: Setup ssh
         run: |
           mkdir ~/.ssh
@@ -57,5 +59,7 @@ jobs:
           echo "staging.thalia.nu ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAt1XMYl4R9kUuxrgXCD1Qnp97bED4mMn92BhISgTU+C" >> ~/.ssh/known_hosts
           echo "${{ secrets.STAGING_DEPLOY_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
+      - name: Place new env file
+        run: rsync infra/docker/staging/concrexit-staging-public.env deploy@staging.thalia.nu:/var/lib/concrexit/public.env
       - name: Restart the container on the staging server, loading the latest version
         run: ssh -i ~/.ssh/id_ed25519 deploy@staging.thalia.nu -- systemctl restart concrexit.service

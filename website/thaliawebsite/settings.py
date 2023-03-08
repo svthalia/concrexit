@@ -208,6 +208,36 @@ STATIC_URL = "/static/"
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-root
 STATIC_ROOT = from_env("STATIC_ROOT", development=os.path.join(BASE_DIR, "static"))
 
+DJANGO_DRF_FILEPOND_UPLOAD_TMP = from_env(
+    "DJANGO_DRF_FILEPOND_UPLOAD_TMP",
+    development=os.path.join(BASE_DIR, "filepond-temp-uploads"),
+)
+DJANGO_DRF_FILEPOND_FILE_STORE_PATH = from_env(
+    "DJANGO_DRF_FILEPOND_FILE_STORE_PATH",
+    development=os.path.join(BASE_DIR, "filepond-uploaded"),
+)
+DJANGO_DRF_FILEPOND_ALLOW_EXTERNAL_UPLOAD_DIR = True
+DJANGO_DRF_FILEPOND_PERMISSION_CLASSES = {
+    "GET_FETCH": [
+        "oauth2_provider.contrib.rest_framework.IsAuthenticatedOrTokenHasScope",
+    ],
+    "GET_LOAD": [
+        "oauth2_provider.contrib.rest_framework.IsAuthenticatedOrTokenHasScope",
+    ],
+    "POST_PROCESS": [
+        "oauth2_provider.contrib.rest_framework.IsAuthenticatedOrTokenHasScope",
+    ],
+    "GET_RESTORE": [
+        "oauth2_provider.contrib.rest_framework.IsAuthenticatedOrTokenHasScope",
+    ],
+    "DELETE_REVERT": [
+        "oauth2_provider.contrib.rest_framework.IsAuthenticatedOrTokenHasScope",
+    ],
+    "PATCH_PATCH": [
+        "oauth2_provider.contrib.rest_framework.IsAuthenticatedOrTokenHasScope",
+    ],
+}
+
 SENDFILE_BACKEND = setting(
     development="django_sendfile.backends.development",
     production="django_sendfile.backends.nginx",
@@ -426,13 +456,18 @@ INSTALLED_APPS = [
     "compressor",
     "debug_toolbar",
     "admin_auto_filters",
+    "django_drf_filepond",
+    "django_filepond_widget",
     # Our apps
     # Directly link to the app config when applicable as recommended
     # by the docs: https://docs.djangoproject.com/en/2.0/ref/applications/
     "thaliawebsite.apps.ThaliaWebsiteConfig",  # include for admin settings
     # Load django.contrib.admin after thaliawebsite so the admin page gets modified
     "django.contrib.admin",
+    # Our apps ordered such that templates in the first
+    # apps can override those used by the later apps.
     "pushnotifications.apps.PushNotificationsConfig",
+    "announcements.apps.AnnouncementsConfig",
     "promotion.apps.PromotionConfig",
     "members.apps.MembersConfig",
     "documents.apps.DocumentsConfig",
@@ -447,7 +482,6 @@ INSTALLED_APPS = [
     "pizzas.apps.PizzasConfig",
     "newsletters.apps.NewslettersConfig",
     "education.apps.EducationConfig",
-    "announcements.apps.AnnouncementsConfig",
     "registrations.apps.RegistrationsConfig",
     "payments.apps.PaymentsConfig",
     "singlepages.apps.SinglepagesConfig",
@@ -469,6 +503,7 @@ MIDDLEWARE = [
     "django.middleware.locale.LocaleMiddleware",
     # Our middleware
     "members.middleware.MemberMiddleware",
+    "announcements.middleware.AnnouncementMiddleware",
 ]
 
 if DJANGO_ENV in ("development", "testing"):
@@ -674,8 +709,8 @@ REST_FRAMEWORK = {
         "thaliawebsite.api.throttling.UserRateThrottle",
     ],
     "DEFAULT_THROTTLE_RATES": setting(
-        production={"anon": "30/min", "user": "30/min"},
-        staging={"anon": "30/min", "user": "30/min"},
+        production={"anon": "30/min", "user": "60/min"},
+        staging={"anon": "30/min", "user": "60/min"},
         development={"anon": None, "user": None},
     ),
 }
@@ -752,9 +787,9 @@ PHOTO_UPLOAD_SIZE = 2560, 1440
 TINYMCE_DEFAULT_CONFIG = {
     "max_height": 500,
     "menubar": False,
-    "plugins": "autolink autoresize link image code media paste",
-    "toolbar": "h2 h3 | bold italic underline strikethrough | image media | link unlink | "
-    "bullist numlist | undo redo | code",
+    "plugins": "autolink autoresize link image code media paste lists",
+    "toolbar": "h2 h3 | bold italic underline strikethrough | image media | link unlink "
+    "| bullist numlist | undo redo | code",
     "contextmenu": "bold italic underline strikethrough | link",
     "paste_as_text": True,
     "relative_urls": False,

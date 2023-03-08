@@ -124,13 +124,13 @@ class ExamDetailView(DetailView):
 
     def get(self, request, *args, **kwargs) -> HttpResponse:
         response = super().get(request, *args, **kwargs)
-        exam = response.context_data["object"]
-        exam.download_count += 1
-        exam.save()
+        obj = response.context_data["object"]
+        obj.download_count += 1
+        obj.save()
 
-        ext = os.path.splitext(exam.file.name)[1]
-        filename = f"{exam.course.name}-exam{exam.year}{ext}"
-        return redirect(get_media_url(exam.file, filename))
+        ext = os.path.splitext(obj.file.name)[1]
+        filename = f"{obj.course.name}-summary{obj.year}{ext}"
+        return redirect(get_media_url(obj.file, filename))
 
 
 @method_decorator(login_required, "dispatch")
@@ -219,9 +219,3 @@ class BookInfoView(TemplateView):
         ):
             return super().dispatch(request, *args, **kwargs)
         raise PermissionDenied
-
-
-class StudentParticipantView(TemplateView):
-    """Renders a page with information about student information."""
-
-    template_name = "education/student_participation.html"

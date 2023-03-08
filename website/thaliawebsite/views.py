@@ -18,4 +18,5 @@ class TestCrashView(View):
     def dispatch(self, request, *args, **kwargs) -> HttpResponse:
         if not request.user.is_superuser:
             return HttpResponseForbidden("This is not for you")
-        raise Exception("Test exception")
+        # Test exception so we don't care about it being too broad
+        raise Exception("Test exception")  # pylint: disable=broad-exception-raised

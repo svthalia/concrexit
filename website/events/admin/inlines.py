@@ -35,7 +35,6 @@ class PizzaEventInline(admin.StackedInline):
 
 
 class PromotionRequestInline(admin.StackedInline):
-
     model = PromotionRequest
     readonly_fields = (
         "assigned_to",

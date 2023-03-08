@@ -232,7 +232,6 @@ class EventRegistrationsExport(View, PermissionRequiredMixin):
             status = pgettext_lazy("registration status", "registered").capitalize()
             cancelled = None
             if registration.date_cancelled:
-
                 if registration.is_late_cancellation():
                     status = pgettext_lazy(
                         "registration status", "late cancellation"

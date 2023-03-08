@@ -57,7 +57,7 @@ def bleach(value):
     return mark_safe(
         clean(
             value,
-            tags=[
+            tags={
                 "h2",
                 "h3",
                 "p",
@@ -74,7 +74,7 @@ def bleach(value):
                 "iframe",
                 "img",
                 "span",
-            ],
+            },
             attributes={
                 "*": ["class", "style"],
                 "iframe": _allow_iframe_attrs,

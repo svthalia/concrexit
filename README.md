@@ -12,11 +12,10 @@ The latest Thalia Website built on Django.
 
 0. Get at least Python 3.9 and install [poetry](https://python-poetry.org/docs/#installation), the Pillow requirements and Thabloid dependencies as per below.
 1. Clone this repository
-2. `make superuser` to create the first user (note that this user won't be a member!) while in the cloned folder. This will install all dependencies (in a separate virtual environment)
+2. `make member` to create the first member while in the cloned folder. This will also install all dependencies (in a separate virtual environment)
 3. `make fixtures` to generate a bunch of test data
 4. `make run` to run a testing server. Now you are able to visit your local concrexit at http://127.0.0.1:8000
-5. Go to the user you created in the admin (http://127.0.0.1:8000/admin) and complete the profile and add a membership for full access. To do this, go to the 'Users' section of the admin and find yourself in the list. Then add the necessary information.
-6. Open the code in your favorite Python IDE (VSCode or Pycharm both work great)
+5. Open the code in your favorite Python IDE (VSCode or Pycharm both work great)
 
 Optional, but recommended: follow the tutorial! It can be found by going to the Wiki (top of the GitHub page) and then clicking on "Your first contribution" or by clicking [here](https://github.com/svthalia/concrexit/wiki/your-first-contribution).
 
@@ -61,6 +60,62 @@ Or for macOS:
 ```bash
 brew install ghostscript
 ```
+
+## Apps and dependencies
+We try to keep concrexit modular to improve maintainability for the future. This is roughly how the current apps depend on each other. It is important to keep this graph as simple as possible, especially when considering the building of new features.
+
+This graph leaves out the `thaliawebsite` and `utils` app as they are special apps with a lot of cross dependencies.
+
+```mermaid
+graph TD;
+    announcements --> events;
+    activemembers --> members;
+    activemembers --> mailinglists;
+    events --> activemembers;
+    events --> members;
+    events --> payments;
+    mailinglists --> activemembers;
+    mailinglists --> members;
+    newsletters --> events;
+    newsletters --> members;
+    newsletters --> partners;
+    photos --> events;
+    pizzas --> events;
+    pizzas --> members;
+    pizzas --> payments;
+    promotion --> events;
+    registrations --> members;
+    registrations --> payments;
+    sales --> payments;
+    sales --> activemembers;
+    sales --> members;
+
+    documents;
+    partners;
+    pushnotifications;
+    shortlinks;
+    singlepages;
+    thabloid;
+
+    %% Current dependencies that are problematic and for which issues exist for fixing
+    %% 2757
+    documents --> activemembers;
+    documents --> events;
+
+    %% #2753
+    events --> pizzas;
+    events --> promotion;
+
+    %% #2756
+    members --> activemembers;
+
+    %% 2758
+    newsletters --> pushnotifications;
+    events --> pushnotifications;
+    photos --> pushnotifications;
+    pizzas --> pushnotifications;
+```
+
 
 ## Language
 

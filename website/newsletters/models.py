@@ -7,8 +7,6 @@ from django.utils.translation import gettext_lazy as _
 
 from tinymce.models import HTMLField
 
-from payments.models import PaymentAmountField
-
 
 class Newsletter(models.Model):
     """Describes a newsletter."""
@@ -166,17 +164,19 @@ class NewsletterEvent(NewsletterContent):
         verbose_name=_("Show warnings about costs"), default=True
     )
 
-    price = PaymentAmountField(
+    price = models.DecimalField(
         verbose_name=_("Price (in Euro)"),
-        allow_zero=True,
+        max_digits=8,
+        decimal_places=2,
         blank=True,
         null=True,
         default=None,
     )
 
-    penalty_costs = PaymentAmountField(
+    penalty_costs = models.DecimalField(
         verbose_name=_("Costs (in Euro)"),
-        allow_zero=True,
+        max_digits=8,
+        decimal_places=2,
         blank=True,
         null=True,
         default=None,
