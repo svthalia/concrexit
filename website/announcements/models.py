@@ -251,7 +251,7 @@ class Slide(models.Model):
         if self.custom_url:
             return self.custom_url
         if self.event:
-            return reverse("events:event", kwargs={"pk": self.event.id})
+            return self.event.get_absolute_url()
         return None
 
     def __str__(self):
