@@ -15,7 +15,7 @@ def create_thumbnail_sources(apps, _):
 class Migration(migrations.Migration):
     dependencies = [
         ("thumbnails", "0001_initial"),
-        ("members", "0042_profile_is_minimized_alter_profile_address_city_and_more"),
+        ("members", "0043_profile_receive_oldmembers"),
     ]
 
     operations = [
