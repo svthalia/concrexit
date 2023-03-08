@@ -59,6 +59,8 @@ def get_thumbnail_url(file, size, fit=True):
 
     if isinstance(file, ThumbnailedImageFile):
         if size in settings.THUMBNAIL_SIZES.keys():
-            return get_media_url(getattr(file.thumbnails, size))
+            return get_media_url(
+                getattr(file.thumbnails, settings.THUMBNAIL_SIZES[size])
+            )
 
     return get_media_url(file)
