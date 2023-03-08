@@ -9,12 +9,10 @@ from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 
-from PIL import Image
 from thumbnails.fields import ImageField
 
 from thaliawebsite.storage.backend import get_public_storage
 from utils import countries
-from utils.media.services import save_image
 
 logger = logging.getLogger(__name__)
 
