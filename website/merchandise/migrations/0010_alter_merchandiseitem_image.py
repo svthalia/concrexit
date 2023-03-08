@@ -7,7 +7,7 @@ import thumbnails.fields
 def create_thumbnail_sources(apps, _):
     Source = apps.get_model("thumbnails", "Source")
     MerchandiseItem = apps.get_model("merchandise", "MerchandiseItem")
-    for m in MerchandiseItem.objects.all():
+    for m in MerchandiseItem.objects.filter(image__isnull=False).all():
         Source.objects.get_or_create(name=m.image.name)
 
 

@@ -7,17 +7,19 @@ import thumbnails.fields
 def create_thumbnail_sources(apps, _):
     Source = apps.get_model("thumbnails", "Source")
     Partner = apps.get_model("partners", "Partner")
-    for p in Partner.objects.all():
+    for p in Partner.objects.filter(logo__isnull=False).all():
         Source.objects.get_or_create(name=p.logo.name)
+    for p in Partner.objects.filter(alternate_logo__isnull=False).all():
         Source.objects.get_or_create(name=p.alternate_logo.name)
+    for p in Partner.objects.filter(site_header__isnull=False).all():
         Source.objects.get_or_create(name=p.site_header.name)
 
     PartnerImage = apps.get_model("partners", "PartnerImage")
-    for p in PartnerImage.objects.all():
+    for p in PartnerImage.objects.filter(image__isnull=False).all():
         Source.objects.get_or_create(name=p.image.name)
 
     Vacancy = apps.get_model("partners", "Vacancy")
-    for v in Vacancy.objects.all():
+    for v in Vacancy.objects.filter(company_logo__isnull=False).all():
         Source.objects.get_or_create(name=v.company_logo.name)
 
 

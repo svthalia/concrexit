@@ -8,7 +8,7 @@ import thumbnails.fields
 def create_thumbnail_sources(apps, _):
     Source = apps.get_model("thumbnails", "Source")
     Profile = apps.get_model("members", "Profile")
-    for p in Profile.objects.all():
+    for p in Profile.objects.filter(photo__isnull=False).all():
         Source.objects.get_or_create(name=p.photo.name)
 
 
