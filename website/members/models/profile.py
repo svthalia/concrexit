@@ -261,6 +261,14 @@ class Profile(models.Model):
         default=True,
     )
 
+    receive_oldmembers = models.BooleanField(
+        verbose_name=_("Receive alumni emails"),
+        help_text=_(
+            "If you are a past member, receive emails about Thalia events aimed at alumni."
+        ),
+        default=True,
+    )
+
     # --- Active Member preference ---
     email_gsuite_only = models.BooleanField(
         verbose_name=_("Only receive Thalia emails on G Suite-account"),

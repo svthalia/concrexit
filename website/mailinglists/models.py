@@ -28,6 +28,7 @@ def get_automatic_mailinglists():
         "optin",
         "oldboards",
         "oudbesturen",
+        "oldmembers",
     ]
     if Board.objects.exists():
         for year in range(Board.objects.earliest("since").since.year, lectureyear):
