@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
+from thumbnails.fields import ImageField
 from tinymce.models import HTMLField
 
 from thaliawebsite.storage.backend import get_public_storage
@@ -22,12 +23,12 @@ class Partner(models.Model):
     link = models.CharField(max_length=255, blank=True, validators=[URLValidator()])
     company_profile = HTMLField(blank=True)
 
-    logo = models.ImageField(
+    logo = ImageField(
         upload_to="partners/logos/",
         storage=get_public_storage,
     )
 
-    alternate_logo = models.ImageField(
+    alternate_logo = ImageField(
         upload_to="partners/logos/",
         storage=get_public_storage,
         blank=True,
@@ -37,7 +38,7 @@ class Partner(models.Model):
         ),
     )
 
-    site_header = models.ImageField(
+    site_header = ImageField(
         upload_to="partners/headers/",
         storage=get_public_storage,
         null=True,
@@ -136,7 +137,7 @@ class PartnerImage(models.Model):
     partner = models.ForeignKey(
         Partner, on_delete=models.CASCADE, related_name="images"
     )
-    image = models.ImageField(
+    image = ImageField(
         upload_to="partners/images/",
         storage=get_public_storage,
     )
@@ -208,7 +209,7 @@ class Vacancy(models.Model):
     )
 
     company_name = models.CharField(_("company name"), max_length=255, blank=True)
-    company_logo = models.ImageField(
+    company_logo = ImageField(
         _("company logo"),
         upload_to="partners/vacancy-logos/",
         storage=get_public_storage,
