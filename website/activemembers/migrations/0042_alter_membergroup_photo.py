@@ -13,6 +13,7 @@ def create_thumbnail_sources(apps, _):
 
 class Migration(migrations.Migration):
     dependencies = [
+        ("thumbnails", "0001_initial"),
         ("activemembers", "0041_alter_membergroup_photo"),
     ]
 

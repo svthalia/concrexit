@@ -14,6 +14,7 @@ def create_thumbnail_sources(apps, _):
 
 class Migration(migrations.Migration):
     dependencies = [
+        ("thumbnails", "0001_initial"),
         ("photos", "0018_alter_like_member"),
     ]
 
