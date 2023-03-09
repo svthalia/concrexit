@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
             name="custom_url",
             field=models.URLField(
                 blank=True,
-                help_text="Place the user is taken to when clicking the slide.If left blank, will default to the linked event, if any.",
+                help_text="Place the user is taken to when clicking the slide. If left blank, will default to the linked event, if any.",
                 null=True,
                 verbose_name="Link",
             ),
