@@ -1,5 +1,6 @@
 """Configuration for the newsletters package."""
 from django.apps import AppConfig
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 
@@ -16,3 +17,16 @@ class RegistrationsConfig(AppConfig):
         from .payables import register
 
         register()
+
+    def menu_items(self):
+        return {
+            "categories": [{"name": "association", "title": "Association", "key": 1}],
+            "items": [
+                {
+                    "category": "association",
+                    "title": "Become a member",
+                    "url": reverse("registrations:index"),
+                    "key": 6,
+                },
+            ],
+        }
