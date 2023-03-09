@@ -191,7 +191,7 @@ class Slide(models.Model):
     custom_url = models.URLField(
         verbose_name=_("Link"),
         help_text=_(
-            "Place the user is taken to when clicking the slide."
+            "Place the user is taken to when clicking the slide. "
             "If left blank, will default to the linked event, if any."
         ),
         blank=True,
