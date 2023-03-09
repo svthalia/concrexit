@@ -16,14 +16,18 @@ urlpatterns = [
     path(
         "partners/events/",
         RedirectView.as_view(
-            pattern_name="api:v2:events:external-events-list", permanent=False
+            pattern_name="api:v2:events:external-events-list",
+            permanent=False,
+            query_string=True,
         ),
         name="partner-events-list",
     ),
     path(
         "partners/events/<int:pk>/",
         RedirectView.as_view(
-            pattern_name="api:v2:events:external-event-detail", permanent=False
+            pattern_name="api:v2:events:external-event-detail",
+            permanent=False,
+            query_string=True,
         ),
         name="partner-events-detail",
     ),
