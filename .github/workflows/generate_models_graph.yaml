@@ -1,0 +1,17 @@
+name: Generate Models graph
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Graphviz
+        run: sudo apt install graphviz
+      - name: Update model.png
+        run: poetry run website/manage.py graph_models --pydot -a -g -o models_graph.png

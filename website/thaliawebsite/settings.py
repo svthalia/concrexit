@@ -440,6 +440,7 @@ if "SENTRY_DSN" in os.environ:
 ###############################################################################
 # (Mostly) static settings
 INSTALLED_APPS = [
+    "django_extensions",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -895,3 +896,8 @@ DEFAULT_EXCEPTION_REPORTER_FILTER = (
 
 # Make sure the locations in django.po files don't include line nrs.
 makemessages.Command.xgettext_options.append("--add-location=file")
+
+GRAPH_MODELS = {
+    "all_applications": True,
+    "group_models": True,
+}
