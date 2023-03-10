@@ -7,10 +7,31 @@ on:
     branches: [master]
 
 jobs:
-  test:
+  graph:
     runs-on: ubuntu-latest
     steps:
+      - name: Setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Setup Poetry
+        uses: snok/install-poetry@v1
       - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Restore any cached Poetry dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pypoetry/virtualenvs
+          key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-
+
+      - name: Install any new dependencies
+        run: poetry install
+        if: steps.cache.outputs.cache-hit != 'true'
+
       - name: Install Graphviz
         run: sudo apt install graphviz
       - name: Update model.png
