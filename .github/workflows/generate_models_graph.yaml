@@ -34,5 +34,5 @@ jobs:
 
       - name: Install Graphviz
         run: sudo apt install graphviz
-      - name: Update model.png
+      - name: Update models_graph.png
         run: poetry run website/manage.py graph_models --pydot -a -g -o models_graph.png
