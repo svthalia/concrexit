@@ -20,7 +20,7 @@
             <h1 class="section-title">
                 {{ event.title }}
                 {% if permissions.manage_event %}
-                    <a href="{% url 'admin:events_event_change' event.pk %}"
+                    <a href="{% url 'admin:events_event_details' event.pk %}"
                         class="btn btn-primary first-right"
                         data-bs-toggle="tooltip"
                         data-bs-placement="first-right"
