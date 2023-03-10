@@ -14,4 +14,4 @@ jobs:
       - name: Install Graphviz
         run: sudo apt install graphviz
       - name: Update model.png
-        run: echo Todo
+        run: python root/manage.py graph_model -a -g -o model_graph.png
