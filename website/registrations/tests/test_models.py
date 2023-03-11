@@ -207,6 +207,17 @@ class RegistrationTest(TestCase):
         with self.assertRaises(ValidationError):
             self.registration.clean()
 
+    def test_require_past_birthday(self):
+        registration = Registration.objects.create(
+            length=Entry.MEMBERSHIP_YEAR,
+            first_name="John",
+            last_name="Doe",
+            birthday=timezone.now().date() + timezone.timedelta(weeks=52),
+        )
+
+        with self.assertRaises(ValidationError):
+            registration.clean()
+
     def test_unique_student_number_user(self):
         self.registration.student_number = "s1234567"
         self.registration.clean()
