@@ -415,6 +415,9 @@ class Registration(Entry):
         if self.programme is None and self.membership_type != Membership.BENEFACTOR:
             errors.update({"programme": _("This field is required.")})
 
+        if self.birthday and self.birthday > timezone.now().date():
+            errors.update({"birthday": _("A birthday cannot be in the future.")})
+
         if self.direct_debit:
             if not self.iban:
                 errors.update(
