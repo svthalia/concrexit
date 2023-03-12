@@ -56,6 +56,7 @@ def notify_organiser(event, registration):
         ],
         subject=f"Registration for {event.title} cancelled by member",
         txt_template="events/email/organiser_email.txt",
+        html_template="events/email/organiser_email.html",
         context={"event": event, "registration": registration},
     )
 

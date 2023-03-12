@@ -23,6 +23,7 @@ def send_document_notification(document):
         to=[settings.EDUCATION_NOTIFICATION_ADDRESS],
         subject="Education document ready for review",
         txt_template="education/email/document_notification.txt",
+        html_template="education/email/document_notification.html",
         context={
             "document": document.name,
             "uploader": document.uploader.get_full_name(),

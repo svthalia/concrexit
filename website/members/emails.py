@@ -35,7 +35,6 @@ def send_membership_announcement(dry_run=False):
             if not dry_run:
                 send_email(
                     to=[member.email],
-                    bcc=[settings.BOARD_NOTIFICATION_ADDRESS],
                     subject="Membership announcement",
                     txt_template="members/email/membership_announcement.txt",
                     html_template="members/email/membership_announcement.html",
@@ -44,12 +43,12 @@ def send_membership_announcement(dry_run=False):
                 )
 
         if not dry_run:
-            mail.mail_managers(
-                _("Membership announcement sent"),
-                loader.render_to_string(
-                    "members/email/membership_announcement_notification.txt",
-                    {"members": members},
-                ),
+            send_email(
+                to=[settings.BOARD_NOTIFICATION_ADDRESS],
+                subject="Membership announcement sent",
+                txt_template="members/email/membership_announcement_notification.txt",
+                html_template="members/email/membership_announcement_notification.html",
+                context={"members": members},
                 connection=connection,
             )
 
@@ -94,12 +93,12 @@ def send_information_request(dry_run=False):
                 )
 
         if not dry_run:
-            mail.mail_managers(
-                _("Membership information check sent"),
-                loader.render_to_string(
-                    "members/email/information_check_notification.txt",
-                    {"members": members},
-                ),
+            send_email(
+                to=[settings.BOARD_NOTIFICATION_ADDRESS],
+                subject="Membership information check sent",
+                txt_template="members/email/information_check_notification.txt",
+                html_template="members/email/information_check_notification.html",
+                context={"members": members},
                 connection=connection,
             )
 
@@ -123,7 +122,6 @@ def send_expiration_announcement(dry_run=False):
             if not dry_run:
                 send_email(
                     to=[member.email],
-                    bcc=[settings.BOARD_NOTIFICATION_ADDRESS],
                     subject="Membership expiration announcement",
                     txt_template="members/email/expiration_announcement.txt",
                     html_template="members/email/expiration_announcement.html",
@@ -139,13 +137,13 @@ def send_expiration_announcement(dry_run=False):
                 )
 
         if not dry_run:
-            mail.mail_managers(
-                _("Membership expiration announcement sent"),
-                loader.render_to_string(
-                    "members/email/expiration_announcement_notification.txt",
-                    {"members": members},
-                ),
+            send_email(
+                to=[settings.BOARD_NOTIFICATION_ADDRESS],
+                subject="Membership expiration announcement sent",
+                txt_template="members/email/expiration_announcement_notification.txt",
+                html_template="members/email/expiration_announcement_notification.html",
                 connection=connection,
+                context={"members": members},
             )
 
 

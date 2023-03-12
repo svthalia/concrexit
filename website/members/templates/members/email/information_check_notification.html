@@ -1,0 +1,16 @@
+{% extends "email/board_email.html" %}
+
+{% block content %}
+  Dear board,<br>
+
+  <p>It's that time of the year again! The website sent an automatic email to all members.</p>
+
+  <p>That email asks them to check their information we currently have in our database. This means that you can expect an influx of emails from members..</p>
+
+  <p>The email was sent to:</p>
+  <ul>
+    {% for member in members %}
+      <li>{{ member.get_full_name }}</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

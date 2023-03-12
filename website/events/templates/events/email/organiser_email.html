@@ -1,0 +1,10 @@
+{% extends "email/board_email.html" %}
+
+{% block content %}
+  Hi,<br>
+
+  <p>A member that was registered for the event '{{ event.title }}' that you're organising has cancelled their registration after the deadline.</p>
+
+  <p>Name: {{ registration.member.profile.display_name }}<br>
+  Registration date: {{ registration.date|date:"SHORT_DATETIME_FORMAT" }}</p>
+{% endblock %}

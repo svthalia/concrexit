@@ -69,6 +69,7 @@ def send_new_registration_board_message(registration: Registration) -> None:
         to=[settings.BOARD_NOTIFICATION_ADDRESS],
         subject="New registration",
         txt_template="registrations/email/registration_board.txt",
+        html_template="registrations/email/registration_board.html",
         context={
             "name": registration.get_full_name(),
             "url": (
@@ -142,6 +143,7 @@ def send_new_renewal_board_message(renewal: Renewal) -> None:
         to=[settings.BOARD_NOTIFICATION_ADDRESS],
         subject="New renewal",
         txt_template="registrations/email/renewal_board.txt",
+        html_template="registrations/email/renewal_board.html",
         context={
             "name": renewal.member.get_full_name(),
             "url": (
