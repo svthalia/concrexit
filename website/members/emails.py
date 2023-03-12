@@ -4,11 +4,9 @@ from datetime import timedelta
 
 from django.conf import settings
 from django.core import mail
-from django.template import loader
 from django.template.defaultfilters import floatformat
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.translation import gettext as _
 
 from members.models import Member, Membership
 from utils.snippets import send_email
