@@ -7,16 +7,17 @@ on:
     branches: [master]
 
 jobs:
-  graph:
+  graph-generation:
     runs-on: ubuntu-latest
     steps:
       - name: Setup python
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
+
       - name: Setup Poetry
         uses: snok/install-poetry@v1
-      - uses: actions/checkout@v3
+
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -34,5 +35,12 @@ jobs:
 
       - name: Install Graphviz
         run: sudo apt install graphviz
-      - name: Update models_graph.png
+
+      - name: Generate models_graph.png
         run: poetry run website/manage.py graph_models --pydot -a -g -o models_graph.png
+
+      - name: Save models_graph.png
+        uses: actions/upload-artifact@v3
+        with:
+          name: models_graph.png
+          path: /
