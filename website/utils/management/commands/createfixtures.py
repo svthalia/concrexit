@@ -9,6 +9,7 @@ from datetime import date, datetime, timedelta
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand
+from django.db.utils import IntegrityError
 from django.utils import timezone
 from django.utils.text import slugify
 
@@ -685,7 +686,12 @@ class Command(BaseCommand):
         # Users need to be generated before boards and committees
         if options["user"]:
             for __ in range(options["user"]):
-                self.create_user()
+                while True:
+                    try:
+                        self.create_user()
+                        break
+                    except IntegrityError:
+                        pass
 
         if options["board"]:
             lecture_year = datetime_to_lectureyear(date.today())
@@ -706,6 +712,7 @@ class Command(BaseCommand):
                 self.create_event()
 
         # Partners need to be generated before vacancies
+
         if options["partner"]:
             for __ in range(options["partner"]):
                 self.create_partner()
