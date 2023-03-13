@@ -364,13 +364,22 @@ class Command(BaseCommand):
         """Create a new random user."""
         self.stdout.write("Creating a user")
 
-        fakeprofile = _faker.profile()
-        fakeprofile["password"] = "".join(
-            random.choice(string.ascii_uppercase + string.digits) for _ in range(16)
-        )
-        user = get_user_model().objects.create_user(
-            fakeprofile["username"], fakeprofile["mail"], fakeprofile["password"]
-        )
+        while True:
+            try:
+                fakeprofile = _faker.profile()
+                fakeprofile["password"] = "".join(
+                    random.choice(string.ascii_uppercase + string.digits)
+                    for _ in range(16)
+                )
+                user = get_user_model().objects.create_user(
+                    fakeprofile["username"],
+                    fakeprofile["mail"],
+                    fakeprofile["password"],
+                )
+                break
+            except IntegrityError:
+                pass
+
         user.first_name = fakeprofile["name"].split()[0]
         user.last_name = " ".join(fakeprofile["name"].split()[1:])
 
@@ -403,7 +412,6 @@ class Command(BaseCommand):
             ]
         )
         membership.type = random.choice([t[0] for t in Membership.MEMBERSHIP_TYPES])
-
         user.save()
         profile.save()
         membership.save()
@@ -686,12 +694,7 @@ class Command(BaseCommand):
         # Users need to be generated before boards and committees
         if options["user"]:
             for __ in range(options["user"]):
-                while True:
-                    try:
-                        self.create_user()
-                        break
-                    except IntegrityError:
-                        pass
+                self.create_user()
 
         if options["board"]:
             lecture_year = datetime_to_lectureyear(date.today())
