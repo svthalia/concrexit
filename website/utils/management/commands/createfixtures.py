@@ -201,19 +201,23 @@ class Command(BaseCommand):
             members = Member.objects.all()
 
         member_group = group_model()
+        while True:
+            try:
+                member_group.name = _generate_title()
+                member_group.description = _faker.paragraph()
 
-        member_group.name = _generate_title()
-        member_group.description = _faker.paragraph()
-
-        igen = IconGenerator(5, 5)  # 5x5 blocks
-        icon = igen.generate(
-            member_group.name,
-            480,
-            480,
-            padding=(10, 10, 10, 10),
-            output_format="jpeg",
-        )  # 620x620 pixels, with 10 pixels padding on each side
-        member_group.photo.save(member_group.name + ".jpg", ContentFile(icon))
+                igen = IconGenerator(5, 5)  # 5x5 blocks
+                icon = igen.generate(
+                    member_group.name,
+                    480,
+                    480,
+                    padding=(10, 10, 10, 10),
+                    output_format="jpeg",
+                )  # 620x620 pixels, with 10 pixels padding on each side
+                member_group.photo.save(member_group.name + ".jpg", ContentFile(icon))
+                break
+            except IntegrityError:
+                pass
 
         member_group.since = _faker.date_time_between("-10y", "+30d")
 
@@ -267,6 +271,7 @@ class Command(BaseCommand):
 
     def create_event(self):
         """Create an event."""
+        self.stdout.write("Creating an event")
         groups = MemberGroup.objects.all()
         if len(groups) == 0:
             self.stdout.write("Your database does not contain any member groups.")
@@ -326,26 +331,27 @@ class Command(BaseCommand):
         """Create a new random partner."""
         self.stdout.write("Creating a partner")
         partner = Partner()
-
-        partner.is_active = random.random() < 0.75
-        partner.name = f"{_faker.company()} {_faker.company_suffix()}"
-        partner.slug = _faker.slug()
-        partner.link = _faker.uri()
-
-        igen = IconGenerator(5, 5)  # 5x5 blocks
-        icon = igen.generate(
-            partner.name,
-            480,
-            480,
-            padding=(10, 10, 10, 10),
-            output_format="jpeg",
-        )  # 620x620 pixels, with 10 pixels padding on each side
-        partner.logo.save(partner.name + ".jpg", ContentFile(icon))
-
+        while True:
+            try:
+                partner.is_active = random.random() < 0.75
+                partner.name = f"{_faker.company()} {_faker.company_suffix()}"
+                partner.slug = _faker.slug()
+                partner.link = _faker.uri()
+                igen = IconGenerator(5, 5)  # 5x5 blocks
+                icon = igen.generate(
+                    partner.name,
+                    480,
+                    480,
+                    padding=(10, 10, 10, 10),
+                    output_format="jpeg",
+                )  # 620x620 pixels, with 10 pixels padding on each side
+                partner.logo.save(partner.name + ".jpg", ContentFile(icon))
+                break
+            except IntegrityError:
+                pass
         partner.address = _faker.street_address()
         partner.zip_code = _faker.postcode()
         partner.city = _faker.city()
-
         partner.save()
 
     def create_pizza(self):
