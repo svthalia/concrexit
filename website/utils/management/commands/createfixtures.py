@@ -712,7 +712,6 @@ class Command(BaseCommand):
                 self.create_event()
 
         # Partners need to be generated before vacancies
-
         if options["partner"]:
             for __ in range(options["partner"]):
                 self.create_partner()
