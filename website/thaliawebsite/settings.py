@@ -898,6 +898,30 @@ DEFAULT_EXCEPTION_REPORTER_FILTER = (
 makemessages.Command.xgettext_options.append("--add-location=file")
 
 GRAPH_MODELS = {
-    "all_applications": True,
+    "all_applications": False,
     "group_models": True,
+    "app_labels": [
+        "events",
+        "photos",
+        "thumbnails",
+        "merchandise",
+        "thabloid",
+        "partners",
+        "newsletters",
+        "shortlinks",
+        "promotion",
+        "documents",
+        "pizzas",
+        "announcements",
+        "sales",
+        "registrations",
+        "mailinglists",
+        "payments",
+        "members",
+        "admin",
+        "pushnotifications",
+        "activemembers",
+        "education",
+        "auth",
+    ],
 }
