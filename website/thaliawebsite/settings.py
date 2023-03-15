@@ -157,7 +157,7 @@ EDUCATION_NOTIFICATION_ADDRESS = (
     f"{os.environ.get('ADDRESS_EDUCATION', 'educacie')}@{SITE_DOMAIN}"
 )
 PROMO_REQUEST_NOTIFICATION_ADDRESS = (
-    f"{os.environ.get('ADDRESS_PROMOREQUESTS', 'paparazcie')}@{SITE_DOMAIN}"
+    f"{os.environ.get('ADDRESS_PROMOREQUESTS', 'promocie')}@{SITE_DOMAIN}"
 )
 PROMO_PUBLISH_DATE_TIMEDELTA = timezone.timedelta(weeks=1)
 
