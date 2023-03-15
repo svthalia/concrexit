@@ -1,0 +1,7 @@
+{% extends "events/admin/details.html" %}
+{% load i18n %}
+
+{% block buttons %}
+    {{ block.super }}
+    <a href="{% url 'admin:events_event_message' pk=event.pk %}" class="button">{% trans "Send pushnotification to registered users" %}</a>
+{% endblock %}

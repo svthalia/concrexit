@@ -157,7 +157,7 @@ EDUCATION_NOTIFICATION_ADDRESS = (
     f"{os.environ.get('ADDRESS_EDUCATION', 'educacie')}@{SITE_DOMAIN}"
 )
 PROMO_REQUEST_NOTIFICATION_ADDRESS = (
-    f"{os.environ.get('ADDRESS_PROMOREQUESTS', 'paparazcie')}@{SITE_DOMAIN}"
+    f"{os.environ.get('ADDRESS_PROMOREQUESTS', 'promocie')}@{SITE_DOMAIN}"
 )
 PROMO_PUBLISH_DATE_TIMEDELTA = timezone.timedelta(weeks=1)
 
@@ -440,6 +440,7 @@ if "SENTRY_DSN" in os.environ:
 ###############################################################################
 # (Mostly) static settings
 INSTALLED_APPS = [
+    "django_extensions",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -895,3 +896,31 @@ DEFAULT_EXCEPTION_REPORTER_FILTER = (
 
 # Make sure the locations in django.po files don't include line nrs.
 makemessages.Command.xgettext_options.append("--add-location=file")
+
+GRAPH_MODELS = {
+    "all_applications": False,
+    "group_models": True,
+    "app_labels": [
+        "events",
+        "photos",
+        "merchandise",
+        "thabloid",
+        "partners",
+        "newsletters",
+        "shortlinks",
+        "promotion",
+        "documents",
+        "pizzas",
+        "announcements",
+        "sales",
+        "registrations",
+        "mailinglists",
+        "payments",
+        "members",
+        "admin",
+        "pushnotifications",
+        "activemembers",
+        "education",
+        "auth",
+    ],
+}

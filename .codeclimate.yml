@@ -2,3 +2,7 @@ version: "2"
 exclude_patterns:
   - "**/migrations/*.py"
   - "docs/"
+checks:
+  complex-logic:
+      config:
+        threshold: 15

@@ -1,6 +1,5 @@
 import csv
 
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin import helpers
 from django.contrib.admin.views.decorators import staff_member_required
@@ -20,10 +19,9 @@ import qrcode
 from events import services
 from events.decorators import organiser_only
 from events.exceptions import RegistrationError
-from events.forms import EventMessageForm, FieldsForm
+from events.forms import FieldsForm
 from events.models import Event, EventRegistration
 from payments.models import Payment
-from pushnotifications.models import Category, Message
 
 
 @method_decorator(staff_member_required, name="dispatch")
@@ -66,7 +64,7 @@ class RegistrationAdminFields(FormView):
                 "change": True,
                 "has_view_permission": True,
                 "has_add_permission": False,
-                "has_change_permission": self.request.user.has_perms(
+                "has_change_permission": self.request.user.has_perm(
                     "events.change_eventregistration"
                 ),
                 "has_delete_permission": False,
@@ -122,71 +120,6 @@ class RegistrationAdminFields(FormView):
         except RegistrationError:
             pass
         return redirect("admin:events_eventregistration_change", self.registration.pk)
-
-
-@method_decorator(staff_member_required, name="dispatch")
-@method_decorator(organiser_only, name="dispatch")
-class EventMessage(FormView):
-    """Renders a form that allows the user to create a push notification for all users registers to the event."""
-
-    form_class = EventMessageForm
-    template_name = "events/admin/message_form.html"
-    admin = None
-    event = None
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context.update(
-            {
-                **self.admin.admin_site.each_context(self.request),
-                "add": False,
-                "change": True,
-                "has_view_permission": True,
-                "has_add_permission": False,
-                "has_change_permission": self.request.user.has_perms(
-                    "events.change_event"
-                ),
-                "has_delete_permission": False,
-                "has_editable_inline_admin_formsets": False,
-                "app_label": "events",
-                "opts": self.event._meta,
-                "is_popup": False,
-                "save_as": False,
-                "save_on_top": False,
-                "original": self.event,
-                "obj_id": self.event.pk,
-                "title": _("Send push notification"),
-                "adminform": helpers.AdminForm(
-                    context["form"],
-                    ((None, {"fields": context["form"].fields.keys()}),),
-                    {},
-                ),
-            }
-        )
-        return context
-
-    def form_valid(self, form):
-        values = form.cleaned_data
-        if not values["url"]:
-            values["url"] = settings.BASE_URL + self.event.get_absolute_url()
-        message = Message(
-            title=values["title"],
-            body=values["body"],
-            url=values["url"],
-            category=Category.objects.get(key=Category.EVENT),
-        )
-        message.save()
-        message.users.set([r.member for r in self.event.participants if r.member])
-        message.send()
-
-        messages.success(self.request, _("Message sent successfully."))
-        if "_save" in self.request.POST:
-            return redirect("admin:events_event_details", self.event.pk)
-        return super().form_valid(form)
-
-    def dispatch(self, request, *args, **kwargs):
-        self.event = get_object_or_404(Event, pk=self.kwargs["pk"])
-        return super().dispatch(request, *args, **kwargs)
 
 
 @method_decorator(staff_member_required, name="dispatch")

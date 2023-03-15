@@ -1,5 +1,5 @@
 {% load i18n bleach_tags %}
-Hi Paparazcie,
+Hi Promocie,
 
 Here is your weekly overview of promotion requests.
 
