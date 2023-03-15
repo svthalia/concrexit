@@ -1,0 +1,55 @@
+name: Generate Models graph
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  graph-generation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Setup Poetry
+        uses: snok/install-poetry@v1
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Restore any cached Poetry dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pypoetry/virtualenvs
+          key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-
+
+      - name: Install any new dependencies
+        run: poetry install
+        if: steps.cache.outputs.cache-hit != 'true'
+
+      - name: Install Graphviz
+        run: sudo apt install graphviz
+
+      - name: Generate full_models_graph.png
+        run: poetry run website/manage.py graph_models --pydot -a -g -o full_models_graph.png
+
+      - name: Save full_models_graph.png
+        uses: actions/upload-artifact@v3
+        with:
+          name: full_models_graph.png
+          path: ./full_models_graph.png
+
+      - name: Generate partial_models_graph.png
+        run:  poetry run website/manage.py graph_models --pydot -X LogEntry,ContentType,Permission,PermissionsMixin,AbstractUser,AbstractBaseUser,Group -o partial_models_graph.png
+
+      - name: Save partial_models_graph.png
+        uses: actions/upload-artifact@v3
+        with:
+          name: partial_models_graph.png
+          path: ./partial_models_graph.png
