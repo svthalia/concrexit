@@ -20,6 +20,7 @@ urlpatterns = [
         include(
             [
                 path("<int:pk>/", EventDetail.as_view(), name="event"),
+                path("<slug:slug>/", EventDetail.as_view(), name="event"),
                 path(
                     "<int:pk>/registration/register/",
                     EventRegisterView.as_view(),
