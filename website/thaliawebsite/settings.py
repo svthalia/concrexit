@@ -440,6 +440,7 @@ if "SENTRY_DSN" in os.environ:
 ###############################################################################
 # (Mostly) static settings
 INSTALLED_APPS = [
+    "django_extensions",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -906,3 +907,30 @@ MONEYBIRD_API_KEY = "-Xw8P1CfYFAA8Z0VEEnOgDvXiNNb8mgdBCgEMl05Yus"
 
 MONEYBIRD_AUTO_PUSH = True # Push changes to Moneybird automatically (so you don't have to call `instance.push_to_moneybird()` manually)
 MONEYBIRD_FETCH_BEFORE_PUSH = False # Fetch the latest data from Moneybird before pushing changes. This is useful if you want to avoid overwriting changes made in Moneybird, but it will slow down your application. With webhooks, this is likely not necessary.
+GRAPH_MODELS = {
+    "all_applications": False,
+    "group_models": True,
+    "app_labels": [
+        "events",
+        "photos",
+        "merchandise",
+        "thabloid",
+        "partners",
+        "newsletters",
+        "shortlinks",
+        "promotion",
+        "documents",
+        "pizzas",
+        "announcements",
+        "sales",
+        "registrations",
+        "mailinglists",
+        "payments",
+        "members",
+        "admin",
+        "pushnotifications",
+        "activemembers",
+        "education",
+        "auth",
+    ],
+}
