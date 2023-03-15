@@ -1,5 +1,5 @@
 """Routes defined by the events package."""
-from django.urls import include, path, register_converter
+from django.urls import include, path
 
 from events.feeds import EventFeed
 from events.views import (

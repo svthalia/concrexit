@@ -1,7 +1,6 @@
 """The feeds defined by the events package."""
 from django.conf import settings
 from django.db.models.query_utils import Q
-from django.urls import reverse
 from django.utils.translation import activate
 from django.utils.translation import gettext as _
 
