@@ -52,10 +52,11 @@
         {% include 'events/admin/registrations_table.html' with registrations=event.cancellations cancellations=True verb=cancelled addlink=False %}
         {% endwith %}
         <br>
+        {% block buttons %}
         <a href="{% url 'admin:events_event_export' pk=event.pk %}" class="button">{% trans "Export registrations" %}</a>
         <a href="{% url 'admin:events_event_mark_present_qr' pk=event.pk %}" target="_blank" class="button">{% trans "Show presence QR code" %}</a>
-        <a href="{% url 'admin:events_event_message' pk=event.pk %}" class="button">{% trans "Send pushnotification to registered users" %}</a>
         <a href="mailto:?bcc={% for p in event.participants %}{% if p.email %}{{p.email}},{%endif%}{%endfor%}" class="button"> {% trans "Send email to attendees" %} </a>
+        {% endblock %}
     </div>
 </div>
 {% endblock %}

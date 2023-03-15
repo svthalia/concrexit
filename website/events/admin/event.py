@@ -18,7 +18,6 @@ from events.admin.inlines import (
 from events.admin.views import (
     EventAdminDetails,
     EventMarkPresentQR,
-    EventMessage,
     EventRegistrationsExport,
 )
 from utils.admin import DoNextModelAdmin
@@ -255,11 +254,6 @@ class EventAdmin(DoNextModelAdmin):
                 "<int:pk>/export/",
                 self.admin_site.admin_view(EventRegistrationsExport.as_view()),
                 name="events_event_export",
-            ),
-            path(
-                "<int:pk>/message/",
-                self.admin_site.admin_view(EventMessage.as_view(admin=self)),
-                name="events_event_message",
             ),
             path(
                 "<int:pk>/mark-present-qr/",
