@@ -1,4 +1,4 @@
-{% load i18n bleach_tags %}{% blocktrans %}Hi Paparazcie,
+{% load i18n bleach_tags %}{% blocktrans %}Hi Promocie,
 
 Here is your weekly overview of promotion requests.
 {% endblocktrans %}
