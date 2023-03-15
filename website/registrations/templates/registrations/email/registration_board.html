@@ -1,0 +1,10 @@
+{% extends "email/board_email.html" %}
+
+{% block content %}
+  Dear board,<br>
+
+  <p>A new membership registration has been submitted by {{ name }}.</p>
+
+  <p>Open the following url to review this submission:<br>
+  <a href="{{ url }}">{{ url }}</a></p>
+{% endblock %}

@@ -4,7 +4,6 @@ from typing import Union
 from django.conf import settings
 from django.template.defaultfilters import floatformat
 from django.urls import reverse
-from django.utils.translation import gettext_lazy as _
 
 from registrations.models import Registration, Renewal
 from utils.snippets import send_email
@@ -16,10 +15,11 @@ def send_registration_email_confirmation(registration: Registration) -> None:
     :param registration: the registration entry
     """
     send_email(
-        registration.email,
-        _("Confirm email address"),
-        "registrations/email/registration_confirm_mail.txt",
-        {
+        to=[registration.email],
+        subject="Confirm email address",
+        txt_template="registrations/email/registration_confirm_mail.txt",
+        html_template="registrations/email/registration_confirm_mail.html",
+        context={
             "name": registration.get_full_name(),
             "confirm_link": (
                 settings.BASE_URL
@@ -35,10 +35,11 @@ def send_registration_accepted_message(registration: Registration) -> None:
     :param registration: the registration entry
     """
     send_email(
-        registration.email,
-        _("Registration accepted"),
-        "registrations/email/registration_accepted.txt",
-        {
+        to=[registration.email],
+        subject="Registration accepted",
+        txt_template="registrations/email/registration_accepted.txt",
+        html_template="registrations/email/registration_accepted.html",
+        context={
             "name": registration.get_full_name(),
             "fees": floatformat(registration.contribution, 2),
         },
@@ -51,10 +52,11 @@ def send_registration_rejected_message(registration: Registration) -> None:
     :param registration: the registration entry
     """
     send_email(
-        registration.email,
-        _("Registration rejected"),
-        "registrations/email/registration_rejected.txt",
-        {"name": registration.get_full_name()},
+        to=[registration.email],
+        subject="Registration rejected",
+        txt_template="registrations/email/registration_rejected.txt",
+        html_template="registrations/email/registration_rejected.html",
+        context={"name": registration.get_full_name()},
     )
 
 
@@ -64,10 +66,11 @@ def send_new_registration_board_message(registration: Registration) -> None:
     :param registration: the registration entry
     """
     send_email(
-        settings.BOARD_NOTIFICATION_ADDRESS,
-        "New registration",
-        "registrations/email/registration_board.txt",
-        {
+        to=[settings.BOARD_NOTIFICATION_ADDRESS],
+        subject="New registration",
+        txt_template="registrations/email/registration_board.txt",
+        html_template="registrations/email/registration_board.html",
+        context={
             "name": registration.get_full_name(),
             "url": (
                 settings.BASE_URL
@@ -85,10 +88,11 @@ def send_renewal_accepted_message(renewal: Renewal) -> None:
     :param renewal: the renewal entry
     """
     send_email(
-        renewal.member.email,
-        _("Renewal accepted"),
-        "registrations/email/renewal_accepted.txt",
-        {
+        to=[renewal.member.email],
+        subject="Renewal accepted",
+        txt_template="registrations/email/renewal_accepted.txt",
+        html_template="registrations/email/renewal_accepted.html",
+        context={
             "name": renewal.member.get_full_name(),
             "fees": floatformat(renewal.contribution, 2),
             "thalia_pay_enabled": settings.THALIA_PAY_ENABLED_PAYMENT_METHOD,
@@ -108,10 +112,11 @@ def send_renewal_rejected_message(renewal: Renewal) -> None:
     :param renewal: the renewal entry
     """
     send_email(
-        renewal.member.email,
-        _("Renewal rejected"),
-        "registrations/email/renewal_rejected.txt",
-        {"name": renewal.member.get_full_name()},
+        to=[renewal.member.email],
+        subject="Renewal rejected",
+        txt_template="registrations/email/renewal_rejected.txt",
+        html_template="registrations/email/renewal_rejected.html",
+        context={"name": renewal.member.get_full_name()},
     )
 
 
@@ -121,10 +126,11 @@ def send_renewal_complete_message(renewal: Renewal) -> None:
     :param renewal: the renewal entry
     """
     send_email(
-        renewal.member.email,
-        _("Renewal successful"),
-        "registrations/email/renewal_complete.txt",
-        {"name": renewal.member.get_full_name()},
+        to=[renewal.member.email],
+        subject="Renewal successful",
+        txt_template="registrations/email/renewal_complete.txt",
+        html_template="registrations/email/renewal_complete.html",
+        context={"name": renewal.member.get_full_name()},
     )
 
 
@@ -134,10 +140,11 @@ def send_new_renewal_board_message(renewal: Renewal) -> None:
     :param renewal: the renewal entry
     """
     send_email(
-        settings.BOARD_NOTIFICATION_ADDRESS,
-        "New renewal",
-        "registrations/email/renewal_board.txt",
-        {
+        to=[settings.BOARD_NOTIFICATION_ADDRESS],
+        subject="New renewal",
+        txt_template="registrations/email/renewal_board.txt",
+        html_template="registrations/email/renewal_board.html",
+        context={
             "name": renewal.member.get_full_name(),
             "url": (
                 settings.BASE_URL
@@ -163,10 +170,11 @@ def send_references_information_message(entry: Union[Registration, Renewal]) -> 
         name = entry.member.get_full_name()
 
     send_email(
-        email,
-        _("Information about references"),
-        "registrations/email/references_information.txt",
-        {
+        to=[email],
+        subject="Information about references",
+        txt_template="registrations/email/references_information.txt",
+        html_template="registrations/email/references_information.html",
+        context={
             "name": name,
             "reference_link": (
                 settings.BASE_URL + reverse("registrations:reference", args=[entry.pk])

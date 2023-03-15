@@ -4,14 +4,13 @@ from smtplib import SMTPException
 
 from django.conf import settings
 from django.core import mail
-from django.core.mail import EmailMultiAlternatives
-from django.template.loader import get_template
 from django.utils import timezone, translation
 from django.utils.timezone import make_aware
 
 from newsletters import services
 from partners.models import Partner
 from thaliawebsite.context_processors import thumbnail_sizes
+from utils.snippets import send_email
 
 logger = logging.getLogger(__name__)
 
@@ -36,18 +35,12 @@ def send_newsletter(newsletter):
         )
         events = services.get_agenda(datetime)
 
-    from_email = settings.NEWSLETTER_FROM_ADDRESS
-    html_template = get_template("newsletters/email.html")
-    text_template = get_template("newsletters/email.txt")
-
     main_partner = Partner.objects.filter(is_main_partner=True).first()
     local_partners = services.split_local_partners()
 
     with mail.get_connection() as connection:
         language = ("en", "English")
         translation.activate(language[0])
-
-        subject = "[THALIA] " + newsletter.title
 
         context = {
             "newsletter": newsletter,
@@ -58,20 +51,17 @@ def send_newsletter(newsletter):
         }
         context.update(thumbnail_sizes(None))
 
-        html_message = html_template.render(context)
-        text_message = text_template.render(context)
-
-        msg = EmailMultiAlternatives(
-            subject=subject,
-            body=text_message,
-            to=[f"newsletter@{settings.GSUITE_DOMAIN}"],
-            from_email=from_email,
-            connection=connection,
-        )
-        msg.attach_alternative(html_message, "text/html")
-
         try:
-            msg.send()
+            send_email(
+                to=[f"newsletter@{settings.GSUITE_DOMAIN}"],
+                subject=newsletter.title,
+                txt_template="newsletters/email.txt",
+                html_template="newsletters/email.html",
+                from_email=settings.NEWSLETTER_FROM_ADDRESS,
+                connection=connection,
+                context=context,
+            )
+
             logger.info("Sent %s newsletter", language[1])
         except SMTPException:
             logger.exception("Failed to send the %s newsletter", language[1])

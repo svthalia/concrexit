@@ -1,4 +1,4 @@
-{% load i18n %}{% blocktrans %}Dear {{ name }},
+Dear {{ name }},
 
 You're a study member of Thalia. This means that you'll be a member as long
 as you're enrolled in either a Computing Science or an Information Sciences programme.
@@ -15,4 +15,4 @@ The board of Study Association Thalia
 
 ————
 
-This email was automatically generated.{% endblocktrans %}
+This email was automatically generated.
