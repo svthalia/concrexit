@@ -127,6 +127,32 @@ def liked_photos(request):
         Photo.objects.filter(likes__member=request.member, album__hidden=False)
         .select_related("album")
         .select_properties("num_likes")
+        .order_by("-album__date")
     )
-    context = {"photos": photos}
+
+    paginator = Paginator(photos, 16)
+
+    page = request.GET.get("page")
+    page = 1 if page is None or not page.isdigit() else int(page)
+    try:
+        photos = paginator.page(page)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        photos = paginator.page(paginator.num_pages)
+        page = paginator.num_pages
+
+    page_range_start = max(1, page - 2)
+    page_range_stop = min(page + 3, paginator.num_pages + 1)
+
+    # Add extra pages if we show less than 5 pages
+    page_range_start = min(page_range_start, page_range_stop - 5)
+    page_range_start = max(1, page_range_start)
+
+    # Add extra pages if we still show less than 5 pages
+    page_range_stop = max(page_range_stop, page_range_start + 5)
+    page_range_stop = min(page_range_stop, paginator.num_pages + 1)
+
+    page_range = range(page_range_start, page_range_stop)
+
+    context = {"photos": photos, "page_range": page_range}
     return render(request, "photos/liked-photos.html", context)
