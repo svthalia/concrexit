@@ -1,0 +1,9 @@
+{% extends "email/board_email.html" %}
+
+{% block content %}
+  Hello,<br>
+
+  <p>We have received a new document submission for the education section of the website that requires your attention:</p>
+
+  <p>{{ document }}, {{ course }}, {{ uploader }} - <a href="{{ url }}">{{ url }}</a></p>
+{% endblock %}

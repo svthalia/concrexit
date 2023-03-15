@@ -314,7 +314,9 @@ class ServicesTest(TestCase):
         )
 
         self.assertEqual(len(mail.outbox), 1)
-        self.assertEqual(mail.outbox[0].subject, "Welcome to Study Association Thalia")
+        self.assertEqual(
+            mail.outbox[0].subject, "[THALIA] Welcome to Study Association Thalia"
+        )
 
     def test_create_member_from_registration_tpay(self):
         self.e1.username = "jdoe"

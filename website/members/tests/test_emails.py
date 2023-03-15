@@ -172,15 +172,19 @@ class EmailsTest(TestCase):
     def test_send_membership_announcement(self):
         emails.send_membership_announcement()
 
-        self.assertEqual(len(mail.outbox), 2)
+        self.assertEqual(len(mail.outbox), 3)
         self.assertEqual(mail.outbox[0].to, ["test4@example.org"])
         self.assertEqual(mail.outbox[1].to, ["test5@example.org"])
+
+        self.assertEqual(
+            mail.outbox[2].subject, "[THALIA] Membership announcement sent"
+        )
 
     @freeze_time("2017-10-01")
     def test_send_information_request(self):
         emails.send_information_request()
 
-        self.assertEqual(len(mail.outbox), 8)
+        self.assertEqual(len(mail.outbox), 9)
         self.assertEqual(mail.outbox[0].to, ["test1@example.org"])
         self.assertEqual(
             mail.outbox[0].subject, "[THALIA] Membership information check"
@@ -196,11 +200,15 @@ class EmailsTest(TestCase):
         self.assertEqual(mail.outbox[6].to, ["test7@example.org"])
         self.assertEqual(mail.outbox[7].to, ["test9@example.org"])
 
+        self.assertEqual(
+            mail.outbox[8].subject, "[THALIA] Membership information check sent"
+        )
+
     @freeze_time("2018-08-15")
     def test_send_expiration_announcement(self):
         emails.send_expiration_announcement()
 
-        self.assertEqual(len(mail.outbox), 3)
+        self.assertEqual(len(mail.outbox), 4)
         self.assertEqual(mail.outbox[0].to, ["test1@example.org"])
         self.assertEqual(
             mail.outbox[0].subject, "[THALIA] Membership expiration announcement"
@@ -211,10 +219,16 @@ class EmailsTest(TestCase):
         )
         self.assertEqual(mail.outbox[2].to, ["test6@example.org"])
 
+        self.assertEqual(
+            mail.outbox[3].subject, "[THALIA] Membership expiration announcement sent"
+        )
+
     @freeze_time("2018-08-15")
     def test_send_welcome_message(self):
         emails.send_welcome_message(self.year_member_nl, "password1")
 
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].to, ["test1@example.org"])
-        self.assertEqual(mail.outbox[0].subject, "Welcome to Study Association Thalia")
+        self.assertEqual(
+            mail.outbox[0].subject, "[THALIA] Welcome to Study Association Thalia"
+        )

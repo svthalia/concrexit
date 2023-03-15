@@ -1,4 +1,4 @@
-{% load i18n %}{% blocktrans %}Dear {{ full_name }},
+Dear {{ full_name }},
 
 Our records show that you are no longer an active member of Thalia.
 This means your Thalia G Suite account has been suspended.
@@ -12,4 +12,4 @@ The board of Study Association Thalia
 
 ————
 
-This email was automatically generated.{% endblocktrans %}
+This email was automatically generated.

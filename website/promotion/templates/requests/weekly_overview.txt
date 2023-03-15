@@ -1,21 +1,23 @@
-{% load i18n bleach_tags %}{% blocktrans %}Hi Promocie,
+{% load i18n bleach_tags %}
+Hi Promocie,
 
 Here is your weekly overview of promotion requests.
-{% endblocktrans %}
-{% if upcoming_requests%}{% trans "Requests to be finished:" %}{% else %}{% trans "No upcoming requests"%}{% endif %}
-{% for request in upcoming_requests%}{% if request.event %}{% trans "Event" %}: {{ request.event.title }}{% endif %}
-{% trans "Promotion channel" %}: {{ request.channel }}
-{% trans "Publish date" %}: {{ request.publish_date }}
-{% trans "Remarks" %}: {{ request.remarks|striptags }}
+
+{% if upcoming_requests %}Requests to be finished:{% else %}No upcoming requests{% endif %}
+{% for request in upcoming_requests %}{% if request.event %}Event: {{ request.event.title }}{% endif %}
+Promotion channel: {{ request.channel }}
+Publish date: {{ request.publish_date }}
+Remarks: {{ request.remarks|striptags }}
 
 {% endfor%}
-{% if new_requests%}{% trans "New requests:" %}{% else %}{% trans "No new requests"%}{% endif %}
-{% for request in new_requests%}{% if request.event %}{% trans "Event" %}: {{ request.event.title }}{% endif %}
-{% trans "Promotion channel" %}: {{ request.channel }}
-{% trans "Publish date" %}: {{ request.publish_date }}
-{% trans "Remarks" %}: {{ request.remarks|striptags }}
+{% if new_requests %}New requests:{% else %}No new requests{% endif %}
+{% for request in new_requests %}{% if request.event %}Event: {{ request.event.title }}{% endif %}
+Promotion channel: {{ request.channel }}
+Publish date: {{ request.publish_date }}
+Remarks: {{ request.remarks|striptags }}
 
 {% endfor%}
-{% blocktrans %}
-Best regards,
-Study Association Thalia{% endblocktrans %}
+
+Kisses,
+
+The website

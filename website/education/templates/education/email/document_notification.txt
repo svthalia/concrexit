@@ -2,4 +2,4 @@ Hello,
 
 We have received a new document submission for the education section of the website that requires your attention:
 
-{{document}}, {{course}}, {{uploader}} - {{url}}
+{{ document }}, {{ course }}, {{ uploader }} - {{url}}
