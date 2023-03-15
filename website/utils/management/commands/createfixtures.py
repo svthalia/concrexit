@@ -64,7 +64,6 @@ def maintain_integrity(func):
                 return func(*args, **kwargs)
             except IntegrityError:
                 try_amnt += 1
-                pass
         raise CommandError("Unable to create new user")
 
     return wrapper
