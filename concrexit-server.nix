@@ -297,6 +297,10 @@ in
             alias = ./infra/resources/apple-app-site-association.json;
             extraConfig = "default_type application/json;";
           };
+          locations."= /.well-known/assetlinks.json" = {
+            alias = ./infra/resources/assetlinks.json;
+            extraConfig = "default_type application/json;";
+          };
           locations."/.well-known/change-password" = {
             # Implementing https://github.com/WICG/change-password-url
             return = "301 https://$host/user/password_change/";
