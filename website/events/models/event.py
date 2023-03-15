@@ -29,6 +29,17 @@ class Event(models.Model):
 
     title = models.CharField(_("title"), max_length=100)
 
+    slug = models.SlugField(
+        verbose_name=_("slug"),
+        help_text=_(
+            "A short name for the event, used in the URL. For example: thalia-weekend-2023. "
+            "Note that the slug must be unique."
+        ),
+        unique=True,
+        blank=True,
+        null=True,
+    )
+
     description = HTMLField(
         _("description"),
     )
@@ -422,7 +433,9 @@ class Event(models.Model):
             raise ValidationError(errors)
 
     def get_absolute_url(self):
-        return reverse("events:event", args=[str(self.pk)])
+        if self.slug is None:
+            return reverse("events:event", kwargs={"pk": self.pk})
+        return reverse("events:event", kwargs={"slug": self.slug})
 
     def delete(self, using=None, keep_parents=False):
         using = using or router.db_for_write(self.__class__, instance=self)

@@ -70,7 +70,7 @@
                             {% for row in agenda_events|rows_distributed:2 %}
                              <td style="vertical-align: top;">
                                 {% for item in row %}
-                                <li style="font-family: Arial, sans-serif;"><i><a href="{% baseurl %}{% url 'events:event' item.pk %}" style="text-decoration: none; color: {{ primary_color }};">{{ item.title }} - {{ item.start|date:"d F" }}</a></i></li>
+                                <li style="font-family: Arial, sans-serif;"><i><a href="{% baseurl %}{{ item.get_absolute_url }}" style="text-decoration: none; color: {{ primary_color }};">{{ item.title }} - {{ item.start|date:"d F" }}</a></i></li>
                                 {% endfor %}
                              </td>
                             {% endfor %}

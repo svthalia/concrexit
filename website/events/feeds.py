@@ -1,7 +1,6 @@
 """The feeds defined by the events package."""
 from django.conf import settings
 from django.db.models.query_utils import Q
-from django.urls import reverse
 from django.utils.translation import activate
 from django.utils.translation import gettext as _
 
@@ -59,7 +58,7 @@ class EventFeed(ICalFeed):
         return item.end
 
     def item_link(self, item):
-        return settings.BASE_URL + reverse("events:event", kwargs={"pk": item.id})
+        return settings.BASE_URL + item.get_absolute_url()
 
     def item_location(self, item):
         return f"{item.location} - {item.map_location}"
