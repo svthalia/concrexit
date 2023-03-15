@@ -46,7 +46,7 @@ jobs:
           path: ./full_models_graph.png
 
       - name: Generate partial_models_graph.png
-        run:  poetry run website/manage.py graph_models --pydot -X LogEntry,ContentType,Permission,PermissionsMixin,User,AbstractUser,AbstractBaseUser,Group -o partial_models_graph.png
+        run:  poetry run website/manage.py graph_models --pydot -X LogEntry,ContentType,Permission,PermissionsMixin,AbstractUser,AbstractBaseUser,Group -o partial_models_graph.png
 
       - name: Save partial_models_graph.png
         uses: actions/upload-artifact@v3
