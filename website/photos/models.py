@@ -44,7 +44,11 @@ class Photo(models.Model):
         "Album", on_delete=models.CASCADE, verbose_name=_("album")
     )
 
-    file = ImageField(_("file"), upload_to=photo_uploadto)
+    file = ImageField(
+        _("file"),
+        upload_to=photo_uploadto,
+        pregenerated_sizes=["small", "medium", "large"],
+    )
 
     rotation = models.IntegerField(
         verbose_name=_("rotation"),
