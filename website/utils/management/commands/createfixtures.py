@@ -8,7 +8,8 @@ from datetime import date, datetime, timedelta
 
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
+from django.db.utils import IntegrityError
 from django.utils import timezone
 from django.utils.text import slugify
 
@@ -53,6 +54,20 @@ _current_tz = timezone.get_current_timezone()
 def _generate_title():
     words = _faker.words(random.randint(1, 3))
     return " ".join([word.capitalize() for word in words])
+
+
+def maintain_integrity(func):
+    def wrapper(*args, **kwargs):
+        try_amnt = 0
+        while True:
+            try:
+                return func(*args, **kwargs)
+            except IntegrityError as e:
+                try_amnt += 1
+                if try_amnt > 10:
+                    raise CommandError("Unable to create an object") from e
+
+    return wrapper
 
 
 class _ProfileFactory(factory.Factory):
@@ -175,6 +190,7 @@ class Command(BaseCommand):
         board.active = True
         board.contact_email = _faker.safe_email()
 
+        board.clean()
         board.save()
 
         # Add members
@@ -188,6 +204,7 @@ class Command(BaseCommand):
         chair.chair = True
         chair.save()
 
+    @maintain_integrity
     def create_member_group(self, group_model):
         """Create a MemberGroup."""
         self.stdout.write("Creating a membergroup")
@@ -214,7 +231,7 @@ class Command(BaseCommand):
         )  # 620x620 pixels, with 10 pixels padding on each side
         member_group.photo.save(member_group.name + ".jpg", ContentFile(icon))
 
-        member_group.since = _faker.date_time_between("-10y", "+30d")
+        member_group.since = _faker.date_time_between("-10y", "+30d").date()
 
         if random.random() < 0.1:
             now = date.today()
@@ -226,6 +243,7 @@ class Command(BaseCommand):
         member_group.active = random.random() < 0.9
         member_group.contact_email = _faker.safe_email()
 
+        member_group.clean()
         member_group.save()
 
         # Add members
@@ -237,6 +255,7 @@ class Command(BaseCommand):
         chair = random.choice(member_group.membergroupmembership_set.all())
         chair.until = None
         chair.chair = True
+
         chair.save()
 
     def create_member_group_membership(self, member, group):
@@ -254,18 +273,20 @@ class Command(BaseCommand):
         today = date.today()
         month = timedelta(days=30)
         membership.since = _faker.date_time_between_dates(
-            group.since, today + month
+            group.since, group.until
         ).date()
 
         if random.random() < 0.2 and membership.since < today:
             membership.until = _faker.date_time_between_dates(
-                membership.since, today
+                membership.since, group.until
             ).date()
-
+        membership.clean()
         membership.save()
 
+    @maintain_integrity
     def create_event(self):
         """Create an event."""
+        self.stdout.write("Creating an event")
         groups = MemberGroup.objects.all()
         if len(groups) == 0:
             self.stdout.write("Your database does not contain any member groups.")
@@ -301,6 +322,7 @@ class Command(BaseCommand):
                 datetime_end=event.start,
                 tzinfo=_current_tz,
             )
+            event.optional_registrations = False
 
         event.location_en = _faker.street_address()
         event.map_location = event.location_en
@@ -318,9 +340,10 @@ class Command(BaseCommand):
             event.max_participants = random.randint(20, 200)
 
         event.published = random.random() < 0.9
-
+        event.clean()
         event.save()
 
+    @maintain_integrity
     def create_partner(self):
         """Create a new random partner."""
         self.stdout.write("Creating a partner")
@@ -330,7 +353,6 @@ class Command(BaseCommand):
         partner.name = f"{_faker.company()} {_faker.company_suffix()}"
         partner.slug = _faker.slug()
         partner.link = _faker.uri()
-
         igen = IconGenerator(5, 5)  # 5x5 blocks
         icon = igen.generate(
             partner.name,
@@ -344,7 +366,7 @@ class Command(BaseCommand):
         partner.address = _faker.street_address()
         partner.zip_code = _faker.postcode()
         partner.city = _faker.city()
-
+        partner.clean()
         partner.save()
 
     def create_pizza(self):
@@ -356,9 +378,10 @@ class Command(BaseCommand):
         product.name = f"Pizza {_pizza_name_faker.last_name()}"
         product.price = random.randint(250, 1000) / 100
         product.available = random.random() < 0.9
-
+        product.clean()
         product.save()
 
+    @maintain_integrity
     def create_user(self):
         """Create a new random user."""
         self.stdout.write("Creating a user")
@@ -368,8 +391,11 @@ class Command(BaseCommand):
             random.choice(string.ascii_uppercase + string.digits) for _ in range(16)
         )
         user = get_user_model().objects.create_user(
-            fakeprofile["username"], fakeprofile["mail"], fakeprofile["password"]
+            fakeprofile["username"],
+            fakeprofile["mail"],
+            fakeprofile["password"],
         )
+
         user.first_name = fakeprofile["name"].split()[0]
         user.last_name = " ".join(fakeprofile["name"].split()[1:])
 
@@ -402,7 +428,9 @@ class Command(BaseCommand):
             ]
         )
         membership.type = random.choice([t[0] for t in Membership.MEMBERSHIP_TYPES])
-
+        user.clean()
+        profile.clean()
+        membership.clean()
         user.save()
         profile.save()
         membership.save()
@@ -433,7 +461,7 @@ class Command(BaseCommand):
                 output_format="jpeg",
             )  # 620x620 pixels, with 10 pixels padding on each side
             vacancy.company_logo.save(vacancy.company_name + ".jpg", ContentFile(icon))
-
+        vacancy.clean()
         vacancy.save()
 
         vacancy.categories.set(random.sample(list(categories), random.randint(0, 3)))
@@ -445,7 +473,7 @@ class Command(BaseCommand):
 
         category.name_en = _faker.text(max_nb_chars=30)
         category.slug = _faker.slug()
-
+        category.clean()
         category.save()
 
     def create_document(self):
@@ -457,6 +485,7 @@ class Command(BaseCommand):
         doc.category = random.choice([c[0] for c in Document.DOCUMENT_CATEGORIES])
         doc.members_only = random.random() < 0.75
         doc.file.save(f"{doc.name}.txt", ContentFile(_faker.text(max_nb_chars=120)))
+        doc.clean()
         doc.save()
 
     def create_newsletter(self):
@@ -496,7 +525,7 @@ class Command(BaseCommand):
                     random.randint(round(100 * item.price), round(500 * item.price))
                     / 100,
                 )
-
+            item.clean()
             item.save()
 
     def create_course(self):
@@ -518,6 +547,7 @@ class Command(BaseCommand):
         for category in Category.objects.order_by("?")[: random.randint(1, 3)]:
             course.categories.add(category)
 
+        course.clean()
         course.save()
 
     def create_event_registration(self, event_to_register_for=None):
@@ -546,7 +576,7 @@ class Command(BaseCommand):
         registration.event = possible_event
 
         registration.date = registration.event.registration_start
-
+        registration.clean()
         registration.save()
 
         return registration
@@ -595,6 +625,7 @@ class Command(BaseCommand):
             random.choice([Payment.CASH, Payment.CARD, Payment.WIRE]),
         )
 
+    @maintain_integrity
     def create_photo_album(self):
         self.stdout.write("Creating a photo album")
         album = Album()
@@ -609,7 +640,7 @@ class Command(BaseCommand):
             album.hidden = True
         if random.random() < 0.5:
             album.shareable = True
-
+        album.clean()
         album.save()
 
         for _ in range(random.randint(20, 30)):
@@ -632,7 +663,7 @@ class Command(BaseCommand):
             output_format="jpeg",
         )  # 620x620 pixels, with 10 pixels padding on each side
         photo.file.save(f"{name}.jpg", ContentFile(icon))
-
+        photo.clean()
         photo.save()
 
     def handle(self, *args, **options):
