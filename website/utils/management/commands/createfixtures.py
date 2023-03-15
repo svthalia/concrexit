@@ -59,12 +59,13 @@ def _generate_title():
 def maintain_integrity(func):
     def wrapper(*args, **kwargs):
         try_amnt = 0
-        while try_amnt < 10:
+        while True:
             try:
                 return func(*args, **kwargs)
-            except IntegrityError:
+            except IntegrityError as e:
                 try_amnt += 1
-        raise CommandError("Unable to create new user")
+                if try_amnt > 10:
+                    raise CommandError("Unable to create an object") from e
 
     return wrapper
 
