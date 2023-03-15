@@ -37,14 +37,13 @@ beautifulsoup4 = "^4.11.1"
 django-storages = "^1.12.3"
 boto3 = "^1.23.7"
 gunicorn = "^20.1.0"
-
-# docs requirements
-recommonmark = { version = "0.7.1", optional = true }
-sphinx = { version = "6.1.3", optional = true }
 qrcode = {version = "^7.3.1", extras = ["pil"]}
 django-drf-filepond = "^0.5.0"
 django-filepond-widget = "^0.9.0"
 django-thumbnails = "^0.7.0"
+django-extensions = "^3.2.1"
+recommonmark = { version = "0.7.1", optional = true }
+sphinx = { version = "6.1.3", optional = true }
 
 [tool.poetry.extras]
 docs = ["recommonmark", "sphinx"]
@@ -63,7 +62,6 @@ pylint-django = "2.5.3"
 pre-commit = "3.1.1"
 pyparsing = "^3.0.9"
 pydot = "^1.4.2"
-django-extensions = "^3.2.1"
 
 [build-system]
 requires = ["poetry>=0.12"]

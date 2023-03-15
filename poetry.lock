@@ -849,7 +849,7 @@ six = ">=1.14.0"
 name = "django-extensions"
 version = "3.2.1"
 description = "Extensions for Django"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 files = [
@@ -3130,4 +3130,4 @@ postgres = ["psycopg2"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "41ad53adbf643feaacae8c520d0cbadd31b0d8a4eba58bcb5ba747ee6a85a30b"
+content-hash = "24f8a8f6972ff22dfe2b42f553dba07bd3201d3ddf69f8ebc8ff92a03ea6dd4f"
