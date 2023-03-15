@@ -7,10 +7,8 @@ from django.utils.translation import gettext_lazy as _
 
 import members
 from events.models import Event
-from members.models import Member
 from payments.models import Payment, PaymentAmountField
 from payments.services import delete_payment
-from pushnotifications.models import Category, ScheduledMessage
 
 
 class CurrentEventManager(models.Manager):
@@ -42,7 +40,6 @@ class FoodEvent(models.Model):
     send_notification = models.BooleanField(
         _("Send an order notification"), default=True
     )
-    end_reminder = models.OneToOneField(ScheduledMessage, models.CASCADE, null=True)
 
     tpay_allowed = models.BooleanField(_("Allow Thalia Pay"), default=True)
 
@@ -104,41 +101,6 @@ class FoodEvent(models.Model):
                     "end": _("The end is before the start of this event."),
                 }
             )
-
-    def save(self, **kwargs):
-        if self.send_notification and not self.end_reminder:
-            end_reminder = ScheduledMessage()
-            end_reminder.title = f"{self.event.title}: Order food"
-            end_reminder.body = "You can order food for 10 more minutes"
-            end_reminder.category = Category.objects.get(key=Category.PIZZA)
-            end_reminder.time = self.end - timezone.timedelta(minutes=10)
-            end_reminder.save()
-
-            if self.event.registration_required:
-                end_reminder.users.set(
-                    self.event.registrations.filter(member__isnull=False)
-                    .select_related("member")
-                    .values_list("member", flat=True)
-                )
-            else:
-                end_reminder.users.set(Member.current_members.all())
-
-            self.end_reminder = end_reminder
-        elif self.send_notification and self.end_reminder and self._end != self.end:
-            self.end_reminder.time = self.end
-            self.end_reminder.save()
-        elif not self.send_notification and self.end_reminder:
-            end_reminder = self.end_reminder
-            self.end_reminder = None
-            if not end_reminder.sent:
-                end_reminder.delete()
-
-        super().save(**kwargs)
-
-    def delete(self, using=None, keep_parents=False):
-        if self.end_reminder is not None and not self.end_reminder.sent:
-            self.end_reminder.delete()
-        return super().delete(using, keep_parents)
 
     def __str__(self):
         return "Food for " + str(self.event)

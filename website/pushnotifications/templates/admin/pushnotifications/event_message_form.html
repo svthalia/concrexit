@@ -11,3 +11,10 @@
         <input type="submit" value="{% trans 'Send message' %}" class="default button" name="_save" data-_extension-text-contrast="">
     </div>
 {% endblock %}
+
+{% comment %}
+Events have additional object tools, that cannot be rendered for this view,
+but would be included by default because this view is part of the EventAdmin.
+{% endcomment %}
+{% block object-tools-items %}
+{% endblock %}

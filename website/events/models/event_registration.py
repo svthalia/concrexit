@@ -218,17 +218,7 @@ class EventRegistration(models.Model):
 
     def save(self, **kwargs):
         self.full_clean()
-
         super().save(**kwargs)
-
-        if self.event.start_reminder and self.date_cancelled:
-            self.event.start_reminder.users.remove(self.member)
-        elif (
-            self.event.start_reminder
-            and self.member is not None
-            and not self.event.start_reminder.users.filter(pk=self.member.pk).exists()
-        ):
-            self.event.start_reminder.users.add(self.member)
 
     def __str__(self):
         if self.member:

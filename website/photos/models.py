@@ -9,17 +9,12 @@ from django.db import models
 from django.db.models import Count, IntegerField, Value
 from django.db.models.functions import Coalesce
 from django.urls import reverse
-from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 
 from queryable_properties.managers import QueryablePropertiesManager
 from queryable_properties.properties import AnnotationProperty
 from thumbnails.fields import ImageField
-
-from events.models import Event
-from members.models import Member
-from pushnotifications.models import Category, ScheduledMessage
 
 COVER_FILENAME = "cover.jpg"
 
@@ -135,11 +130,12 @@ class Album(models.Model):
 
     hidden = models.BooleanField(verbose_name=_("hidden"), default=False)
 
-    new_album_notification = models.ForeignKey(
-        ScheduledMessage, on_delete=models.deletion.SET_NULL, blank=True, null=True
+    event = models.ForeignKey(
+        "events.Event",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
     )
-
-    event = models.ForeignKey(Event, on_delete=models.SET_NULL, blank=True, null=True)
 
     _cover = models.OneToOneField(
         Photo,
@@ -208,37 +204,6 @@ class Album(models.Model):
 
         if not self.date:
             self.date = self.event.start.date()
-
-        if not self.hidden and (
-            self.new_album_notification is None or not self.new_album_notification.sent
-        ):
-            new_album_notification_time = timezone.now() + timezone.timedelta(hours=1)
-            new_album_notification = ScheduledMessage()
-
-            if (
-                self.new_album_notification is not None
-                and not self.new_album_notification.sent
-            ):
-                new_album_notification = self.new_album_notification
-
-            new_album_notification.title = "New album uploaded"
-            new_album_notification.body = (
-                f"A new photo album '{self.title}' has just been uploaded"
-            )
-            new_album_notification.category = Category.objects.get(key=Category.PHOTO)
-            new_album_notification.url = f"{settings.BASE_URL}{self.get_absolute_url()}"
-            new_album_notification.time = new_album_notification_time
-            new_album_notification.save()
-            self.new_album_notification = new_album_notification
-            self.new_album_notification.users.set(Member.current_members.all())
-        elif (
-            self.hidden
-            and self.new_album_notification is not None
-            and not self.new_album_notification.sent
-        ):
-            existing_notification = self.new_album_notification
-            self.new_album_notification = None
-            existing_notification.delete()
 
         super().save(**kwargs)
 
