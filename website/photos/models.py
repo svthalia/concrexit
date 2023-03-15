@@ -14,6 +14,7 @@ from django.utils.translation import gettext_lazy as _
 
 from queryable_properties.managers import QueryablePropertiesManager
 from queryable_properties.properties import AnnotationProperty
+from thumbnails.fields import ImageField
 
 COVER_FILENAME = "cover.jpg"
 
@@ -38,7 +39,11 @@ class Photo(models.Model):
         "Album", on_delete=models.CASCADE, verbose_name=_("album")
     )
 
-    file = models.ImageField(_("file"), upload_to=photo_uploadto)
+    file = ImageField(
+        _("file"),
+        upload_to=photo_uploadto,
+        pregenerated_sizes=["small", "medium", "large"],
+    )
 
     rotation = models.IntegerField(
         verbose_name=_("rotation"),

@@ -64,7 +64,7 @@ class RegistrationAdminFields(FormView):
                 "change": True,
                 "has_view_permission": True,
                 "has_add_permission": False,
-                "has_change_permission": self.request.user.has_perms(
+                "has_change_permission": self.request.user.has_perm(
                     "events.change_eventregistration"
                 ),
                 "has_delete_permission": False,

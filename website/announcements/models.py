@@ -188,9 +188,12 @@ class Slide(models.Model):
         verbose_name=_("Display only for authenticated members"), default=False
     )
 
-    url = models.URLField(
+    custom_url = models.URLField(
         verbose_name=_("Link"),
-        help_text=_("Place the user is taken to when clicking the slide"),
+        help_text=_(
+            "Place the user is taken to when clicking the slide. "
+            "If left blank, will default to the linked event, if any."
+        ),
         blank=True,
         null=True,
     )
@@ -241,6 +244,14 @@ class Slide(models.Model):
             and (self.since is None or self.since <= timezone.now())
             and not (self.since is None and self.until is None)
         )
+
+    @property
+    def url(self):
+        if self.custom_url:
+            return self.custom_url
+        if self.event:
+            return self.event.get_absolute_url()
+        return None
 
     def __str__(self):
         return str(self.title)

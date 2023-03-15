@@ -9,11 +9,10 @@ from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 
-from PIL import Image
+from thumbnails.fields import ImageField
 
 from thaliawebsite.storage.backend import get_public_storage
 from utils import countries
-from utils.media.services import save_image
 
 logger = logging.getLogger(__name__)
 
@@ -219,7 +218,7 @@ class Profile(models.Model):
         default="full",
     )
 
-    photo = models.ImageField(
+    photo = ImageField(
         verbose_name=_("Photo"),
         upload_to=_profile_image_path,
         storage=get_public_storage,
@@ -258,6 +257,14 @@ class Profile(models.Model):
     receive_magazine = models.BooleanField(
         verbose_name=_("Receive the Thabloid"),
         help_text=_("Receive printed Thabloid magazines"),
+        default=True,
+    )
+
+    receive_oldmembers = models.BooleanField(
+        verbose_name=_("Receive alumni emails"),
+        help_text=_(
+            "If you are a past member, receive emails about Thalia events aimed at alumni."
+        ),
         default=True,
     )
 
@@ -366,34 +373,12 @@ class Profile(models.Model):
             self._orig_image = None
 
         elif self.photo and self._orig_image != self.photo.name:
-            original_image_name = self.photo.name
-            logger.debug("Converting image %s", original_image_name)
-
-            with self.photo.open() as image_handle:
-                image = Image.open(image_handle)
-                image.load()
-
-            # Image.thumbnail does not upscale an image that is smaller
-            image.thumbnail(settings.PHOTO_UPLOAD_SIZE, Image.ANTIALIAS)
-
-            # Create new filename to store compressed image
-            image_name, _ext = os.path.splitext(original_image_name)
-            image_name = storage.get_available_name(f"{image_name}.jpg")
-
-            save_image(storage, image, image_name, "JPEG")
-
-            self.photo.name = image_name
             super().save(**kwargs)
-
-            # delete original upload.
-            storage.delete(original_image_name)
 
             if self._orig_image:
                 logger.info("deleting: %s", self._orig_image)
                 storage.delete(self._orig_image)
             self._orig_image = self.photo.name
-        else:
-            logging.info("We already had this image, skipping thumbnailing")
 
     def __str__(self):
         return _("Profile for {}").format(self.user)

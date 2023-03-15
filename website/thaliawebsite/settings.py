@@ -157,7 +157,7 @@ EDUCATION_NOTIFICATION_ADDRESS = (
     f"{os.environ.get('ADDRESS_EDUCATION', 'educacie')}@{SITE_DOMAIN}"
 )
 PROMO_REQUEST_NOTIFICATION_ADDRESS = (
-    f"{os.environ.get('ADDRESS_PROMOREQUESTS', 'paparazcie')}@{SITE_DOMAIN}"
+    f"{os.environ.get('ADDRESS_PROMOREQUESTS', 'promocie')}@{SITE_DOMAIN}"
 )
 PROMO_PUBLISH_DATE_TIMEDELTA = timezone.timedelta(weeks=1)
 
@@ -440,6 +440,7 @@ if "SENTRY_DSN" in os.environ:
 ###############################################################################
 # (Mostly) static settings
 INSTALLED_APPS = [
+    "django_extensions",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -458,6 +459,7 @@ INSTALLED_APPS = [
     "admin_auto_filters",
     "django_drf_filepond",
     "django_filepond_widget",
+    "thumbnails",
     # Our apps
     # Directly link to the app config when applicable as recommended
     # by the docs: https://docs.djangoproject.com/en/2.0/ref/applications/
@@ -534,7 +536,6 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "announcements.context_processors.announcements",
-                "thaliawebsite.context_processors.thumbnail_sizes",
                 "thaliawebsite.context_processors.aprilfools",
                 "thaliawebsite.context_processors.lustrum_styling",
             ],
@@ -769,15 +770,97 @@ STATIC_PRECOMPILER_LIST_FILES = True
 # See utils/model/signals.py for explanation
 SUSPEND_SIGNALS = False
 
-THUMBNAIL_SIZES = {
-    "small": "300x300",
-    "medium": "600x600",
-    "large": "1200x900",
-    "avatar_large": "900x900",
-    "slide_small": "500x108",
-    "slide_medium": "1000x215",
-    "slide": "2000x430",
+THUMBNAILS = {
+    "METADATA": {
+        "BACKEND": "thumbnails.backends.metadata.DatabaseBackend",
+    },
+    "STORAGE": {
+        "BACKEND": DEFAULT_FILE_STORAGE,
+    },
+    "SIZES": {
+        "small": {
+            "PROCESSORS": [
+                {
+                    "PATH": "thumbnails.processors.resize",
+                    "width": 300,
+                    "height": 300,
+                    "method": "fit",
+                },
+            ],
+        },
+        "medium": {
+            "PROCESSORS": [
+                {
+                    "PATH": "thumbnails.processors.resize",
+                    "width": 600,
+                    "height": 600,
+                    "method": "fit",
+                },
+            ],
+        },
+        "large": {
+            "PROCESSORS": [
+                {
+                    "PATH": "thumbnails.processors.resize",
+                    "width": 1200,
+                    "height": 900,
+                    "method": "fit",
+                },
+            ],
+        },
+        "avatar_large": {
+            "PROCESSORS": [
+                {
+                    "PATH": "thumbnails.processors.resize",
+                    "width": 900,
+                    "height": 900,
+                    "method": "fit",
+                },
+            ],
+        },
+        "slide_small": {
+            "PROCESSORS": [
+                {
+                    "PATH": "thumbnails.processors.resize",
+                    "width": 500,
+                    "height": 108,
+                    "method": "fit",
+                },
+            ],
+        },
+        "slide_medium": {
+            "PROCESSORS": [
+                {
+                    "PATH": "thumbnails.processors.resize",
+                    "width": 1000,
+                    "height": 215,
+                    "method": "fit",
+                },
+            ],
+        },
+        "slide": {
+            "PROCESSORS": [
+                {
+                    "PATH": "thumbnails.processors.resize",
+                    "width": 200,
+                    "height": 430,
+                    "method": "fit",
+                },
+            ],
+        },
+    },
 }
+
+THUMBNAIL_SIZES = {
+    "small": "small",
+    "medium": "medium",
+    "large": "large",
+    "avatar_large": "avatar_large",
+    "slide_small": "slide_small",
+    "slide_medium": "slide_medium",
+    "slide": "slide",
+}
+
 
 # Photos settings
 PHOTO_UPLOAD_SIZE = 2560, 1440
@@ -813,3 +896,31 @@ DEFAULT_EXCEPTION_REPORTER_FILTER = (
 
 # Make sure the locations in django.po files don't include line nrs.
 makemessages.Command.xgettext_options.append("--add-location=file")
+
+GRAPH_MODELS = {
+    "all_applications": False,
+    "group_models": True,
+    "app_labels": [
+        "events",
+        "photos",
+        "merchandise",
+        "thabloid",
+        "partners",
+        "newsletters",
+        "shortlinks",
+        "promotion",
+        "documents",
+        "pizzas",
+        "announcements",
+        "sales",
+        "registrations",
+        "mailinglists",
+        "payments",
+        "members",
+        "admin",
+        "pushnotifications",
+        "activemembers",
+        "education",
+        "auth",
+    ],
+}

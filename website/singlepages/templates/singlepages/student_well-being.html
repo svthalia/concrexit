@@ -7,33 +7,9 @@
 {% block body %}
     <section class="page-section">
         <div class="container">
-            <h1 class="section-title">{% trans "Trust contact persons" %}</h1>
-            <div class="row mt-4">
-                <div class="col-12 col-md-6">
-                    {% blocktrans %}
-                        If you struggle with anything from personal problems to questions about
-                        your study and you don’t know where to go, you can contact one of the
-                        trust contact persons. They will make sure you get in contact with the
-                        right professional. Everything that is discussed with a trust contact
-                        person is confidential.
-                    {% endblocktrans %}
-                </div>
-                <div class="col-6 col-md-3 my-3 mt-md-0">
-                    {% static "img/contact_persons/tom-koning.jpeg" as photo %}
-                    {% grid_item title="Tom Koning" meta_text="<p>gtkoning.tk@gmail.com</p>" url="mailto:gtkoning.tk@gmail.com" image_url=photo %}
-                </div>
-                <div class="col-6 col-md-3 my-3 mt-md-0">
-                    {% static "img/contact_persons/isolde-hoogendonk.jpeg" as photo %}
-                    {% grid_item title="Isolde Hoogendonk" meta_text="<p>isoldeedlosi@gmail.com</p>" url="mailto:isoldeedlosi@gmail.com" image_url=photo %}
-                </div>
-            </div>
-        </div>
-    </section>
-    <section class="page-section">
-        <div class="container">
             <h1 class="section-title">{% trans "Services from the university" %}</h1>
             {% blocktrans %}
-                University also offers some services to help students. Below are the most important points of contact.
+                The university offers various services to help students. Below are the most important points of contact.
             {% endblocktrans %}
             <div class="row mt-4">
                 <div class="col-6 col-md-3 my-3">
@@ -57,6 +33,30 @@
                 <div class="col-12">
                     {% static "img/contact_persons/campus-swing.jpeg" as photo %}
                     {% grid_item title="General student support website from the university" meta_text="" url="https://www.ru.nl/currentstudents/during-your-studies/overview-counsellors-advisors/student-support/" image_url=photo class_name="ratio1-4" %}
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="page-section">
+        <div class="container">
+            <h1 class="section-title">{% trans "Trust contact persons" %}</h1>
+            <div class="row mt-4">
+                <div class="col-12 col-md-6">
+                    {% blocktrans %}
+                        If you struggle with anything from personal problems to questions about
+                        your study and you don’t know where to go, you can contact one of the
+                        trust contact persons. They will make sure you get in contact with the
+                        right professional. Everything that is discussed with a trust contact
+                        person is confidential.
+                    {% endblocktrans %}
+                </div>
+                <div class="col-6 col-md-3 my-3 mt-md-0">
+                    {% static "img/contact_persons/tom-koning.jpeg" as photo %}
+                    {% grid_item title="Tom Koning" meta_text="<p>gtkoning.tk@gmail.com</p>" url="mailto:gtkoning.tk@gmail.com" image_url=photo %}
+                </div>
+                <div class="col-6 col-md-3 my-3 mt-md-0">
+                    {% static "img/contact_persons/isolde-hoogendonk.jpeg" as photo %}
+                    {% grid_item title="Isolde Hoogendonk" meta_text="<p>isoldeedlosi@gmail.com</p>" url="mailto:isoldeedlosi@gmail.com" image_url=photo %}
                 </div>
             </div>
         </div>
