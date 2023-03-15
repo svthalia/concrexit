@@ -242,14 +242,14 @@ class FoodOrderReminderMessage(ScheduledMessage):
     )
 
 
-class RegistrationReminderManager(models.Manager):
+class RegistrationReminderMessageManager(models.Manager):
     """Returns event registration reminders only."""
 
 
-class RegistrationReminder(ScheduledMessage):
+class RegistrationReminderMessage(ScheduledMessage):
     """A scheduled message to notify users of something related to an event."""
 
-    objects = RegistrationReminderManager()
+    objects = RegistrationReminderMessageManager()
 
     event = models.OneToOneField(
         "events.Event",
@@ -258,14 +258,14 @@ class RegistrationReminder(ScheduledMessage):
     )
 
 
-class EventStartReminderManager(models.Manager):
+class EventStartReminderMessageManager(models.Manager):
     """Returns event start reminders only."""
 
 
-class EventStartReminder(ScheduledMessage):
+class EventStartReminderMessage(ScheduledMessage):
     """A scheduled message to notify users of an event start."""
 
-    objects = EventStartReminderManager()
+    objects = EventStartReminderMessageManager()
 
     event = models.OneToOneField(
         "events.Event",

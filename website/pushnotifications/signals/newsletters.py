@@ -19,5 +19,7 @@ def send_newsletter_pushnotification(sender, newsletter, **kwargs):
         url=settings.BASE_URL + newsletter.get_absolute_url(),
         category=Category.objects.get(key=Category.NEWSLETTER),
     )
-    message.users.set(Member.current_members.all())
+    message.users.set(
+        Member.current_members.filter(profile__receive_newsletter=True).all()
+    )
     message.send()

@@ -6,7 +6,7 @@ from events.models import Event, EventRegistration
 from members.models import Member
 from utils.models.signals import suspendingreceiver
 
-from ..models import Category, EventStartReminder, RegistrationReminder
+from ..models import Category, EventStartReminderMessage, RegistrationReminderMessage
 
 
 @suspendingreceiver(
@@ -39,7 +39,7 @@ def schedule_event_start_reminder(sender, instance, **kwargs):
             return
 
         if message is None:
-            message = EventStartReminder(event=instance)
+            message = EventStartReminderMessage(event=instance)
 
         message.title = "Event"
         message.body = f"'{instance.title}' starts in 1 hour"
@@ -85,7 +85,7 @@ def schedule_registration_reminder(sender, instance, **kwargs):
             return
 
         if message is None:
-            message = RegistrationReminder(event=instance)
+            message = RegistrationReminderMessage(event=instance)
 
         message.title = "Event registration"
         message.body = f"Registration for '{instance.title}' starts in 1 hour"
