@@ -1,4 +1,4 @@
-{% load i18n %}{% blocktrans %}Dear {{ name }},
+Dear {{ name }},
 
 The past year you've been a member or benificiary of Study Association Thalia.
 
@@ -14,12 +14,13 @@ you will get a discount of €{{ membership_price }}.
 
 Are you unable to renew your membership via the website? Then send us an email: info@thalia.nu.
 
+It's possible that you've already renewed your membership and that it hasn't 
+been processed yet. If that's the case then you don't need to do anything.
+
 With kind regards,
 
 The board of Study Association Thalia
 
 ————
 
-This email was automatically generated. It's possible that you've already renewed
-your membership and that it hasn't been processed yet. If that's the case then
-you don't need to do anything.{% endblocktrans %}
+This email was automatically generated.

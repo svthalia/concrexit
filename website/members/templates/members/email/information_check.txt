@@ -1,33 +1,29 @@
-{% load i18n %}{% blocktrans %}Dear {{ name }}{% endblocktrans %},
+Dear {{ name }},
 
-{% blocktrans trimmed %}
 We currently have the following information about you in our database.
 Via this email we'd like to ask you to check the accuracy of this data.
-{% endblocktrans %}
 
-{% trans "username"|capfirst %}: {{ username }}
-{% trans "name"|capfirst %}: {{ full_name }}
-{% trans "address"|capfirst %}:
+Username: {{ username }}
+Name: {{ full_name }}
+Address:
 {{ address_street }} {{ address_street2 }}
 {{ address_postal_code }}
 {{ address_city }}
 {{ address_country }}
-{% trans "phone"|capfirst %}: {{ phone_number }}
-{% trans "date of birth"|capfirst %}: {{ birthday }}
-{% trans "email address"|capfirst %}: {{ email }}
-{% trans "student number"|capfirst %}: {{ student_number }}
-{% trans "cohort"|capfirst %}: {{ starting_year }}
-{% trans "programme"|capfirst %}: {{ programme }}
+Phone: {{ phone_number }}
+Date of birth: {{ birthday }}
+Email address: {{ email }}
+Student number: {{ student_number }}
+Cohort: {{ starting_year }}
+Programme: {{ programme }}
 
-{% blocktrans trimmed %}
-You can change this data by logging into the website and using the 'edit profile' page.
+You can change this data on: {{ base_url }}{% url "members:edit-profile" %}
 Unable to edit the incorrect information? Then send an email: info@thalia.nu.
-{% endblocktrans %}
 
-{% trans "With kind regards" %},
+With kind regards,
 
-{% trans "The board of Study Association Thalia" %}
+The board of Study Association Thalia
 
 ————
 
-{% trans "This email was automatically generated." %}
+This email was automatically generated.

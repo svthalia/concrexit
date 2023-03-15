@@ -26,6 +26,74 @@
     }
 },
 {
+    "model": "thumbnails.source",
+    "pk": 1,
+    "fields": {
+        "name": "Thom_Wiggers.jpg"
+    }
+},
+{
+    "model": "thumbnails.thumbnailmeta",
+    "pk": 1,
+    "fields": {
+        "source_id": 1,
+        "size": "small",
+        "name": "/thumbnails/Thom_Wiggers_small.jpg"
+    }
+},
+{
+    "model": "thumbnails.thumbnailmeta",
+    "pk": 2,
+    "fields": {
+        "source_id": 1,
+        "size": "medium",
+        "name": "/thumbnails/Thom_Wiggers_medium.jpg"
+    }
+},
+{
+    "model": "thumbnails.thumbnailmeta",
+    "pk": 3,
+    "fields": {
+        "source_id": 1,
+        "size": "large",
+        "name": "/thumbnails/Thom_Wiggers_large.jpg"
+    }
+},
+{
+    "model": "thumbnails.source",
+    "pk": 2,
+    "fields": {
+        "name": "Thom_Wiggers_4YRoxV3.jpg"
+    }
+},
+{
+    "model": "thumbnails.thumbnailmeta",
+    "pk": 4,
+    "fields": {
+        "source_id": 2,
+        "size": "small",
+        "name": "/thumbnails/Thom_Wiggers_4YRoxV3_small.jpg"
+    }
+},
+{
+    "model": "thumbnails.thumbnailmeta",
+    "pk": 5,
+    "fields": {
+        "source_id": 2,
+        "size": "medium",
+        "name": "/thumbnails/Thom_Wiggers_4YRoxV3_medium.jpg"
+    }
+},
+{
+    "model": "thumbnails.thumbnailmeta",
+    "pk": 6,
+    "fields": {
+        "source_id": 2,
+        "size": "large",
+        "name": "/thumbnails/Thom_Wiggers_4YRoxV3_large.jpg"
+    }
+},
+{
     "model": "activemembers.membergroup",
     "pk": 3,
     "fields": {

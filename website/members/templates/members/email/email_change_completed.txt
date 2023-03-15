@@ -1,4 +1,4 @@
-{% load i18n %}{% blocktrans %}Dear {{ name }},
+Dear {{ name }},
 
 We've successfully updated the email address of your account.
 
@@ -10,4 +10,4 @@ The board of Study Association Thalia
 
 ————
 
-This email was automatically generated.{% endblocktrans %}
+This email was automatically generated.

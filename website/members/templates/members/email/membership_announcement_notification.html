@@ -1,0 +1,17 @@
+{% extends "email/board_email.html" %}
+
+{% block content %}
+  Dear board,<br>
+
+  <p>It's that time of the year again! The website sent an automatic email to all members that have a study membership.</p>
+
+  <p>That email tells them that their membership is valid as long as they're enrolled in either a Computing Science or an Information Sciences programme.<br>
+  We asked them to notify you when they graduate or stop with their studies for any other reason so that you'll be able to update the administration.</p>
+
+  <p>The email was sent to:</p>
+  <ul>
+    {% for member in members %}
+      <li>{{ member.get_full_name }}</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

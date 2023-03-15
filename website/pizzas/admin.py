@@ -32,7 +32,6 @@ class FoodEventAdmin(admin.ModelAdmin):
 
     list_display = ("title", "start", "end", "notification_enabled", "orders")
     date_hierarchy = "start"
-    exclude = ("end_reminder",)
     search_fields = ("event__title",)
     autocomplete_fields = ("event",)
 

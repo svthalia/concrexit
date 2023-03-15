@@ -1,0 +1,12 @@
+Hi {{ name }},
+
+You registered for the event '{{ event.title }}' on {{ registration.date|date:"SHORT_DATETIME_FORMAT" }} and unfortunately you were placed on the waiting list.
+However, some more spots were added and we would like to let you know that you'll be able to attend now!
+
+You can find more information about the event on the website: {{ base_url }}{{ event.get_absolute_url }}
+
+We're assuming that you'll be there, but you're still able to unregister until {{ event.cancel_deadline|date:"SHORT_DATETIME_FORMAT" }}.
+If this date has already passed you can contact the organisers via {{ organisers|join:", " }}.
+
+Best regards,
+Study Association Thalia
