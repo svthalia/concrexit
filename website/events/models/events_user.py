@@ -1,10 +1,13 @@
 from django.db import models
+from django.contrib.auth import get_user_model
+
 from django.utils.translation import gettext_lazy as _
 
-from members.models import Member
+
+UserModel = get_user_model()
 
 
-class EventsUser(Member):
+class EventsUser(UserModel):
     class Meta:
         verbose_name = _("Events user")
         verbose_name_plural = _("Events users")
