@@ -20,7 +20,7 @@ class BlacklistedEventsUser(Member):
         verbose_name_plural = _("Blacklisted events users")
 
     user = models.OneToOneField(
-        Member,
+        EventsUser,
         models.CASCADE,
         verbose_name=_("user"),
         related_name="blacklisted_events_user",
