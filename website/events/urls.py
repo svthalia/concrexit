@@ -1,5 +1,5 @@
 """Routes defined by the events package."""
-from django.urls import include, path
+from django.urls import include, path, register_converter
 
 from events.feeds import EventFeed
 from events.views import (
@@ -19,45 +19,25 @@ urlpatterns = [
         "events/",
         include(
             [
-                path("<int:pk>/", EventDetail.as_view(), name="eventpk"),
+                path("<int:pk>/", EventDetail.as_view(), name="event"),
                 path("<slug:slug>/", EventDetail.as_view(), name="event"),
                 path(
                     "<int:pk>/registration/register/",
-                    EventRegisterView.as_view(),
-                    name="registerpk",
-                ),
-                path(
-                    "<slug:slug>/registration/register/",
                     EventRegisterView.as_view(),
                     name="register",
                 ),
                 path(
                     "<int:pk>/registration/cancel/",
                     EventCancelView.as_view(),
-                    name="cancelpk",
-                ),
-                path(
-                    "<slug:slug>/registration/cancel/",
-                    EventCancelView.as_view(),
                     name="cancel",
                 ),
                 path(
                     "<int:pk>/mark-present/<uuid:token>/",
                     MarkPresentView.as_view(),
-                    name="mark-presentpk",
-                ),
-                path(
-                    "<slug:slug>/mark-present/<uuid:token>/",
-                    MarkPresentView.as_view(),
                     name="mark-present",
                 ),
                 path(
                     "<int:pk>/registration/",
-                    RegistrationView.as_view(),
-                    name="registrationpk",
-                ),
-                path(
-                    "<slug:slug>/registration/",
                     RegistrationView.as_view(),
                     name="registration",
                 ),

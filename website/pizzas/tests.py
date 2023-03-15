@@ -42,7 +42,6 @@ class PizzaEventTestCase(TestCase):
             map_location="test map location",
             price=0.00,
             fine=5.00,
-            slug="testevent-1",
         )
         cls.event.organisers.add(cls.committee)
 
@@ -55,7 +54,6 @@ class PizzaEventTestCase(TestCase):
             map_location="test map location",
             price=0.00,
             fine=5.00,
-            slug="testevent-2",
         )
         cls.event2.organisers.add(cls.committee)
 

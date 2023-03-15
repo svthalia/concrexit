@@ -35,7 +35,6 @@ class EventTest(TestCase):
             price=0.00,
             fine=5.00,
             optional_registrations=False,
-            slug="testevent-1",
         )
         cls.event.organisers.add(cls.committee)
         cls.member = Member.objects.first()
@@ -236,7 +235,6 @@ class RegistrationTest(TestCase):
             map_location="test map location",
             price=0.00,
             fine=0.00,
-            slug="testevent-1",
         )
         cls.event.organisers.add(Committee.objects.get(pk=1))
         cls.member1 = Member.objects.first()

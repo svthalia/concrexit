@@ -92,7 +92,6 @@ class RegistrationInformationFieldInlineTest(TestCase):
             map_location="test map location",
             price=0.00,
             fine=0.00,
-            slug="testevent-1",
         )
         cls.event.organisers.add(cls.committee)
         cls.member = Member.objects.filter(last_name="Wiggers").first()
@@ -159,7 +158,6 @@ class EventAdminTest(TestCase):
             map_location="test map location",
             price=0.00,
             fine=0.00,
-            slug="testevent-1",
         )
         cls.event.organisers.add(cls.committee)
         cls.member = Member.objects.filter(last_name="Wiggers").first()

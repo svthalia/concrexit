@@ -11,7 +11,7 @@ class EventsCalenderJSSerializer(CalenderJSSerializer):
         model = Event
 
     def _url(self, instance):
-        return reverse("events:event", kwargs={"slug": instance.slug})
+        return instance.get_absolute_url()
 
     def _class_names(self, instance):
         if self.context["member"] and len(instance.member_registration) > 0:

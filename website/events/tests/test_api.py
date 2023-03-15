@@ -38,7 +38,6 @@ class RegistrationApiTest(TestCase):
             map_location="test map location",
             price=13.37,
             fine=5.00,
-            slug="testevent-1",
         )
         cls.event.organisers.add(Committee.objects.get(pk=1))
         cls.member = Member.objects.filter(last_name="Wiggers").first()
@@ -451,7 +450,6 @@ class CalendarjsTest(TestCase):
             map_location="test map location",
             price=13.37,
             fine=5.00,
-            slug="testevent-1",
         )
         cls.unpubEvent = Event.objects.create(
             pk=2,
@@ -464,7 +462,6 @@ class CalendarjsTest(TestCase):
             map_location="fake map location",
             price=6.66,
             fine=5.00,
-            slug="testevent-2",
         )
         cls.extEvent = ExternalEvent.objects.create(
             pk=3,
@@ -530,7 +527,6 @@ class EventApiV2Test(TestCase):
             map_location="test map location",
             price=13.37,
             fine=5.00,
-            slug="testevent-1",
         )
         cls.event.organisers.add(Committee.objects.get(pk=1))
         cls.member = Member.objects.filter(last_name="Wiggers").first()

@@ -33,9 +33,13 @@ class Event(models.Model):
 
     slug = models.SlugField(
         verbose_name=_("slug"),
+        help_text=_(
+            "A short name for the event, used in the URL. For example: thalia-weekend-2023. "
+            "Note that the slug must be unique."
+        ),
         unique=True,
-        blank=False,
-        null=False,
+        blank=True,
+        null=True,
     )
 
     description = HTMLField(
@@ -226,7 +230,7 @@ class Event(models.Model):
         return settings.BASE_URL + reverse(
             "events:mark-present",
             kwargs={
-                "slug": self.slug,
+                "pk": self.pk,
                 "token": self.mark_present_url_token,
             },
         )
@@ -446,6 +450,8 @@ class Event(models.Model):
             raise ValidationError(errors)
 
     def get_absolute_url(self):
+        if self.slug is None:
+            return reverse("events:event", kwargs={"pk": self.pk})
         return reverse("events:event", kwargs={"slug": self.slug})
 
     def save(self, **kwargs):
