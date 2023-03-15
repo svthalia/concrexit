@@ -45,7 +45,9 @@ class Photo(models.Model):
     )
 
     file = ImageField(
-        _("file"), upload_to=photo_uploadto, pregenerated_sizes=["medium"]
+        _("file"),
+        upload_to=photo_uploadto,
+        pregenerated_sizes=["small", "medium", "large"],
     )
 
     rotation = models.IntegerField(
