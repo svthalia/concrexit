@@ -81,22 +81,6 @@ class AssociationDocumentForm(forms.ModelForm):
         }
 
 
-class EventDocumentForm(forms.ModelForm):
-    """Form that overrides the widgets for the files."""
-
-    class Meta:
-        model = models.EventDocument
-        fields = (
-            "name",
-            "file",
-            "members_only",
-            "owner",
-        )
-        widgets = {
-            "file": DocumentFileInput,
-        }
-
-
 class MiscellaneousDocumentForm(forms.ModelForm):
     """Form that overrides the widgets for the files."""
 
