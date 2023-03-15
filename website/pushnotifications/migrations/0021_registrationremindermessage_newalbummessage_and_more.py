@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
     dependencies = [
         ("pizzas", "0018_remove_foodevent_end_reminder"),
-        ("photos", "0019_remove_album_new_album_notification"),
+        ("photos", "0020_remove_album_new_album_notification"),
         ("events", "0065_remove_event_registration_reminder_and_more"),
         ("pushnotifications", "0020_alter_device_registration_id"),
     ]
