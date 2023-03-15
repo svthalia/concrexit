@@ -170,6 +170,7 @@ class RegistrationTest(TestCase):
         cls.mark_present_url = reverse(
             "events:mark-present",
             kwargs={
+                "pk": cls.event.pk,
                 "token": cls.event.mark_present_url_token,
             },
         )
@@ -525,6 +526,7 @@ class RegistrationTest(TestCase):
             reverse(
                 "events:mark-present",
                 kwargs={
+                    "pk": self.event.pk,
                     "token": "11111111-2222-3333-4444-555555555555",
                 },
             ),
@@ -579,6 +581,7 @@ class EventPageTest(TestCase):
         cls.mark_present_url = reverse(
             "events:mark-present",
             kwargs={
+                "pk": cls.event.pk,
                 "token": cls.event.mark_present_url_token,
             },
         )
