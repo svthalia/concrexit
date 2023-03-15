@@ -4,12 +4,11 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views import View
-from django.views.generic import DetailView, FormView, TemplateView, RedirectView
+from django.views.generic import DetailView, FormView, TemplateView
 
 from events import services
 from events.exceptions import RegistrationError
