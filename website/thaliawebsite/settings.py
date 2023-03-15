@@ -903,7 +903,6 @@ GRAPH_MODELS = {
     "app_labels": [
         "events",
         "photos",
-        "thumbnails",
         "merchandise",
         "thabloid",
         "partners",
