@@ -24,13 +24,21 @@ class Command(BaseCommand):
 
         # process migrate local media files to s3
         for full_path in self._get_all_media_file():
+            upload_path = self._split_path_to_upload(full_path)
             try:
-                upload_path = self._split_path_to_upload(full_path)
-                s3_client.upload_file(
-                    full_path, settings.AWS_STORAGE_BUCKET_NAME, upload_path
-                )
-                print(f"success upload {upload_path}")
-                logging.info(f"success upload {upload_path}")
+                if s3_client.head_object(
+                    Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=upload_path
+                ):
+                    # file already exists
+                    # note that this will not check if the file is the same
+                    print(f"file already exists {upload_path}")
+                    logging.info(f"file already exists {upload_path}")
+                else:
+                    s3_client.upload_file(
+                        full_path, settings.AWS_STORAGE_BUCKET_NAME, upload_path
+                    )
+                    print(f"success upload {upload_path}")
+                    logging.info(f"success upload {upload_path}")
             except ClientError as e:
                 print(f"failed upload {upload_path}")
                 logging.error(f"{e}: {upload_path}")
