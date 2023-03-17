@@ -81,3 +81,18 @@ def notify_waiting(event, registration):
             "organisers": organiser_emails,
         },
     )
+
+
+def notify_registration(event, registration):
+    send_email(
+        to=[registration.email],
+        subject=f"Registration conformation for {event.title}",
+        txt_template="events/email/registration_conf_email.txt",
+        html_template="events/email/registration_conf_email.html",
+        context={
+            "event": event,
+            "registration": registration,
+            "name": registration.name,
+            "base_url": settings.BASE_URL,
+        },
+    )

@@ -9,6 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from queryable_properties.managers import QueryablePropertiesManager
 from queryable_properties.properties import AnnotationProperty
 
+from events import emails
 from payments.models import PaymentAmountField
 
 from .event import Event
@@ -218,6 +219,10 @@ class EventRegistration(models.Model):
 
     def save(self, **kwargs):
         self.full_clean()
+
+        if self.member.profile.receive_registration and self.is_registered:
+            emails.notify_registration(self.event, self)
+
         super().save(**kwargs)
 
     def __str__(self):
