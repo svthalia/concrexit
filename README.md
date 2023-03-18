@@ -18,7 +18,16 @@ The latest Thalia Website built on Django.
 5. Open the code in your favorite Python IDE (VSCode or Pycharm both work great)
 
 Optional, but recommended: follow the tutorial! It can be found by going to the Wiki (top of the GitHub page) and then clicking on "Your first contribution" or by clicking [here](https://github.com/svthalia/concrexit/wiki/your-first-contribution).
+## Useful git commands
 
+- `git push` to push your branch to github
+- `git checkout -b <branch name>` to create a branch to work on
+- `git fetch origin` to synchronize your local repository with the central repository's main branch
+- `git switch <branch name>` to switch between branches
+- `git add .` to add all your changes to a commit (mind to run `make fmt` in your terminal before adding changes)
+- `git commit (-m <commit message>)` to commit your added changes possibly with a message
+- `git rebase origin/master` to get your branch up to date with all merges
+- `git status` to check the current status of your branch
 ## When working on an issue
 
 - Make sure you are not working on the main branch but on a separate branch.
