@@ -34,7 +34,7 @@ class ProfileInline(admin.StackedInline):
         "student_number",
         "phone_number",
         "receive_optin",
-        "receive_registration",
+        "receive_registration_confirmation",
         "receive_newsletter",
         "receive_magazine",
         "receive_oldmembers",

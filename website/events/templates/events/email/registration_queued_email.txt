@@ -1,4 +1,6 @@
 Dear {{ registration.member.profile.display_name|safe }},
 
 Hereby a confirmation that you registered for the following even: '{{ event.title }}', on:  {{ registration.date|date:"SHORT_DATETIME_FORMAT" }}.
+Since this event is full right now you have been put on the queue on position: {{ registration.queue_position }}.
+You will be contacted when there is more room in the event.
 If you would like to cancel this registration please do so before cancellation deadline..

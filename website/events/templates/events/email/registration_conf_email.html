@@ -1,7 +1,8 @@
 {% extends "email/html_email.html" %}
 {% block content %}
-<p>Dear {{registration.member.profile.display_name|safe}},</p>
+<p>Dear {{ registration.member.profile.display_name }},</p>
 
-<p>Hereby a conformation that you registered for the following even: '{{ event.title }}', on:  {{ registration.date|date:"SHORT_DATETIME_FORMAT" }}.</p>
-<p>If you would like to cancel this registration please do so before {{ event.cancel_deadline|date:"SHORT_DATETIME_FORMAT" }}.</p>
+<p>Hereby a confirmation that you registered for the following even: '{{ event.title }}', on:  {{ registration.date }}.</p>
+<p>Please inform the website on any other possible information needed from you to complete your registration.</p>
+<p>If you would like to cancel this registration please do so before the cancellation deadline.</p>
 {% endblock %}
