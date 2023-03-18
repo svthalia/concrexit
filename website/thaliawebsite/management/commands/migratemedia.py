@@ -26,13 +26,22 @@ class Command(BaseCommand):
         for full_path in self._get_all_media_file():
             upload_path = self._split_path_to_upload(full_path)
             try:
-                if s3_client.head_object(
-                    Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=upload_path
-                ):
+                try:
+                    remote_file = s3_client.head_object(
+                        Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=upload_path
+                    )
+                except ClientError as e:
+                    if e.response["Error"]["Code"] == "404":
+                        remote_file = None
+                    else:
+                        raise e
+
+                if remote_file:
                     # file already exists
-                    # note that this will not check if the file is the same
+                    # note that this will not check if the file contents are the same
                     print(f"file already exists {upload_path}")
                     logging.info(f"file already exists {upload_path}")
+                    continue
                 else:
                     s3_client.upload_file(
                         full_path, settings.AWS_STORAGE_BUCKET_NAME, upload_path
