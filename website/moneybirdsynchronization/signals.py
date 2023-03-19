@@ -64,7 +64,10 @@ def post_user_save(sender, instance, **kwargs):
 def post_payment_save(sender, instance, **kwargs):
     """Create external invoice on payment creation."""
     api = HttpsAdministration(settings.MONEYBIRD_API_KEY, settings.MONEYBIRD_ADMINISTRATION_ID)
-    contact = Contact.objects.get(member=instance.paid_by)
+    try:
+        contact = Contact.objects.get(member=instance.paid_by)
+    except Contact.DoesNotExist:
+        return
 
     dir(instance)
 
@@ -134,5 +137,4 @@ def post_payment_save(sender, instance, **kwargs):
             }
         }
 
-    print(invoice_info)
     api.post("external_sales_invoices", invoice_info)
