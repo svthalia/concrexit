@@ -224,14 +224,17 @@ class EventRegistration(models.Model):
             emails.notify_registration(self.event, self)
 
         elif (
-            self.member.profile.receive_registration_confirmation
+            not (self.member is None)
+            and self.member.profile.receive_registration_confirmation
             and self.is_registered
             and self.queue_position is None
         ):
             emails.notify_registration(self.event, self)
 
         elif (
-            self.member.profile.receive_registration_confirmation and self.is_registered
+            not (self.member is None)
+            and self.member.profile.receive_registration_confirmation
+            and self.is_registered
         ):
             emails.notify_queued(self.event, self)
 
