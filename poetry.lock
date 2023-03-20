@@ -1053,14 +1053,14 @@ redis = ["redis"]
 
 [[package]]
 name = "django-tinymce"
-version = "3.6.0"
+version = "3.6.1"
 description = "A Django application that contains a widget to render a form field as a TinyMCE editor."
 category = "main"
 optional = false
 python-versions = "*"
 files = [
-    {file = "django-tinymce-3.6.0.tar.gz", hash = "sha256:8a6817d8d365f81ea0035bbea8aa790a77b99604622fe23d72b3b3d9833363ce"},
-    {file = "django_tinymce-3.6.0-py3-none-any.whl", hash = "sha256:0f12e7b4279f784ab02a337dc9be8e0fd858c356bbf09520cc8f54942a1f2463"},
+    {file = "django-tinymce-3.6.1.tar.gz", hash = "sha256:6f4f6227c2c608052081a436a1e3054c441caae24c9e0c8c3010536e24749e29"},
+    {file = "django_tinymce-3.6.1-py3-none-any.whl", hash = "sha256:da5732413f51cf854352e3148f06f170b59d95a6c6a43fd9f7ccfdd1849f4bf9"},
 ]
 
 [[package]]
