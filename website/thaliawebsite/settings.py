@@ -238,22 +238,18 @@ DJANGO_DRF_FILEPOND_PERMISSION_CLASSES = {
     ],
 }
 
+# https://docs.djangoproject.com/en/dev/ref/settings/#media-url
+MEDIA_URL = "/media/private/"
+# https://docs.djangoproject.com/en/dev/ref/settings/#media-root
+MEDIA_ROOT = from_env("MEDIA_ROOT", development=os.path.join(BASE_DIR, "media"))
+
 SENDFILE_BACKEND = setting(
     development="django_sendfile.backends.development",
     production="django_sendfile.backends.nginx",
 )
 # https://github.com/johnsensible/django-sendfile#nginx-backend
 SENDFILE_URL = "/media/sendfile/"
-SENDFILE_ROOT = from_env(
-    "SENDFILE_ROOT",
-    production="/concrexit/media/",
-    development=os.path.join(BASE_DIR, "media"),
-)
-
-# https://docs.djangoproject.com/en/dev/ref/settings/#media-url
-MEDIA_URL = "/media/private/"
-# https://docs.djangoproject.com/en/dev/ref/settings/#media-root
-MEDIA_ROOT = from_env("MEDIA_ROOT", development=os.path.join(BASE_DIR, "media"))
+SENDFILE_ROOT = MEDIA_ROOT
 
 PRIVATE_MEDIA_LOCATION = ""
 PUBLIC_MEDIA_LOCATION = "public"
