@@ -34,13 +34,5 @@ website/.sass-cache/
 # venv from source_me.sh
 venv/
 
-# nix
-result
-result-*
-
-# direnv
-.envrc
-.env*
-
 # macOS
 .DS_Store
