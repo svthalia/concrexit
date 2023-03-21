@@ -440,7 +440,6 @@ if "SENTRY_DSN" in os.environ:
 ###############################################################################
 # (Mostly) static settings
 INSTALLED_APPS = [
-    "django_extensions",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -508,7 +507,10 @@ MIDDLEWARE = [
 ]
 
 if DJANGO_ENV in ("development", "testing"):
-    INSTALLED_APPS += ["django_template_check"]
+    INSTALLED_APPS += [
+        "django_template_check",
+        "django_extensions",
+    ]
 
 if DJANGO_ENV == "testing":
     for x in (
