@@ -11,7 +11,6 @@ from documents.models import (
     Minutes,
     MiscellaneousDocument,
 )
-
 from documents.services import is_owner
 
 
