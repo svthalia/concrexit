@@ -3,6 +3,7 @@ FROM python:3.11-slim-bullseye AS base
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     DJANGO_ENV=production
+
 WORKDIR /app
 
 FROM base as builder
@@ -32,14 +33,19 @@ RUN apt-get update && \
         rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /venv /venv
+COPY docker/concrexit/docker-entrypoint.sh /app/docker-entrypoint.sh
 COPY website /app/website
-COPY infra/docker/docker-entrypoint.sh /app/docker-entrypoint.sh
-COPY infra/docker/collect-static.sh /app/collect-static.sh
+
+WORKDIR /app/website
 
 RUN adduser -u 5678 --disabled-password --gecos "" appuser && chown -R appuser /app
 
-ENV MEDIA_ROOT="/media" \
-    STATIC_ROOT="/static"
 VOLUME [ "/media", "/static" ]
-WORKDIR /app/website
+ENV MEDIA_ROOT="/media" \
+    STATIC_ROOT="/static" \
+    SENDFILE_ROOT="/media"
+
+RUN MANAGE_PY=1 /venv/bin/python manage.py collectstatic --no-input
+RUN MANAGE_PY=1 /venv/bin/python manage.py compress
+
 CMD [ "/app/docker-entrypoint.sh" ]

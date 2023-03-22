@@ -1,0 +1,36 @@
+services:
+  concrexit:
+    build:
+      context: ..
+      dockerfile: docker/concrexit/Dockerfile
+    env_file:
+      - .env.public
+      - .env.public.production
+      - .env.secret.production
+    # TODO: nginx-proxy
+    # TODO: nginx volumes
+    # TODO: cronjobs and package registry instead of build
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # TODO: nginx-proxy
+
+  postgres:
+    image: postgres:11.19-alpine
+    environment:
+      POSTGRES_DB: concrexit
+      POSTGRES_USER: concrexit
+      POSTGRES_PASSWORD: concrexit
+    volumes:
+      - postgres-data:/var/lib/postgresql/data:rw
+    restart: always
+    healthcheck:
+      test: ["CMD", "pg_isready", "--username", "concrexit"]
+      interval: 3s
+      timeout: 1s
+      retries: 20
+
+volumes:
+  postgres-data:
