@@ -84,7 +84,8 @@ class Photo(models.Model):
     class Meta:
         """Meta class for Photo."""
 
-        ordering = ("file",)
+        # Photos are created in order of their filename.
+        ordering = ("pk",)
 
 
 class Like(models.Model):
