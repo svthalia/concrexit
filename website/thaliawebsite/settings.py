@@ -815,6 +815,24 @@ THUMBNAILS = {
                 },
             ],
         },
+        "photo_medium": {
+            "PROCESSORS": [
+                {
+                    "PATH": "thumbnails.processors.resize",
+                    "width": 1200,
+                    "height": 900,
+                },
+            ],
+        },
+        "photo_large": {
+            "PROCESSORS": [
+                {
+                    "PATH": "thumbnails.processors.resize",
+                    "width": 1920,
+                    "height": 1920,
+                },
+            ],
+        },
         "avatar_large": {
             "PROCESSORS": [
                 {
