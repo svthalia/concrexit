@@ -11,7 +11,7 @@ from django.template.response import TemplateResponse
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import CreateView, DetailView, ListView, UpdateView
+from django.views.generic import CreateView, DetailView, UpdateView
 from django.views.generic.base import TemplateResponseMixin, TemplateView, View
 
 from rest_framework.authtoken.models import Token
@@ -24,6 +24,7 @@ import pizzas.services
 from members import emails, services
 from members.decorators import membership_required
 from members.models import EmailChange, Member, Membership, Profile
+from thaliawebsite.views import PagedView
 from utils.snippets import datetime_to_lectureyear
 
 from . import models
@@ -55,7 +56,7 @@ class ObtainThaliaAuthToken(ObtainAuthToken):
 
 @method_decorator(login_required, "dispatch")
 @method_decorator(membership_required, "dispatch")
-class MembersIndex(ListView):
+class MembersIndex(PagedView):
     """View that renders the members overview."""
 
     model = Member
@@ -131,26 +132,9 @@ class MembersIndex(ListView):
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
 
-        page = context["page_obj"].number
-        paginator = context["paginator"]
-
-        page_range = range(1, paginator.num_pages + 1)
-        if paginator.num_pages > 7:
-            if page > 3:
-                page_range_end = paginator.num_pages
-                if page + 3 <= paginator.num_pages:
-                    page_range_end = page + 3
-
-                page_range = range(page - 2, page_range_end)
-                while page_range.stop - page_range.start < 5:
-                    page_range = range(page_range.start - 1, page_range.stop)
-            else:
-                page_range = range(1, 6)
-
         context.update(
             {
                 "filter": self.query_filter,
-                "page_range": page_range,
                 "year_range": self.year_range,
                 "keywords": self.keywords,
             }
