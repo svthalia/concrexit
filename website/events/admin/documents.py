@@ -1,10 +1,12 @@
+from django.contrib import admin
+
 from documents.services import is_owner
 from events.forms import EventDocumentForm
 from events.models.documents import EventDocument
 
 
 @admin.register(EventDocument)
-class EventDocumentAdmin(ModelAdmin):
+class EventDocumentAdmin(admin.ModelAdmin):
     """Manage the event documents."""
 
     form = EventDocumentForm
