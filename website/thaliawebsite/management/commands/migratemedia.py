@@ -42,12 +42,12 @@ class Command(BaseCommand):
                     print(f"file already exists {upload_path}")
                     logging.info(f"file already exists {upload_path}")
                     continue
-                else:
-                    s3_client.upload_file(
-                        full_path, settings.AWS_STORAGE_BUCKET_NAME, upload_path
-                    )
-                    print(f"success upload {upload_path}")
-                    logging.info(f"success upload {upload_path}")
+
+                s3_client.upload_file(
+                    full_path, settings.AWS_STORAGE_BUCKET_NAME, upload_path
+                )
+                print(f"success upload {upload_path}")
+                logging.info(f"success upload {upload_path}")
             except ClientError as e:
                 print(f"failed upload {upload_path}")
                 logging.error(f"{e}: {upload_path}")
