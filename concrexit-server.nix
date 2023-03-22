@@ -91,6 +91,14 @@ in
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJylC3OVDYt+JqJv1LStZpogMv04lr2XRW4yfddAT5JR MacBook-Pro-van-Job"
     ];
   };
+  users.users.quinten = {
+    isNormalUser = true;
+    description = "Quinten Kock";
+    extraGroups = [ "wheel" ];
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII8GLsrAXmnzd7ps5BI12KG/sN4apUPGksVZq6n6jtY2 quinten@epsilon"
+    ];
+  };
 
   # Automatic deployment settings
   security.polkit = {
