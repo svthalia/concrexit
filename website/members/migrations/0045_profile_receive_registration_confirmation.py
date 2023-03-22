@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
             field=models.BooleanField(
                 default=True,
                 help_text="Receive confirmation emails when registering for events",
-                verbose_name="Receive registration conformations",
+                verbose_name="Receive registration confirmations",
             ),
         ),
     ]

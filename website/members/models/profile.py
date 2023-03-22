@@ -249,7 +249,7 @@ class Profile(models.Model):
     )
 
     receive_registration_confirmation = models.BooleanField(
-        verbose_name=_("Receive registration conformations"),
+        verbose_name=_("Receive registration confirmations"),
         help_text=_("Receive confirmation emails when registering for events"),
         default=True,
     )
