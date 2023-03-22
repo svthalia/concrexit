@@ -1,0 +1,19 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "FRD6Y7E88Y.com.thaliapp",
+        "paths": [
+          "/pizzas",
+          "/events",
+          "/events/*",
+          "NOT /events/*/mark-present/*",
+          "/members/photos",
+          "/members/photos/*",
+          "/sales/order/*/pay"
+        ]
+      }
+    ]
+  }
+}

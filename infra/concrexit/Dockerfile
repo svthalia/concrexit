@@ -33,7 +33,7 @@ RUN apt-get update && \
         rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /venv /venv
-COPY docker/concrexit/docker-entrypoint.sh /app/docker-entrypoint.sh
+COPY infra/concrexit/docker-entrypoint.sh /app/docker-entrypoint.sh
 COPY website /app/website
 
 WORKDIR /app/website
