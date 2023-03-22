@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 from django.db.models.signals import pre_save
 
 from googleapiclient.errors import HttpError
+from google.auth.exceptions import RefreshError
 
 from activemembers import emails
 from activemembers.gsuite import GSuiteUserService
@@ -41,5 +42,5 @@ def pre_member_save(instance, **kwargs):
             and existing_member.username != instance.username
         ):
             sync_service.update_user(instance, existing_member.username)
-    except HttpError as e:
+    except (HttpError, RefreshError) as e:
         logger.error("Could not update G Suite account: %s", e)
