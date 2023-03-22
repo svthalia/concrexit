@@ -508,7 +508,10 @@ MIDDLEWARE = [
 ]
 
 if DJANGO_ENV in ("development", "testing"):
-    INSTALLED_APPS += ["django_template_check"]
+    INSTALLED_APPS += [
+        "django_template_check",
+        "django_extensions",
+    ]
 
 if DJANGO_ENV == "testing":
     for x in (
