@@ -3,8 +3,8 @@ import logging
 
 from django.core.management.base import BaseCommand
 
-from googleapiclient.errors import HttpError
 from google.auth.exceptions import RefreshError
+from googleapiclient.errors import HttpError
 
 from activemembers import emails
 from activemembers.gsuite import GSuiteUserService
