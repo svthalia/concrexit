@@ -3,6 +3,7 @@ import logging
 
 from django.core.management.base import BaseCommand
 
+from google.auth.exceptions import RefreshError
 from googleapiclient.errors import HttpError
 
 from activemembers import emails
@@ -22,5 +23,5 @@ class Command(BaseCommand):
             try:
                 email, password = sync_service.create_user(member)
                 emails.send_gsuite_welcome_message(member, email, password)
-            except HttpError as e:
+            except (HttpError, RefreshError) as e:
                 logger.error("User %s could not be created: %s", member.username, e)
