@@ -507,7 +507,10 @@ MIDDLEWARE = [
 ]
 
 if DJANGO_ENV in ("development", "testing"):
-    INSTALLED_APPS += ["django_template_check"]
+    INSTALLED_APPS += [
+        "django_template_check",
+        "django_extensions",
+    ]
 
 if DJANGO_ENV == "testing":
     for x in (
@@ -895,3 +898,31 @@ DEFAULT_EXCEPTION_REPORTER_FILTER = (
 
 # Make sure the locations in django.po files don't include line nrs.
 makemessages.Command.xgettext_options.append("--add-location=file")
+
+GRAPH_MODELS = {
+    "all_applications": False,
+    "group_models": True,
+    "app_labels": [
+        "events",
+        "photos",
+        "merchandise",
+        "thabloid",
+        "partners",
+        "newsletters",
+        "shortlinks",
+        "promotion",
+        "documents",
+        "pizzas",
+        "announcements",
+        "sales",
+        "registrations",
+        "mailinglists",
+        "payments",
+        "members",
+        "admin",
+        "pushnotifications",
+        "activemembers",
+        "education",
+        "auth",
+    ],
+}
