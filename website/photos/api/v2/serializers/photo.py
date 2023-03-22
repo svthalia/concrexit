@@ -16,7 +16,10 @@ class PhotoSerializer(CleanedModelSerializer):
         model = Photo
         fields = ("pk", "rotation", "hidden", "file")
 
-    file = ThumbnailSerializer()
+    file = ThumbnailSerializer(
+        size_medium="photo_medium",
+        size_large="photo_large",
+    )
 
 
 class PhotoListSerializer(PhotoSerializer):
