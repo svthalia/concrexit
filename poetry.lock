@@ -1112,14 +1112,14 @@ doc = ["Sphinx", "sphinx-rtd-theme", "sphinxcontrib-spelling"]
 
 [[package]]
 name = "faker"
-version = "17.6.0"
+version = "18.3.0"
 description = "Faker is a Python package that generates fake data for you."
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "Faker-17.6.0-py3-none-any.whl", hash = "sha256:5aaa16fa9cfde7d117eef70b6b293a705021e57158f3fa6b44ed1b70202d2065"},
-    {file = "Faker-17.6.0.tar.gz", hash = "sha256:51f37ff9df710159d6d736d0ba1c75e063430a8c806b91334d7794305b5a6114"},
+    {file = "Faker-18.3.0-py3-none-any.whl", hash = "sha256:2deeee8fed3d1b8ae5f87d172d4569ddc859aab8693f7cd68eddc5d20400563a"},
+    {file = "Faker-18.3.0.tar.gz", hash = "sha256:e7c058e1f360f245f265625b32d3189d7229398ad80a8b6bac459891745de052"},
 ]
 
 [package.dependencies]
@@ -3130,4 +3130,4 @@ postgres = ["psycopg2"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "9395843ef601810d3363370710ba3d9e23620c52362877b80ab38952ee05de6e"
+content-hash = "1f39130e878df998dd1af96864c48ed3deb7722fe31781e648b23daef7f095ee"
