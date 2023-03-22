@@ -1,6 +1,6 @@
-from events.models.documents import EventDocument
-from events.forms import EventDocumentForm
 from documents.services import is_owner
+from events.forms import EventDocumentForm
+from events.models.documents import EventDocument
 
 
 @admin.register(EventDocument)
