@@ -90,16 +90,14 @@ server {
 
     # TODO: http2
     # TODO: logs
-    # TODO: set host
 
     # Domain names this server should respond to.
     server_name ${SITE_DOMAIN};
 
     # Load the certificate files.
-    # TODO: ecc certs?
-    ssl_certificate         /etc/letsencrypt/live/thalia.nu/fullchain.pem;
-    ssl_certificate_key     /etc/letsencrypt/live/thalia.nu/privkey.pem;
-    ssl_trusted_certificate /etc/letsencrypt/live/thalia.nu/chain.pem;
+    ssl_certificate         /etc/letsencrypt/live/${SITE_DOMAIN}/fullchain.pem;
+    ssl_certificate_key     /etc/letsencrypt/live/${SITE_DOMAIN}/privkey.pem;
+    ssl_trusted_certificate /etc/letsencrypt/live/${SITE_DOMAIN}/chain.pem;
 
     # Load the Diffie-Hellman parameter.
     ssl_dhparam             /etc/letsencrypt/dhparams/dhparam.pem;
@@ -166,20 +164,60 @@ server {
     error_page 502 /maintenance.html;
 }
 
-# TODO: other hosts
-# www.
-    # location / {
-    #     return 301 https://staging.thalia.nu$request_uri;
-    # }
-# alumni.
-    # location / {
-    #     return 301 https://staging.thalia.nu/association/alumni/;
-    # }
-# pizza.
-    # location / {
-    #     return 301 https://staging.thalia.nu/pizzas;
-    # }
-# xn--vi8h.
-    # location / {
-    #     return 301 https://staging.thalia.nu/pizzas;
-    # }
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+
+    server_name www.${SITE_DOMAIN};
+
+    # Load the certificate files.
+    ssl_certificate         /etc/letsencrypt/live/${SITE_DOMAIN}/fullchain.pem;
+    ssl_certificate_key     /etc/letsencrypt/live/${SITE_DOMAIN}/privkey.pem;
+    ssl_trusted_certificate /etc/letsencrypt/live/${SITE_DOMAIN}/chain.pem;
+
+    # Load the Diffie-Hellman parameter.
+    ssl_dhparam             /etc/letsencrypt/dhparams/dhparam.pem;
+
+    location / {
+        return 301 https://${SITE_DOMAIN}$request_uri;
+    }
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+
+    server_name alumni.${SITE_DOMAIN};
+
+    # Load the certificate files.
+    ssl_certificate         /etc/letsencrypt/live/${SITE_DOMAIN}/fullchain.pem;
+    ssl_certificate_key     /etc/letsencrypt/live/${SITE_DOMAIN}/privkey.pem;
+    ssl_trusted_certificate /etc/letsencrypt/live/${SITE_DOMAIN}/chain.pem;
+
+    # Load the Diffie-Hellman parameter.
+    ssl_dhparam             /etc/letsencrypt/dhparams/dhparam.pem;
+
+    location / {
+        return 301 https://${SITE_DOMAIN}/association/alumni/;
+    }
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+
+    server_name pizza.${SITE_DOMAIN};
+    server_name xn--vi8h.${SITE_DOMAIN};
+
+    # Load the certificate files.
+    ssl_certificate         /etc/letsencrypt/live/${SITE_DOMAIN}/fullchain.pem;
+    ssl_certificate_key     /etc/letsencrypt/live/${SITE_DOMAIN}/privkey.pem;
+    ssl_trusted_certificate /etc/letsencrypt/live/${SITE_DOMAIN}/chain.pem;
+
+    # Load the Diffie-Hellman parameter.
+    ssl_dhparam             /etc/letsencrypt/dhparams/dhparam.pem;
+
+    location / {
+        return 301 https://${SITE_DOMAIN}/pizzas;
+    }
+}
