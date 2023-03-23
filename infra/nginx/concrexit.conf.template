@@ -1,0 +1,185 @@
+# The nginx base docker image will envsubst environment
+# variables into this template configuration at runtime.
+#
+# Specifically, it will replace the $\{SITE_DOMAIN\} variable
+# based on what is passed from docker compose.
+
+tcp_nopush on;
+tcp_nodelay on;
+
+ssl_protocols TLSv1.2 TLSv1.3;
+ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
+ssl_prefer_server_ciphers off;
+
+ssl_session_timeout 1d;
+ssl_session_cache shared:SSL:10m;
+ssl_session_tickets off;
+
+ssl_stapling on;
+ssl_stapling_verify on;
+
+gzip on;
+gzip_proxied any;
+gzip_comp_level 5;
+gzip_types
+    application/atom+xml
+    application/javascript
+    application/json
+    application/xml
+    application/xml+rss
+    image/svg+xml
+    text/css
+    text/javascript
+    text/plain
+    text/xml;
+gzip_vary on;
+
+proxy_redirect          off;
+proxy_connect_timeout   60s;
+proxy_send_timeout      60s;
+proxy_read_timeout      60s;
+proxy_http_version      1.1;
+
+proxy_set_header        Host $host;
+proxy_set_header        X-Real-IP $remote_addr;
+proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+proxy_set_header        X-Forwarded-Proto $scheme;
+proxy_set_header        X-Forwarded-Host $host;
+proxy_set_header        X-Forwarded-Server $host;
+
+client_max_body_size 2G;
+
+server_tokens off;
+
+log_format logfmt   'time="$time_local" client=$remote_addr '
+                    'method=$request_method url="$request_uri" '
+                    'request_length=$request_length '
+                    'status=$status bytes_sent=$bytes_sent '
+                    'body_bytes_sent=$body_bytes_sent '
+                    'referer=$http_referer '
+                    'user_agent="$http_user_agent" '
+                    'upstream_addr=$upstream_addr '
+                    'upstream_status=$upstream_status '
+                    'request_time=$request_time '
+                    'upstream_response_time=$upstream_response_time '
+                    'upstream_connect_time=$upstream_connect_time '
+                    'upstream_header_time=$upstream_header_time';
+
+# X-Frame-Options tells the browser whether you want to allow your site to be framed or not.
+# By preventing a browser from framing your site you can defend against attacks like clickjacking.
+add_header X-Frame-Options SAMEORIGIN;
+# X-Content-Type-Options stops a browser from trying to MIME-sniff the content type and forces it to stick with the declared content-type.
+add_header X-Content-Type-Options nosniff;
+# X-XSS-Protection sets the configuration for the cross-site scripting filters built into most browsers.
+add_header X-XSS-Protection "1; mode=block";
+# HTTP Strict Transport Security is an excellent feature to support on your site and strengthens your implementation of TLS by getting the User Agent to enforce the use of HTTPS.
+add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload";
+# Feature Policy is a new header that allows a site to control which features and APIs can be used in the browser.
+add_header Feature-Policy "camera 'none'; vr 'none'; camera 'none'; accelerometer 'none'; gyroscope 'none'";
+# Referrer Policy is a new header that allows a site to control how much information the browser includes with navigations away from a document and should be set by all sites.
+add_header Referrer-Policy strict-origin;
+# The Expect-CT header allows sites to opt in to reporting and/or enforcement of Certificate Transparency requirements,
+# which prevents the use of misissued certificates for that site from going unnoticed.
+# enforce not added for now
+add_header Expect-CT "max-age=604800";
+
+server {
+    # Listen to port 443 on both IPv4 and IPv6.
+    listen 443 ssl reuseport;
+    listen [::]:443 ssl reuseport;
+
+    # TODO: http2
+    # TODO: logs
+    # TODO: set host
+
+    # Domain names this server should respond to.
+    server_name ${SITE_DOMAIN};
+
+    # Load the certificate files.
+    # TODO: ecc certs?
+    ssl_certificate         /etc/letsencrypt/live/thalia.nu/fullchain.pem;
+    ssl_certificate_key     /etc/letsencrypt/live/thalia.nu/privkey.pem;
+    ssl_trusted_certificate /etc/letsencrypt/live/thalia.nu/chain.pem;
+
+    # Load the Diffie-Hellman parameter.
+    ssl_dhparam             /etc/letsencrypt/dhparams/dhparam.pem;
+
+    location / {
+        proxy_pass          http://concrexit:8000;
+    }
+
+    location /static/ {
+        alias /vol/static/;
+
+        add_header Cache-Control "public, max-age=31536000, immutable";
+
+        # Add security headers again as they are removed by using add_header in this block.
+        # See https://github.com/yandex/gixy/blob/master/docs/en/plugins/addheaderredefinition.md
+        add_header X-Frame-Options SAMEORIGIN;
+        add_header X-Content-Type-Options nosniff;
+        add_header X-XSS-Protection "1; mode=block";
+        add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload";
+        add_header Feature-Policy "camera 'none'; vr 'none'; camera 'none'; accelerometer 'none'; gyroscope 'none'";
+        add_header Referrer-Policy strict-origin;
+        add_header Expect-CT "max-age=604800";
+
+    }
+
+    location /media/public/ {
+        alias /vol/media/public/;
+    }
+
+    location /media/sendfile/ {
+        alias /vol/media/;
+        internal;
+    }
+
+    location = /.well-known/change-password {
+        return 301 http://$host/password_change/;
+    }
+
+    location = /.well-known/apple-app-site-association {
+        alias /resources/apple-app-site-association;
+        default_type application/json;
+    }
+
+    location = /.well-known/assetslinks.json {
+        alias /resources/assetslinks.json;
+        default_type application/json;
+    }
+
+    location = /.well-known/security.txt {
+        alias /resources/security.txt;
+        default_type text/plain;
+    }
+
+    location = /maintenance.html {
+        alias /resources/maintenance.html;
+        internal;
+    }
+
+    location = /pgp-key.txt {
+        alias /resources/pgp-key.txt;
+        default_type text/plain;
+    }
+
+    error_page 502 /maintenance.html;
+}
+
+# TODO: other hosts
+# www.
+    # location / {
+    #     return 301 https://staging.thalia.nu$request_uri;
+    # }
+# alumni.
+    # location / {
+    #     return 301 https://staging.thalia.nu/association/alumni/;
+    # }
+# pizza.
+    # location / {
+    #     return 301 https://staging.thalia.nu/pizzas;
+    # }
+# xn--vi8h.
+    # location / {
+    #     return 301 https://staging.thalia.nu/pizzas;
+    # }
