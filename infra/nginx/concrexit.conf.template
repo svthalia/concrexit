@@ -85,10 +85,9 @@ add_header Expect-CT "max-age=604800";
 
 server {
     # Listen to port 443 on both IPv4 and IPv6.
-    listen 443 ssl reuseport;
-    listen [::]:443 ssl reuseport;
+    listen 443 ssl http2 reuseport;
+    listen [::]:443 ssl http2 reuseport;
 
-    # TODO: http2
     # TODO: logs
 
     # Domain names this server should respond to.
@@ -165,8 +164,8 @@ server {
 }
 
 server {
-    listen 443 ssl;
-    listen [::]:443 ssl;
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
 
     server_name www.${SITE_DOMAIN};
 
@@ -184,8 +183,8 @@ server {
 }
 
 server {
-    listen 443 ssl;
-    listen [::]:443 ssl;
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
 
     server_name alumni.${SITE_DOMAIN};
 
@@ -203,8 +202,8 @@ server {
 }
 
 server {
-    listen 443 ssl;
-    listen [::]:443 ssl;
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
 
     server_name pizza.${SITE_DOMAIN};
     server_name xn--vi8h.${SITE_DOMAIN};
