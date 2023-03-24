@@ -4,7 +4,7 @@ variable "tags" {
 }
 
 variable "stage" {
-  description = "The deployment stage"
+  description = "Deployment stage for resource names"
   type        = string
 }
 

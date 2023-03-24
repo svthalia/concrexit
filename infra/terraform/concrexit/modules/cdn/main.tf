@@ -70,9 +70,12 @@ resource "aws_route53_record" "domain" {
   }
 }
 
+# CloudFront requires a certificate to be imported in the us-east-1 region.
+# See https://github.com/terraform-aws-modules/terraform-aws-acm/tree/v4.3.2#usage-with-cloudfront.
 provider "aws" {
-  alias  = "us-east-1"
-  region = "us-east-1"
+  profile = var.aws_profile
+  alias   = "us-east-1"
+  region  = "us-east-1"
 }
 
 module "acm" {

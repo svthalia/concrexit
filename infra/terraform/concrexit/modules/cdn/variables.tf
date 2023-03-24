@@ -4,7 +4,7 @@ variable "tags" {
 }
 
 variable "stage" {
-  description = "The deployment stage"
+  description = "Deployment stage for resource names"
   type        = string
 }
 
@@ -29,6 +29,11 @@ variable "webdomain" {
 }
 
 variable "cloudfront_public_key" {
-    description = "AWS CloudFront public key"
-    type        = string
+  description = "AWS CloudFront public key"
+  type        = string
+}
+
+variable "aws_profile" {
+  description = "AWS profile to use"
+  type        = string
 }
