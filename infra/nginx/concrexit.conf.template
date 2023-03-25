@@ -51,20 +51,6 @@ client_max_body_size 2G;
 
 server_tokens off;
 
-log_format logfmt   'time="$time_local" client=$remote_addr '
-                    'method=$request_method url="$request_uri" '
-                    'request_length=$request_length '
-                    'status=$status bytes_sent=$bytes_sent '
-                    'body_bytes_sent=$body_bytes_sent '
-                    'referer=$http_referer '
-                    'user_agent="$http_user_agent" '
-                    'upstream_addr=$upstream_addr '
-                    'upstream_status=$upstream_status '
-                    'request_time=$request_time '
-                    'upstream_response_time=$upstream_response_time '
-                    'upstream_connect_time=$upstream_connect_time '
-                    'upstream_header_time=$upstream_header_time';
-
 # X-Frame-Options tells the browser whether you want to allow your site to be framed or not.
 # By preventing a browser from framing your site you can defend against attacks like clickjacking.
 add_header X-Frame-Options SAMEORIGIN;
@@ -87,8 +73,6 @@ server {
     # Listen to port 443 on both IPv4 and IPv6.
     listen 443 ssl http2 reuseport;
     listen [::]:443 ssl http2 reuseport;
-
-    # TODO: logs
 
     # Domain names this server should respond to.
     server_name ${SITE_DOMAIN};
