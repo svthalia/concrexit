@@ -33,7 +33,6 @@ jobs:
           file: ./infra/concrexit/Dockerfile
           push: true
           tags: |
-            ghcr.io/svthalia/concrexit:latest
             ghcr.io/svthalia/concrexit:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -65,7 +64,6 @@ jobs:
           context: ./infra/nginx
           push: true
           tags: |
-            ghcr.io/svthalia/concrexit-nginx:latest
             ghcr.io/svthalia/concrexit-nginx:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
