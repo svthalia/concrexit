@@ -34,8 +34,8 @@ jobs:
           push: true
           tags: |
             ghcr.io/svthalia/concrexit:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=${{ github.ref }}-concrexit
+          cache-to: type=gha,mode=max,scope=${{ github.ref }}-concrexit
 
   build-nginx:
     name: Build nginx image
@@ -65,8 +65,8 @@ jobs:
           push: true
           tags: |
             ghcr.io/svthalia/concrexit-nginx:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=${{ github.ref }}-concrexit-nginx
+          cache-to: type=gha,mode=max,scope=${{ github.ref }}-concrexit-nginx
 
   deploy-staging:
     name: Deploy to docker-staging
