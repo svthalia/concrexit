@@ -1,9 +1,9 @@
 import os
 
 from django.contrib.auth.decorators import login_required
-from django.core.paginator import EmptyPage, Paginator
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.decorators import method_decorator
 
 from photos.models import Album, Photo
 from photos.services import (
@@ -11,54 +11,36 @@ from photos.services import (
     get_annotated_accessible_albums,
     is_album_accessible,
 )
+from thaliawebsite.views import PagedView
 from utils.media.services import get_media_url
 
 COVER_FILENAME = "cover.jpg"
 
 
-@login_required
-def index(request):
-    """Render the index page showing multiple album cards."""
-    keywords = request.GET.get("keywords", "").split()
+@method_decorator(login_required, "dispatch")
+class IndexView(PagedView):
+    model = Album
+    paginate_by = 16
+    template_name = "photos/index.html"
+    context_object_name = "albums"
+    keywords = None
 
-    # Only show published albums
-    albums = Album.objects.filter(hidden=False).select_related("_cover")
-    for key in keywords:
-        albums = albums.filter(**{"title__icontains": key})
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.keywords = request.GET.get("keywords", "").split()
 
-    albums = get_annotated_accessible_albums(request, albums)
+    def get_queryset(self):
+        albums = Album.objects.filter(hidden=False).select_related("_cover")
+        for key in self.keywords:
+            albums = albums.filter(**{"title__icontains": key})
+        albums = get_annotated_accessible_albums(self.request, albums)
+        albums = albums.order_by("-date")
+        return albums
 
-    albums = albums.order_by("-date")
-    paginator = Paginator(albums, 16)
-
-    page = request.GET.get("page")
-    page = 1 if page is None or not page.isdigit() else int(page)
-    try:
-        albums = paginator.page(page)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        albums = paginator.page(paginator.num_pages)
-        page = paginator.num_pages
-
-    # Show the two pages before and after the current page
-    page_range_start = max(1, page - 2)
-    page_range_stop = min(page + 3, paginator.num_pages + 1)
-
-    # Add extra pages if we show less than 5 pages
-    page_range_start = min(page_range_start, page_range_stop - 5)
-    page_range_start = max(1, page_range_start)
-
-    # Add extra pages if we still show less than 5 pages
-    page_range_stop = max(page_range_stop, page_range_start + 5)
-    page_range_stop = min(page_range_stop, paginator.num_pages + 1)
-
-    page_range = range(page_range_start, page_range_stop)
-
-    return render(
-        request,
-        "photos/index.html",
-        {"albums": albums, "page_range": page_range, "keywords": keywords},
-    )
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["keywords"] = self.keywords
+        return context
 
 
 def _render_album_page(request, album):
@@ -121,38 +103,17 @@ def shared_download(request, slug, token, filename):
     return _download(request, obj, filename)
 
 
-@login_required
-def liked_photos(request):
-    photos = (
-        Photo.objects.filter(likes__member=request.member, album__hidden=False)
-        .select_related("album")
-        .select_properties("num_likes")
-        .order_by("-album__date")
-    )
+@method_decorator(login_required, "dispatch")
+class LikedPhotoView(PagedView):
+    model = Photo
+    paginate_by = 16
+    template_name = "photos/liked-photos.html"
+    context_object_name = "photos"
 
-    paginator = Paginator(photos, 16)
-
-    page = request.GET.get("page")
-    page = 1 if page is None or not page.isdigit() else int(page)
-    try:
-        photos = paginator.page(page)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        photos = paginator.page(paginator.num_pages)
-        page = paginator.num_pages
-
-    page_range_start = max(1, page - 2)
-    page_range_stop = min(page + 3, paginator.num_pages + 1)
-
-    # Add extra pages if we show less than 5 pages
-    page_range_start = min(page_range_start, page_range_stop - 5)
-    page_range_start = max(1, page_range_start)
-
-    # Add extra pages if we still show less than 5 pages
-    page_range_stop = max(page_range_stop, page_range_start + 5)
-    page_range_stop = min(page_range_stop, paginator.num_pages + 1)
-
-    page_range = range(page_range_start, page_range_stop)
-
-    context = {"photos": photos, "page_range": page_range}
-    return render(request, "photos/liked-photos.html", context)
+    def get_queryset(self):
+        return (
+            Photo.objects.filter(likes__member=self.request.member, album__hidden=False)
+            .select_related("album")
+            .select_properties("num_likes")
+            .order_by("-album__date")
+        )
