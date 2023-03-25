@@ -21,6 +21,8 @@ RUN python -m venv /venv
 ENV PATH=/venv/bin:$PATH \
     VIRTUAL_ENV=/venv
 COPY pyproject.toml poetry.lock ./
+
+RUN pip install --upgrade setuptools
 RUN poetry install --only main --extras "postgres"
 
 FROM base as final
