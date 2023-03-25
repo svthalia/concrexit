@@ -1,10 +1,8 @@
-name: concrexit-${STAGE}
+name: concrexit
 
 services:
   concrexit:
-    build:
-      context: ..
-      dockerfile: infra/concrexit/Dockerfile
+    image: ghcr.io/svthalia/concrexit:${COMMIT_SHA:-latest}
     env_file:
       - .env.public
       - .env.public.${STAGE}
@@ -19,8 +17,7 @@ services:
         condition: service_healthy
 
   nginx:
-    build:
-      context: nginx
+    image: ghcr.io/svthalia/concrexit-nginx:${COMMIT_SHA:-latest}
     ports:
       - "80:80"
       - "443:443"
