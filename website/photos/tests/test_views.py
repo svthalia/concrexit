@@ -75,8 +75,7 @@ class AlbumIndexTest(TestCase):
         )
 
         response = self.client.get(reverse("photos:index") + "?page=5")
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context["page_range"], range(1, 2))
+        self.assertEqual(response.status_code, 404)
 
     def test_keywords(self):
         Album.objects.create(
@@ -126,8 +125,8 @@ class AlbumIndexTest(TestCase):
             self.assertEqual(len(response.context["albums"]), 16)
             self.assertEqual(response.context["page_range"], range(2, 7))
 
-        with self.subTest(page=9):
-            response = self.client.get(reverse("photos:index") + "?page=9")
+        with self.subTest(page=8):
+            response = self.client.get(reverse("photos:index") + "?page=8")
             self.assertEqual(response.status_code, 200)
             self.assertEqual(len(response.context["albums"]), 8)
             self.assertEqual(response.context["page_range"], range(4, 9))
