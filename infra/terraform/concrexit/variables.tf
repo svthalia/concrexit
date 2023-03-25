@@ -31,7 +31,7 @@ variable "cloudfront_public_key" {
 variable "ec2_instance_type" {
   description = "EC2 instance type"
   type        = string
-  default     = "t4g.small"
+  default     = "t3a.small"
 }
 
 variable "aws_profile" {

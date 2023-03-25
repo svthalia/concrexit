@@ -22,5 +22,5 @@ module "concrexit" {
   domain                = "docker-staging.thalia.nu"
   ssh_public_key        = file("ssh-public-key.pub")
   cloudfront_public_key = file("cloudfront-public-key.pem")
-  ec2_instance_type     = "t4g.micro"
+  ec2_instance_type     = "t3a.micro"
 }

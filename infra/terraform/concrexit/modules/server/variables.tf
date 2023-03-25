@@ -26,11 +26,11 @@ variable "ssh_public_key" {
 variable "ec2_instance_type" {
   description = "EC2 instance type"
   type        = string
-  default     = "t4g.small"
+  default     = "t3a.small"
 }
 
 variable "ec2_ami" {
   description = "EC2 AMI"
   type        = string
-  default     = "ami-0083086bc808b1d71" # Debian 11 (Arm, eu-west-1)
+  default     = "ami-089f338f3a2e69431" # Debian 11 (amd64, eu-west-1)
 }

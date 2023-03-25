@@ -45,7 +45,7 @@ create_user() {
 
     # Create the user and add the SSH key.
     sudo adduser --disabled-password --gecos "" $username
-    sudo $username sudo
+    sudo adduser $username sudo
     sudo mkdir /home/$username/.ssh
     sudo echo "$ssh_key" > /home/$username/.ssh/authorized_keys
     sudo chown -R $username:$username /home/$username/.ssh
