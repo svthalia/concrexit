@@ -179,6 +179,13 @@ class Payment(models.Model):
         null=True,
     )
 
+    moneybird_invoice_id = models.CharField(
+        verbose_name=_("moneybird invoice id"),
+        max_length=255,
+        blank=True,
+        null=True,
+    )
+
     notes = models.TextField(verbose_name=_("notes"), blank=True, null=True)
     topic = models.CharField(verbose_name=_("topic"), max_length=255, default="Unknown")
 
