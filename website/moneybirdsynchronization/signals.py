@@ -1,20 +1,15 @@
 """The signals checked by the moneybrid synchronization package."""
-from django.db.models.signals import post_save, pre_save, pre_delete
+from django.db.models.signals import post_save, pre_delete
 from django.template.defaultfilters import date
-from django.core.exceptions import ObjectDoesNotExist
+import logging
 
 from utils.models.signals import suspendingreceiver
 
 from members.models import Member
 from moneybirdsynchronization.models import Contact
 from moneybirdsynchronization.administration import HttpsAdministration
-from moneybirdsynchronization import services
-from events.models import EventRegistration
-from sales.models.order import Order
-from sales.models.shift import Shift
 from payments.models import Payment
 from thaliawebsite import settings
-from django.contrib.auth.models import User
 
 @suspendingreceiver(
     post_save,
@@ -48,6 +43,7 @@ def post_profile_delete(sender, instance, **kwargs):
     api.delete("contacts/{}".format(contact.moneybird_id))
     contact.delete()
 
+
 @suspendingreceiver(
     post_save,
     sender="auth.User",
@@ -56,18 +52,17 @@ def post_user_save(sender, instance, **kwargs):
     """Update contact on user creation."""
     api = HttpsAdministration(settings.MONEYBIRD_API_KEY, settings.MONEYBIRD_ADMINISTRATION_ID)
     contact = Contact.objects.get_or_create(member=instance)[0]
-    if contact.moneybird_version is None:
-        pass
-    else:
+    if contact.moneybird_version is not None:
         response = api.patch("contacts/{}".format(contact.moneybird_id), contact.to_moneybird())
         contact.moneybird_version = response["version"]
         contact.save()
+
 
 @suspendingreceiver(
     post_save,
     sender="events.EventRegistration",
 )
-def post_event_registration_payment(sender, instance, update_fields, **kwargs):
+def post_event_registration_payment(sender, instance, **kwargs):
     """ Create external invoice on payment creation."""
     if instance.payment is None:
         return
@@ -120,100 +115,49 @@ def post_event_registration_payment(sender, instance, update_fields, **kwargs):
         instance.payment.save()
     except Exception as e:
         pass
-    
 
-# @suspendingreceiver(
-#     post_save,
-#     sender="payments.Payment",
-# )
-# def post_payment_save(sender, instance, **kwargs):
-#     """Create external invoice on payment creation."""
-#     api = HttpsAdministration(settings.MONEYBIRD_API_KEY, settings.MONEYBIRD_ADMINISTRATION_ID)
-#     try:
-#         contact = Contact.objects.get(member=instance.paid_by)
-#     except Contact.DoesNotExist:
-#         return
+    payment_identifiers = {
+        Payment.TPAY: "ThaliaPay",
+        Payment.CASH: "cashtanje",
+        Payment.CARD: "pin"
+    }
 
-#     dir(instance)
+    if instance.payment.type != Payment.WIRE:
+        account_id = None
+        for account in api.get("financial_accounts"):
+            if account["identifier"] == payment_identifiers[instance.payment.type]:
+                account_id = account["id"]
+                break
+        if account_id is not None:
+            payment_response = api.post("external_sales_invoices/{}/payments".format(response["id"]), 
+                {"payment": {
+                    "payment_date": instance.payment.created_at.strftime("%Y-%m-%d"),
+                    "price": str(instance.payment.amount),
+                    "financial_account_id": account_id, 
+                    "manual_payment_action": "payment_without_proof",
+                    "invoice_id": response["id"],
+                    }
+                }
+            )
 
+            statement_response = api.post("financial_statements",
+                {"financial_statement": {
+                    "financial_account_id": account_id,
+                    "reference": str(instance.payment.id),
+                    "financial_mutations_attributes": [
+                        {
+                            "date": instance.payment.created_at.strftime("%Y-%m-%d"),
+                            "amount": str(instance.payment.amount),
+                            "message": instance.payment.topic,
+                        }
+                    ]}
+                }
+            )
 
-#     projects = api.get("projects")
-#     project_id = None
-#     project_name = None
-
-#     print(EventRegistration.objects.filter(payment=instance))
-
-#     if hasattr(instance, "order"):
-#         print("order")
-#         order = instance.order
-#         dir(order.shift)
-#         if hasattr(order.shift, "event"):
-#             event = order.shift.event
-#             start_date = date(event.start, "Y-m-d")
-#             project_name = f"{event.title} [{start_date}]"
-
-#     elif hasattr(instance, "events_registration"):
-#         print("event")
-#         event = instance.event
-#         start_date = date(event.start, "Y-m-d")
-#         project_name = f"{event.title} [{start_date}]"
-        
-#     else:
-#         print("else")
-#         project_name = None
-    
-#     if project_name is not None:
-#         print("project_name is not None")
-#         for project in projects:
-#             if project["name"] == project_name:
-#                 project_id = project["id"]
-#                 break
-        
-#         if project_id is None:
-#             print("project_id is None")
-#             project_id = api.post("projects", {"name": project_name})["id"]
-#             print(project_id)
-    
-#     ThaliaPayId = services.get_financial_account_id(api, "ThaliaPay ThaliaPay")
-#     print(ThaliaPayId)
-
-#     invoice_info = None
-#     if project_name is None:
-#         invoice_info = {
-#             "external_sales_invoice": 
-#             {
-#                 "contact_id": contact.moneybird_id,
-#                 "reference": str(instance.id),
-#                 "date": instance.created_at.strftime("%Y-%m-%d"),
-#                 "source_url": settings.BASE_URL + instance.get_admin_url(),
-#                 "currency": "EUR",
-#                 "prices_are_incl_tax": True,
-#                 "details_attributes":[
-#                     {
-#                         "description": instance.topic,
-#                         "price": str(instance.amount),
-#                     },
-#                 ],
-#             }
-#         }
-#     else:
-#         invoice_info = {
-#             "external_sales_invoice": 
-#             {
-#                 "contact_id": contact.moneybird_id,
-#                 "reference": str(instance.id),
-#                 "date": instance.created_at.strftime("%Y-%m-%d"),
-#                 "source_url": settings.BASE_URL + instance.get_admin_url(),
-#                 "currency": "EUR",
-#                 "prices_are_incl_tax": True,
-#                 "details_attributes":[
-#                     {
-#                         "description": instance.topic,
-#                         "price": str(instance.amount),
-#                         "project_id": project_id,
-#                     },
-#                 ],
-#             }
-#         }
-
-#     api.post("external_sales_invoices", invoice_info)
+            mutation_response = api.patch("financial_mutations/{}/link_booking".format(statement_response["financial_mutations"][0]["id"]),{
+                "booking_type": "ExternalSalesInvoice",
+                "booking_id": response["id"],
+                "price": str(instance.payment.amount),
+                "description": instance.payment.topic,
+                "project_id": project_id,
+            })
