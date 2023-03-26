@@ -37,18 +37,30 @@ jobs:
         run: sudo apt install graphviz
 
       - name: Generate full_models_graph.png
+        id: full_model_generation
         run: poetry run website/manage.py graph_models --pydot -a -g -o full_models_graph.png
 
+      - name: Handle flakiness
+        if: steps.full_model_generation.outcome != 'success'
+        run: echo "Failed to generate full models graph"
+
       - name: Save full_models_graph.png
+        if: steps.full_model_generation.outcome == 'success'
         uses: actions/upload-artifact@v3
         with:
           name: full_models_graph.png
           path: ./full_models_graph.png
 
       - name: Generate partial_models_graph.png
+        id: partial_model_generation
         run:  poetry run website/manage.py graph_models --pydot -X LogEntry,ContentType,Permission,PermissionsMixin,AbstractUser,AbstractBaseUser,Group -o partial_models_graph.png
 
+      - name: Handle flakiness
+        if: steps.partial_model_generation.outcome != 'success'
+        run: echo "Failed to generate partial models graph"
+
       - name: Save partial_models_graph.png
+        if: steps.partial_models_graph.outcome == 'success'
         uses: actions/upload-artifact@v3
         with:
           name: partial_models_graph.png
