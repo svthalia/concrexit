@@ -60,7 +60,7 @@ jobs:
         run: echo "Failed to generate partial models graph"
 
       - name: Save partial_models_graph.png
-        if: steps.partial_models_graph.outcome == 'success'
+        if: steps.partial_model_generation.outcome == 'success'
         uses: actions/upload-artifact@v3
         with:
           name: partial_models_graph.png
