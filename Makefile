@@ -286,6 +286,13 @@ docs: ## Generate docs HTML files
 apidocscheck: apidocs # Check whether new apidocs are generated
 	@git diff --name-only | grep 'docs/' >/dev/null && (echo "WARNING: you have uncommitted apidocs changes"; exit 1) || exit 0
 
+.PHONY: graphs
+graphs: ## Generate model graphs
+	@echo "Generating full models graph"
+	@poetry run website/manage.py graph_models --pydot -a -g -o full_models_graph.png
+	@echo "Generating partial models graph"
+	@poetry run website/manage.py graph_models --pydot -X LogEntry,ContentType,Permission,PermissionsMixin,AbstractUser,AbstractBaseUser,Group -o partial_models_graph.png
+
 .make/docker: .make
 	docker build $(DOCKER_FLAGS) --build-arg "source_commit=$$(git rev-parse HEAD)" --tag "thalia/concrexit:$$(git rev-parse HEAD)" .
 
