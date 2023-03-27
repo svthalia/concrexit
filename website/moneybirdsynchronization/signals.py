@@ -1,5 +1,5 @@
 """The signals checked by the moneybrid synchronization package."""
-from django.db.models.signals import post_save, pre_delete
+from django.db.models.signals import pre_save, post_save, pre_delete
 from django.template.defaultfilters import date
 import logging
 
@@ -8,7 +8,9 @@ from utils.models.signals import suspendingreceiver
 from members.models import Member
 from moneybirdsynchronization.models import Contact
 from moneybirdsynchronization.administration import HttpsAdministration
-from moneybirdsynchronization.services import link_transaction_to_financial_account
+from moneybirdsynchronization import services
+from sales.models.order import Order
+from events.models.event import Event
 from thaliawebsite import settings
 
 @suspendingreceiver(
@@ -80,15 +82,7 @@ def post_event_registration_payment(sender, instance, **kwargs):
 
     start_date = date(instance.event.start, "Y-m-d")
     project_name = f"{instance.event.title} [{start_date}]"
-    project_id = None
-    
-    for project in api.get("projects"):
-        if project["name"] == project_name:
-            project_id = project["id"]
-            break
-        
-    if project_id is None:
-        project_id = api.post("projects", {"project": {"name": project_name}})["id"]
+    project_id = services.get_project_id(api, project_name)
     
     invoice_info = {
         "external_sales_invoice": 
@@ -116,4 +110,227 @@ def post_event_registration_payment(sender, instance, **kwargs):
     except Exception as e:
         pass
 
-    link_transaction_to_financial_account(api, instance, response, project_id)
+    services.link_transaction_to_financial_account(api, instance, response, project_id)
+
+
+@suspendingreceiver(
+    post_save,
+    sender="sales.Shift",
+)
+def post_shift_save(sender, instance, **kwargs):
+    if not instance.locked:
+        return
+    
+    orders = Order.objects.filter(shift=instance)
+    if len(orders) == 0:
+        return
+    if orders[0].payment.moneybird_invoice_id is not None:
+        return
+    try: 
+        event = Event.objects.get(shifts=instance)
+        start_date = date(event.start, "Y-m-d")
+        project_name = f"{event.title} [{start_date}]"
+    except:
+        start_date = date(instance.start, "Y-m-d")
+        project_name = f"{instance.__str__()} [{start_date}]"
+    
+    api = HttpsAdministration(settings.MONEYBIRD_API_KEY, settings.MONEYBIRD_ADMINISTRATION_ID)
+    project_id = services.get_project_id(api, project_name)
+
+    for order in orders:
+        contact_id = api.get("contacts/customer_id/34")["id"]
+        if order.payer is not None:
+            try:
+                contact_id = Contact.objects.get(member=order.payer).moneybird_id
+            except:
+                pass
+
+        invoice_info = {
+            "external_sales_invoice": 
+            {
+                "contact_id": contact_id,
+                "reference": str(order.payment.id),
+                "date": order.payment.created_at.strftime("%Y-%m-%d"),
+                "source_url": settings.BASE_URL + order.payment.get_admin_url(),
+                "currency": "EUR",
+                "prices_are_incl_tax": True,
+                "details_attributes":[
+                    {
+                        "description": order.payment.topic,
+                        "price": str(order.payment.amount),
+                        "project_id": project_id,
+                    },
+                ],
+            }
+        }
+
+        try:
+            response = api.post("external_sales_invoices", invoice_info)
+            order.payment.moneybird_invoice_id = response["id"]
+            order.payment.save()
+        except Exception as e:
+            pass
+
+        services.link_transaction_to_financial_account(api, order, response, project_id)
+
+
+@suspendingreceiver(
+    post_save,
+    sender="pizzas.FoodOrder",
+)
+def post_food_order_save(sender, instance, **kwargs):
+    """ Create external invoice on payment creation."""
+    if instance.payment is None:
+        return
+    if instance.payment.moneybird_invoice_id is not None:
+        return
+    
+    api = HttpsAdministration(settings.MONEYBIRD_API_KEY, settings.MONEYBIRD_ADMINISTRATION_ID)
+    contact_id = api.get("contacts/customer_id/34")["id"]
+    if instance.payment.paid_by is not None:
+        try:
+            contact_id = Contact.objects.get(member=instance.payment.paid_by).moneybird_id
+        except:
+            pass
+
+
+    start_date = date(instance.food_event.event.start, "Y-m-d")
+    project_name = f"{instance.food_event.event.title} [{start_date}]"
+    project_id = services.get_project_id(api, project_name)
+    
+    invoice_info = {
+        "external_sales_invoice": 
+        {
+            "contact_id": contact_id,
+            "reference": str(instance.payment.id),
+            "date": instance.payment.created_at.strftime("%Y-%m-%d"),
+            "source_url": settings.BASE_URL + instance.payment.get_admin_url(),
+            "currency": "EUR",
+            "prices_are_incl_tax": True,
+            "details_attributes":[
+                {
+                    "description": instance.payment.topic,
+                    "price": str(instance.payment.amount),
+                    "project_id": project_id,
+                },
+            ],
+        }
+    }
+
+    try:
+        response = api.post("external_sales_invoices", invoice_info)
+        instance.payment.moneybird_invoice_id = response["id"]
+        instance.payment.save()
+    except Exception as e:
+        pass
+
+    services.link_transaction_to_financial_account(api, instance, response, project_id)
+
+
+@suspendingreceiver(
+    post_save,
+    sender="registrations.Registration",
+)
+def post_entry_save(sender, instance, **kwargs):
+    """ Create external invoice on payment creation."""
+    if instance.payment is None:
+        return
+    if instance.payment.moneybird_invoice_id is not None:
+        return
+    
+    api = HttpsAdministration(settings.MONEYBIRD_API_KEY, settings.MONEYBIRD_ADMINISTRATION_ID)
+    contact_id = api.get("contacts/customer_id/34")["id"]
+    if instance.payment.paid_by is not None:
+        try:
+            contact_id = Contact.objects.get(member=instance.payment.paid_by).moneybird_id
+        except:
+            pass
+    
+    invoice_info = {
+        "external_sales_invoice": 
+        {
+            "contact_id": contact_id,
+            "reference": str(instance.payment.id),
+            "date": instance.payment.created_at.strftime("%Y-%m-%d"),
+            "source_url": settings.BASE_URL + instance.payment.get_admin_url(),
+            "currency": "EUR",
+            "prices_are_incl_tax": True,
+            "details_attributes":[
+                {
+                    "description": instance.payment.topic,
+                    "price": str(instance.payment.amount),
+                    "ledger_id": api.get("ledger_accounts")
+                },
+            ],
+        }
+    }
+
+    try:
+        response = api.post("external_sales_invoices", invoice_info)
+        instance.payment.moneybird_invoice_id = response["id"]
+        instance.payment.save()
+    except Exception as e:
+        pass
+
+    services.link_transaction_to_financial_account(api, instance, response, None)
+
+
+@suspendingreceiver(
+    post_save,
+    sender="registrations.Renewal",
+)
+def post_renewal_save(sender, instance, **kwargs):
+    """ Create external invoice on payment creation."""
+    if instance.payment is None:
+        return
+    if instance.payment.moneybird_invoice_id is not None:
+        return
+    
+    api = HttpsAdministration(settings.MONEYBIRD_API_KEY, settings.MONEYBIRD_ADMINISTRATION_ID)
+    contact_id = api.get("contacts/customer_id/34")["id"]
+    if instance.payment.paid_by is not None:
+        try:
+            contact_id = Contact.objects.get(member=instance.payment.paid_by).moneybird_id
+        except:
+            pass
+    
+    invoice_info = {
+        "external_sales_invoice": 
+        {
+            "contact_id": contact_id,
+            "reference": str(instance.payment.id),
+            "date": instance.payment.created_at.strftime("%Y-%m-%d"),
+            "source_url": settings.BASE_URL + instance.payment.get_admin_url(),
+            "currency": "EUR",
+            "prices_are_incl_tax": True,
+            "details_attributes":[
+                {
+                    "description": instance.payment.topic,
+                    "price": str(instance.payment.amount),
+                    "ledger_id": api.get("ledger_accounts")
+                },
+            ],
+        }
+    }
+
+    try:
+        response = api.post("external_sales_invoices", invoice_info)
+        instance.payment.moneybird_invoice_id = response["id"]
+        instance.payment.save()
+    except Exception as e:
+        pass
+
+    services.link_transaction_to_financial_account(api, instance, response, None)
+
+@suspendingreceiver(
+    pre_delete,
+    sender="payments.Payment",
+)
+def pre_payment_delete(sender, instance, **kwargs):
+    """ Delete external invoice on payment deletion."""
+    if instance.moneybird_invoice_id is None:
+        return
+
+    api = HttpsAdministration(settings.MONEYBIRD_API_KEY, settings.MONEYBIRD_ADMINISTRATION_ID)
+    api.delete(f"external_sales_invoices/{instance.moneybird_invoice_id}")
+    # update financial statement

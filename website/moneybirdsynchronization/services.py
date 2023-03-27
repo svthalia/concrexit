@@ -6,6 +6,21 @@ def get_financial_account_id(api, name):
             return financial_account["id"]
 
 
+def get_project_id(api, name):
+    for project in api.get("projects"):
+        if project["name"] == name:
+            return project["id"]
+        
+    return api.post("projects", {"project": {"name": name}})["id"]
+
+
+def get_contribution_ledger_id(api):
+    for ledger in api.get("ledger_accounts"):
+        if ledger["name"] == "Contribution":
+            return ledger["id"]
+    return None
+
+
 def link_transaction_to_financial_account(api, instance, response, project_id):
     payment_identifiers = {
         Payment.TPAY: "ThaliaPay",
@@ -41,10 +56,18 @@ def link_transaction_to_financial_account(api, instance, response, project_id):
                 }
             )
 
-            mutation_response = api.patch("financial_mutations/{}/link_booking".format(statement_response["financial_mutations"][0]["id"]),{
-                "booking_type": "ExternalSalesInvoice",
-                "booking_id": response["id"],
-                "price": str(instance.payment.amount),
-                "description": instance.payment.topic,
-                "project_id": project_id,
-            })
+            if project_id is not None:
+                mutation_response = api.patch("financial_mutations/{}/link_booking".format(statement_response["financial_mutations"][0]["id"]),{
+                    "booking_type": "ExternalSalesInvoice",
+                    "booking_id": response["id"],
+                    "price": str(instance.payment.amount),
+                    "description": instance.payment.topic,
+                    "project_id": project_id,
+                })
+            else:
+                mutation_response = api.patch("financial_mutations/{}/link_booking".format(statement_response["financial_mutations"][0]["id"]),{
+                    "booking_type": "ExternalSalesInvoice",
+                    "booking_id": response["id"],
+                    "price": str(instance.payment.amount),
+                    "description": instance.payment.topic,
+                })
