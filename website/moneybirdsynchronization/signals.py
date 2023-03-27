@@ -321,11 +321,9 @@ def post_renewal_save(sender, instance, **kwargs):
 def pre_payment_delete(sender, instance, **kwargs):
     """ Delete external invoice on payment deletion."""
     if instance.moneybird_invoice_id is None:
-        print("No invoice to delete")
         return
 
     api = HttpsAdministration(settings.MONEYBIRD_API_KEY, settings.MONEYBIRD_ADMINISTRATION_ID)
-    print(api.delete(f"external_sales_invoices/{instance.moneybird_invoice_id}"))
     if instance.moneybird_financial_statement_id is not None:
         try:
             api.patch(f"financial_statements/{instance.moneybird_financial_statement_id}", {

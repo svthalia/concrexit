@@ -58,6 +58,9 @@ class PaymentAdmin(admin.ModelAdmin):
         "topic",
         "notes",
         "batch",
+        "moneybird_invoice_id",
+        "moneybird_financial_statement_id",
+        "moneybird_financial_mutation_id",
     )
     readonly_fields = (
         "created_at",
@@ -68,6 +71,9 @@ class PaymentAdmin(admin.ModelAdmin):
         "topic",
         "notes",
         "batch",
+        "moneybird_invoice_id",
+        "moneybird_financial_statement_id",
+        "moneybird_financial_mutation_id",
     )
     search_fields = (
         "topic",

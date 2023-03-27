@@ -6,4 +6,4 @@ from .models import Contact
 class ContactAdmin(admin.ModelAdmin):
     """Manage moneybird contacts."""
 
-    list_display = ("first_name", "last_name")
+    list_display = ("member", "moneybird_id")
