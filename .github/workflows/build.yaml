@@ -77,7 +77,24 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # - name: Update .env.public and .env.public.docker-staging
-      #   run: |
-      #     rsync infra/docker/staging/.env.public deploy@docker-staging.thalia.nu:/var/lib/concrexit/.env.public
-      #     rsync infra/docker/staging/.env.public.docker-staging deploy@docker-staging.thalia.nu:/var/lib/concrexit/.env.public.docker-staging
+      - name: Set up SSH
+        run: |
+          mkdir ~/.ssh
+          echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          echo "$DEPLOY_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+        env:
+          SSH_KNOWN_HOSTS: ${{ vars.SSH_KNOWN_HOSTS }}
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      - name: Create secrets file
+        run: echo "$SECRETS_FILE"> infra/.env.secret.docker-staging
+        env:
+          SECRETS_FILE: ${{ secrets.SECRETS_FILE }}
+
+      - name: Update .env.public and .env.public.docker-staging
+        run: |
+          rsync infra/.env.public deploy@docker-staging.thalia.nu:/var/lib/concrexit/.env.public
+          rsync infra/.env.public.docker-staging deploy@docker-staging.thalia.nu:/var/lib/concrexit/.env.public.docker-staging
+          rsync infra/.env.secret.docker-staging deploy@docker-staging.thalia.nu:/var/lib/concrexit/.env.secret.docker-staging
+          rsync infra/docker-compose.yml deploy@docker-staging.thalia.nu:/var/lib/concrexit/docker.compose.yml

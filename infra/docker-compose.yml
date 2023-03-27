@@ -10,7 +10,7 @@ services:
     volumes:
       - concrexit-static:/static:rw
       - concrexit-media:/media:rw
-    # TODO: cronjobs and package registry instead of build
+    # TODO: cronjobs
     restart: always
     depends_on:
       postgres:

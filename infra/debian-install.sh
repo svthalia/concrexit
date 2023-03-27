@@ -1,64 +1,138 @@
 #! /bin/sh
 
-# This script installs docker on a Debian system.
+# This script sets a server up to run concrexit, by installing Docker, creating
+# users, and doing some performance tweaks. It should be run as root, and expects
+# a stage (e.g. "staging", "production") as an argument.
+# For example: `sudo ./debian-install.sh staging`
+# The script expects to run from `/var/lib/concrexit/infra`, and expects the
+#
+# If anything goes wrong, you'll have to fix it manually.
 
-# Install Docker Engine (https://docs.docker.com/engine/install/debian/).
-sudo apt-get update -q -y
-sudo apt-get install -q -y \
-    ca-certificates \
-    curl \
-    gnupg
+# Stop if anything fails.
+set -e
 
-sudo mkdir -m 0755 -p /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+# Check input.
+STAGE=$1
+if [ -z "$STAGE" ]; then
+    echo "Usage: $0 <stage>"
+    exit 1
+fi
 
-echo \
-  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
-  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
-  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+if [ $(id -u) -ne 0 ]
+  then echo "Please run as root"
+  exit
+fi
 
-sudo apt-get update -q -y
+# Some functions used later.
+export COLOR='\e[1;34m' # Bold blue.
+export NO_COLOR='\e[0m'
 
-sudo apt-get install -q -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+step() {
+    echo "\n$COLOR$1$NO_COLOR\n"
+}
 
-# Start Docker on boot (https://docs.docker.com/engine/install/linux-postinstall/).
-sudo systemctl enable docker.service
-sudo systemctl enable containerd.service
-
-# Set up a swapfile and some performance settings (https://www.digitalocean.com/community/tutorials/how-to-add-swap-space-on-debian-11).
-sudo fallocate -l 4G /swapfile
-sudo chmod 600 /swapfile
-sudo mkswap /swapfile
-sudo swapon /swapfile
-sudo sysctl vm.swappiness=20
-sudo sysctl vm.vfs_cache_pressure=50
-
-# Persist the swapfile and performance settings.
-echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
-echo vm.swappiness=20 | sudo tee -a /etc/sysctl.conf
-echo vm.vfs_cache_pressure=80 | sudo tee -a /etc/sysctl.conf
-
-# Set up users.
 create_user() {
     username=$1
     ssh_key=$2
 
     # Create the user and add the SSH key.
-    sudo adduser --disabled-password --gecos "" $username
-    sudo adduser $username sudo
-    sudo mkdir /home/$username/.ssh
-    sudo echo "$ssh_key" > /home/$username/.ssh/authorized_keys
-    sudo chown -R $username:$username /home/$username/.ssh
-    sudo chmod 700 /home/$username/.ssh
-    sudo chmod 600 /home/$username/.ssh/authorized_keys
+    adduser --disabled-password --gecos "" $username
+    adduser $username sudo
+    mkdir /home/$username/.ssh
+    echo "$ssh_key" > /home/$username/.ssh/authorized_keys
+    chown -R $username:$username /home/$username/.ssh
+    chmod 700 /home/$username/.ssh
+    chmod 600 /home/$username/.ssh/authorized_keys
 
     # Allow the user to run sudo without a password.
-    sudo echo "$username ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$username
+    echo "$username ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$username
 }
 
+if [ -f .debian-install-started ]; then
+    echo ".debian-install-started already exists, so this script has already run."
+    exit 1
+fi
+
+touch .debian-install-started
+
+# Set hostname.
+step "Setting hostname ($STAGE)..."
+hostnamectl set-hostname $STAGE.thalia.nu
+echo "preserve_hostname: true" | sudo tee -a /etc/cloud/cloud.cfg
+
+# Set up a swapfile and some performance settings (https://www.digitalocean.com/community/tutorials/how-to-add-swap-space-on-debian-11).
+step "Setting up swapfile and performance settings..."
+fallocate -l 4G /swapfile
+chmod 600 /swapfile
+mkswap /swapfile
+swapon /swapfile
+sysctl vm.swappiness=20
+sysctl vm.vfs_cache_pressure=50
+
+# Persist the swapfile and performance settings.
+echo "/swapfile none swap sw 0 0" | tee -a /etc/fstab
+echo vm.swappiness=20 | tee -a /etc/sysctl.conf
+echo vm.vfs_cache_pressure=80 | tee -a /etc/sysctl.conf
+
+# Set up the postgres volume (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-using-volumes.html).
+step "Setting up postgres volume..."
+
+# Format the volume if it's not already formatted as ext4.
+if ! file -L -s /dev/sdf | grep ext4; then
+    mkfs -t ext4 /dev/sdf
+fi
+
+# Mount the volume.
+mkdir -p /volumes/postgres
+mount /dev/sdf /volumes/postgres
+
+# Persist the mount.
+POSTGRES_VOL_UUID=$(blkid /dev/sdf -s UUID -o value)
+echo "UUID=$POSTGRES_VOL_UUID /volumes/postgres ext4 defaults,nofail 0 2" | tee -a /etc/fstab
+
+# Install rsync.
+step "Installing rsync..."
+apt-get update -q -y
+apt-get install -y rsync
+
+# Install Docker Engine (https://docs.docker.com/engine/install/debian/).
+step "Installing Docker Engine..."
+apt-get update -q -y
+apt-get install -q -y \
+    ca-certificates \
+    curl \
+    gnupg
+
+mkdir -m 0755 -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+echo \
+  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
+  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+  tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+apt-get update -q -y
+
+apt-get install -q -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+# Start Docker on boot (https://docs.docker.com/engine/install/linux-postinstall/).
+step "Setting up Docker to start on boot..."
+systemctl enable docker.service
+systemctl enable containerd.service
+
+# Set up deployment user. This user will be used by GitHub Actions to deploy.
+step "Creating deployment user..."
+create_user deploy "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOj2jPKZloJuWgVaZUKJ0n8J+Zpj34+GiPgNiX1N31hP"
+
+# Create directory for concrexit.
+step "Creating directory for concrexit..."
+mkdir /var/lib/concrexit
+chown -R deploy:deploy /var/lib/concrexit
+
+# Set up users.
+step "Creating users..."
 create_user dirk "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIgMsOXBM1i1/GHoZIJpXQIm+dU5SRMat7HtZSKVrl5T"
 create_user job "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJylC3OVDYt+JqJv1LStZpogMv04lr2XRW4yfddAT5JR MacBook-Pro-van-Job"
 create_user quinten "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII8GLsrAXmnzd7ps5BI12KG/sN4apUPGksVZq6n6jtY2 quinten@epsilon"
 
-# Setup directory for concrexit.
-sudo mkdir /var/lib/concrexit
+step "Done :)"
