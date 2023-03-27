@@ -7,8 +7,9 @@ from utils.models.signals import suspendingreceiver
 
 from members.models import Member
 from moneybirdsynchronization.models import Contact
-from moneybirdsynchronization.administration import HttpsAdministration
+from moneybirdsynchronization.administration import HttpsAdministration, Administration
 from moneybirdsynchronization import services
+from payments.models import Payment
 from sales.models.order import Order
 from events.models.event import Event
 from thaliawebsite import settings
@@ -75,7 +76,7 @@ def post_event_registration_payment(sender, instance, **kwargs):
     contact_id = api.get("contacts/customer_id/34")["id"]
     if instance.payment.paid_by is not None:
         try:
-            contact_id = Contact.objects.get(member=instance.payment.paid_by).moneybird_id
+            contact_id = Contact.objects.get(member=instance.member).moneybird_id
         except:
             pass
 
@@ -109,8 +110,6 @@ def post_event_registration_payment(sender, instance, **kwargs):
         instance.payment.save()
     except Exception as e:
         pass
-
-    services.link_transaction_to_financial_account(api, instance, response, project_id)
 
 
 @suspendingreceiver(
@@ -171,8 +170,6 @@ def post_shift_save(sender, instance, **kwargs):
         except Exception as e:
             pass
 
-        services.link_transaction_to_financial_account(api, order, response, project_id)
-
 
 @suspendingreceiver(
     post_save,
@@ -189,7 +186,7 @@ def post_food_order_save(sender, instance, **kwargs):
     contact_id = api.get("contacts/customer_id/34")["id"]
     if instance.payment.paid_by is not None:
         try:
-            contact_id = Contact.objects.get(member=instance.payment.paid_by).moneybird_id
+            contact_id = Contact.objects.get(member=instance.member).moneybird_id
         except:
             pass
 
@@ -223,8 +220,6 @@ def post_food_order_save(sender, instance, **kwargs):
         instance.payment.save()
     except Exception as e:
         pass
-
-    services.link_transaction_to_financial_account(api, instance, response, project_id)
 
 
 @suspendingreceiver(
@@ -272,8 +267,6 @@ def post_entry_save(sender, instance, **kwargs):
     except Exception as e:
         pass
 
-    services.link_transaction_to_financial_account(api, instance, response, None)
-
 
 @suspendingreceiver(
     post_save,
@@ -320,7 +313,6 @@ def post_renewal_save(sender, instance, **kwargs):
     except Exception as e:
         pass
 
-    services.link_transaction_to_financial_account(api, instance, response, None)
 
 @suspendingreceiver(
     pre_delete,
@@ -329,8 +321,22 @@ def post_renewal_save(sender, instance, **kwargs):
 def pre_payment_delete(sender, instance, **kwargs):
     """ Delete external invoice on payment deletion."""
     if instance.moneybird_invoice_id is None:
+        print("No invoice to delete")
         return
 
     api = HttpsAdministration(settings.MONEYBIRD_API_KEY, settings.MONEYBIRD_ADMINISTRATION_ID)
-    api.delete(f"external_sales_invoices/{instance.moneybird_invoice_id}")
-    # update financial statement
+    print(api.delete(f"external_sales_invoices/{instance.moneybird_invoice_id}"))
+    if instance.moneybird_financial_statement_id is not None:
+        try:
+            api.patch(f"financial_statements/{instance.moneybird_financial_statement_id}", {
+                "financial_statement": {
+                    "financial_mutations_attributes": {
+                        "0": {
+                            "id": instance.moneybird_financial_mutation_id,
+                            "_destroy": True
+                        }
+                    }
+                }
+            })
+        except Administration.InvalidData:
+            api.delete(f"financial_statements/{instance.moneybird_financial_statement_id}")

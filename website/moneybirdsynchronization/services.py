@@ -55,6 +55,9 @@ def link_transaction_to_financial_account(api, instance, response, project_id):
                     ]}
                 }
             )
+            instance.payment.moneybird_financial_statement_id = statement_response["id"]
+            instance.payment.moneybird_financial_mutation_id = statement_response["financial_mutations"][0]["id"]
+            instance.payment.save()
 
             if project_id is not None:
                 mutation_response = api.patch("financial_mutations/{}/link_booking".format(statement_response["financial_mutations"][0]["id"]),{
