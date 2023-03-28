@@ -8,7 +8,7 @@ from utils.models.signals import suspendingreceiver
 from members.models import Member
 from moneybirdsynchronization.models import Contact
 from moneybirdsynchronization.administration import HttpsAdministration, Administration
-from moneybirdsynchronization import services
+from moneybirdsynchronization.services import MoneybirdAPIService
 from payments.models import Payment
 from sales.models.order import Order
 from events.models.event import Event
@@ -20,11 +20,11 @@ from thaliawebsite import settings
 )
 def post_profile_save(sender, instance, **kwargs):
     """Update contact on profile creation."""
-    api = HttpsAdministration(settings.MONEYBIRD_API_KEY, settings.MONEYBIRD_ADMINISTRATION_ID)
+    apiservice = MoneybirdAPIService()
     member = Member.objects.get(profile=instance)
     contact = Contact.objects.get_or_create(member=member)[0]
     if contact.moneybird_version is None:
-        response = api.post("contacts", contact.to_moneybird())
+        response = apiservice.api.post("contacts", contact.to_moneybird())
         contact.moneybird_id = response["id"]
         contact.moneybird_version = response["version"]
         contact.save()
@@ -40,10 +40,10 @@ def post_profile_save(sender, instance, **kwargs):
 )
 def post_profile_delete(sender, instance, **kwargs):
     """Delete contact on profile deletion."""
-    api = HttpsAdministration(settings.MONEYBIRD_API_KEY, settings.MONEYBIRD_ADMINISTRATION_ID)
+    apiservice = MoneybirdAPIService()
     member = Member.objects.get(profile=instance)
     contact = Contact.objects.get(member=member)
-    api.delete("contacts/{contact.moneybird_id}")
+    apiservice.api.delete("contacts/{contact.moneybird_id}")
     contact.delete()
 
 
@@ -53,10 +53,10 @@ def post_profile_delete(sender, instance, **kwargs):
 )
 def post_user_save(sender, instance, **kwargs):
     """Update contact on user creation."""
-    api = HttpsAdministration(settings.MONEYBIRD_API_KEY, settings.MONEYBIRD_ADMINISTRATION_ID)
+    apiservice = MoneybirdAPIService()
     contact = Contact.objects.get_or_create(member=instance)[0]
     if contact.moneybird_version is not None:
-        response = api.patch("contacts/{contact.moneybird_id}", contact.to_moneybird())
+        response = apiservice.api.patch("contacts/{contact.moneybird_id}", contact.to_moneybird())
         contact.moneybird_version = response["version"]
         contact.save()
 
@@ -72,8 +72,8 @@ def post_event_registration_payment(sender, instance, **kwargs):
     if instance.payment.moneybird_invoice_id is not None:
         return
     
-    api = HttpsAdministration(settings.MONEYBIRD_API_KEY, settings.MONEYBIRD_ADMINISTRATION_ID)
-    contact_id = api.get("contacts/customer_id/{settings.MONEYBIRD_UNKOWN_PAYER_ID}")["id"]
+    apiservice = MoneybirdAPIService()
+    contact_id = apiservice.api.get("contacts/customer_id/{settings.MONEYBIRD_UNKOWN_PAYER_ID}")["id"]
     if instance.payment.paid_by is not None:
         try:
             contact_id = Contact.objects.get(member=instance.member).moneybird_id
@@ -83,7 +83,7 @@ def post_event_registration_payment(sender, instance, **kwargs):
 
     start_date = date(instance.event.start, "Y-m-d")
     project_name = f"{instance.event.title} [{start_date}]"
-    project_id = services.get_project_id(api, project_name)
+    project_id = apiservice.get_project_id(project_name)
     
     invoice_info = {
         "external_sales_invoice": 
@@ -105,7 +105,7 @@ def post_event_registration_payment(sender, instance, **kwargs):
     }
 
     try:
-        response = api.post("external_sales_invoices", invoice_info)
+        response = apiservice.api.post("external_sales_invoices", invoice_info)
         instance.payment.moneybird_invoice_id = response["id"]
         instance.payment.save()
     except Exception as e:
@@ -133,11 +133,11 @@ def post_shift_save(sender, instance, **kwargs):
         start_date = date(instance.start, "Y-m-d")
         project_name = f"{instance.__str__()} [{start_date}]"
     
-    api = HttpsAdministration(settings.MONEYBIRD_API_KEY, settings.MONEYBIRD_ADMINISTRATION_ID)
-    project_id = services.get_project_id(api, project_name)
+    apiservice = MoneybirdAPIService()
+    project_id = apiservice.get_project_id(project_name)
 
     for order in orders:
-        contact_id = api.get("contacts/customer_id/{settings.MONEYBIRD_UNKOWN_PAYER_ID}")["id"]
+        contact_id = apiservice.api.get("contacts/customer_id/{settings.MONEYBIRD_UNKOWN_PAYER_ID}")["id"]
         if order.payer is not None:
             try:
                 contact_id = Contact.objects.get(member=order.payer).moneybird_id
@@ -164,7 +164,7 @@ def post_shift_save(sender, instance, **kwargs):
         }
 
         try:
-            response = api.post("external_sales_invoices", invoice_info)
+            response = apiservice.api.post("external_sales_invoices", invoice_info)
             order.payment.moneybird_invoice_id = response["id"]
             order.payment.save()
         except Exception as e:
@@ -182,8 +182,8 @@ def post_food_order_save(sender, instance, **kwargs):
     if instance.payment.moneybird_invoice_id is not None:
         return
     
-    api = HttpsAdministration(settings.MONEYBIRD_API_KEY, settings.MONEYBIRD_ADMINISTRATION_ID)
-    contact_id = api.get("contacts/customer_id/{settings.MONEYBIRD_UNKOWN_PAYER_ID}")["id"]
+    apiservice = MoneybirdAPIService()
+    contact_id = apiservice.api.get("contacts/customer_id/{settings.MONEYBIRD_UNKOWN_PAYER_ID}")["id"]
     if instance.payment.paid_by is not None:
         try:
             contact_id = Contact.objects.get(member=instance.member).moneybird_id
@@ -193,7 +193,7 @@ def post_food_order_save(sender, instance, **kwargs):
 
     start_date = date(instance.food_event.event.start, "Y-m-d")
     project_name = f"{instance.food_event.event.title} [{start_date}]"
-    project_id = services.get_project_id(api, project_name)
+    project_id = apiservice.get_project_id(project_name)
     
     invoice_info = {
         "external_sales_invoice": 
@@ -215,7 +215,7 @@ def post_food_order_save(sender, instance, **kwargs):
     }
 
     try:
-        response = api.post("external_sales_invoices", invoice_info)
+        response = apiservice.api.post("external_sales_invoices", invoice_info)
         instance.payment.moneybird_invoice_id = response["id"]
         instance.payment.save()
     except Exception as e:
@@ -233,8 +233,8 @@ def post_entry_save(sender, instance, **kwargs):
     if instance.payment.moneybird_invoice_id is not None:
         return
     
-    api = HttpsAdministration(settings.MONEYBIRD_API_KEY, settings.MONEYBIRD_ADMINISTRATION_ID)
-    contact_id = api.get("contacts/customer_id/{settings.MONEYBIRD_UNKOWN_PAYER_ID}")["id"]
+    apiservice = MoneybirdAPIService()
+    contact_id = apiservice.api.get("contacts/customer_id/{settings.MONEYBIRD_UNKOWN_PAYER_ID}")["id"]
     if instance.payment.paid_by is not None:
         try:
             contact_id = Contact.objects.get(member=instance.payment.paid_by).moneybird_id
@@ -254,14 +254,14 @@ def post_entry_save(sender, instance, **kwargs):
                 {
                     "description": instance.payment.topic,
                     "price": str(instance.payment.amount),
-                    "ledger_id": api.get("ledger_accounts")
+                    "ledger_id": apiservice.api.get("ledger_accounts")
                 },
             ],
         }
     }
 
     try:
-        response = api.post("external_sales_invoices", invoice_info)
+        response = apiservice.api.post("external_sales_invoices", invoice_info)
         instance.payment.moneybird_invoice_id = response["id"]
         instance.payment.save()
     except Exception as e:
@@ -279,8 +279,8 @@ def post_renewal_save(sender, instance, **kwargs):
     if instance.payment.moneybird_invoice_id is not None:
         return
     
-    api = HttpsAdministration(settings.MONEYBIRD_API_KEY, settings.MONEYBIRD_ADMINISTRATION_ID)
-    contact_id = api.get("contacts/customer_id/{settings.MONEYBIRD_UNKOWN_PAYER_ID}")["id"]
+    apiservice = MoneybirdAPIService()
+    contact_id = apiservice.api.get("contacts/customer_id/{settings.MONEYBIRD_UNKOWN_PAYER_ID}")["id"]
     if instance.payment.paid_by is not None:
         try:
             contact_id = Contact.objects.get(member=instance.payment.paid_by).moneybird_id
@@ -300,14 +300,14 @@ def post_renewal_save(sender, instance, **kwargs):
                 {
                     "description": instance.payment.topic,
                     "price": str(instance.payment.amount),
-                    "ledger_id": api.get("ledger_accounts")
+                    "ledger_id": apiservice.api.get("ledger_accounts")
                 },
             ],
         }
     }
 
     try:
-        response = api.post("external_sales_invoices", invoice_info)
+        response = apiservice.api.post("external_sales_invoices", invoice_info)
         instance.payment.moneybird_invoice_id = response["id"]
         instance.payment.save()
     except Exception as e:
@@ -323,11 +323,11 @@ def pre_payment_delete(sender, instance, **kwargs):
     if instance.moneybird_invoice_id is None:
         return
 
-    api = HttpsAdministration(settings.MONEYBIRD_API_KEY, settings.MONEYBIRD_ADMINISTRATION_ID)
-    api.delete(f"external_sales_invoices/{instance.moneybird_invoice_id}")
+    apiservice = MoneybirdAPIService()
+    apiservice.api.delete(f"external_sales_invoices/{instance.moneybird_invoice_id}")
     if instance.moneybird_financial_statement_id is not None:
         try:
-            api.patch(f"financial_statements/{instance.moneybird_financial_statement_id}", {
+            apiservice.api.patch(f"financial_statements/{instance.moneybird_financial_statement_id}", {
                 "financial_statement": {
                     "financial_mutations_attributes": {
                         "0": {
@@ -338,7 +338,7 @@ def pre_payment_delete(sender, instance, **kwargs):
                 }
             })
         except Administration.InvalidData:
-            api.delete(f"financial_statements/{instance.moneybird_financial_statement_id}")
+            apiservice.api.delete(f"financial_statements/{instance.moneybird_financial_statement_id}")
 
 
 @suspendingreceiver(
@@ -352,8 +352,8 @@ def post_batch_save(sender, instance, **kwargs):
     if kwargs["update_fields"].__contains__("processed") is False:
         return
     
-    api = HttpsAdministration(settings.MONEYBIRD_API_KEY, settings.MONEYBIRD_ADMINISTRATION_ID)
+    apiservice = MoneybirdAPIService()
 
     payments = Payment.objects.filter(batch=instance)
-    tpay_account_id = services.get_financial_account_id(api, "ThaliaPay")
-    services.link_transaction_to_financial_account(api, tpay_account_id, payments)
+    tpay_account_id = apiservice.get_financial_account_id("ThaliaPay")
+    apiservice.link_transaction_to_financial_account(tpay_account_id, payments)
