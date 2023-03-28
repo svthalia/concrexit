@@ -1,7 +1,12 @@
+from events.models.event import Event
 from payments.models import Payment
-import datetime
+from members.models import Member
+from moneybirdsynchronization.models import Contact
+from moneybirdsynchronization.administration import HttpsAdministration, Administration
 from thaliawebsite import settings
-from moneybirdsynchronization.administration import HttpsAdministration
+from datetime import date
+
+import datetime
 
 class MoneybirdAPIService():
 
@@ -84,3 +89,207 @@ class MoneybirdAPIService():
                             "price": str(instance.amount),
                             "description": instance.topic,
                         })
+
+
+def push_thaliapay_batch(instance):
+    apiservice = MoneybirdAPIService()
+    payments = Payment.objects.filter(batch=instance)
+    tpay_account_id = apiservice.get_financial_account_id("ThaliaPay")
+    apiservice.link_transaction_to_financial_account(tpay_account_id, payments)
+
+
+def update_contact(member):
+    apiservice = MoneybirdAPIService()
+    apiservice.update_contact(Contact.objects.get_or_create(member=member)[0])
+
+
+def delete_contact(instance):
+    apiservice = MoneybirdAPIService()
+    member = Member.objects.get(profile=instance)
+    contact = Contact.objects.get(member=member)
+    apiservice.api.delete("contacts/{contact.moneybird_id}")
+    contact.delete()
+
+
+def register_event_registration_payment(instance):
+    apiservice = MoneybirdAPIService()
+    contact_id = apiservice.api.get("contacts/customer_id/{settings.MONEYBIRD_UNKOWN_PAYER_ID}")["id"]
+    if instance.payment.paid_by is not None:
+        try:
+            contact_id = Contact.objects.get(member=instance.member).moneybird_id
+        except:
+            pass
+
+
+    start_date = date(instance.event.start, "Y-m-d")
+    project_name = f"{instance.event.title} [{start_date}]"
+    project_id = apiservice.get_project_id(project_name)
+    
+    invoice_info = {
+        "external_sales_invoice": 
+        {
+            "contact_id": contact_id,
+            "reference": str(instance.payment.id),
+            "date": instance.payment.created_at.strftime("%Y-%m-%d"),
+            "source_url": settings.BASE_URL + instance.payment.get_admin_url(),
+            "currency": "EUR",
+            "prices_are_incl_tax": True,
+            "details_attributes":[
+                {
+                    "description": instance.payment.topic,
+                    "price": str(instance.payment.amount),
+                    "project_id": project_id,
+                },
+            ],
+        }
+    }
+
+    try:
+        response = apiservice.api.post("external_sales_invoices", invoice_info)
+        instance.payment.moneybird_invoice_id = response["id"]
+        instance.payment.save()
+    except Exception as e:
+        pass
+
+
+def register_shift_payments(orders, instance):
+    try: 
+        event = Event.objects.get(shifts=instance)
+        start_date = date(event.start, "Y-m-d")
+        project_name = f"{event.title} [{start_date}]"
+    except:
+        start_date = date(instance.start, "Y-m-d")
+        project_name = f"{instance.__str__()} [{start_date}]"
+    
+    apiservice = MoneybirdAPIService()
+    project_id = apiservice.get_project_id(project_name)
+
+    for order in orders:
+        contact_id = apiservice.api.get("contacts/customer_id/{settings.MONEYBIRD_UNKOWN_PAYER_ID}")["id"]
+        if order.payer is not None:
+            try:
+                contact_id = Contact.objects.get(member=order.payer).moneybird_id
+            except:
+                pass
+
+        invoice_info = {
+            "external_sales_invoice": 
+            {
+                "contact_id": contact_id,
+                "reference": str(order.payment.id),
+                "date": order.payment.created_at.strftime("%Y-%m-%d"),
+                "source_url": settings.BASE_URL + order.payment.get_admin_url(),
+                "currency": "EUR",
+                "prices_are_incl_tax": True,
+                "details_attributes":[
+                    {
+                        "description": order.payment.topic,
+                        "price": str(order.payment.amount),
+                        "project_id": project_id,
+                    },
+                ],
+            }
+        }
+
+        try:
+            response = apiservice.api.post("external_sales_invoices", invoice_info)
+            order.payment.moneybird_invoice_id = response["id"]
+            order.payment.save()
+        except Exception as e:
+            pass
+
+
+def register_food_order_payment(instance):
+    apiservice = MoneybirdAPIService()
+    contact_id = apiservice.api.get("contacts/customer_id/{settings.MONEYBIRD_UNKOWN_PAYER_ID}")["id"]
+    if instance.payment.paid_by is not None:
+        try:
+            contact_id = Contact.objects.get(member=instance.member).moneybird_id
+        except:
+            pass
+
+
+    start_date = date(instance.food_event.event.start, "Y-m-d")
+    project_name = f"{instance.food_event.event.title} [{start_date}]"
+    project_id = apiservice.get_project_id(project_name)
+    
+    invoice_info = {
+        "external_sales_invoice": 
+        {
+            "contact_id": contact_id,
+            "reference": str(instance.payment.id),
+            "date": instance.payment.created_at.strftime("%Y-%m-%d"),
+            "source_url": settings.BASE_URL + instance.payment.get_admin_url(),
+            "currency": "EUR",
+            "prices_are_incl_tax": True,
+            "details_attributes":[
+                {
+                    "description": instance.payment.topic,
+                    "price": str(instance.payment.amount),
+                    "project_id": project_id,
+                },
+            ],
+        }
+    }
+
+    try:
+        response = apiservice.api.post("external_sales_invoices", invoice_info)
+        instance.payment.moneybird_invoice_id = response["id"]
+        instance.payment.save()
+    except Exception as e:
+        pass
+
+
+def register_contribution_payment(instance):
+    apiservice = MoneybirdAPIService()
+    contact_id = apiservice.api.get("contacts/customer_id/{settings.MONEYBIRD_UNKOWN_PAYER_ID}")["id"]
+    if instance.payment.paid_by is not None:
+        try:
+            contact_id = Contact.objects.get(member=instance.payment.paid_by).moneybird_id
+        except:
+            pass
+    
+    invoice_info = {
+        "external_sales_invoice": 
+        {
+            "contact_id": contact_id,
+            "reference": str(instance.payment.id),
+            "date": instance.payment.created_at.strftime("%Y-%m-%d"),
+            "source_url": settings.BASE_URL + instance.payment.get_admin_url(),
+            "currency": "EUR",
+            "prices_are_incl_tax": True,
+            "details_attributes":[
+                {
+                    "description": instance.payment.topic,
+                    "price": str(instance.payment.amount),
+                    "ledger_id": apiservice.api.get("ledger_accounts")
+                },
+            ],
+        }
+    }
+
+    try:
+        response = apiservice.api.post("external_sales_invoices", invoice_info)
+        instance.payment.moneybird_invoice_id = response["id"]
+        instance.payment.save()
+    except Exception as e:
+        pass
+
+
+def delete_payment(instance):
+    apiservice = MoneybirdAPIService()
+    apiservice.api.delete(f"external_sales_invoices/{instance.moneybird_invoice_id}")
+    if instance.moneybird_financial_statement_id is not None:
+        try:
+            apiservice.api.patch(f"financial_statements/{instance.moneybird_financial_statement_id}", {
+                "financial_statement": {
+                    "financial_mutations_attributes": {
+                        "0": {
+                            "id": instance.moneybird_financial_mutation_id,
+                            "_destroy": True
+                        }
+                    }
+                }
+            })
+        except Administration.InvalidData:
+            apiservice.api.delete(f"financial_statements/{instance.moneybird_financial_statement_id}")
