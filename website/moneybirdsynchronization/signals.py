@@ -29,7 +29,7 @@ def post_profile_save(sender, instance, **kwargs):
         contact.moneybird_version = response["version"]
         contact.save()
     else:
-        response = api.patch("contacts/{}".format(contact.moneybird_id), contact.to_moneybird())
+        response = api.patch("contacts/{contact.moneybird_id}", contact.to_moneybird())
         contact.moneybird_version = response["version"]
         contact.save()
 
@@ -43,7 +43,7 @@ def post_profile_delete(sender, instance, **kwargs):
     api = HttpsAdministration(settings.MONEYBIRD_API_KEY, settings.MONEYBIRD_ADMINISTRATION_ID)
     member = Member.objects.get(profile=instance)
     contact = Contact.objects.get(member=member)
-    api.delete("contacts/{}".format(contact.moneybird_id))
+    api.delete("contacts/{contact.moneybird_id}")
     contact.delete()
 
 
@@ -56,7 +56,7 @@ def post_user_save(sender, instance, **kwargs):
     api = HttpsAdministration(settings.MONEYBIRD_API_KEY, settings.MONEYBIRD_ADMINISTRATION_ID)
     contact = Contact.objects.get_or_create(member=instance)[0]
     if contact.moneybird_version is not None:
-        response = api.patch("contacts/{}".format(contact.moneybird_id), contact.to_moneybird())
+        response = api.patch("contacts/{contact.moneybird_id}", contact.to_moneybird())
         contact.moneybird_version = response["version"]
         contact.save()
 

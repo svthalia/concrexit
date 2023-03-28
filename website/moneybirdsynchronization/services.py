@@ -26,7 +26,7 @@ def link_transaction_to_financial_account(api, account_id, new_cash_payments):
     financial_mutations_attributes = []
     if account_id is not None:
         for instance in new_cash_payments:
-            payment_response = api.post("external_sales_invoices/{}/payments".format(instance.moneybird_invoice_id), 
+            payment_response = api.post("external_sales_invoices/{instance.moneybird_invoice_id}/payments", 
                 {"payment": {
                     "payment_date": instance.created_at.strftime("%Y-%m-%d"),
                     "price": str(instance.amount),
@@ -59,7 +59,7 @@ def link_transaction_to_financial_account(api, account_id, new_cash_payments):
                 instance.moneybird_financial_mutation_id = statement_response["financial_mutations"][x]["id"]
                 instance.save()
 
-                mutation_response = api.patch("financial_mutations/{}/link_booking".format(instance.moneybird_financial_mutation_id),{
+                mutation_response = api.patch("financial_mutations/{instance.moneybird_financial_mutation_id}/link_booking",{
                         "booking_type": "ExternalSalesInvoice",
                         "booking_id": instance.moneybird_invoice_id,
                         "price": str(instance.amount),
