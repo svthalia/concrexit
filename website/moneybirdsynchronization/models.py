@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from thaliawebsite import settings
 
 from members.models import Member
 
@@ -35,7 +36,7 @@ class Contact(models.Model):
                 "send_invoices_to_email": self.member.email,
                 "custom_fields_attributes": {
                     "0":{
-                        "id": 380500576947930894,
+                        "id": settings.MONEYBIRD_CUSTOM_FIELD_ID,
                         "value": self.member.pk,
                         }
                     },

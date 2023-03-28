@@ -73,7 +73,7 @@ def post_event_registration_payment(sender, instance, **kwargs):
         return
     
     api = HttpsAdministration(settings.MONEYBIRD_API_KEY, settings.MONEYBIRD_ADMINISTRATION_ID)
-    contact_id = api.get("contacts/customer_id/34")["id"]
+    contact_id = api.get("contacts/customer_id/{settings.MONEYBIRD_UNKOWN_PAYER_ID}")["id"]
     if instance.payment.paid_by is not None:
         try:
             contact_id = Contact.objects.get(member=instance.member).moneybird_id
@@ -137,7 +137,7 @@ def post_shift_save(sender, instance, **kwargs):
     project_id = services.get_project_id(api, project_name)
 
     for order in orders:
-        contact_id = api.get("contacts/customer_id/34")["id"]
+        contact_id = api.get("contacts/customer_id/{settings.MONEYBIRD_UNKOWN_PAYER_ID}")["id"]
         if order.payer is not None:
             try:
                 contact_id = Contact.objects.get(member=order.payer).moneybird_id
@@ -183,7 +183,7 @@ def post_food_order_save(sender, instance, **kwargs):
         return
     
     api = HttpsAdministration(settings.MONEYBIRD_API_KEY, settings.MONEYBIRD_ADMINISTRATION_ID)
-    contact_id = api.get("contacts/customer_id/34")["id"]
+    contact_id = api.get("contacts/customer_id/{settings.MONEYBIRD_UNKOWN_PAYER_ID}")["id"]
     if instance.payment.paid_by is not None:
         try:
             contact_id = Contact.objects.get(member=instance.member).moneybird_id
@@ -234,7 +234,7 @@ def post_entry_save(sender, instance, **kwargs):
         return
     
     api = HttpsAdministration(settings.MONEYBIRD_API_KEY, settings.MONEYBIRD_ADMINISTRATION_ID)
-    contact_id = api.get("contacts/customer_id/34")["id"]
+    contact_id = api.get("contacts/customer_id/{settings.MONEYBIRD_UNKOWN_PAYER_ID}")["id"]
     if instance.payment.paid_by is not None:
         try:
             contact_id = Contact.objects.get(member=instance.payment.paid_by).moneybird_id
@@ -280,7 +280,7 @@ def post_renewal_save(sender, instance, **kwargs):
         return
     
     api = HttpsAdministration(settings.MONEYBIRD_API_KEY, settings.MONEYBIRD_ADMINISTRATION_ID)
-    contact_id = api.get("contacts/customer_id/34")["id"]
+    contact_id = api.get("contacts/customer_id/{settings.MONEYBIRD_UNKOWN_PAYER_ID}")["id"]
     if instance.payment.paid_by is not None:
         try:
             contact_id = Contact.objects.get(member=instance.payment.paid_by).moneybird_id
