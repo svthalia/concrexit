@@ -25,11 +25,16 @@ def post_profile_save(sender, instance, **kwargs):
 
 
 @suspendingreceiver(
-    pre_delete,
+    post_save,
     sender="members.Profile",
 )
 def post_profile_delete(sender, instance, **kwargs):
     """Delete contact on profile deletion."""
+    if kwargs["update_fields"].__contains__("is_minimized") is False:
+        return
+    if instance.is_minimized is False:
+        return
+    
     services.delete_contact(instance)
 
 
