@@ -51,7 +51,7 @@ class MoneybirdAPIService():
         financial_mutations_attributes = []
         if account_id is not None:
             for instance in new_cash_payments:
-                payment_response = self.api.post("external_sales_invoices/{instance.moneybird_invoice_id}/payments", 
+                payment_response = self.api.post(f"external_sales_invoices/{instance.moneybird_invoice_id}/payments", 
                     {"payment": {
                         "payment_date": instance.created_at.strftime("%Y-%m-%d"),
                         "price": str(instance.amount),
@@ -84,7 +84,7 @@ class MoneybirdAPIService():
                     instance.moneybird_financial_mutation_id = statement_response["financial_mutations"][x]["id"]
                     instance.save()
 
-                    mutation_response = self.api.patch("financial_mutations/{instance.moneybird_financial_mutation_id}/link_booking",{
+                    mutation_response = self.api.patch(f"financial_mutations/{instance.moneybird_financial_mutation_id}/link_booking",{
                             "booking_type": "ExternalSalesInvoice",
                             "booking_id": instance.moneybird_invoice_id,
                             "price": str(instance.amount),
@@ -108,13 +108,13 @@ def delete_contact(instance):
     apiservice = MoneybirdAPIService()
     member = Member.objects.get(profile=instance)
     contact = Contact.objects.get(member=member)
-    apiservice.api.delete("contacts/{contact.moneybird_id}")
+    apiservice.api.delete(f"contacts/{contact.moneybird_id}")
     contact.delete()
 
 
 def register_event_registration_payment(instance):
     apiservice = MoneybirdAPIService()
-    contact_id = apiservice.api.get("contacts/customer_id/{settings.MONEYBIRD_UNKOWN_PAYER_ID}")["id"]
+    contact_id = apiservice.api.get(f"contacts/customer_id/{settings.MONEYBIRD_UNKOWN_PAYER_ID}")["id"]
     if instance.payment.paid_by is not None:
         try:
             contact_id = Contact.objects.get(member=instance.member).moneybird_id
@@ -166,7 +166,7 @@ def register_shift_payments(orders, instance):
     project_id = apiservice.get_project_id(project_name)
 
     for order in orders:
-        contact_id = apiservice.api.get("contacts/customer_id/{settings.MONEYBIRD_UNKOWN_PAYER_ID}")["id"]
+        contact_id = apiservice.api.get(f"contacts/customer_id/{settings.MONEYBIRD_UNKOWN_PAYER_ID}")["id"]
         if order.payer is not None:
             try:
                 contact_id = Contact.objects.get(member=order.payer).moneybird_id
@@ -202,7 +202,7 @@ def register_shift_payments(orders, instance):
 
 def register_food_order_payment(instance):
     apiservice = MoneybirdAPIService()
-    contact_id = apiservice.api.get("contacts/customer_id/{settings.MONEYBIRD_UNKOWN_PAYER_ID}")["id"]
+    contact_id = apiservice.api.get(f"contacts/customer_id/{settings.MONEYBIRD_UNKOWN_PAYER_ID}")["id"]
     if instance.payment.paid_by is not None:
         try:
             contact_id = Contact.objects.get(member=instance.member).moneybird_id
@@ -243,7 +243,7 @@ def register_food_order_payment(instance):
 
 def register_contribution_payment(instance):
     apiservice = MoneybirdAPIService()
-    contact_id = apiservice.api.get("contacts/customer_id/{settings.MONEYBIRD_UNKOWN_PAYER_ID}")["id"]
+    contact_id = apiservice.api.get(f"contacts/customer_id/{settings.MONEYBIRD_UNKOWN_PAYER_ID}")["id"]
     if instance.payment.paid_by is not None:
         try:
             contact_id = Contact.objects.get(member=instance.payment.paid_by).moneybird_id
