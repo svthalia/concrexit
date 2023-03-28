@@ -158,7 +158,7 @@ def process_batch(batch):
             bank_account.last_used = batch.withdrawal_date
             bank_account.save()
 
-    batch.save()
+    batch.save(update_fields=["processed"])
 
     send_tpay_batch_processing_emails(batch)
 

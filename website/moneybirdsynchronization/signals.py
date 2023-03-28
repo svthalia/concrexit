@@ -339,3 +339,21 @@ def pre_payment_delete(sender, instance, **kwargs):
             })
         except Administration.InvalidData:
             api.delete(f"financial_statements/{instance.moneybird_financial_statement_id}")
+
+
+@suspendingreceiver(
+    pre_save,
+    sender="payments.Batch",
+)
+def post_batch_save(sender, instance, **kwargs):
+    if kwargs["update_fields"] is None:
+        return
+    
+    if kwargs["update_fields"].__contains__("processed") is False:
+        return
+    
+    api = HttpsAdministration(settings.MONEYBIRD_API_KEY, settings.MONEYBIRD_ADMINISTRATION_ID)
+
+    payments = Payment.objects.filter(batch=instance)
+    tpay_account_id = services.get_financial_account_id(api, "ThaliaPay")
+    services.link_transaction_to_financial_account(api, tpay_account_id, payments)
