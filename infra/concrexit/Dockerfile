@@ -29,6 +29,12 @@ FROM base as final
 
 EXPOSE 8000
 
+VOLUME [ "/volumes/media", "/volumes/static" ]
+
+ENV MEDIA_ROOT="/volumes/media" \
+    STATIC_ROOT="/volumes/static" \
+    SENDFILE_ROOT="/volumes/media"
+
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         ghostscript postgresql-client libjpeg-dev zlib1g-dev libwebp-dev libmagic1 && \
@@ -41,13 +47,5 @@ COPY website /app/website
 WORKDIR /app/website
 
 RUN adduser -u 5678 --disabled-password --gecos "" appuser && chown -R appuser /app
-
-VOLUME [ "/media", "/static" ]
-ENV MEDIA_ROOT="/media" \
-    STATIC_ROOT="/static" \
-    SENDFILE_ROOT="/media"
-
-RUN MANAGE_PY=1 /venv/bin/python manage.py collectstatic --no-input
-RUN MANAGE_PY=1 /venv/bin/python manage.py compress
 
 CMD [ "/app/docker-entrypoint.sh" ]

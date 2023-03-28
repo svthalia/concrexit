@@ -1,7 +1,12 @@
 #! /bin/sh
 
 chown -R appuser /media
+
+MANAGE_PY=1 runuser -u appuser -- /venv/bin/python manage.py collectstatic --no-input
+MANAGE_PY=1 runuser -u appuser -- /venv/bin/python manage.py compress
+
 MANAGE_PY=1 runuser -u appuser -- /venv/bin/python manage.py migrate --no-input
+
 exec runuser -u appuser -- /venv/bin/gunicorn \
     --bind 0.0.0.0:8000 \
     --log-level info \

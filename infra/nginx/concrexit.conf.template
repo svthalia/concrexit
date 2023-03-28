@@ -90,7 +90,7 @@ server {
     }
 
     location /static/ {
-        alias /vol/static/;
+        alias /volumes/static/;
 
         add_header Cache-Control "public, max-age=31536000, immutable";
 
@@ -107,11 +107,11 @@ server {
     }
 
     location /media/public/ {
-        alias /vol/media/public/;
+        alias /volumes/media/public/;
     }
 
     location /media/sendfile/ {
-        alias /vol/media/;
+        alias /volumes/media/;
         internal;
     }
 

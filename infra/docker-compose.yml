@@ -8,9 +8,8 @@ services:
       - .env.public.${STAGE}
       - .env.secret.${STAGE}
     volumes:
-      - concrexit-static:/static:rw
-      - concrexit-media:/media:rw
-    # TODO: cronjobs
+      - concrexit-media:/volumes/media:rw
+      - concrexit-static:/volumes/static:rw
     restart: always
     depends_on:
       postgres:
@@ -25,9 +24,9 @@ services:
       - .env.public
       - .env.public.${STAGE}
     volumes:
-      - concrexit-static:/vol/static:ro
-      - concrexit-media:/vol/media:ro
       - letsencrypt:/etc/letsencrypt:rw
+      - concrexit-media:/volumes/media:ro
+      - concrexit-static:/volumes/static:ro
     restart: always
     depends_on:
       concrexit:
@@ -39,16 +38,15 @@ services:
       - .env.public
       - .env.public.${STAGE}
     volumes:
-      - postgres-data:/var/lib/postgresql/data:rw
+      - /volumes/postgres:/var/lib/postgresql/data:rw
     restart: always
     healthcheck:
       test: ["CMD", "pg_isready", "--username", "concrexit"]
-      interval: 3s
-      timeout: 1s
-      retries: 20
+      interval: 2s
+      timeout: 2s
+      retries: 30
 
 volumes:
-  postgres-data:
-  concrexit-static:
   concrexit-media:
+  concrexit-static:
   letsencrypt:
