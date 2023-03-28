@@ -22,16 +22,7 @@ def post_profile_save(sender, instance, **kwargs):
     """Update contact on profile creation."""
     apiservice = MoneybirdAPIService()
     member = Member.objects.get(profile=instance)
-    contact = Contact.objects.get_or_create(member=member)[0]
-    if contact.moneybird_version is None:
-        response = apiservice.api.post("contacts", contact.to_moneybird())
-        contact.moneybird_id = response["id"]
-        contact.moneybird_version = response["version"]
-        contact.save()
-    else:
-        response = api.patch("contacts/{contact.moneybird_id}", contact.to_moneybird())
-        contact.moneybird_version = response["version"]
-        contact.save()
+    apiservice.update_contact(Contact.objects.get_or_create(member=member)[0])
 
 
 @suspendingreceiver(
@@ -54,11 +45,7 @@ def post_profile_delete(sender, instance, **kwargs):
 def post_user_save(sender, instance, **kwargs):
     """Update contact on user creation."""
     apiservice = MoneybirdAPIService()
-    contact = Contact.objects.get_or_create(member=instance)[0]
-    if contact.moneybird_version is not None:
-        response = apiservice.api.patch("contacts/{contact.moneybird_id}", contact.to_moneybird())
-        contact.moneybird_version = response["version"]
-        contact.save()
+    apiservice.update_contact(Contact.objects.get_or_create(member=instance)[0])
 
 
 @suspendingreceiver(

@@ -8,10 +8,21 @@ class MoneybirdAPIService():
     def __init__(self):
         api = HttpsAdministration(settings.MONEYBIRD_API_KEY, settings.MONEYBIRD_ADMINISTRATION_ID)
         self.api = api
+    
+    def update_contact(self, contact):
+        if contact.moneybird_version is None:
+            response = self.api.post("contacts", contact.to_moneybird())
+            contact.moneybird_id = response["id"]
+            contact.moneybird_version = response["version"]
+            contact.save()
+        else:
+            response = self.api.patch("contacts/{contact.moneybird_id}", contact.to_moneybird())
+            contact.moneybird_version = response["version"]
+            contact.save()
 
-    def get_financial_account_id(self, name):
+    def get_financial_account_id(self, identifier):
         for financial_account in self.api.get("financial_accounts"):
-            if financial_account["identifier"] == name:
+            if financial_account["identifier"] == identifier:
                 return financial_account["id"]
 
 
