@@ -5,7 +5,7 @@ from moneybirdsynchronization.models import Contact
 from moneybirdsynchronization.administration import HttpsAdministration, Administration
 from moneybirdsynchronization import emails
 from thaliawebsite import settings
-from datetime import date
+from django.template.defaultfilters import date
 
 import datetime
 
@@ -49,47 +49,48 @@ class MoneybirdAPIService():
 
     def link_transaction_to_financial_account(self, account_id, new_cash_payments):
         financial_mutations_attributes = []
-        if account_id is not None:
-            for instance in new_cash_payments:
-                payment_response = self.api.post(f"external_sales_invoices/{instance.moneybird_invoice_id}/payments", 
-                    {"payment": {
-                        "payment_date": instance.created_at.strftime("%Y-%m-%d"),
+        if account_id is None:
+            return
+        
+        for instance in new_cash_payments:
+            payment_response = self.api.post(f"external_sales_invoices/{instance.moneybird_invoice_id}/payments", 
+                {"payment": {
+                    "payment_date": instance.created_at.strftime("%Y-%m-%d"),
+                    "price": str(instance.amount),
+                    "financial_account_id": account_id, 
+                    "invoice_id": instance.moneybird_invoice_id,
+                    }
+                }
+            )
+
+            financial_mutations_attributes.append({
+                        "date": instance.created_at.strftime("%Y-%m-%d"),
+                        "amount": str(instance.amount),
+                        "message": instance.topic,
+                    })
+        
+        if len(financial_mutations_attributes) > 0:
+            statement_response = self.api.post("financial_statements",
+                {"financial_statement": {
+                    "financial_account_id": account_id,
+                    "reference": f"Card payments {datetime.date.today()}",
+                    "financial_mutations_attributes": financial_mutations_attributes
+                    }
+                }
+            )
+
+            for x in range(len(new_cash_payments)):
+                instance = new_cash_payments[x]
+                instance.moneybird_financial_statement_id = statement_response["id"]
+                instance.moneybird_financial_mutation_id = statement_response["financial_mutations"][x]["id"]
+                instance.save()
+
+                mutation_response = self.api.patch(f"financial_mutations/{instance.moneybird_financial_mutation_id}/link_booking",{
+                        "booking_type": "ExternalSalesInvoice",
+                        "booking_id": instance.moneybird_invoice_id,
                         "price": str(instance.amount),
-                        "financial_account_id": account_id, 
-                        "manual_payment_action": "payment_without_proof",
-                        "invoice_id": instance.moneybird_invoice_id,
-                        }
-                    }
-                )
-
-                financial_mutations_attributes.append({
-                            "date": instance.created_at.strftime("%Y-%m-%d"),
-                            "amount": str(instance.amount),
-                            "message": instance.topic,
-                        })
-            
-            if len(financial_mutations_attributes) > 0:
-                statement_response = self.api.post("financial_statements",
-                    {"financial_statement": {
-                        "financial_account_id": account_id,
-                        "reference": f"Card payments {datetime.date.today()}",
-                        "financial_mutations_attributes": financial_mutations_attributes
-                        }
-                    }
-                )
-
-                for x in range(len(new_cash_payments)):
-                    instance = new_cash_payments[x]
-                    instance.moneybird_financial_statement_id = statement_response["id"]
-                    instance.moneybird_financial_mutation_id = statement_response["financial_mutations"][x]["id"]
-                    instance.save()
-
-                    mutation_response = self.api.patch(f"financial_mutations/{instance.moneybird_financial_mutation_id}/link_booking",{
-                            "booking_type": "ExternalSalesInvoice",
-                            "booking_id": instance.moneybird_invoice_id,
-                            "price": str(instance.amount),
-                            "description": instance.topic,
-                        })
+                        "description": instance.topic,
+                    })
 
 
 def push_thaliapay_batch(instance):
