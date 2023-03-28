@@ -3,6 +3,7 @@ from payments.models import Payment
 from members.models import Member
 from moneybirdsynchronization.models import Contact
 from moneybirdsynchronization.administration import HttpsAdministration, Administration
+from moneybirdsynchronization import emails
 from thaliawebsite import settings
 from datetime import date
 
@@ -149,7 +150,7 @@ def register_event_registration_payment(instance):
         instance.payment.moneybird_invoice_id = response["id"]
         instance.payment.save()
     except Exception as e:
-        pass
+        emails.send_sync_error(e, instance.payment)
 
 
 def register_shift_payments(orders, instance):
@@ -196,7 +197,7 @@ def register_shift_payments(orders, instance):
             order.payment.moneybird_invoice_id = response["id"]
             order.payment.save()
         except Exception as e:
-            pass
+            emails.send_sync_error(e, instance.payment)
 
 
 def register_food_order_payment(instance):
@@ -237,7 +238,7 @@ def register_food_order_payment(instance):
         instance.payment.moneybird_invoice_id = response["id"]
         instance.payment.save()
     except Exception as e:
-        pass
+        emails.send_sync_error(e, instance.payment)
 
 
 def register_contribution_payment(instance):
@@ -273,7 +274,7 @@ def register_contribution_payment(instance):
         instance.payment.moneybird_invoice_id = response["id"]
         instance.payment.save()
     except Exception as e:
-        pass
+        emails.send_sync_error(e, instance.payment)
 
 
 def delete_payment(instance):

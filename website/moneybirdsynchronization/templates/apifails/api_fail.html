@@ -1,0 +1,13 @@
+{% extends "email/board_email.html" %}
+
+{% block content %}
+  Hi,
+
+  There has been an error when trying to synchronize with Moneybird.
+  Error: {{ error.message }}
+  Payment: {{ payment }}
+  Link to payment: {{ payment.get_absolute_url }}
+  
+  Kisses,
+  The Website
+{% endblock %}

@@ -159,6 +159,9 @@ EDUCATION_NOTIFICATION_ADDRESS = (
 PROMO_REQUEST_NOTIFICATION_ADDRESS = (
     f"{os.environ.get('ADDRESS_PROMOREQUESTS', 'promocie')}@{SITE_DOMAIN}"
 )
+TREASURER_NOTIFICATION_ADDRESS = (
+    f"{os.environ.get('ADDRESS_TREASURER', 'treasurer')}@{SITE_DOMAIN}"
+)
 PROMO_PUBLISH_DATE_TIMEDELTA = timezone.timedelta(weeks=1)
 
 # The scheme the app uses for oauth redirection
