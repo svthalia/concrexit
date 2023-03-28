@@ -324,6 +324,7 @@ def pre_payment_delete(sender, instance, **kwargs):
         return
 
     api = HttpsAdministration(settings.MONEYBIRD_API_KEY, settings.MONEYBIRD_ADMINISTRATION_ID)
+    api.delete(f"external_sales_invoices/{instance.moneybird_invoice_id}")
     if instance.moneybird_financial_statement_id is not None:
         try:
             api.patch(f"financial_statements/{instance.moneybird_financial_statement_id}", {
