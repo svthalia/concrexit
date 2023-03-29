@@ -2,11 +2,10 @@ name: concrexit
 
 services:
   concrexit:
-    image: ghcr.io/svthalia/concrexit:${COMMIT_SHA:-latest}
+    image: ghcr.io/svthalia/concrexit:${TAG:-latest}
     env_file:
       - .env.public
-      - .env.public.${STAGE}
-      - .env.secret.${STAGE}
+      - .env.secret
     volumes:
       - concrexit-media:/volumes/media:rw
       - concrexit-static:/volumes/static:rw
@@ -16,13 +15,12 @@ services:
         condition: service_healthy
 
   nginx:
-    image: ghcr.io/svthalia/concrexit-nginx:${COMMIT_SHA:-latest}
+    image: ghcr.io/svthalia/concrexit-nginx:${TAG:-latest}
     ports:
       - "80:80"
       - "443:443"
     env_file:
       - .env.public
-      - .env.public.${STAGE}
     volumes:
       - letsencrypt:/etc/letsencrypt:rw
       - concrexit-media:/volumes/media:ro
@@ -36,7 +34,6 @@ services:
     image: postgres:11.19-alpine
     env_file:
       - .env.public
-      - .env.public.${STAGE}
     volumes:
       - /volumes/postgres:/var/lib/postgresql/data:rw
     restart: always

@@ -87,14 +87,18 @@ jobs:
           SSH_KNOWN_HOSTS: ${{ vars.SSH_KNOWN_HOSTS }}
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
 
-      - name: Create secrets file
-        run: echo "$SECRETS_FILE"> infra/.env.secret.docker-staging
+      - name: Create .env files
+        run: |
+          cp infra/.env.public.docker-staging infra/.env.public
+          echo "$SECRETS_FILE" > infra/.env.secret
+          echo "TAG=$TAG" > infra/.env
         env:
           SECRETS_FILE: ${{ secrets.SECRETS_FILE }}
+          TAG: ${{ github.sha }}
 
-      - name: Update .env.public and .env.public.docker-staging
+      - name: Update .env files
         run: |
+          rsync infra/.env deploy@docker-staging.thalia.nu:/var/lib/concrexit/.env
           rsync infra/.env.public deploy@docker-staging.thalia.nu:/var/lib/concrexit/.env.public
-          rsync infra/.env.public.docker-staging deploy@docker-staging.thalia.nu:/var/lib/concrexit/.env.public.docker-staging
-          rsync infra/.env.secret.docker-staging deploy@docker-staging.thalia.nu:/var/lib/concrexit/.env.secret.docker-staging
-          rsync infra/docker-compose.yml deploy@docker-staging.thalia.nu:/var/lib/concrexit/docker.compose.yml
+          rsync infra/.env.secret deploy@docker-staging.thalia.nu:/var/lib/concrexit/.env.secret
+          rsync infra/docker-compose.yml deploy@docker-staging.thalia.nu:/var/lib/concrexit/docker-compose.yml
