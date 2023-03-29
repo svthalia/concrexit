@@ -1,8 +1,9 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from thaliawebsite import settings
 
 from members.models import Member
+from thaliawebsite import settings
+
 
 class Contact(models.Model):
     member = models.OneToOneField(
@@ -12,11 +13,7 @@ class Contact(models.Model):
         null=True,
         blank=True,
     )
-    moneybird_id = models.IntegerField(
-        _("Moneybird ID"), 
-        null=True, 
-        blank=True
-    )
+    moneybird_id = models.IntegerField(_("Moneybird ID"), null=True, blank=True)
     moneybird_version = models.IntegerField(
         _("Moneybird version"),
         null=True,
@@ -24,6 +21,8 @@ class Contact(models.Model):
     )
 
     def to_moneybird(self):
+        if self.member.profile is None:
+            return {}
         return {
             "contact": {
                 "firstname": self.member.first_name,
@@ -35,14 +34,17 @@ class Contact(models.Model):
                 "country": self.member.profile.address_country,
                 "send_invoices_to_email": self.member.email,
                 "custom_fields_attributes": {
-                    "0":{
+                    "0": {
                         "id": settings.MONEYBIRD_CUSTOM_FIELD_ID,
                         "value": self.member.pk,
-                        }
-                    },
+                    }
+                },
             }
         }
 
     def get_moneybird_info(self):
-        return {'id': self.moneybird_id, 'version': self.moneybird_version, 'pk': self.member.pk}
-
+        return {
+            "id": self.moneybird_id,
+            "version": self.moneybird_version,
+            "pk": self.member.pk,
+        }

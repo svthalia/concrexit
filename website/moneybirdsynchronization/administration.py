@@ -1,5 +1,4 @@
-"""
-The MoneyBird API.
+"""The MoneyBird API.
 
 This code is largely based on moneybird-python by Jan-Jelle Kester,
 licensed under the MIT license. The source code of moneybird-python
@@ -7,14 +6,14 @@ can be found on GitHub: https://github.com/jjkester/moneybird-python.
 """
 import json
 import logging
-from abc import ABC
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from functools import reduce
 from typing import Type, Union
 from urllib.parse import urljoin
 
-import requests
 from django.utils import timezone
+
+import requests
 
 from thaliawebsite import settings
 
