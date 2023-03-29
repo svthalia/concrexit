@@ -49,3 +49,8 @@ WORKDIR /app/website
 RUN adduser -u 5678 --disabled-password --gecos "" appuser && chown -R appuser /app
 
 CMD [ "/app/docker-entrypoint.sh" ]
+
+# Persist the SOURCE_COMMIT build argument as
+# environment variable in the resulting image.
+ARG SOURCE_COMMIT
+ENV SOURCE_COMMIT=${SOURCE_COMMIT}

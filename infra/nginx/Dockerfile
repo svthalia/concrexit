@@ -6,3 +6,8 @@ COPY concrexit.conf.template /etc/nginx/templates/concrexit.conf.template
 COPY resources /resources
 
 VOLUME ["/vol/static", "/vol/media"]
+
+# Persist the SOURCE_COMMIT build argument as
+# environment variable in the resulting image.
+ARG SOURCE_COMMIT
+ENV SOURCE_COMMIT=${SOURCE_COMMIT}

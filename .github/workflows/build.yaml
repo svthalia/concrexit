@@ -32,6 +32,8 @@ jobs:
           context: ./
           file: ./infra/concrexit/Dockerfile
           push: true
+          build-args: |
+            SOURCE_COMMIT=${{ github.sha }}
           tags: |
             ghcr.io/svthalia/concrexit:docker-staging
           cache-from: type=gha,scope=${{ github.ref }}-concrexit
@@ -63,6 +65,8 @@ jobs:
         with:
           context: ./infra/nginx
           push: true
+          build-args: |
+            SOURCE_COMMIT=${{ github.sha }}
           tags: |
             ghcr.io/svthalia/concrexit-nginx:docker-staging
           cache-from: type=gha,scope=${{ github.ref }}-concrexit-nginx
