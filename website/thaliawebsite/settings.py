@@ -925,11 +925,6 @@ DEFAULT_EXCEPTION_REPORTER_FILTER = (
 # Make sure the locations in django.po files don't include line nrs.
 makemessages.Command.xgettext_options.append("--add-location=file")
 
-MONEYBIRD_ADMINISTRATION_ID = 380475297324075003
-MONEYBIRD_API_KEY = "-Xw8P1CfYFAA8Z0VEEnOgDvXiNNb8mgdBCgEMl05Yus"
-
-MONEYBIRD_AUTO_PUSH = True # Push changes to Moneybird automatically (so you don't have to call `instance.push_to_moneybird()` manually)
-MONEYBIRD_FETCH_BEFORE_PUSH = False # Fetch the latest data from Moneybird before pushing changes. This is useful if you want to avoid overwriting changes made in Moneybird, but it will slow down your application. With webhooks, this is likely not necessary.
 GRAPH_MODELS = {
     "all_applications": False,
     "group_models": True,
@@ -957,6 +952,7 @@ GRAPH_MODELS = {
         "auth",
     ],
 }
+
 MONEYBIRD_ADMINISTRATION_ID = 380475297324075003
 MONEYBIRD_API_KEY = "-Xw8P1CfYFAA8Z0VEEnOgDvXiNNb8mgdBCgEMl05Yus"
 
@@ -966,3 +962,4 @@ MONEYBIRD_FETCH_BEFORE_PUSH = False # Fetch the latest data from Moneybird befor
 MONEYBIRD_CUSTOM_FIELD_ID = 380500576947930894
 MONEYBIRD_UNKOWN_PAYER_ID = 34
 MONEYBIRD_CONTRIBUTION_LEDGER_ID = 383463861476394202
+
