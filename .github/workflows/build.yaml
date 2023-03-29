@@ -102,3 +102,7 @@ jobs:
           rsync infra/.env.public deploy@docker-staging.thalia.nu:/var/lib/concrexit/.env.public
           rsync infra/.env.secret deploy@docker-staging.thalia.nu:/var/lib/concrexit/.env.secret
           rsync infra/docker-compose.yml deploy@docker-staging.thalia.nu:/var/lib/concrexit/docker-compose.yml
+
+      - name: Restart containers
+        run: |
+          ssh deploy@docker-staging.thalia.nu sudo docker compose up -d
