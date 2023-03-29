@@ -57,7 +57,7 @@ pydenticon = "0.3.1"
 Faker = "18.3.1"
 coverage = {extras = ["toml"], version = "^7.0.0"}
 isort = "5.12.0"
-black = "23.1.0"
+black = "23.3.0"
 pylint = "2.17.1"
 pylint-django = "2.5.3"
 pre-commit = "3.2.1"
