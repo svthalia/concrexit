@@ -19,56 +19,6 @@ class MoneybirdAPIService:
             settings.MONEYBIRD_API_KEY, settings.MONEYBIRD_ADMINISTRATION_ID
         )
         self.api = api
-    
-    def sync_contacts(self):
-        members_without_contact = Member.objects.filter(
-            ~Q(
-                id__in=Subquery(
-                    Contact.objects.filter(member=OuterRef("pk")).values("member")
-                )
-            )
-        )
-
-        for member in members_without_contact:
-            contact = Contact(member=member)
-            contact.save()
-
-        # fetch contact ids from moneybird
-        api_response = self.api.get("contacts")
-
-        # fetch contact ids from contact model
-        contact_info = [
-            contact.get_moneybird_info() for contact in Contact.objects.all()
-        ]
-
-        # find contacts in contact model that are not in moneybird and add to moneybird
-        moneybird_ids = [int(info["id"]) for info in api_response]
-        for contact in contact_info:
-            if contact["id"] is None or int(contact["id"]) not in moneybird_ids:
-                contact = Contact.objects.get(
-                    member=Member.objects.get(pk=contact["pk"])
-                )
-                response = self.api.post("contacts", contact.to_moneybird())
-                contact.moneybird_id = response["id"]
-                contact.moneybird_version = response["version"]
-                contact.save()
-
-        moneybird_info = []
-        for contact in api_response:
-            if len(contact["custom_fields"]) > 0:
-                moneybird_info.append(
-                    {
-                        "id": contact["id"],
-                        "version": contact["version"],
-                        "pk": contact["custom_fields"][0]["value"],
-                    }
-                )
-
-        ids = [info["id"] for info in contact_info]
-        for moneybird in moneybird_info:
-            if int(moneybird["id"]) not in ids:
-                response = self.api.delete(f"contacts/{moneybird['id']}")
-
 
     def update_contact(self, contact):
         if contact.moneybird_version is None:
@@ -370,3 +320,88 @@ def delete_payment(instance):
             apiservice.api.delete(
                 f"financial_statements/{instance.moneybird_financial_statement_id}"
             )
+
+
+def sync_contacts():
+    members_without_contact = Member.objects.filter(
+        ~Q(
+            id__in=Subquery(
+                Contact.objects.filter(member=OuterRef("pk")).values("member")
+            )
+        )
+    )
+
+    for member in members_without_contact:
+        contact = Contact(member=member)
+        contact.save()
+
+    apiservice = MoneybirdAPIService()
+
+    # fetch contact ids from moneybird
+    api_response = apiservice.api.get("contacts")
+
+    # fetch contact ids from contact model
+    contact_info = [
+        contact.get_moneybird_info() for contact in Contact.objects.all()
+    ]
+
+    # find contacts in contact model that are not in moneybird and add to moneybird
+    moneybird_ids = [int(info["id"]) for info in api_response]
+    for contact in contact_info:
+        if contact["id"] is None or int(contact["id"]) not in moneybird_ids:
+            contact = Contact.objects.get(
+                member=Member.objects.get(pk=contact["pk"])
+            )
+            response = apiservice.api.post("contacts", contact.to_moneybird())
+            contact.moneybird_id = response["id"]
+            contact.moneybird_version = response["version"]
+            contact.save()
+
+    moneybird_info = []
+    for contact in api_response:
+        if len(contact["custom_fields"]) > 0:
+            moneybird_info.append(
+                {
+                    "id": contact["id"],
+                    "version": contact["version"],
+                    "pk": contact["custom_fields"][0]["value"],
+                }
+            )
+
+    ids = [info["id"] for info in contact_info]
+    for moneybird in moneybird_info:
+        if int(moneybird["id"]) not in ids:
+            response = apiservice.api.delete(f"contacts/{moneybird['id']}")
+
+def sync_statements():
+    date = datetime.date.today()
+    new_card_payments = Payment.objects.filter(
+        type=Payment.CARD,
+        created_at__year=date.year,
+        created_at__month=date.month,
+        created_at__day=date.day,
+        moneybird_financial_statement_id=None,
+    )
+    new_cash_payments = Payment.objects.filter(
+        type=Payment.CASH,
+        created_at__year=date.year,
+        created_at__month=date.month,
+        created_at__day=date.day,
+        moneybird_financial_statement_id=None,
+    )
+
+    apiservice = MoneybirdAPIService()
+
+    card_account_id = apiservice.get_financial_account_id(
+        settings.PAYMENT_TYPE_TO_FINANCIAL_ACCOUNT_MAPPING[Payment.CARD]
+    )
+    apiservice.link_transaction_to_financial_account(
+        card_account_id, new_card_payments
+    )
+
+    cash_account_id = apiservice.get_financial_account_id(
+        settings.PAYMENT_TYPE_TO_FINANCIAL_ACCOUNT_MAPPING[Payment.CASH]
+    )
+    apiservice.link_transaction_to_financial_account(
+        cash_account_id, new_cash_payments
+    )

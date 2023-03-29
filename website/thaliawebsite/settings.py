@@ -16,6 +16,8 @@ from django.core.management.commands import makemessages
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from payments.models import Payment
+
 logger = logging.getLogger(__name__)
 
 # Sentinel objects that are distinct from None
@@ -961,3 +963,9 @@ MONEYBIRD_FETCH_BEFORE_PUSH = False  # Fetch the latest data from Moneybird befo
 MONEYBIRD_CUSTOM_FIELD_ID = os.environ.get("MONEYBIRD_CUSTOM_FIELD_ID", "")
 MONEYBIRD_UNKOWN_PAYER_ID = os.environ.get("MONEYBIRD_UNKOWN_PAYER_ID", "")
 MONEYBIRD_CONTRIBUTION_LEDGER_ID = os.environ.get("MONEYBIRD_CONTRIBUTION_LEDGER_ID", "")
+
+PAYMENT_TYPE_TO_FINANCIAL_ACCOUNT_MAPPING = {
+            Payment.TPAY: "ThaliaPay",
+            Payment.CASH: "cashtanje",
+            Payment.CARD: "pin",
+        }
