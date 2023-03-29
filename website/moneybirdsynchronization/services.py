@@ -1,6 +1,7 @@
 import datetime
 
 from django.template.defaultfilters import date
+from django.db.models import OuterRef, Q, Subquery
 
 from moneybirdsynchronization import emails
 from moneybirdsynchronization.administration import Administration, HttpsAdministration
@@ -18,6 +19,56 @@ class MoneybirdAPIService:
             settings.MONEYBIRD_API_KEY, settings.MONEYBIRD_ADMINISTRATION_ID
         )
         self.api = api
+    
+    def sync_contacts(self):
+        members_without_contact = Member.objects.filter(
+            ~Q(
+                id__in=Subquery(
+                    Contact.objects.filter(member=OuterRef("pk")).values("member")
+                )
+            )
+        )
+
+        for member in members_without_contact:
+            contact = Contact(member=member)
+            contact.save()
+
+        # fetch contact ids from moneybird
+        api_response = self.api.get("contacts")
+
+        # fetch contact ids from contact model
+        contact_info = [
+            contact.get_moneybird_info() for contact in Contact.objects.all()
+        ]
+
+        # find contacts in contact model that are not in moneybird and add to moneybird
+        moneybird_ids = [int(info["id"]) for info in api_response]
+        for contact in contact_info:
+            if contact["id"] is None or int(contact["id"]) not in moneybird_ids:
+                contact = Contact.objects.get(
+                    member=Member.objects.get(pk=contact["pk"])
+                )
+                response = self.api.post("contacts", contact.to_moneybird())
+                contact.moneybird_id = response["id"]
+                contact.moneybird_version = response["version"]
+                contact.save()
+
+        moneybird_info = []
+        for contact in api_response:
+            if len(contact["custom_fields"]) > 0:
+                moneybird_info.append(
+                    {
+                        "id": contact["id"],
+                        "version": contact["version"],
+                        "pk": contact["custom_fields"][0]["value"],
+                    }
+                )
+
+        ids = [info["id"] for info in contact_info]
+        for moneybird in moneybird_info:
+            if int(moneybird["id"]) not in ids:
+                response = self.api.delete(f"contacts/{moneybird['id']}")
+
 
     def update_contact(self, contact):
         if contact.moneybird_version is None:
