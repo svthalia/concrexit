@@ -1,10 +1,9 @@
 #! /bin/sh
 
 # This script sets a server up to run concrexit, by installing Docker, creating
-# users, and doing some performance tweaks. It should be run as root, and expects
-# a stage (e.g. "staging", "production") as an argument.
-# For example: `sudo ./debian-install.sh staging`
-# The script expects to run from `/var/lib/concrexit/infra`, and expects the
+# users, and some filesystem setup. It should be run as root, and expects
+# a stage (e.g. "staging", "production", used to set hostname) as an argument.
+# For example: `sudo sh debian-install.sh staging`
 #
 # If anything goes wrong, you'll have to fix it manually.
 
@@ -128,6 +127,7 @@ create_user deploy "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOj2jPKZloJuWgVaZUKJ0n8J
 step "Creating directory for concrexit..."
 mkdir /var/lib/concrexit
 chown -R deploy:deploy /var/lib/concrexit
+
 
 # Set up users.
 step "Creating users..."
