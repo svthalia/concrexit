@@ -18,7 +18,7 @@ resource "aws_instance" "concrexit" {
   iam_instance_profile = aws_iam_instance_profile.concrexit-ec2-profile.id
 
   root_block_device {
-    volume_size = 50 # GiB
+    volume_size = 30 # GiB
   }
 
   network_interface {
@@ -37,7 +37,7 @@ resource "aws_instance" "concrexit" {
 
 resource "aws_ebs_volume" "concrexit-postgres" {
   availability_zone = "eu-west-1a"
-  size              = 20
+  size              = 10
 
   tags = merge(var.tags, {
     Name     = "${var.customer}-${var.stage}-postgres",
