@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.reverse import reverse
 
 from activemembers.api.v2.serializers.member_group import MemberGroupSerializer
 from documents.api.v2.serializers.document import DocumentSerializer
@@ -21,6 +22,7 @@ class EventSerializer(CleanedModelSerializer):
         fields = (
             "pk",
             "slug",
+            "url",
             "title",
             "description",
             "caption",
@@ -58,6 +60,7 @@ class EventSerializer(CleanedModelSerializer):
     fine = PaymentAmountSerializer()
     documents = DocumentSerializer(many=True)
     user_permissions = serializers.SerializerMethodField("_user_permissions")
+    url = serializers.SerializerMethodField("_url")
 
     def _user_registration(self, instance: Event):
         if self.context["request"].member and len(instance.member_registration) > 0:
@@ -101,6 +104,19 @@ class EventSerializer(CleanedModelSerializer):
     def _user_permissions(self, instance):
         member = self.context["request"].member
         return services.event_permissions(member, instance, registration_prefetch=True)
+
+    def _url(self, instance: Event):
+        if instance.slug is None:
+            return reverse(
+                "events:event",
+                kwargs={"pk": instance.pk},
+                request=self.context["request"],
+            )
+        return reverse(
+            "events:event",
+            kwargs={"slug": instance.slug},
+            request=self.context["request"],
+        )
 
     def _maps_url(self, instance):
         return create_google_maps_url(instance.map_location, zoom=13, size="450x250")
