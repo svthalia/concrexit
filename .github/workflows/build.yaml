@@ -33,7 +33,7 @@ jobs:
           file: ./infra/concrexit/Dockerfile
           push: true
           tags: |
-            ghcr.io/svthalia/concrexit:${{ github.sha }}
+            ghcr.io/svthalia/concrexit:docker-staging
           cache-from: type=gha,scope=${{ github.ref }}-concrexit
           cache-to: type=gha,mode=max,scope=${{ github.ref }}-concrexit
 
@@ -64,7 +64,7 @@ jobs:
           context: ./infra/nginx
           push: true
           tags: |
-            ghcr.io/svthalia/concrexit-nginx:${{ github.sha }}
+            ghcr.io/svthalia/concrexit-nginx:docker-staging
           cache-from: type=gha,scope=${{ github.ref }}-concrexit-nginx
           cache-to: type=gha,mode=max,scope=${{ github.ref }}-concrexit-nginx
 
@@ -94,7 +94,7 @@ jobs:
           echo "TAG=$TAG" > infra/.env
         env:
           SECRETS_FILE: ${{ secrets.SECRETS_FILE }}
-          TAG: ${{ github.sha }}
+          TAG: docker-staging
 
       - name: Update .env files
         run: |
@@ -105,4 +105,8 @@ jobs:
 
       - name: Restart containers
         run: |
-          ssh deploy@docker-staging.thalia.nu sudo docker compose up -d
+          ssh deploy@docker-staging.thalia.nu << EOF
+            cd /var/lib/concrexit
+            sudo docker compose pull
+            sudo docker compose up -d
+          EOF
