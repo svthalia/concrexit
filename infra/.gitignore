@@ -1,2 +1,2 @@
-.env.secret.*
-!.env.secret.example
+env.secret.*
+!env.secret.example
