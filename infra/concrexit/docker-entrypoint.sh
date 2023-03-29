@@ -1,6 +1,6 @@
 #! /bin/sh
 
-chown -R appuser /media
+chown -R appuser /volumes/media
 
 MANAGE_PY=1 /venv/bin/python manage.py collectstatic --no-input
 MANAGE_PY=1 /venv/bin/python manage.py compress
