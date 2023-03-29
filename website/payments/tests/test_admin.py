@@ -408,9 +408,6 @@ class PaymentAdminTest(TestCase):
                     "topic",
                     "notes",
                     "batch",
-                    "moneybird_invoice_id",
-                    "moneybird_financial_statement_id",
-                    "moneybird_financial_mutation_id",
                 ),
             )
 

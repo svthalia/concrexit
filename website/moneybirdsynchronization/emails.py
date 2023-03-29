@@ -12,8 +12,8 @@ def send_sync_error(error, payment):
     send_email(
         to=[settings.TREASURER_NOTIFICATION_ADDRESS],
         subject="[MONEYBIRD] Error while syncing payment",
-        txt_template="apifails/api_fail.txt",
-        html_template="apifails/api_fail.html",
+        txt_template="email/moneybird_api_fail.txt",
+        html_template="email/moneybird_api_fail.html",
         context={
             "error": error,
             "payment": payment,

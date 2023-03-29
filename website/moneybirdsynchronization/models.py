@@ -56,3 +56,42 @@ class MoneybirdContact(models.Model):
     class Meta:
         verbose_name = _("moneybird contact")
         verbose_name_plural = _("moneybird contacts")
+
+
+class MoneybirdExternalInvoice(models.Model):
+    payment = models.OneToOneField(
+        "payments.Payment",
+        on_delete=models.CASCADE,
+        verbose_name=_("payment"),
+        related_name="moneybird_external_invoice",
+        null=True,
+        blank=True,
+    )
+
+    moneybird_invoice_id = models.CharField(
+        verbose_name=_("moneybird invoice id"),
+        max_length=255,
+        blank=True,
+        null=True,
+    )
+
+    moneybird_financial_statement_id = models.CharField(
+        verbose_name=_("moneybird financial statement id"),
+        max_length=255,
+        blank=True,
+        null=True,
+    )
+
+    moneybird_financial_mutation_id = models.CharField(
+        verbose_name=_("moneybird financial mutation id"),
+        max_length=255,
+        blank=True,
+        null=True,
+    )
+
+    def __str__(self):
+        return f"Moneybird external invoice for {self.payment}"
+
+    class Meta:
+        verbose_name = _("moneybird external invoice")
+        verbose_name_plural = _("moneybird external invoices")

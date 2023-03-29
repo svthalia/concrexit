@@ -49,9 +49,7 @@ def delete_contact(instance):
 
     apiservice = get_moneybird_api_service()
     member = Member.objects.get(profile=instance)
-    contact = MoneybirdContact.objects.get(member=member)
-    apiservice.api.delete(f"contacts/{contact.moneybird_id}")
-    contact.delete()
+    apiservice.delete_contact(MoneybirdContact.objects.get(member=member))
 
 
 def register_event_registration_payment(instance):
@@ -59,38 +57,15 @@ def register_event_registration_payment(instance):
         return
 
     apiservice = get_moneybird_api_service()
-    contact_id = apiservice.api.get(
-        f"contacts/customer_id/{settings.MONEYBIRD_UNKOWN_PAYER_ID}"
-    )["id"]
-    if instance.payment.paid_by is not None:
-        try:
-            contact_id = MoneybirdContact.objects.get(
-                member=instance.member
-            ).moneybird_id
-        except MoneybirdContact.DoesNotExist:
-            pass
+    contact_id = apiservice.get_contact_id_by_customer(instance)
 
     start_date = date(instance.event.start, "Y-m-d")
     project_name = f"{instance.event.title} [{start_date}]"
     project_id = apiservice.get_project_id(project_name)
 
-    invoice_info = {
-        "external_sales_invoice": {
-            "contact_id": contact_id,
-            "reference": str(instance.payment.id),
-            "date": instance.payment.created_at.strftime("%Y-%m-%d"),
-            "source_url": settings.BASE_URL + instance.payment.get_admin_url(),
-            "currency": "EUR",
-            "prices_are_incl_tax": True,
-            "details_attributes": [
-                {
-                    "description": instance.payment.topic,
-                    "price": str(instance.payment.amount),
-                    "project_id": project_id,
-                },
-            ],
-        }
-    }
+    invoice_info = apiservice.create_external_sales_info(
+        contact_id, instance, project_id
+    )
 
     try:
         response = apiservice.api.post("external_sales_invoices", invoice_info)
@@ -117,34 +92,11 @@ def register_shift_payments(orders, instance):
     project_id = apiservice.get_project_id(project_name)
 
     for order in orders:
-        contact_id = apiservice.api.get(
-            f"contacts/customer_id/{settings.MONEYBIRD_UNKOWN_PAYER_ID}"
-        )["id"]
-        if order.payer is not None:
-            try:
-                contact_id = MoneybirdContact.objects.get(
-                    member=order.payer
-                ).moneybird_id
-            except MoneybirdContact.DoesNotExist:
-                pass
+        contact_id = apiservice.get_contact_id_by_customer(instance)
 
-        invoice_info = {
-            "external_sales_invoice": {
-                "contact_id": contact_id,
-                "reference": str(order.payment.id),
-                "date": order.payment.created_at.strftime("%Y-%m-%d"),
-                "source_url": settings.BASE_URL + order.payment.get_admin_url(),
-                "currency": "EUR",
-                "prices_are_incl_tax": True,
-                "details_attributes": [
-                    {
-                        "description": order.payment.topic,
-                        "price": str(order.payment.amount),
-                        "project_id": project_id,
-                    },
-                ],
-            }
-        }
+        invoice_info = apiservice.create_external_sales_info(
+            contact_id, order, project_id
+        )
 
         try:
             response = apiservice.api.post("external_sales_invoices", invoice_info)
@@ -160,38 +112,15 @@ def register_food_order_payment(instance):
 
     apiservice = get_moneybird_api_service()
 
-    contact_id = apiservice.api.get(
-        f"contacts/customer_id/{settings.MONEYBIRD_UNKOWN_PAYER_ID}"
-    )["id"]
-    if instance.payment.paid_by is not None:
-        try:
-            contact_id = MoneybirdContact.objects.get(
-                member=instance.member
-            ).moneybird_id
-        except MoneybirdContact.DoesNotExist:
-            pass
+    contact_id = apiservice.get_contact_id_by_customer(instance)
 
     start_date = date(instance.food_event.event.start, "Y-m-d")
     project_name = f"{instance.food_event.event.title} [{start_date}]"
     project_id = apiservice.get_project_id(project_name)
 
-    invoice_info = {
-        "external_sales_invoice": {
-            "contact_id": contact_id,
-            "reference": str(instance.payment.id),
-            "date": instance.payment.created_at.strftime("%Y-%m-%d"),
-            "source_url": settings.BASE_URL + instance.payment.get_admin_url(),
-            "currency": "EUR",
-            "prices_are_incl_tax": True,
-            "details_attributes": [
-                {
-                    "description": instance.payment.topic,
-                    "price": str(instance.payment.amount),
-                    "project_id": project_id,
-                },
-            ],
-        }
-    }
+    invoice_info = apiservice.create_external_sales_info(
+        contact_id, instance, project_id
+    )
 
     try:
         response = apiservice.api.post("external_sales_invoices", invoice_info)
@@ -207,34 +136,11 @@ def register_contribution_payment(instance):
 
     apiservice = get_moneybird_api_service()
 
-    contact_id = apiservice.api.get(
-        f"contacts/customer_id/{settings.MONEYBIRD_UNKOWN_PAYER_ID}"
-    )["id"]
-    if instance.payment.paid_by is not None:
-        try:
-            contact_id = MoneybirdContact.objects.get(
-                member=instance.payment.paid_by
-            ).moneybird_id
-        except MoneybirdContact.DoesNotExist:
-            pass
+    contact_id = apiservice.get_contact_id_by_customer(instance)
 
-    invoice_info = {
-        "external_sales_invoice": {
-            "contact_id": contact_id,
-            "reference": str(instance.payment.id),
-            "date": instance.payment.created_at.strftime("%Y-%m-%d"),
-            "source_url": settings.BASE_URL + instance.payment.get_admin_url(),
-            "currency": "EUR",
-            "prices_are_incl_tax": True,
-            "details_attributes": [
-                {
-                    "description": instance.payment.topic,
-                    "price": str(instance.payment.amount),
-                    "ledger_id": apiservice.api.get("ledger_accounts"),
-                },
-            ],
-        }
-    }
+    invoice_info = apiservice.create_external_sales_info(
+        contact_id, instance, contribution=True
+    )
 
     try:
         response = apiservice.api.post("external_sales_invoices", invoice_info)
@@ -249,27 +155,7 @@ def delete_payment(instance):
         return
 
     apiservice = get_moneybird_api_service()
-
-    apiservice.api.delete(f"external_sales_invoices/{instance.moneybird_invoice_id}")
-    if instance.moneybird_financial_statement_id is not None:
-        try:
-            apiservice.api.patch(
-                f"financial_statements/{instance.moneybird_financial_statement_id}",
-                {
-                    "financial_statement": {
-                        "financial_mutations_attributes": {
-                            "0": {
-                                "id": instance.moneybird_financial_mutation_id,
-                                "_destroy": True,
-                            }
-                        }
-                    }
-                },
-            )
-        except Administration.InvalidData:
-            apiservice.api.delete(
-                f"financial_statements/{instance.moneybird_financial_statement_id}"
-            )
+    apiservice.delete_external_invoice(instance)
 
 
 def sync_contacts():
@@ -305,7 +191,7 @@ def sync_contacts():
             contact = MoneybirdContact.objects.get(
                 member=Member.objects.get(pk=contact["pk"])
             )
-            response = apiservice.api.post("contacts", contact.to_moneybird())
+            response = apiservice.add_contact_to_moneybird(contact)
             contact.moneybird_id = response["id"]
             contact.moneybird_version = response["version"]
             contact.save()
@@ -324,7 +210,7 @@ def sync_contacts():
     ids = [info["id"] for info in contact_info]
     for moneybird in moneybird_info:
         if int(moneybird["id"]) not in ids:
-            response = apiservice.api.delete(f"contacts/{moneybird['id']}")
+            apiservice.delete_contact(moneybird["id"])
 
 
 def sync_statements():

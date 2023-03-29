@@ -45,7 +45,7 @@ class Entry(models.Model):
         verbose_name=_("status"),
         choices=STATUS_TYPE,
         max_length=20,
-        default="review",
+        default="confirm",
     )
 
     MEMBERSHIP_YEAR = "year"
