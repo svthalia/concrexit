@@ -1,10 +1,10 @@
 from django.contrib import admin
 
-from .models import Contact
+from .models import MoneybirdContact
 
 
-@admin.register(Contact)
-class ContactAdmin(admin.ModelAdmin):
+@admin.register(MoneybirdContact)
+class MoneybirdContactAdmin(admin.ModelAdmin):
     """Manage moneybird contacts."""
 
     list_display = ("member", "moneybird_id")

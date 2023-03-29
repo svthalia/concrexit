@@ -5,11 +5,12 @@ from members.models import Member
 from thaliawebsite import settings
 
 
-class Contact(models.Model):
+class MoneybirdContact(models.Model):
     member = models.OneToOneField(
         Member,
         on_delete=models.CASCADE,
         verbose_name=_("member"),
+        related_name="moneybird_contact",
         null=True,
         blank=True,
     )
@@ -48,3 +49,10 @@ class Contact(models.Model):
             "version": self.moneybird_version,
             "pk": self.member.pk,
         }
+
+    def __str__(self):
+        return f"Moneybird contact for {self.member}"
+    
+    class Meta:
+        verbose_name = _("moneybird contact")
+        verbose_name_plural = _("moneybird contacts")

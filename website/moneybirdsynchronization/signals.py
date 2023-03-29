@@ -2,7 +2,7 @@
 from django.db.models.signals import post_save, pre_delete, pre_save
 
 from moneybirdsynchronization import services
-from moneybirdsynchronization.models import Contact
+from moneybirdsynchronization.models import MoneybirdContact
 
 from sales.models.order import Order
 from utils.models.signals import suspendingreceiver
@@ -13,7 +13,7 @@ from utils.models.signals import suspendingreceiver
     sender="members.Profile",
 )
 def post_profile_save(sender, instance, **kwargs):
-    services.update_contact(Contact.objects.get_or_create(member=instance)[0])
+    services.update_contact(MoneybirdContact.objects.get_or_create(member=instance)[0])
 
 
 @suspendingreceiver(

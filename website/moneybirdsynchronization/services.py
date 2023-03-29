@@ -5,7 +5,7 @@ from django.db.models import OuterRef, Q, Subquery
 
 from moneybirdsynchronization import emails
 from moneybirdsynchronization.administration import Administration, HttpsAdministration
-from moneybirdsynchronization.models import Contact
+from moneybirdsynchronization.models import MoneybirdContact
 
 from events.models.event import Event
 from members.models import Member
@@ -118,13 +118,13 @@ def push_thaliapay_batch(instance):
 
 def update_contact(member):
     apiservice = MoneybirdAPIService()
-    apiservice.update_contact(Contact.objects.get_or_create(member=member)[0])
+    apiservice.update_contact(MoneybirdContact.objects.get_or_create(member=member)[0])
 
 
 def delete_contact(instance):
     apiservice = MoneybirdAPIService()
     member = Member.objects.get(profile=instance)
-    contact = Contact.objects.get(member=member)
+    contact = MoneybirdContact.objects.get(member=member)
     apiservice.api.delete(f"contacts/{contact.moneybird_id}")
     contact.delete()
 
@@ -136,8 +136,8 @@ def register_event_registration_payment(instance):
     )["id"]
     if instance.payment.paid_by is not None:
         try:
-            contact_id = Contact.objects.get(member=instance.member).moneybird_id
-        except Contact.DoesNotExist:
+            contact_id = MoneybirdContact.objects.get(member=instance.member).moneybird_id
+        except MoneybirdContact.DoesNotExist:
             pass
 
     start_date = date(instance.event.start, "Y-m-d")
@@ -188,8 +188,8 @@ def register_shift_payments(orders, instance):
         )["id"]
         if order.payer is not None:
             try:
-                contact_id = Contact.objects.get(member=order.payer).moneybird_id
-            except Contact.DoesNotExist:
+                contact_id = MoneybirdContact.objects.get(member=order.payer).moneybird_id
+            except MoneybirdContact.DoesNotExist:
                 pass
 
         invoice_info = {
@@ -225,8 +225,8 @@ def register_food_order_payment(instance):
     )["id"]
     if instance.payment.paid_by is not None:
         try:
-            contact_id = Contact.objects.get(member=instance.member).moneybird_id
-        except Contact.DoesNotExist:
+            contact_id = MoneybirdContact.objects.get(member=instance.member).moneybird_id
+        except MoneybirdContact.DoesNotExist:
             pass
 
     start_date = date(instance.food_event.event.start, "Y-m-d")
@@ -266,10 +266,10 @@ def register_contribution_payment(instance):
     )["id"]
     if instance.payment.paid_by is not None:
         try:
-            contact_id = Contact.objects.get(
+            contact_id = MoneybirdContact.objects.get(
                 member=instance.payment.paid_by
             ).moneybird_id
-        except Contact.DoesNotExist:
+        except MoneybirdContact.DoesNotExist:
             pass
 
     invoice_info = {
@@ -326,13 +326,13 @@ def sync_contacts():
     members_without_contact = Member.objects.filter(
         ~Q(
             id__in=Subquery(
-                Contact.objects.filter(member=OuterRef("pk")).values("member")
+                MoneybirdContact.objects.filter(member=OuterRef("pk")).values("member")
             )
         )
     )
 
     for member in members_without_contact:
-        contact = Contact(member=member)
+        contact = MoneybirdContact(member=member)
         contact.save()
 
     apiservice = MoneybirdAPIService()
@@ -342,14 +342,14 @@ def sync_contacts():
 
     # fetch contact ids from contact model
     contact_info = [
-        contact.get_moneybird_info() for contact in Contact.objects.all()
+        contact.get_moneybird_info() for contact in MoneybirdContact.objects.all()
     ]
 
     # find contacts in contact model that are not in moneybird and add to moneybird
     moneybird_ids = [int(info["id"]) for info in api_response]
     for contact in contact_info:
         if contact["id"] is None or int(contact["id"]) not in moneybird_ids:
-            contact = Contact.objects.get(
+            contact = MoneybirdContact.objects.get(
                 member=Member.objects.get(pk=contact["pk"])
             )
             response = apiservice.api.post("contacts", contact.to_moneybird())
@@ -374,6 +374,12 @@ def sync_contacts():
             response = apiservice.api.delete(f"contacts/{moneybird['id']}")
 
 def sync_statements():
+    PAYMENT_TYPE_TO_FINANCIAL_ACCOUNT_MAPPING = {
+            Payment.TPAY: "ThaliaPay",
+            Payment.CASH: "cashtanje",
+            Payment.CARD: "pin",
+        }
+    
     date = datetime.date.today()
     new_card_payments = Payment.objects.filter(
         type=Payment.CARD,
@@ -393,14 +399,14 @@ def sync_statements():
     apiservice = MoneybirdAPIService()
 
     card_account_id = apiservice.get_financial_account_id(
-        settings.PAYMENT_TYPE_TO_FINANCIAL_ACCOUNT_MAPPING[Payment.CARD]
+        PAYMENT_TYPE_TO_FINANCIAL_ACCOUNT_MAPPING[Payment.CARD]
     )
     apiservice.link_transaction_to_financial_account(
         card_account_id, new_card_payments
     )
 
     cash_account_id = apiservice.get_financial_account_id(
-        settings.PAYMENT_TYPE_TO_FINANCIAL_ACCOUNT_MAPPING[Payment.CASH]
+        PAYMENT_TYPE_TO_FINANCIAL_ACCOUNT_MAPPING[Payment.CASH]
     )
     apiservice.link_transaction_to_financial_account(
         cash_account_id, new_cash_payments
