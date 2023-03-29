@@ -20,6 +20,7 @@ class EventSerializer(CleanedModelSerializer):
         model = Event
         fields = (
             "pk",
+            "slug",
             "title",
             "description",
             "caption",

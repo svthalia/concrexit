@@ -22,6 +22,11 @@ urlpatterns = [
         name="event-detail",
     ),
     path(
+        "events/<slug:slug>/",
+        EventDetailView.as_view(lookup_field="slug"),
+        name="event-detail",
+    ),
+    path(
         "events/<int:pk>/registrations/",
         EventRegistrationsView.as_view(),
         name="event-registrations",
