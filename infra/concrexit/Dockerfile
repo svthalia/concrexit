@@ -37,8 +37,11 @@ ENV MEDIA_ROOT="/volumes/media" \
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        ghostscript postgresql-client libjpeg-dev zlib1g-dev libwebp-dev libmagic1 && \
+        cron ghostscript postgresql-client libjpeg-dev zlib1g-dev libwebp-dev libmagic1 && \
         rm -rf /var/lib/apt/lists/*
+
+COPY infra/concrexit/cronjobs /cronjobs
+RUN crontab /cronjobs && rm /cronjobs
 
 COPY --from=builder /venv /venv
 COPY infra/concrexit/docker-entrypoint.sh /app/docker-entrypoint.sh
