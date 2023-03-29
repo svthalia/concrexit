@@ -1,4 +1,5 @@
 """The signals checked by the moneybrid synchronization package."""
+from django.contrib.auth import get_user_model
 from django.db.models.signals import post_save, pre_delete, pre_save
 
 from moneybirdsynchronization import services
@@ -6,6 +7,8 @@ from moneybirdsynchronization.models import MoneybirdContact
 
 from sales.models.order import Order
 from utils.models.signals import suspendingreceiver
+
+User = get_user_model()
 
 
 @suspendingreceiver(
@@ -21,7 +24,7 @@ def post_profile_save(sender, instance, **kwargs):
     sender="members.Profile",
 )
 def post_profile_delete(sender, instance, **kwargs):
-    if kwargs["update_fields"].__contains__("is_minimized") is False:
+    if "is_minimized" in kwargs["update_fields"]:
         return
     if instance.is_minimized is False:
         return
@@ -31,7 +34,7 @@ def post_profile_delete(sender, instance, **kwargs):
 
 @suspendingreceiver(
     post_save,
-    sender="auth.User",
+    sender=User,
 )
 def post_user_save(sender, instance, **kwargs):
     services.update_contact(instance)
@@ -124,7 +127,7 @@ def post_batch_save(sender, instance, **kwargs):
     if kwargs["update_fields"] is None:
         return
 
-    if kwargs["update_fields"].__contains__("processed") is False:
+    if "processed" in kwargs["update_fields"]:
         return
 
     services.push_thaliapay_batch(instance)

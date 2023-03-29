@@ -52,7 +52,7 @@ class MoneybirdContact(models.Model):
 
     def __str__(self):
         return f"Moneybird contact for {self.member}"
-    
+
     class Meta:
         verbose_name = _("moneybird contact")
         verbose_name_plural = _("moneybird contacts")

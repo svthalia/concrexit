@@ -8,7 +8,7 @@ import json
 import logging
 from abc import ABC, abstractmethod
 from functools import reduce
-from typing import Type, Union
+from typing import Union
 from urllib.parse import urljoin
 
 from django.utils import timezone
@@ -96,7 +96,7 @@ class Administration(ABC):
             logging.debug(f"Received paginated response: {response.next}")
 
         good_codes = {200, 201, 204}
-        bad_codes: dict[int, Type[Administration.Error]] = {
+        bad_codes = {
             400: Administration.InvalidData,
             401: Administration.Unauthorized,
             403: Administration.Unauthorized,

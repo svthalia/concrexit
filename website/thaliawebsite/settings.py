@@ -480,7 +480,6 @@ INSTALLED_APPS = [
     "utils",
     "mailinglists.apps.MailinglistsConfig",
     "merchandise.apps.MerchandiseConfig",
-    "moneybirdsynchronization.apps.MoneybirdsynchronizationConfig",
     "thabloid.apps.ThabloidConfig",
     "partners.apps.PartnersConfig",
     "events.apps.EventsConfig",
@@ -492,6 +491,7 @@ INSTALLED_APPS = [
     "singlepages.apps.SinglepagesConfig",
     "shortlinks.apps.ShortLinkConfig",
     "sales.apps.SalesConfig",
+    "moneybirdsynchronization.apps.MoneybirdsynchronizationConfig",
 ]
 
 MIDDLEWARE = [
@@ -604,10 +604,6 @@ LOGGING = {
             "level": "INFO",
             "propagate": False,
         },
-    },
-    "root": {
-        "handlers": ["console"],
-        "level": "INFO",
     },
 }
 
@@ -952,12 +948,19 @@ GRAPH_MODELS = {
         "auth",
     ],
 }
-MONEYBIRD_ADMINISTRATION_ID = os.environ.get("MONEYBIRD_ADMINISTRATION_ID", "")
-MONEYBIRD_API_KEY = os.environ.get("MONEYBIRD_API_KEY", "")
+MONEYBIRD_ADMINISTRATION_ID = os.environ.get("MONEYBIRD_ADMINISTRATION_ID", None)
+MONEYBIRD_API_KEY = os.environ.get("MONEYBIRD_API_KEY", None)
 
-MONEYBIRD_AUTO_PUSH = True  # Push changes to Moneybird automatically (so you don't have to call `instance.push_to_moneybird()` manually)
-MONEYBIRD_FETCH_BEFORE_PUSH = False  # Fetch the latest data from Moneybird before pushing changes. This is useful if you want to avoid overwriting changes made in Moneybird, but it will slow down your application. With webhooks, this is likely not necessary.
+MONEYBIRD_SYNC_ENABLED = MONEYBIRD_ADMINISTRATION_ID and MONEYBIRD_API_KEY
 
-MONEYBIRD_CUSTOM_FIELD_ID = os.environ.get("MONEYBIRD_CUSTOM_FIELD_ID", "")
-MONEYBIRD_UNKOWN_PAYER_ID = os.environ.get("MONEYBIRD_UNKOWN_PAYER_ID", "")
-MONEYBIRD_CONTRIBUTION_LEDGER_ID = os.environ.get("MONEYBIRD_CONTRIBUTION_LEDGER_ID", "")
+MONEYBIRD_CUSTOM_FIELD_ID = os.environ.get("MONEYBIRD_CUSTOM_FIELD_ID", None)
+MONEYBIRD_UNKOWN_PAYER_ID = os.environ.get("MONEYBIRD_UNKOWN_PAYER_ID", None)
+MONEYBIRD_CONTRIBUTION_LEDGER_ID = os.environ.get(
+    "MONEYBIRD_CONTRIBUTION_LEDGER_ID", None
+)
+
+PAYMENT_TYPE_TO_FINANCIAL_ACCOUNT_MAPPING = {
+    "tpay": "ThaliaPay",
+    "cash": "cashtanje",
+    "card": "pin",
+}
