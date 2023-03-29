@@ -135,10 +135,10 @@ def from_env(
 
 # We use this setting to generate the email addresses
 SITE_DOMAIN = from_env(
-    "SITE_DOMAIN", development="localhost:8000", production="thalia.nu"
+    "SITE_DOMAIN", development="thalia.localhost", production="thalia.nu"
 )
 # We use this domain to generate some absolute urls when we don't have access to a request
-BASE_URL = os.environ.get("BASE_URL", f"http://{SITE_DOMAIN}")
+BASE_URL = os.environ.get("BASE_URL", f"https://{SITE_DOMAIN}")
 
 # Default FROM email
 DEFAULT_FROM_EMAIL = f"{os.environ.get('ADDRESS_NOREPLY', 'noreply')}@{SITE_DOMAIN}"
