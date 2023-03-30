@@ -99,7 +99,7 @@ class MoneybirdExternalInvoice(models.Model):
 
 class PushedThaliaPayBatch(models.Model):
     batch = models.OneToOneField(
-        "payments.ThaliaPayBatch",
+        "payments.Batch",
         on_delete=models.CASCADE,
         verbose_name=_("batch"),
         related_name="pushed_thaliapay_batch",
