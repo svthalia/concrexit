@@ -46,12 +46,6 @@ class MoneybirdAPIService:
                 pass
         return contact_id
 
-    def get_financial_account_id(self, identifier):
-        for financial_account in self.__api.get("financial_accounts"):
-            if financial_account["identifier"] == identifier:
-                return financial_account["id"]
-        return None
-
     def get_project_id(self, name):
         for project in self.__api.get("projects"):
             if project["name"] == name:

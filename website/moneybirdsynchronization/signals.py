@@ -5,6 +5,7 @@ from django.db.models.signals import post_save, pre_delete, pre_save
 from moneybirdsynchronization import services
 from moneybirdsynchronization.models import MoneybirdContact
 
+from members.models import Member
 from sales.models.order import Order
 from utils.models.signals import suspendingreceiver
 
@@ -29,7 +30,7 @@ def post_profile_delete(sender, instance, **kwargs):
     if instance.is_minimized is False:
         return
 
-    services.delete_contact(instance)
+    services.delete_contact(Member.objects.get(profile=instance))
 
 
 @suspendingreceiver(

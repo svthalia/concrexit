@@ -19,19 +19,19 @@ def get_moneybird_api_service():
         settings.MONEYBIRD_ADMINISTRATION_ID is None
         or settings.MONEYBIRD_API_KEY is None
     ):
-        return RuntimeError("Moneybird API key or administration ID not set")
+        raise RuntimeError("Moneybird API key or administration ID not set")
     return MoneybirdAPIService(
         settings.MONEYBIRD_API_KEY, settings.MONEYBIRD_ADMINISTRATION_ID
     )
 
 
-def push_thaliapay_batch(instance):
+def push_thaliapay_batch(batch):
     if settings.MONEYBIRD_SYNC_ENABLED is False:
         return
 
     apiservice = get_moneybird_api_service()
-    payments = Payment.objects.filter(batch=instance)
-    tpay_account_id = apiservice.get_financial_account_id("ThaliaPay")
+    payments = Payment.objects.filter(batch=batch)
+    tpay_account_id = settings.MONEYBIRD_THALIAPAY_FINANCIAL_ACCOUNT_ID
     apiservice.link_transaction_to_financial_account(tpay_account_id, payments)
 
 
@@ -43,36 +43,35 @@ def update_contact(member):
     apiservice.update_contact(MoneybirdContact.objects.get_or_create(member=member)[0])
 
 
-def delete_contact(instance):
+def delete_contact(member):
     if settings.MONEYBIRD_SYNC_ENABLED is False:
         return
 
     apiservice = get_moneybird_api_service()
-    member = Member.objects.get(profile=instance)
     apiservice.delete_contact(MoneybirdContact.objects.get(member=member))
 
 
-def register_event_registration_payment(instance):
+def register_event_registration_payment(registration):
     if settings.MONEYBIRD_SYNC_ENABLED is False:
         return
 
     apiservice = get_moneybird_api_service()
-    contact_id = apiservice.get_contact_id_by_customer(instance)
+    contact_id = apiservice.get_contact_id_by_customer(registration)
 
-    start_date = date(instance.event.start, "Y-m-d")
-    project_name = f"{instance.event.title} [{start_date}]"
+    start_date = date(registration.event.start, "Y-m-d")
+    project_name = f"{registration.event.title} [{start_date}]"
     project_id = apiservice.get_project_id(project_name)
 
     invoice_info = apiservice.create_external_sales_info(
-        contact_id, instance, project_id
+        contact_id, registration, project_id
     )
 
     try:
         response = apiservice.api.post("external_sales_invoices", invoice_info)
-        instance.payment.moneybird_invoice_id = response["id"]
-        instance.payment.save()
+        registration.payment.moneybird_invoice_id = response["id"]
+        registration.payment.save()
     except Administration.Error as e:
-        emails.send_sync_error(e, instance.payment)
+        emails.send_sync_error(e, registration.payment)
 
 
 def register_shift_payments(orders, instance):
@@ -106,28 +105,28 @@ def register_shift_payments(orders, instance):
             emails.send_sync_error(e, instance.payment)
 
 
-def register_food_order_payment(instance):
+def register_food_order_payment(food_order):
     if settings.MONEYBIRD_SYNC_ENABLED is False:
         return
 
     apiservice = get_moneybird_api_service()
 
-    contact_id = apiservice.get_contact_id_by_customer(instance)
+    contact_id = apiservice.get_contact_id_by_customer(food_order)
 
-    start_date = date(instance.food_event.event.start, "Y-m-d")
-    project_name = f"{instance.food_event.event.title} [{start_date}]"
+    start_date = date(food_order.food_event.event.start, "Y-m-d")
+    project_name = f"{food_order.food_event.event.title} [{start_date}]"
     project_id = apiservice.get_project_id(project_name)
 
     invoice_info = apiservice.create_external_sales_info(
-        contact_id, instance, project_id
+        contact_id, food_order, project_id
     )
 
     try:
         response = apiservice.api.post("external_sales_invoices", invoice_info)
-        instance.payment.moneybird_invoice_id = response["id"]
-        instance.payment.save()
+        food_order.payment.moneybird_invoice_id = response["id"]
+        food_order.payment.save()
     except Administration.Error as e:
-        emails.send_sync_error(e, instance.payment)
+        emails.send_sync_error(e, food_order.payment)
 
 
 def register_contribution_payment(instance):
@@ -235,12 +234,9 @@ def sync_statements():
         moneybird_financial_statement_id=None,
     )
 
-    card_account_id = apiservice.get_financial_account_id(
-        settings.PAYMENT_TYPE_TO_FINANCIAL_ACCOUNT_MAPPING["card"]
+    apiservice.link_transaction_to_financial_account(
+        settings.MONEYBIRD_PIN_FINANCIAL_ACCOUNT_ID, new_card_payments
     )
-    apiservice.link_transaction_to_financial_account(card_account_id, new_card_payments)
-
-    cash_account_id = apiservice.get_financial_account_id(
-        settings.PAYMENT_TYPE_TO_FINANCIAL_ACCOUNT_MAPPING["cash"]
+    apiservice.link_transaction_to_financial_account(
+        settings.MONEYBIRD_CASHTANJE_FINANCIAL_ACCOUNT_ID, new_cash_payments
     )
-    apiservice.link_transaction_to_financial_account(cash_account_id, new_cash_payments)
