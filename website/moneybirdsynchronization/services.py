@@ -5,7 +5,7 @@ from django.template.defaultfilters import date
 
 from moneybirdsynchronization import emails
 from moneybirdsynchronization.administration import Administration
-from moneybirdsynchronization.models import MoneybirdContact
+from moneybirdsynchronization.models import MoneybirdContact, MoneybirdExternalInvoice
 from moneybirdsynchronization.moneybird import MoneybirdAPIService
 
 from events.models.event import Event
@@ -51,6 +51,11 @@ def delete_contact(member):
     apiservice.delete_contact(MoneybirdContact.objects.get(member=member))
 
 
+def create_external_invoice(payment):
+    external_invoice = MoneybirdExternalInvoice(payment=payment)
+    external_invoice.save()
+
+
 def register_event_registration_payment(registration):
     if settings.MONEYBIRD_SYNC_ENABLED is False:
         return
@@ -63,15 +68,17 @@ def register_event_registration_payment(registration):
     project_id = apiservice.get_project_id(project_name)
 
     invoice_info = apiservice.create_external_sales_info(
-        contact_id, registration, project_id
+        contact_id, registration.payment, project_id
     )
 
     try:
-        response = apiservice.api.post("external_sales_invoices", invoice_info)
-        registration.payment.moneybird_invoice_id = response["id"]
-        registration.payment.save()
+        response = apiservice.create_external_sales_invoice(invoice_info)
+        registration.payment.moneybird_external_invoice.moneybird_invoice_id = response[
+            "id"
+        ]
+        registration.payment.moneybird_external_invoice.save()
     except Administration.Error as e:
-        emails.send_sync_error(e, registration.payment)
+        emails.send_sync_error(e, registration.payment.moneybird_external_invoice)
 
 
 def register_shift_payments(orders, instance):
@@ -91,18 +98,20 @@ def register_shift_payments(orders, instance):
     project_id = apiservice.get_project_id(project_name)
 
     for order in orders:
-        contact_id = apiservice.get_contact_id_by_customer(instance)
+        contact_id = apiservice.get_contact_id_by_customer(order)
 
         invoice_info = apiservice.create_external_sales_info(
-            contact_id, order, project_id
+            contact_id, order.payment, project_id
         )
 
         try:
-            response = apiservice.api.post("external_sales_invoices", invoice_info)
-            order.payment.moneybird_invoice_id = response["id"]
-            order.payment.save()
+            response = apiservice.create_external_sales_invoice(invoice_info)
+            order.payment.moneybird_external_invoice.moneybird_invoice_id = response[
+                "id"
+            ]
+            order.payment.moneybird_external_invoice.save()
         except Administration.Error as e:
-            emails.send_sync_error(e, instance.payment)
+            emails.send_sync_error(e, order.payment.moneybird_external_invoice)
 
 
 def register_food_order_payment(food_order):
@@ -118,15 +127,17 @@ def register_food_order_payment(food_order):
     project_id = apiservice.get_project_id(project_name)
 
     invoice_info = apiservice.create_external_sales_info(
-        contact_id, food_order, project_id
+        contact_id, food_order.payment, project_id
     )
 
     try:
-        response = apiservice.api.post("external_sales_invoices", invoice_info)
-        food_order.payment.moneybird_invoice_id = response["id"]
-        food_order.payment.save()
+        response = apiservice.create_external_sales_invoice(invoice_info)
+        food_order.payment.moneybird_external_invoice.moneybird_invoice_id = response[
+            "id"
+        ]
+        food_order.payment.moneybird_external_invoice.save()
     except Administration.Error as e:
-        emails.send_sync_error(e, food_order.payment)
+        emails.send_sync_error(e, food_order.payment.moneybird_external_invoice)
 
 
 def register_contribution_payment(instance):
@@ -138,23 +149,25 @@ def register_contribution_payment(instance):
     contact_id = apiservice.get_contact_id_by_customer(instance)
 
     invoice_info = apiservice.create_external_sales_info(
-        contact_id, instance, contribution=True
+        contact_id, instance.payment, contribution=True
     )
 
     try:
-        response = apiservice.api.post("external_sales_invoices", invoice_info)
-        instance.payment.moneybird_invoice_id = response["id"]
-        instance.payment.save()
+        response = apiservice.create_external_sales_invoice(invoice_info)
+        instance.payment.moneybird_external_invoice.moneybird_invoice_id = response[
+            "id"
+        ]
+        instance.payment.moneybird_external_invoice.save()
     except Administration.Error as e:
-        emails.send_sync_error(e, instance.payment)
+        emails.send_sync_error(e, instance.payment.moneybird_external_invoice)
 
 
-def delete_payment(instance):
+def delete_payment(payment):
     if settings.MONEYBIRD_SYNC_ENABLED is False:
         return
 
     apiservice = get_moneybird_api_service()
-    apiservice.delete_external_invoice(instance)
+    apiservice.delete_external_invoice(payment.moneybird_external_invoice)
 
 
 def sync_contacts():
@@ -190,7 +203,7 @@ def sync_contacts():
             contact = MoneybirdContact.objects.get(
                 member=Member.objects.get(pk=contact["pk"])
             )
-            response = apiservice.add_contact_to_moneybird(contact)
+            response = apiservice.add_contact(contact)
             contact.moneybird_id = response["id"]
             contact.moneybird_version = response["version"]
             contact.save()
@@ -224,14 +237,14 @@ def sync_statements():
         created_at__year=date.year,
         created_at__month=date.month,
         created_at__day=date.day,
-        moneybird_financial_statement_id=None,
+        moneybird_external_invoice__moneybird_financial_statement_id=None,
     )
     new_cash_payments = Payment.objects.filter(
         type=Payment.CASH,
         created_at__year=date.year,
         created_at__month=date.month,
         created_at__day=date.day,
-        moneybird_financial_statement_id=None,
+        moneybird_external_invoice__moneybird_financial_statement_id=None,
     )
 
     apiservice.link_transaction_to_financial_account(

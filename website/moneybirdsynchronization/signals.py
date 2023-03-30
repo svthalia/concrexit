@@ -43,12 +43,23 @@ def post_user_save(sender, instance, **kwargs):
 
 @suspendingreceiver(
     post_save,
+    sender="payments.Payment",
+)
+def post_payment_save(sender, instance, **kwargs):
+    if instance.moneybird_external_invoice is not None:
+        return
+
+    services.create_external_invoice(instance)
+
+
+@suspendingreceiver(
+    post_save,
     sender="events.EventRegistration",
 )
 def post_event_registration_payment(sender, instance, **kwargs):
     if instance.payment is None:
         return
-    if instance.payment.moneybird_invoice_id is not None:
+    if instance.payment.moneybird_external_invoice.moneybird_invoice_id is not None:
         return
 
     services.register_event_registration_payment(instance)
@@ -114,7 +125,7 @@ def post_renewal_save(sender, instance, **kwargs):
     sender="payments.Payment",
 )
 def pre_payment_delete(sender, instance, **kwargs):
-    if instance.moneybird_invoice_id is None:
+    if instance.moneybird_external_invoice.moneybird_invoice_id is None:
         return
 
     services.delete_payment(instance)

@@ -11,7 +11,7 @@ class MoneybirdAPIService:
         self.__api = HttpsAdministration(api_key, administration_id)
 
     def add_contact(self, contact):
-        self.__api.post("contacts", contact.to_moneybird())
+        return self.__api.post("contacts", contact.to_moneybird())
 
     def update_contact(self, contact):
         if contact.moneybird_version is None:
@@ -53,22 +53,25 @@ class MoneybirdAPIService:
 
         return self.__api.post("projects", {"project": {"name": name}})["id"]
 
+    def create_external_sales_invoice(self, invoice_info):
+        return self.__api.post("external_sales_invoices", invoice_info)
+
     def create_external_sales_info(
-        self, contact_id, instance, project_id=None, contribution=False
+        self, contact_id, payment, project_id=None, contribution=False
     ):
         if contribution:
             return {
                 "external_sales_invoice": {
                     "contact_id": contact_id,
-                    "reference": str(instance.payment.id),
-                    "date": instance.payment.created_at.strftime("%Y-%m-%d"),
-                    "source_url": settings.BASE_URL + instance.payment.get_admin_url(),
+                    "reference": str(payment.id),
+                    "date": payment.created_at.strftime("%Y-%m-%d"),
+                    "source_url": settings.BASE_URL + payment.get_admin_url(),
                     "currency": "EUR",
                     "prices_are_incl_tax": True,
                     "details_attributes": [
                         {
-                            "description": instance.payment.topic,
-                            "price": str(instance.payment.amount),
+                            "description": payment.topic,
+                            "price": str(payment.amount),
                             "ledger_id": self.__api.get("ledger_accounts"),
                         },
                     ],
@@ -78,15 +81,15 @@ class MoneybirdAPIService:
             return {
                 "external_sales_invoice": {
                     "contact_id": contact_id,
-                    "reference": str(instance.payment.id),
-                    "date": instance.payment.created_at.strftime("%Y-%m-%d"),
-                    "source_url": settings.BASE_URL + instance.payment.get_admin_url(),
+                    "reference": str(payment.id),
+                    "date": payment.created_at.strftime("%Y-%m-%d"),
+                    "source_url": settings.BASE_URL + payment.get_admin_url(),
                     "currency": "EUR",
                     "prices_are_incl_tax": True,
                     "details_attributes": [
                         {
-                            "description": instance.payment.topic,
-                            "price": str(instance.payment.amount),
+                            "description": payment.topic,
+                            "price": str(payment.amount),
                             "project_id": project_id,
                         },
                     ],
@@ -100,24 +103,24 @@ class MoneybirdAPIService:
         if account_id is None:
             return
 
-        for instance in new_cash_payments:
+        for payment in new_cash_payments:
             payment_response = self.__api.post(
-                f"external_sales_invoices/{instance.moneybird_invoice_id}/payments",
+                f"external_sales_invoices/{payment.moneybird_external_invoice.moneybird_invoice_id}/payments",
                 {
                     "payment": {
-                        "payment_date": instance.created_at.strftime("%Y-%m-%d"),
-                        "price": str(instance.amount),
+                        "payment_date": payment.created_at.strftime("%Y-%m-%d"),
+                        "price": str(payment.amount),
                         "financial_account_id": account_id,
-                        "invoice_id": instance.moneybird_invoice_id,
+                        "invoice_id": payment.moneybird_external_invoice.moneybird_invoice_id,
                     }
                 },
             )
 
             financial_mutations_attributes.append(
                 {
-                    "date": instance.created_at.strftime("%Y-%m-%d"),
-                    "amount": str(instance.amount),
-                    "message": instance.topic,
+                    "date": payment.created_at.strftime("%Y-%m-%d"),
+                    "amount": str(payment.amount),
+                    "message": payment.topic,
                 }
             )
 
@@ -132,20 +135,22 @@ class MoneybirdAPIService:
                     }
                 },
             )
-            for x, instance in enumerate(new_cash_payments):
-                instance.moneybird_financial_statement_id = statement_response["id"]
-                instance.moneybird_financial_mutation_id = statement_response[
-                    "financial_mutations"
-                ][x]["id"]
-                instance.save()
+            for x, payment in enumerate(new_cash_payments):
+                payment.moneybird_external_invoice.moneybird_financial_statement_id = (
+                    statement_response["id"]
+                )
+                payment.moneybird_external_invoice.moneybird_financial_mutation_id = (
+                    statement_response["financial_mutations"][x]["id"]
+                )
+                payment.moneybird_external_invoice.save()
 
                 mutation_response = self.__api.patch(
-                    f"financial_mutations/{instance.moneybird_financial_mutation_id}/link_booking",
+                    f"financial_mutations/{payment.moneybird_external_invoice.moneybird_financial_mutation_id}/link_booking",
                     {
                         "booking_type": "ExternalSalesInvoice",
-                        "booking_id": instance.moneybird_invoice_id,
-                        "price": str(instance.amount),
-                        "description": instance.topic,
+                        "booking_id": payment.moneybird_external_invoice.moneybird_invoice_id,
+                        "price": str(payment.amount),
+                        "description": payment.topic,
                     },
                 )
 
