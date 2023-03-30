@@ -95,3 +95,24 @@ class MoneybirdExternalInvoice(models.Model):
     class Meta:
         verbose_name = _("moneybird external invoice")
         verbose_name_plural = _("moneybird external invoices")
+
+
+class PushedThaliaPayBatch(models.Model):
+    batch = models.OneToOneField(
+        "payments.ThaliaPayBatch",
+        on_delete=models.CASCADE,
+        verbose_name=_("batch"),
+        related_name="pushed_thaliapay_batch",
+    )
+
+    pushed = models.BooleanField(
+        verbose_name=_("pushed"),
+        default=False,
+    )
+
+    def __str__(self):
+        return f"Pushed ThaliaPay batch for {self.batch}"
+
+    class Meta:
+        verbose_name = _("pushed ThaliaPay batch")
+        verbose_name_plural = _("pushed ThaliaPay batches")

@@ -1,9 +1,9 @@
 """The signals checked by the moneybrid synchronization package."""
 from django.contrib.auth import get_user_model
-from django.db.models.signals import post_save, pre_delete, pre_save
+from django.db.models.signals import post_save, pre_delete
 
 from moneybirdsynchronization import services
-from moneybirdsynchronization.models import MoneybirdContact
+from moneybirdsynchronization.models import MoneybirdContact, PushedThaliaPayBatch
 
 from members.models import Member
 from sales.models.order import Order
@@ -132,14 +132,16 @@ def pre_payment_delete(sender, instance, **kwargs):
 
 
 @suspendingreceiver(
-    pre_save,
+    post_save,
     sender="payments.Batch",
 )
 def post_batch_save(sender, instance, **kwargs):
-    if kwargs["update_fields"] is None:
+    if (
+        instance.pushed_thaliapay_batch is not None
+        and instance.pushed_thaliapay_batch.processed
+    ):
         return
-
-    if "processed" in kwargs["update_fields"]:
-        return
-
-    services.push_thaliapay_batch(instance)
+    if instance.pushed_thaliapay_batch is None:
+        PushedThaliaPayBatch.objects.create(batch=instance)
+    else:
+        services.push_thaliapay_batch(instance)

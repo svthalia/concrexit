@@ -33,6 +33,8 @@ def push_thaliapay_batch(batch):
     payments = Payment.objects.filter(batch=batch)
     tpay_account_id = settings.MONEYBIRD_THALIAPAY_FINANCIAL_ACCOUNT_ID
     apiservice.link_transaction_to_financial_account(tpay_account_id, payments)
+    batch.pushed_thaliapay_batch.processed = True
+    batch.pushed_thaliapay_batch.save()
 
 
 def update_contact(member):
