@@ -12,7 +12,7 @@ class MoneybirdContactAdmin(admin.ModelAdmin):
 
 @admin.register(MoneybirdExternalInvoice)
 class MoneybirdExternalInvoiceAdmin(admin.ModelAdmin):
-    list_display = ("payment",)
+    list_display = ("content_object",)
 
 
 @admin.register(PushedThaliaPayBatch)
