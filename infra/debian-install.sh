@@ -2,8 +2,8 @@
 
 # This script sets a server up to run concrexit, by installing Docker, creating
 # users, and some filesystem setup. It should be run as root, and expects
-# a stage (e.g. "staging", "production", used to set hostname) as an argument.
-# For example: `sudo sh debian-install.sh staging`
+# a domain (e.g. "staging.thalia.nu", used to set hostname) as an argument.
+# For example: `sudo sh debian-install.sh staging.thalia.nu`
 #
 # If anything goes wrong, you'll have to fix it manually.
 
@@ -13,7 +13,7 @@ set -e
 # Check input.
 STAGE=$1
 if [ -z "$STAGE" ]; then
-    echo "Usage: $0 <stage>"
+    echo "Usage: $0 <domain>"
     exit 1
 fi
 
@@ -55,8 +55,8 @@ fi
 touch .debian-install-started
 
 # Set hostname.
-step "Setting hostname ($STAGE)..."
-hostnamectl set-hostname $STAGE.thalia.nu
+step "Setting hostname ($DOMAIN)..."
+hostnamectl set-hostname $DOMAIN
 echo "preserve_hostname: true" | sudo tee -a /etc/cloud/cloud.cfg
 
 # Set up a swapfile and some performance settings (https://www.digitalocean.com/community/tutorials/how-to-add-swap-space-on-debian-11).

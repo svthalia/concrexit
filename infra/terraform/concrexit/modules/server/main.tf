@@ -18,7 +18,7 @@ resource "aws_instance" "concrexit" {
   iam_instance_profile = aws_iam_instance_profile.concrexit-ec2-profile.id
 
   root_block_device {
-    volume_size = 30 # GiB
+    volume_size = 30
   }
 
   network_interface {

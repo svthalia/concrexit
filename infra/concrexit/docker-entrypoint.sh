@@ -7,7 +7,7 @@ MANAGE_PY=1 /venv/bin/python manage.py compress
 
 MANAGE_PY=1 runuser -u appuser -- /venv/bin/python manage.py migrate --no-input
 
-runuser -u appuser -- cron
+cron
 
 exec runuser -u appuser -- /venv/bin/gunicorn \
     --bind 0.0.0.0:8000 \

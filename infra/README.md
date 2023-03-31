@@ -31,7 +31,7 @@ postgres EBS volume, have Docker installed, etc. `debian-install.sh` should do t
 or at least be a good starting point even if it breaks for some reason.
 
 When you have a new EC2 instance, you can SSH into it, copy-paste the script into it,
-and run it with `sudo sh debian-install.sh <stage>`. If everything works, that should
+and run it with `sudo sh debian-install.sh <domain>`. If everything works, that should
 prepare the instance to be working server. At that point, a GitHub Actions workflow can
 release to it, by writing some env files and running `docker compose up -d`.
 
