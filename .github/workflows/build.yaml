@@ -36,7 +36,7 @@ jobs:
           build-args: |
             SOURCE_COMMIT=${{ github.sha }}
           tags: |
-            ghcr.io/svthalia/concrexit:docker-staging
+            ghcr.io/svthalia/concrexit:staging
           cache-from: type=gha,scope=${{ github.ref }}-concrexit
           cache-to: type=gha,mode=max,scope=${{ github.ref }}-concrexit
 
@@ -69,51 +69,51 @@ jobs:
           build-args: |
             SOURCE_COMMIT=${{ github.sha }}
           tags: |
-            ghcr.io/svthalia/concrexit-nginx:docker-staging
+            ghcr.io/svthalia/concrexit-nginx:staging
           cache-from: type=gha,scope=${{ github.ref }}-concrexit-nginx
           cache-to: type=gha,mode=max,scope=${{ github.ref }}-concrexit-nginx
 
-  # deploy-staging:
-  #   name: Deploy to docker-staging
-  #   environment:
-  #     name: staging
-  #     url: https://staging.thalia.nu
-  #   runs-on: ubuntu-latest
-  #   needs: [build-concrexit, build-nginx]
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v3
+  deploy-staging:
+    name: Deploy to docker-staging
+    environment:
+      name: staging
+      url: https://staging.thalia.nu
+    runs-on: ubuntu-latest
+    needs: [build-concrexit, build-nginx]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-  #     - name: Set up SSH
-  #       run: |
-  #         mkdir ~/.ssh
-  #         echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-  #         echo "$DEPLOY_SSH_KEY" > ~/.ssh/id_ed25519
-  #         chmod 600 ~/.ssh/id_ed25519
-  #       env:
-  #         SSH_KNOWN_HOSTS: ${{ vars.SSH_KNOWN_HOSTS }}
-  #         DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+      - name: Set up SSH
+        run: |
+          mkdir ~/.ssh
+          echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          echo "$DEPLOY_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+        env:
+          SSH_KNOWN_HOSTS: ${{ vars.SSH_KNOWN_HOSTS }}
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
 
-  #     - name: Create env files
-  #       run: |
-  #         cp infra/env.public.staging infra/env.public
-  #         echo "$SECRETS_FILE" > infra/env.secret
-  #         echo "TAG=$TAG" > infra/.env
-  #       env:
-  #         SECRETS_FILE: ${{ secrets.SECRETS_FILE }}
-  #         TAG: staging
+      - name: Create env files
+        run: |
+          cp infra/env.public.staging infra/env.public
+          echo "$SECRETS_FILE" > infra/env.secret
+          echo "TAG=$TAG" > infra/.env
+        env:
+          SECRETS_FILE: ${{ secrets.SECRETS_FILE }}
+          TAG: staging
 
-  #     - name: Update env files
-  #       run: |
-  #         rsync infra/.env deploy@staging.thalia.nu:/var/lib/concrexit/.env
-  #         rsync infra/env.public deploy@staging.thalia.nu:/var/lib/concrexit/env.public
-  #         rsync infra/env.secret deploy@staging.thalia.nu:/var/lib/concrexit/env.secret
-  #         rsync infra/docker-compose.yml deploy@staging.thalia.nu:/var/lib/concrexit/docker-compose.yml
+      - name: Update env files
+        run: |
+          rsync infra/.env deploy@staging.thalia.nu:/var/lib/concrexit/.env
+          rsync infra/env.public deploy@staging.thalia.nu:/var/lib/concrexit/env.public
+          rsync infra/env.secret deploy@staging.thalia.nu:/var/lib/concrexit/env.secret
+          rsync infra/docker-compose.yml deploy@staging.thalia.nu:/var/lib/concrexit/docker-compose.yml
 
-  #     - name: Restart containers
-  #       run: |
-  #         ssh deploy@staging.thalia.nu << EOF
-  #           cd /var/lib/concrexit
-  #           sudo docker compose pull
-  #           sudo docker compose up -d
-  #         EOF
+      - name: Restart containers
+        run: |
+          ssh deploy@staging.thalia.nu << EOF
+            cd /var/lib/concrexit
+            sudo docker compose pull
+            sudo docker compose up -d
+          EOF
