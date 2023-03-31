@@ -147,7 +147,7 @@ def pre_food_order_delete(sender, instance, **kwargs):
 
 @suspendingreceiver(
     pre_delete,
-    sender="regsitrations.Registration",
+    sender="registrations.Registration",
 )
 def pre_registration_delete(sender, instance, **kwargs):
     if instance.moneybird_external_invoice.moneybird_invoice_id is None:
