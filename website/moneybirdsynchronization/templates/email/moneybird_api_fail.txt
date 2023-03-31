@@ -1,4 +1,3 @@
-{% load i18n bleach_tags %}
 Hi,
 
 There has been an error when trying to synchronize with Moneybird.

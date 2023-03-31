@@ -53,8 +53,8 @@ def delete_contact(member):
     apiservice.delete_contact(MoneybirdContact.objects.get(member=member))
 
 
-def create_external_invoice(payment):
-    external_invoice = MoneybirdExternalInvoice(payment=payment)
+def create_external_invoice(payable):
+    external_invoice = MoneybirdExternalInvoice(content_object=payable)
     external_invoice.save()
 
 
@@ -75,12 +75,10 @@ def register_event_registration_payment(registration):
 
     try:
         response = apiservice.create_external_sales_invoice(invoice_info)
-        registration.payment.moneybird_external_invoice.moneybird_invoice_id = response[
-            "id"
-        ]
-        registration.payment.moneybird_external_invoice.save()
+        registration.moneybird_external_invoice.moneybird_invoice_id = response["id"]
+        registration.moneybird_external_invoice.save()
     except Administration.Error as e:
-        emails.send_sync_error(e, registration.payment.moneybird_external_invoice)
+        emails.send_sync_error(e, registration.moneybird_external_invoice)
 
 
 def register_shift_payments(orders, instance):
@@ -108,12 +106,10 @@ def register_shift_payments(orders, instance):
 
         try:
             response = apiservice.create_external_sales_invoice(invoice_info)
-            order.payment.moneybird_external_invoice.moneybird_invoice_id = response[
-                "id"
-            ]
-            order.payment.moneybird_external_invoice.save()
+            order.moneybird_external_invoice.moneybird_invoice_id = response["id"]
+            order.moneybird_external_invoice.save()
         except Administration.Error as e:
-            emails.send_sync_error(e, order.payment.moneybird_external_invoice)
+            emails.send_sync_error(e, order.moneybird_external_invoice)
 
 
 def register_food_order_payment(food_order):
@@ -134,12 +130,10 @@ def register_food_order_payment(food_order):
 
     try:
         response = apiservice.create_external_sales_invoice(invoice_info)
-        food_order.payment.moneybird_external_invoice.moneybird_invoice_id = response[
-            "id"
-        ]
-        food_order.payment.moneybird_external_invoice.save()
+        food_order.moneybird_external_invoice.moneybird_invoice_id = response["id"]
+        food_order.moneybird_external_invoice.save()
     except Administration.Error as e:
-        emails.send_sync_error(e, food_order.payment.moneybird_external_invoice)
+        emails.send_sync_error(e, food_order.moneybird_external_invoice)
 
 
 def register_contribution_payment(instance):
@@ -156,20 +150,18 @@ def register_contribution_payment(instance):
 
     try:
         response = apiservice.create_external_sales_invoice(invoice_info)
-        instance.payment.moneybird_external_invoice.moneybird_invoice_id = response[
-            "id"
-        ]
-        instance.payment.moneybird_external_invoice.save()
+        instance.moneybird_external_invoice.moneybird_invoice_id = response["id"]
+        instance.moneybird_external_invoice.save()
     except Administration.Error as e:
-        emails.send_sync_error(e, instance.payment.moneybird_external_invoice)
+        emails.send_sync_error(e, instance.moneybird_external_invoice)
 
 
-def delete_payment(payment):
+def delete_external_invoice(instance):
     if settings.MONEYBIRD_SYNC_ENABLED is False:
         return
 
     apiservice = get_moneybird_api_service()
-    apiservice.delete_external_invoice(payment.moneybird_external_invoice)
+    apiservice.delete_external_invoice(instance.moneybird_external_invoice)
 
 
 def sync_contacts():
@@ -178,7 +170,7 @@ def sync_contacts():
 
     apiservice = get_moneybird_api_service()
 
-    members_without_contact = Member.objects.filter(
+    unsynced_members = Member.objects.filter(
         ~Q(
             id__in=Subquery(
                 MoneybirdContact.objects.filter(member=OuterRef("pk")).values("member")
@@ -186,7 +178,7 @@ def sync_contacts():
         )
     )
 
-    for member in members_without_contact:
+    for member in unsynced_members:
         contact = MoneybirdContact(member=member)
         contact.save()
 
@@ -253,5 +245,5 @@ def sync_statements():
         settings.MONEYBIRD_PIN_FINANCIAL_ACCOUNT_ID, new_card_payments
     )
     apiservice.link_transaction_to_financial_account(
-        settings.MONEYBIRD_CASHTANJE_FINANCIAL_ACCOUNT_ID, new_cash_payments
+        settings.MONEYBIRD_CASH_FINANCIAL_ACCOUNT_ID, new_cash_payments
     )

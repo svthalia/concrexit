@@ -35,7 +35,7 @@ class MoneybirdAPIService:
 
     def get_contact_id_by_customer(self, instance):
         contact_id = self.__api.get(
-            f"contacts/customer_id/{settings.MONEYBIRD_UNKOWN_PAYER_ID}"
+            f"contacts/customer_id/{settings.MONEYBIRD_UNKOWN_PAYER_CONTACT_ID}"
         )["id"]
         if instance.payment.paid_by is not None:
             try:

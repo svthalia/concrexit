@@ -6,6 +6,7 @@ from moneybirdsynchronization import services
 from moneybirdsynchronization.models import MoneybirdContact, PushedThaliaPayBatch
 
 from members.models import Member
+from payments.signals import processed_batch
 from sales.models.order import Order
 from utils.models.signals import suspendingreceiver
 
@@ -43,24 +44,16 @@ def post_user_save(sender, instance, **kwargs):
 
 @suspendingreceiver(
     post_save,
-    sender="payments.Payment",
-)
-def post_payment_save(sender, instance, **kwargs):
-    if instance.moneybird_external_invoice is not None:
-        return
-
-    services.create_external_invoice(instance)
-
-
-@suspendingreceiver(
-    post_save,
     sender="events.EventRegistration",
 )
 def post_event_registration_payment(sender, instance, **kwargs):
     if instance.payment is None:
         return
-    if instance.payment.moneybird_external_invoice.moneybird_invoice_id is not None:
+    if instance.moneybird_external_invoice.moneybird_invoice_id is not None:
         return
+
+    if instance.moneybird_external_invoice is None:
+        services.create_external_invoice(instance)
 
     services.register_event_registration_payment(instance)
 
@@ -76,8 +69,9 @@ def post_shift_save(sender, instance, **kwargs):
     orders = Order.objects.filter(shift=instance)
     if len(orders) == 0:
         return
-    if orders[0].payment.moneybird_invoice_id is not None:
-        return
+    for order in orders:
+        if order.moneybird_invoice_id is not None:
+            return
     services.register_shift_payments(orders, instance)
 
 
@@ -90,6 +84,9 @@ def post_food_order_save(sender, instance, **kwargs):
         return
     if instance.payment.moneybird_invoice_id is not None:
         return
+
+    if instance.moneybird_external_invoice is None:
+        services.create_external_invoice(instance)
 
     services.register_food_order_payment(instance)
 
@@ -104,6 +101,9 @@ def post_entry_save(sender, instance, **kwargs):
     if instance.payment.moneybird_invoice_id is not None:
         return
 
+    if instance.moneybird_external_invoice is None:
+        services.create_external_invoice(instance)
+
     services.register_contribution_payment(instance)
 
 
@@ -117,25 +117,60 @@ def post_renewal_save(sender, instance, **kwargs):
     if instance.payment.moneybird_invoice_id is not None:
         return
 
+    if instance.moneybird_external_invoice is None:
+        services.create_external_invoice(instance)
+
     services.register_contribution_payment(instance)
 
 
 @suspendingreceiver(
     pre_delete,
-    sender="payments.Payment",
+    sender="events.EventRegistration",
 )
-def pre_payment_delete(sender, instance, **kwargs):
+def pre_event_registration_delete(sender, instance, **kwargs):
     if instance.moneybird_external_invoice.moneybird_invoice_id is None:
         return
 
-    services.delete_payment(instance)
+    services.delete_external_invoice(instance)
 
 
 @suspendingreceiver(
-    post_save,
-    sender="payments.Batch",
+    pre_delete,
+    sender="pizzas.FoodOrder",
 )
-def post_batch_save(sender, instance, **kwargs):
+def pre_food_order_delete(sender, instance, **kwargs):
+    if instance.moneybird_external_invoice.moneybird_invoice_id is None:
+        return
+
+    services.delete_external_invoice(instance)
+
+
+@suspendingreceiver(
+    pre_delete,
+    sender="regsitrations.Registration",
+)
+def pre_registration_delete(sender, instance, **kwargs):
+    if instance.moneybird_external_invoice.moneybird_invoice_id is None:
+        return
+
+    services.delete_external_invoice(instance)
+
+
+@suspendingreceiver(
+    pre_delete,
+    sender="registrations.Renewal",
+)
+def pre_renewal_delete(sender, instance, **kwargs):
+    if instance.moneybird_external_invoice.moneybird_invoice_id is None:
+        return
+
+    services.delete_external_invoice(instance)
+
+
+@suspendingreceiver(
+    processed_batch,
+)
+def post_processed_batch(sender, instance, **kwargs):
     if (
         instance.pushed_thaliapay_batch is not None
         and instance.pushed_thaliapay_batch.processed

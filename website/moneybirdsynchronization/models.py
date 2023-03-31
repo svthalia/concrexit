@@ -1,3 +1,5 @@
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -36,7 +38,7 @@ class MoneybirdContact(models.Model):
                 "send_invoices_to_email": self.member.email,
                 "custom_fields_attributes": {
                     "0": {
-                        "id": settings.MONEYBIRD_CUSTOM_FIELD_ID,
+                        "id": settings.MONEYBIRD_MEMBER_PK_CUSTOM_FIELD_ID,
                         "value": self.member.pk,
                     }
                 },
@@ -59,14 +61,9 @@ class MoneybirdContact(models.Model):
 
 
 class MoneybirdExternalInvoice(models.Model):
-    payment = models.OneToOneField(
-        "payments.Payment",
-        on_delete=models.CASCADE,
-        verbose_name=_("payment"),
-        related_name="moneybird_external_invoice",
-        null=True,
-        blank=True,
-    )
+    payable_model = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.CharField(max_length=255)
+    content_object = GenericForeignKey("payable_model", "object_id")
 
     moneybird_invoice_id = models.CharField(
         verbose_name=_("moneybird invoice id"),

@@ -15,6 +15,7 @@ from utils.snippets import send_email
 from .exceptions import PaymentError
 from .models import BankAccount, Payment, PaymentUser
 from .payables import Payable, payables
+from .signals import processed_batch
 
 
 def create_payment(
@@ -158,7 +159,8 @@ def process_batch(batch):
             bank_account.last_used = batch.withdrawal_date
             bank_account.save()
 
-    batch.save(update_fields=["processed"])
+    batch.save()
+    processed_batch.send(sender=None, batch=batch)
 
     send_tpay_batch_processing_emails(batch)
 
