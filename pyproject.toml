@@ -14,7 +14,7 @@ djangorestframework = "3.14.0"
 django-ical = "1.8.3"
 django-libsass = "0.8.0"
 python-magic = "0.4.27"
-Pillow = "9.4.0"
+Pillow = "9.5.0"
 Django = "4.1.7"
 django-compressor = "4.3.1"
 psycopg2 = {version = "2.9.5", optional = true}
