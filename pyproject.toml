@@ -11,7 +11,7 @@ django-localflavor = "3.1"
 freezegun = "1.2.2"
 bleach = {extras = ["css"], version = "^6.0.0"}
 djangorestframework = "3.14.0"
-django-ical = "1.8.3"
+django-ical = "1.8.4"
 django-libsass = "0.8.0"
 python-magic = "0.4.27"
 Pillow = "9.5.0"
