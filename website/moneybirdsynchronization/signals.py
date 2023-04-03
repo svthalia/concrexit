@@ -28,7 +28,7 @@ def post_profile_save(sender, instance, **kwargs):
 def post_profile_delete(sender, instance, **kwargs):
     if "is_minimized" in kwargs["update_fields"]:
         return
-    if instance.is_minimized is False:
+    if not instance.is_minimized:
         return
 
     services.delete_contact(Member.objects.get(profile=instance))
