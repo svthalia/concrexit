@@ -18,7 +18,11 @@ User = get_user_model()
     sender="members.Profile",
 )
 def post_profile_save(sender, instance, **kwargs):
-    services.update_contact(MoneybirdContact.objects.get_or_create(member=instance)[0])
+    services.update_contact(
+        MoneybirdContact.objects.get_or_create(
+            member=Member.objects.get(profile=instance)
+        )[0]
+    )
 
 
 @suspendingreceiver(
