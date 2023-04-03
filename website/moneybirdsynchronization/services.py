@@ -26,7 +26,7 @@ def get_moneybird_api_service():
 
 
 def push_thaliapay_batch(batch):
-    if settings.MONEYBIRD_SYNC_ENABLED is False:
+    if not settings.MONEYBIRD_SYNC_ENABLED:
         return
 
     apiservice = get_moneybird_api_service()
@@ -38,7 +38,7 @@ def push_thaliapay_batch(batch):
 
 
 def update_contact(member):
-    if settings.MONEYBIRD_SYNC_ENABLED is False:
+    if not settings.MONEYBIRD_SYNC_ENABLED:
         return
 
     apiservice = get_moneybird_api_service()
@@ -46,7 +46,7 @@ def update_contact(member):
 
 
 def delete_contact(member):
-    if settings.MONEYBIRD_SYNC_ENABLED is False:
+    if not settings.MONEYBIRD_SYNC_ENABLED:
         return
 
     apiservice = get_moneybird_api_service()
@@ -59,7 +59,7 @@ def create_external_invoice(payable):
 
 
 def register_event_registration_payment(registration):
-    if settings.MONEYBIRD_SYNC_ENABLED is False:
+    if not settings.MONEYBIRD_SYNC_ENABLED:
         return
 
     apiservice = get_moneybird_api_service()
@@ -82,7 +82,7 @@ def register_event_registration_payment(registration):
 
 
 def register_shift_payments(orders, instance):
-    if settings.MONEYBIRD_SYNC_ENABLED is False:
+    if not settings.MONEYBIRD_SYNC_ENABLED:
         return
 
     apiservice = get_moneybird_api_service()
@@ -113,7 +113,7 @@ def register_shift_payments(orders, instance):
 
 
 def register_food_order_payment(food_order):
-    if settings.MONEYBIRD_SYNC_ENABLED is False:
+    if not settings.MONEYBIRD_SYNC_ENABLED:
         return
 
     apiservice = get_moneybird_api_service()
@@ -137,7 +137,7 @@ def register_food_order_payment(food_order):
 
 
 def register_contribution_payment(instance):
-    if settings.MONEYBIRD_SYNC_ENABLED is False:
+    if not settings.MONEYBIRD_SYNC_ENABLED:
         return
 
     apiservice = get_moneybird_api_service()
@@ -157,7 +157,7 @@ def register_contribution_payment(instance):
 
 
 def delete_external_invoice(instance):
-    if settings.MONEYBIRD_SYNC_ENABLED is False:
+    if not settings.MONEYBIRD_SYNC_ENABLED:
         return
 
     apiservice = get_moneybird_api_service()
@@ -165,7 +165,7 @@ def delete_external_invoice(instance):
 
 
 def sync_contacts():
-    if settings.MONEYBIRD_SYNC_ENABLED is False:
+    if not settings.MONEYBIRD_SYNC_ENABLED:
         return
 
     apiservice = get_moneybird_api_service()
@@ -220,7 +220,7 @@ def sync_contacts():
 
 
 def sync_statements():
-    if settings.MONEYBIRD_SYNC_ENABLED is False:
+    if not settings.MONEYBIRD_SYNC_ENABLED:
         return
 
     apiservice = get_moneybird_api_service()
