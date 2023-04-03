@@ -18,11 +18,7 @@ User = get_user_model()
     sender="members.Profile",
 )
 def post_profile_save(sender, instance, **kwargs):
-    services.update_contact(
-        MoneybirdContact.objects.get_or_create(
-            member=Member.objects.get(profile=instance)
-        )[0]
-    )
+    services.update_contact(Member.objects.get(profile=instance))
 
 
 @suspendingreceiver(
@@ -30,8 +26,6 @@ def post_profile_save(sender, instance, **kwargs):
     sender="members.Profile",
 )
 def post_profile_delete(sender, instance, **kwargs):
-    if "is_minimized" in kwargs["update_fields"]:
-        return
     if not instance.is_minimized:
         return
 
@@ -74,7 +68,7 @@ def post_shift_save(sender, instance, **kwargs):
     if len(orders) == 0:
         return
     for order in orders:
-        if order.moneybird_invoice_id is not None:
+        if order.moneybird_external_sales_invoice.moneybird_invoice_id is not None:
             return
     services.register_shift_payments(orders, instance)
 
