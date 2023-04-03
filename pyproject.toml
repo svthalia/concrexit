@@ -17,7 +17,7 @@ python-magic = "0.4.27"
 Pillow = "9.5.0"
 Django = "4.1.7"
 django-compressor = "4.3.1"
-psycopg2 = {version = "2.9.5", optional = true}
+psycopg2 = {version = "2.9.6", optional = true}
 bcrypt = "4.0.1"
 argon2_cffi = "21.3.0"
 firebase-admin = "6.1.0"
