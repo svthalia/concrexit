@@ -113,7 +113,9 @@ jobs:
       - name: Restart containers
         run: |
           ssh deploy@staging.thalia.nu << EOF
+            set -e
             cd /var/lib/concrexit
             sudo docker compose pull
             sudo docker compose up -d
+            sudo docker system prune -f
           EOF
