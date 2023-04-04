@@ -204,3 +204,11 @@ server {
         return 301 https://${SITE_DOMAIN}/pizzas;
     }
 }
+
+server {
+    # Drop any request that does not match any of the other server names.
+    listen               443 ssl default_server;
+    ssl_reject_handshake on;
+
+    access_log off;
+}
