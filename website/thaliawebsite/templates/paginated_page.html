@@ -1,7 +1,8 @@
 {% extends 'simple_page.html' %}
 {% load django_bootstrap5 %}
 
-{% block pages %}
+{% block page_content %}
+{% block content %}{% endblock %}
 <nav>
     <ul class="pagination mt-4">
         {% if page_obj.has_previous %}
@@ -30,4 +31,4 @@
         {% endif %}
     </ul>
 </nav>
-{% endblock pages %}
+{% endblock page_content %}
