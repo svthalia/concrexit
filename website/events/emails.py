@@ -51,7 +51,7 @@ def notify_organiser(event, registration):
 
     send_email(
         to=[
-            organiser.contact_address + "@" + settings.SITE_DOMAIN
+            organiser.contact_address
             for organiser in event.organisers.all()
             if organiser.contact_address is not None
         ],
