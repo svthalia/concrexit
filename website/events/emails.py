@@ -20,9 +20,7 @@ def notify_first_waiting(event):
         ).order_by("date")[event.max_participants]
 
         organiser_emails = [
-            organiser.contact_address
-            for organiser in event.organisers.all()
-            if organiser.contact_address is not None
+            organiser.contact_address for organiser in event.organisers.all()
         ]
 
         send_email(
@@ -50,11 +48,7 @@ def notify_organiser(event, registration):
         return
 
     send_email(
-        to=[
-            organiser.contact_address
-            for organiser in event.organisers.all()
-            if organiser.contact_address is not None
-        ],
+        to=[organiser.contact_address for organiser in event.organisers.all()],
         subject=f"Registration for {event.title} cancelled by member",
         txt_template="events/email/organiser_email.txt",
         html_template="events/email/organiser_email.html",
@@ -64,9 +58,7 @@ def notify_organiser(event, registration):
 
 def notify_waiting(event, registration):
     organiser_emails = [
-        organiser.contact_address
-        for organiser in event.organisers.all()
-        if organiser.contact_address is not None
+        organiser.contact_address for organiser in event.organisers.all()
     ]
 
     send_email(
