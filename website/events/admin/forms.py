@@ -61,7 +61,7 @@ class EventAdminForm(forms.ModelForm):
         if (
             self.cleaned_data.get("organisers")
             and not any(
-                organiser.contact_mailinglist is not None
+                organiser.contact_address is not None
                 for organiser in self.cleaned_data["organisers"]
             )
             and self.cleaned_data["send_cancel_email"]
@@ -69,7 +69,7 @@ class EventAdminForm(forms.ModelForm):
             self.add_error(
                 "organisers",
                 _(
-                    "One of the organisers does not have a contact mailinglist so sending a cancellation email is impossible."
+                    "One of the organisers does not have a contact mail address so sending a cancellation email is impossible."
                 ),
             )
             return False

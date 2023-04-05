@@ -51,8 +51,9 @@ def notify_organiser(event, registration):
 
     send_email(
         to=[
-            organiser.contact_mailinglist.name + "@" + settings.SITE_DOMAIN
+            organiser.contact_address + "@" + settings.SITE_DOMAIN
             for organiser in event.organisers.all()
+            if organiser.contact_address is not None
         ],
         subject=f"Registration for {event.title} cancelled by member",
         txt_template="events/email/organiser_email.txt",
