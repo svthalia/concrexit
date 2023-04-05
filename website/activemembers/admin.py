@@ -46,7 +46,7 @@ class MemberGroupAdmin(admin.ModelAdmin):
 
     inlines = (MemberGroupMembershipInline,)
     form = MemberGroupForm
-    list_display = ("name", "since", "until", "active", "email")
+    list_display = ("name", "since", "until", "active", "contact_address")
     list_filter = (
         "until",
         "active",
@@ -66,14 +66,6 @@ class MemberGroupAdmin(admin.ModelAdmin):
         "active",
         "display_members",
     )
-
-    @staticmethod
-    def email(instance):
-        if instance.contact_email:
-            return instance.contact_email
-        if instance.contact_mailinglist:
-            return instance.contact_mailinglist.name + "@thalia.nu"
-        return None
 
 
 @admin.register(models.Committee)
