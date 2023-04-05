@@ -179,11 +179,11 @@ class HttpsAdministration(Administration):
         response = self.session.patch(url, data=data)
         return self._process_response(response)
 
-    def delete(self, resource_path: str):
+    def delete(self, resource_path: str, data: dict = None):
         """Do a DELETE on the Moneybird administration."""
         url = self._build_url(resource_path)
         logging.debug(f"DELETE {url}")
-        response = self.session.delete(url)
+        response = self.session.delete(url, data=data)
         return self._process_response(response)
 
 

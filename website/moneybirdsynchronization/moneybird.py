@@ -1,177 +1,152 @@
-import datetime
-
-from moneybirdsynchronization.administration import Administration, HttpsAdministration
-from moneybirdsynchronization.models import MoneybirdContact
+from moneybirdsynchronization.administration import HttpsAdministration
 
 from thaliawebsite import settings
 
 
 class MoneybirdAPIService:
     def __init__(self, administration_id, api_key):
-        self.__api = HttpsAdministration(api_key, administration_id)
+        self._administration = HttpsAdministration(api_key, administration_id)
 
-    def add_contact(self, contact):
-        return self.__api.post("contacts", contact.to_moneybird())
+    def create_contact(self, contact_data):
+        return self._administration.post("contacts", contact_data)
 
-    def update_contact(self, contact):
-        if contact.moneybird_version is None:
-            response = self.__api.post("contacts", contact.to_moneybird())
-            contact.moneybird_id = response["id"]
-            contact.moneybird_version = response["version"]
-            contact.save()
-        else:
-            response = self.__api.patch(
-                "contacts/{contact.moneybird_id}", contact.to_moneybird()
-            )
-            contact.moneybird_version = response["version"]
-            contact.save()
+    def update_contact(self, contact_id, contact_data):
+        return self._administration.patch(f"contacts/{contact_id}", contact_data)
 
-    def delete_contact(self, contact):
-        self.__api.delete(f"contacts/{contact.moneybird_id}")
-        contact.delete()
+    def delete_contact(self, contact_id):
+        self._administration.delete(f"contacts/{contact_id}")
 
-    def delete_moneybird_customer(self, id):
-        self.__api.delete(f"contacts/{id}")
+    def get_or_create_project(self, name):
+        if name is None:
+            return None
 
-    def get_contact_id_by_customer(self, instance):
-        contact_id = self.__api.get(
-            f"contacts/customer_id/{settings.MONEYBIRD_UNKOWN_PAYER_CONTACT_ID}"
-        )["id"]
-        if instance.payment.paid_by is not None:
-            try:
-                contact_id = MoneybirdContact.objects.get(
-                    member=instance.member
-                ).moneybird_id
-            except MoneybirdContact.DoesNotExist:
-                pass
-        return contact_id
-
-    def get_project_id(self, name):
-        for project in self.__api.get("projects"):
+        for project in self._administration.get("projects"):
             if project["name"] == name:
                 return project["id"]
 
-        return self.__api.post("projects", {"project": {"name": name}})["id"]
+        return self._administration.post("projects", {"project": {"name": name}})["id"]
 
-    def create_external_sales_invoice(self, invoice_info):
-        return self.__api.post("external_sales_invoices", invoice_info)
+    def create_external_sales_invoice(self, invoice_data):
+        return self._administration.post("external_sales_invoices", invoice_data)
 
-    def create_external_sales_info(
-        self, contact_id, payment, project_id=None, contribution=False
+    def update_external_sales_invoice(self, invoice_id, invoice_data):
+        return self._administration.patch(
+            f"external_sales_invoices/{invoice_id}", invoice_data
+        )
+
+    def delete_external_invoice(self, invoice_id):
+        self._administration.delete(f"external_sales_invoices/{invoice_id}")
+
+    def register_external_invoice_payment(self, invoice_id, payment_data):
+        return self._administration.post(
+            f"external_sales_invoices/{invoice_id}/payments", payment_data
+        )
+
+    def delete_external_invoice_payment(self, invoice_id, payment_id):
+        self._administration.delete(
+            f"external_sales_invoices/{invoice_id}/payments/{payment_id}"
+        )
+
+    def create_financial_statement(self, statement_data):
+        return self._administration.post("financial_statements", statement_data)
+
+    def update_financial_statement(self, statement_id, statement_data):
+        return self._administration.patch(
+            f"financial_statements/{statement_id}", statement_data
+        )
+
+    def delete_financial_statement(self, statement_id):
+        return self._administration.delete(f"financial_statements/{statement_id}")
+
+    def link_mutation_to_booking(
+        self, mutation_id, booking_id, price_base, booking_type="ExternalSalesInvoice"
     ):
-        if contribution:
-            return {
-                "external_sales_invoice": {
-                    "contact_id": contact_id,
-                    "reference": str(payment.id),
-                    "date": payment.created_at.strftime("%Y-%m-%d"),
-                    "source_url": settings.BASE_URL + payment.get_admin_url(),
-                    "currency": "EUR",
-                    "prices_are_incl_tax": True,
-                    "details_attributes": [
-                        {
-                            "description": payment.topic,
-                            "price": str(payment.amount),
-                            "ledger_id": self.__api.get("ledger_accounts"),
-                        },
-                    ],
-                }
-            }
-        if project_id is not None:
-            return {
-                "external_sales_invoice": {
-                    "contact_id": contact_id,
-                    "reference": str(payment.id),
-                    "date": payment.created_at.strftime("%Y-%m-%d"),
-                    "source_url": settings.BASE_URL + payment.get_admin_url(),
-                    "currency": "EUR",
-                    "prices_are_incl_tax": True,
-                    "details_attributes": [
-                        {
-                            "description": payment.topic,
-                            "price": str(payment.amount),
-                            "project_id": project_id,
-                        },
-                    ],
-                }
-            }
+        return self._administration.patch(
+            f"financial_mutations/{mutation_id}/link_booking",
+            {
+                "booking_type": booking_type,
+                "booking_id": booking_id,
+                "price_base": price_base,
+            },
+        )
 
-        return RuntimeError("No project_id provided")
+    def get_financial_mutation_info(self, mutation_id):
+        return self._administration.post(
+            "financial_mutations/synchronization", data={"ids": [mutation_id]}
+        )
 
-    def link_transaction_to_financial_account(self, account_id, new_cash_payments):
-        financial_mutations_attributes = []
-        if account_id is None:
-            return
+    def unlink_mutation_from_booking(
+        self, mutation_id, booking_id, booking_type="Payment"
+    ):
+        return self._administration.delete(
+            f"financial_mutations/{mutation_id}/unlink_booking",
+            {"booking_type": booking_type, "booking_id": booking_id},
+        )
 
-        for payment in new_cash_payments:
-            payment_response = self.__api.post(
-                f"external_sales_invoices/{payment.moneybird_external_invoice.moneybird_invoice_id}/payments",
-                {
-                    "payment": {
-                        "payment_date": payment.created_at.strftime("%Y-%m-%d"),
-                        "price": str(payment.amount),
-                        "financial_account_id": account_id,
-                        "invoice_id": payment.moneybird_external_invoice.moneybird_invoice_id,
-                    }
-                },
-            )
+    # def link_transaction_to_financial_account(self, account_id, new_cash_payments):
+    #     financial_mutations_attributes = []
+    #     if account_id is None:
+    #         return
+    #
+    #     for payment in new_cash_payments:
+    #         payment_response = self._administration.post(
+    #             f"external_sales_invoices/{payment.moneybird_external_invoice.moneybird_invoice_id}/payments",
+    #             {
+    #                 "payment": {
+    #                     "payment_date": payment.created_at.strftime("%Y-%m-%d"),
+    #                     "price": str(payment.amount),
+    #                     "financial_account_id": account_id,
+    #                     "invoice_id": payment.moneybird_external_invoice.moneybird_invoice_id,
+    #                 }
+    #             },
+    #         )
+    #
+    #         financial_mutations_attributes.append(
+    #             {
+    #                 "date": payment.created_at.strftime("%Y-%m-%d"),
+    #                 "amount": str(payment.amount),
+    #                 "message": payment.topic,
+    #             }
+    #         )
+    #
+    #     if len(financial_mutations_attributes) > 0:
+    #         statement_response = self._administration.post(
+    #             "financial_statements",
+    #             {
+    #                 "financial_statement": {
+    #                     "financial_account_id": account_id,
+    #                     "reference": f"Card payments {datetime.date.today()}",
+    #                     "financial_mutations_attributes": financial_mutations_attributes,
+    #                 }
+    #             },
+    #         )
+    #         for x, payment in enumerate(new_cash_payments):
+    #             payment.moneybird_external_invoice.moneybird_financial_statement_id = (
+    #                 statement_response["id"]
+    #             )
+    #             payment.moneybird_external_invoice.moneybird_financial_mutation_id = (
+    #                 statement_response["financial_mutations"][x]["id"]
+    #             )
+    #             payment.moneybird_external_invoice.save()
+    #
+    #             mutation_response = self._administration.patch(
+    #                 f"financial_mutations/{payment.moneybird_external_invoice.moneybird_financial_mutation_id}/link_booking",
+    #                 {
+    #                     "booking_type": "ExternalSalesInvoice",
+    #                     "booking_id": payment.moneybird_external_invoice.moneybird_invoice_id,
+    #                     "price": str(payment.amount),
+    #                     "description": payment.topic,
+    #                 },
+    #             )
 
-            financial_mutations_attributes.append(
-                {
-                    "date": payment.created_at.strftime("%Y-%m-%d"),
-                    "amount": str(payment.amount),
-                    "message": payment.topic,
-                }
-            )
 
-        if len(financial_mutations_attributes) > 0:
-            statement_response = self.__api.post(
-                "financial_statements",
-                {
-                    "financial_statement": {
-                        "financial_account_id": account_id,
-                        "reference": f"Card payments {datetime.date.today()}",
-                        "financial_mutations_attributes": financial_mutations_attributes,
-                    }
-                },
-            )
-            for x, payment in enumerate(new_cash_payments):
-                payment.moneybird_external_invoice.moneybird_financial_statement_id = (
-                    statement_response["id"]
-                )
-                payment.moneybird_external_invoice.moneybird_financial_mutation_id = (
-                    statement_response["financial_mutations"][x]["id"]
-                )
-                payment.moneybird_external_invoice.save()
-
-                mutation_response = self.__api.patch(
-                    f"financial_mutations/{payment.moneybird_external_invoice.moneybird_financial_mutation_id}/link_booking",
-                    {
-                        "booking_type": "ExternalSalesInvoice",
-                        "booking_id": payment.moneybird_external_invoice.moneybird_invoice_id,
-                        "price": str(payment.amount),
-                        "description": payment.topic,
-                    },
-                )
-
-    def delete_external_invoice(self, instance):
-        self.__api.delete(f"external_sales_invoices/{instance.moneybird_invoice_id}")
-        if instance.moneybird_financial_statement_id is not None:
-            try:
-                self.__api.patch(
-                    f"financial_statements/{instance.moneybird_financial_statement_id}",
-                    {
-                        "financial_statement": {
-                            "financial_mutations_attributes": {
-                                "0": {
-                                    "id": instance.moneybird_financial_mutation_id,
-                                    "_destroy": True,
-                                }
-                            }
-                        }
-                    },
-                )
-            except Administration.InvalidData:
-                self.__api.delete(
-                    f"financial_statements/{instance.moneybird_financial_statement_id}"
-                )
+def get_moneybird_api_service():
+    if (
+        settings.MONEYBIRD_ADMINISTRATION_ID is None
+        or settings.MONEYBIRD_API_KEY is None
+    ):
+        raise RuntimeError("Moneybird API key or administration ID not set")
+    return MoneybirdAPIService(
+        administration_id=settings.MONEYBIRD_ADMINISTRATION_ID,
+        api_key=settings.MONEYBIRD_API_KEY,
+    )

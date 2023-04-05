@@ -1,6 +1,11 @@
 from django.contrib import admin
 
-from .models import MoneybirdContact, MoneybirdExternalInvoice, PushedThaliaPayBatch
+from .models import (
+    MoneybirdContact,
+    MoneybirdExternalInvoice,
+    MoneybirdPayment,
+    PushedThaliaPayBatch,
+)
 
 
 @admin.register(MoneybirdContact)
@@ -12,7 +17,12 @@ class MoneybirdContactAdmin(admin.ModelAdmin):
 
 @admin.register(MoneybirdExternalInvoice)
 class MoneybirdExternalInvoiceAdmin(admin.ModelAdmin):
-    list_display = ("content_object",)
+    list_display = ("payable_object",)
+
+
+@admin.register(MoneybirdPayment)
+class MoneybirdPaymentAdmin(admin.ModelAdmin):
+    list_display = ("payment",)
 
 
 @admin.register(PushedThaliaPayBatch)
