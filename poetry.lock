@@ -944,14 +944,14 @@ requests = ">=2.13.0"
 
 [[package]]
 name = "django-queryable-properties"
-version = "1.8.3"
+version = "1.8.4"
 description = "Write Django model properties that can be used in database queries."
 category = "main"
 optional = false
 python-versions = "*"
 files = [
-    {file = "django-queryable-properties-1.8.3.tar.gz", hash = "sha256:ededecd103998885b2ef3d4d5a04a3d29f79b3b3c086df89448efb4b3459d7ef"},
-    {file = "django_queryable_properties-1.8.3-py2.py3-none-any.whl", hash = "sha256:8d702a8c8cce65f6505826c4ecc22429dda06f132c952f51ded6b208ed2586b0"},
+    {file = "django-queryable-properties-1.8.4.tar.gz", hash = "sha256:ed2aac9168ecce664dd3c2a65cfb6fc9fd2e3aa9b2acc3a4d75a948a67b719d3"},
+    {file = "django_queryable_properties-1.8.4-py2.py3-none-any.whl", hash = "sha256:4c2399847f5dd0a3eedabfc91865a0847aa58fc6cd80555151363943891ff4cd"},
 ]
 
 [package.dependencies]
@@ -3120,4 +3120,4 @@ postgres = ["psycopg2"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "0d73fa7d38a485519fcca5cd1f3705ea044f312b1f3e145809cd1c02ca3ec3e5"
+content-hash = "cc54f99beaeabd21d8579e36344a33ee5399c3a9914bfe0e0053ab591068dd48"
