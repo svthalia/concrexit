@@ -3,7 +3,7 @@ import datetime
 import logging
 
 from django.conf import settings
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import Group
 from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models
@@ -27,13 +27,13 @@ class ActiveMemberGroupManager(models.Manager):
         return super().get_queryset().exclude(active=False).order_by("name")
 
 
-class MemberGroup(models.Model):
+class MemberGroup(Group):
     """Describes a groups of members."""
 
     objects = models.Manager()
     active_objects = ActiveMemberGroupManager()
 
-    name = models.CharField(max_length=40, verbose_name=_("Name"), unique=True)
+    # name = models.CharField(max_length=40, verbose_name=_("Name"), unique=True)
 
     description = HTMLField(verbose_name=_("Description"))
 
@@ -49,11 +49,11 @@ class MemberGroup(models.Model):
         "members.Member", through="activemembers.MemberGroupMembership"
     )
 
-    permissions = models.ManyToManyField(
-        Permission,
-        verbose_name=_("permissions"),
-        blank=True,
-    )
+    # permissions = models.ManyToManyField(
+    #     Permission,
+    #     verbose_name=_("permissions"),
+    #     blank=True,
+    # )
 
     since = models.DateField(
         _("founded in"),
