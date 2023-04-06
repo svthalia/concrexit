@@ -160,7 +160,7 @@ def process_batch(batch):
             bank_account.save()
 
     batch.save()
-    processed_batch.send(sender=None, batch=batch)
+    processed_batch.send(sender=None, instance=batch)
 
     send_tpay_batch_processing_emails(batch)
 

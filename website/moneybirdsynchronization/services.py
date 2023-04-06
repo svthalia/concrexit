@@ -79,9 +79,16 @@ def create_or_update_external_invoice(obj):
 
     if external_invoice.payable.payment is not None:
         # Mark the invoice as paid if the payable is paid as well
+        try:
+            moneybird_payment = MoneybirdPayment.objects.get(
+                payment=external_invoice.payable.payment
+            )
+        except MoneybirdPayment.DoesNotExist:
+            moneybird_payment = None
+
         if (
-            external_invoice.payable.payment.moneybird_payment.moneybird_financial_mutation_id
-            is not None
+            moneybird_payment is not None
+            and moneybird_payment.moneybird_financial_mutation_id is not None
         ):
             # If the payment itself also already exists in a financial mutation, link it
             moneybird.link_mutation_to_booking(
@@ -275,7 +282,7 @@ def process_thalia_pay_batch(batch):
                     "0": {
                         "date": batch.processing_date.strftime("%Y-%m-%d"),
                         "message": f"Settlement of Thalia Pay batch {batch.id}: {batch.description}",
-                        "amount": -1 * batch.total_amount,
+                        "amount": str(-1 * batch.total_amount()),
                     }
                 },
             }

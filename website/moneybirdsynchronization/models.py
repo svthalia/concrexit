@@ -195,7 +195,7 @@ class MoneybirdExternalInvoice(models.Model):
         data = {
             "external_sales_invoice": {
                 "contact_id": contact_id,
-                "reference": self.payable.payment_topic,
+                "reference": f"{self.payable.payment_topic} [{self.payable.model.pk}]",
                 "date": invoice_date,
                 "currency": "EUR",
                 "prices_are_incl_tax": True,
