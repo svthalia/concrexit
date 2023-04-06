@@ -94,6 +94,11 @@ graph TD;
     sales --> payments;
     sales --> activemembers;
     sales --> members;
+    moneybirdsynchronization --> payments;
+    moneybirdsynchronization --> registrations;
+    moneybirdsynchronization --> sales;
+    moneybirdsynchronization --> events;
+    moneybirdsynchronization --> pizzas;
 
     documents;
     partners;
