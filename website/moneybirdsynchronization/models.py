@@ -18,11 +18,11 @@ from thaliawebsite import settings
 
 def financial_account_id_for_payment_type(payment_type):
     if payment_type == Payment.CARD:
-        return settings.MONEYBIRD_PIN_FINANCIAL_ACCOUNT_ID
+        return settings.MONEYBIRD_CARD_FINANCIAL_ACCOUNT_ID
     if payment_type == Payment.CASH:
         return settings.MONEYBIRD_CASH_FINANCIAL_ACCOUNT_ID
     if payment_type == Payment.TPAY:
-        return settings.MONEYBIRD_THALIAPAY_FINANCIAL_ACCOUNT_ID
+        return settings.MONEYBIRD_TPAY_FINANCIAL_ACCOUNT_ID
     return None
 
 

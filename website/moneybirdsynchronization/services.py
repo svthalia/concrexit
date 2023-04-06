@@ -276,7 +276,7 @@ def process_thalia_pay_batch(batch):
     moneybird.create_financial_statement(
         {
             "financial_statement": {
-                "financial_account_id": settings.MONEYBIRD_THALIAPAY_FINANCIAL_ACCOUNT_ID,
+                "financial_account_id": settings.MONEYBIRD_TPAY_FINANCIAL_ACCOUNT_ID,
                 "reference": f"Settlement of Thalia Pay batch {batch.id}: {batch.description}",
                 "financial_mutations_attributes": {
                     "0": {
