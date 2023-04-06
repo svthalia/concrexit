@@ -2,7 +2,7 @@
 import logging
 
 from django.contrib.auth import get_user_model
-from django.db.models.signals import post_delete, post_save, pre_delete
+from django.db.models.signals import post_delete, post_save
 
 from moneybirdsynchronization import services
 from moneybirdsynchronization.administration import Administration
