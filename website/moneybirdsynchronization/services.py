@@ -62,6 +62,7 @@ def create_or_update_external_invoice(obj):
     external_invoice = MoneybirdExternalInvoice.get_for_object(obj)
     if external_invoice is None:
         external_invoice = MoneybirdExternalInvoice.create_for_object(obj)
+        created = True
 
     moneybird = get_moneybird_api_service()
 
@@ -90,12 +91,21 @@ def create_or_update_external_invoice(obj):
             moneybird_payment is not None
             and moneybird_payment.moneybird_financial_mutation_id is not None
         ):
-            # If the payment itself also already exists in a financial mutation, link it
-            moneybird.link_mutation_to_booking(
-                mutation_id=external_invoice.payable.payment.moneybird_payment.moneybird_financial_mutation_id,
-                booking_id=external_invoice.moneybird_invoice_id,
-                price_base=str(external_invoice.payable.payment_amount),
+            mutation_info = moneybird.get_financial_mutation_info(
+                external_invoice.payable.payment.moneybird_payment.moneybird_financial_mutation_id
             )
+            if not any(
+                x["invoice_type"] == "ExternalSalesInvoice"
+                and x["invoice_id"] == external_invoice.moneybird_invoice_id
+                for x in mutation_info[0]["payments"]
+            ):
+                # If the payment itself also already exists in a financial mutation
+                # and is not yet linked to the booking, link it
+                moneybird.link_mutation_to_booking(
+                    mutation_id=external_invoice.payable.payment.moneybird_payment.moneybird_financial_mutation_id,
+                    booking_id=external_invoice.moneybird_invoice_id,
+                    price_base=str(external_invoice.payable.payment_amount),
+                )
         else:
             # Otherwise, mark it as paid without linking to an actual payment
             # (announcing that in the future, a mutation should become available)

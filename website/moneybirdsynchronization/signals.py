@@ -15,10 +15,7 @@ from utils.models.signals import suspendingreceiver
 User = get_user_model()
 
 
-@suspendingreceiver(
-    post_save,
-    sender="members.Profile",
-)
+@suspendingreceiver(post_save, sender="members.Profile")
 def post_profile_save(sender, instance, **kwargs):
     """Update the contact in Moneybird when the profile is saved."""
     try:
@@ -31,10 +28,7 @@ def post_profile_save(sender, instance, **kwargs):
         logging.error("Moneybird synchronization error: %s", e)
 
 
-@suspendingreceiver(
-    post_delete,
-    sender="members.Profile",
-)
+@suspendingreceiver(post_delete, sender="members.Profile")
 def post_profile_delete(sender, instance, **kwargs):
     """Delete the contact in Moneybird when the profile is deleted."""
     try:
@@ -65,10 +59,7 @@ def post_user_save(sender, instance, **kwargs):
         logging.error("Moneybird synchronization error: %s", e)
 
 
-@suspendingreceiver(
-    post_delete,
-    sender=User,
-)
+@suspendingreceiver(post_delete, sender=User)
 def post_user_delete(sender, instance, **kwargs):
     """Delete the contact in Moneybird when the user is deleted."""
     try:
@@ -96,18 +87,6 @@ def post_event_registration_save(sender, instance, **kwargs):
 
 
 @suspendingreceiver(
-    post_delete,
-    sender="events.EventRegistration",
-)
-def post_event_registration_delete(sender, instance, **kwargs):
-    try:
-        services.delete_external_invoice(instance)
-    except Administration.Error as e:
-        send_sync_error(e, instance)
-        logging.error("Moneybird synchronization error: %s", e)
-
-
-@suspendingreceiver(
     post_save,
     sender="pizzas.FoodOrder",
 )
@@ -120,20 +99,12 @@ def post_food_order_save(sender, instance, **kwargs):
 
 
 @suspendingreceiver(
-    pre_delete,
-    sender="pizzas.FoodOrder",
-)
-def pre_food_order_delete(sender, instance, **kwargs):
-    try:
-        services.delete_external_invoice(instance)
-    except Administration.Error as e:
-        send_sync_error(e, instance)
-        logging.error("Moneybird synchronization error: %s", e)
-
-
-@suspendingreceiver(
     post_save,
     sender="registrations.Registration",
+)
+@suspendingreceiver(
+    post_save,
+    sender="registrations.Renewal",
 )
 def post_registration_save(sender, instance, **kwargs):
     if instance.payment is None:
@@ -146,13 +117,10 @@ def post_registration_save(sender, instance, **kwargs):
         logging.error("Moneybird synchronization error: %s", e)
 
 
-@suspendingreceiver(
-    post_save,
-    sender="registrations.Renewal",
-)
-def post_renewal_save(sender, instance, **kwargs):
+@suspendingreceiver(post_save, sender="sales.Order")
+def post_order_save(sender, instance, **kwargs):
     if instance.payment is None:
-        return  # We only create invoices for people who have paid for their registration
+        return  # We only create invoices for orders that are paid, because we can have quite some phantom orders
 
     try:
         services.create_or_update_external_invoice(instance)
@@ -161,21 +129,18 @@ def post_renewal_save(sender, instance, **kwargs):
         logging.error("Moneybird synchronization error: %s", e)
 
 
+@suspendingreceiver(post_delete, sender="registrations.Renewal")
 @suspendingreceiver(
     post_delete,
     sender="registrations.Registration",
 )
-def post_registration_delete(sender, instance, **kwargs):
-    try:
-        services.delete_external_invoice(instance)
-    except Administration.Error as e:
-        send_sync_error(e, instance)
-        logging.error("Moneybird synchronization error: %s", e)
-
-
 @suspendingreceiver(
     post_delete,
-    sender="registrations.Renewal",
+    sender="pizzas.FoodOrder",
+)
+@suspendingreceiver(
+    post_delete,
+    sender="events.EventRegistration",
 )
 def post_renewal_delete(sender, instance, **kwargs):
     try:
@@ -201,21 +166,6 @@ def post_payment_save(sender, instance, **kwargs):
 def post_payment_delete(sender, instance, **kwargs):
     try:
         services.delete_moneybird_payment(instance)
-    except Administration.Error as e:
-        send_sync_error(e, instance)
-        logging.error("Moneybird synchronization error: %s", e)
-
-
-@suspendingreceiver(
-    post_save,
-    sender="sales.Order",
-)
-def post_order_save(sender, instance, **kwargs):
-    if instance.payment is None:
-        return  # We only create invoices for orders that are paid, because we can have quite some phantom orders
-
-    try:
-        services.create_or_update_external_invoice(instance)
     except Administration.Error as e:
         send_sync_error(e, instance)
         logging.error("Moneybird synchronization error: %s", e)
