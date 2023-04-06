@@ -1,9 +1,9 @@
 Hi,
 
 There has been an error when trying to synchronize with Moneybird.
-Error: {{ error }}
-Payment: {{ payment }}
-Link to payment: {{ payment.get_absolute_url }}
+Error: {{ error.message }}
+Object: {{ obj }}
+Link to payment: {{ url }}
 
 Kisses,
 The Website

@@ -1,11 +1,6 @@
 from django.contrib import admin
 
-from .models import (
-    MoneybirdContact,
-    MoneybirdExternalInvoice,
-    MoneybirdPayment,
-    PushedThaliaPayBatch,
-)
+from .models import MoneybirdContact, MoneybirdExternalInvoice, MoneybirdPayment
 
 
 @admin.register(MoneybirdContact)
@@ -23,8 +18,3 @@ class MoneybirdExternalInvoiceAdmin(admin.ModelAdmin):
 @admin.register(MoneybirdPayment)
 class MoneybirdPaymentAdmin(admin.ModelAdmin):
     list_display = ("payment",)
-
-
-@admin.register(PushedThaliaPayBatch)
-class PushedThaliaPayBatchAdmin(admin.ModelAdmin):
-    list_display = ("batch", "pushed")

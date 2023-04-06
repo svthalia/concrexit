@@ -163,17 +163,25 @@ class MoneybirdExternalInvoice(models.Model):
             return None
 
     def to_moneybird(self):
+        moneybird = get_moneybird_api_service()
+
         if self.payable.payment_payer is None:
             contact_id = settings.MONEYBIRD_UNKOWN_PAYER_CONTACT_ID
         else:
-            # TODO check if contact exists. If not, create it
-            contact_id = self.payable.payment_payer.moneybird_contact.moneybird_id
+            moneybird_contact, created = MoneybirdContact.objects.get_or_create(
+                member=self.payable.payment_payer
+            )
+            if created:
+                response = moneybird.create_contact(moneybird_contact.to_moneybird())
+                moneybird_contact.moneybird_id = response["id"]
+                moneybird_contact.moneybird_version = response["version"]
+                moneybird_contact.save()
+
+            contact_id = moneybird_contact.moneybird_id
 
         invoice_date = date_for_payable_model(self.payable_object).strftime("%Y-%m-%d")
 
         project_name = project_name_for_payable_model(self.payable_object)
-
-        moneybird = get_moneybird_api_service()
 
         project_id = moneybird.get_or_create_project(project_name)
 
@@ -272,24 +280,3 @@ class MoneybirdPayment(models.Model):
     class Meta:
         verbose_name = _("moneybird payment")
         verbose_name_plural = _("moneybird payments")
-
-
-class PushedThaliaPayBatch(models.Model):
-    batch = models.OneToOneField(
-        "payments.Batch",
-        on_delete=models.CASCADE,
-        verbose_name=_("batch"),
-        related_name="pushed_thaliapay_batch",
-    )
-
-    pushed = models.BooleanField(
-        verbose_name=_("pushed"),
-        default=False,
-    )
-
-    def __str__(self):
-        return f"Pushed ThaliaPay batch for {self.batch}"
-
-    class Meta:
-        verbose_name = _("pushed ThaliaPay batch")
-        verbose_name_plural = _("pushed ThaliaPay batches")

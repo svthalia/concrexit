@@ -25,8 +25,7 @@ def create_or_update_contact(member):
         moneybird_contact.moneybird_version = response["version"]
         moneybird_contact.save()
     else:
-        # Update the contact data
-        # TODO (not really important) only update the fields that have changed (which you can check with the version)
+        # Update the contact data (right now we always do this, but we could use the version to check if it's needed)
         response = moneybird.update_contact(
             moneybird_contact.moneybird_id, moneybird_contact.to_moneybird()
         )
@@ -262,100 +261,23 @@ def delete_moneybird_payment(moneybird_payment):
     )
 
 
-#
-#
-# def push_thaliapay_batch(batch):
-#     if not settings.MONEYBIRD_SYNC_ENABLED:
-#         return
-#
-#     payments = Payment.objects.filter(batch=batch)
-#     tpay_account_id = settings.MONEYBIRD_THALIAPAY_FINANCIAL_ACCOUNT_ID
-#
-#     apiservice = get_moneybird_api_service()
-#     apiservice.link_transaction_to_financial_account(tpay_account_id, payments)
-#     batch.pushed_thaliapay_batch.processed = True
-#     batch.pushed_thaliapay_batch.save()
-#
-# def sync_contacts():
-#     if not settings.MONEYBIRD_SYNC_ENABLED:
-#         return
-#
-#     apiservice = get_moneybird_api_service()
-#
-#     unsynced_members = Member.objects.filter(
-#         ~Q(
-#             id__in=Subquery(
-#                 MoneybirdContact.objects.filter(member=OuterRef("pk")).values("member")
-#             )
-#         )
-#     )
-#
-#     for member in unsynced_members:
-#         contact = MoneybirdContact(member=member)
-#         contact.save()
-#
-#     # fetch contact ids from moneybird
-#     api_response = apiservice.api.get("contacts")
-#
-#     # fetch contact ids from contact model
-#     contact_info = [
-#         contact.get_moneybird_info() for contact in MoneybirdContact.objects.all()
-#     ]
-#
-#     # find contacts in contact model that are not in moneybird and add to moneybird
-#     moneybird_ids = [int(info["id"]) for info in api_response]
-#     for contact in contact_info:
-#         if contact["id"] is None or int(contact["id"]) not in moneybird_ids:
-#             contact = MoneybirdContact.objects.get(
-#                 member=Member.objects.get(pk=contact["pk"])
-#             )
-#             response = apiservice.create_contact(contact)
-#             contact.moneybird_id = response["id"]
-#             contact.moneybird_version = response["version"]
-#             contact.save()
-#
-#     moneybird_info = []
-#     for contact in api_response:
-#         if len(contact["custom_fields"]) > 0:
-#             moneybird_info.append(
-#                 {
-#                     "id": contact["id"],
-#                     "version": contact["version"],
-#                     "pk": contact["custom_fields"][0]["value"],
-#                 }
-#             )
-#
-#     ids = [info["id"] for info in contact_info]
-#     for moneybird in moneybird_info:
-#         if int(moneybird["id"]) not in ids:
-#             apiservice.delete_contact(moneybird["id"])
-#
-#
-# def sync_statements():
-#     if not settings.MONEYBIRD_SYNC_ENABLED:
-#         return
-#
-#     apiservice = get_moneybird_api_service()
-#
-#     date = datetime.date.today()
-#     new_card_payments = Payment.objects.filter(
-#         type=Payment.CARD,
-#         created_at__year=date.year,
-#         created_at__month=date.month,
-#         created_at__day=date.day,
-#         moneybird_external_invoice__moneybird_financial_statement_id=None,
-#     )
-#     new_cash_payments = Payment.objects.filter(
-#         type=Payment.CASH,
-#         created_at__year=date.year,
-#         created_at__month=date.month,
-#         created_at__day=date.day,
-#         moneybird_external_invoice__moneybird_financial_statement_id=None,
-#     )
-#
-#     apiservice.link_transaction_to_financial_account(
-#         settings.MONEYBIRD_PIN_FINANCIAL_ACCOUNT_ID, new_card_payments
-#     )
-#     apiservice.link_transaction_to_financial_account(
-#         settings.MONEYBIRD_CASH_FINANCIAL_ACCOUNT_ID, new_cash_payments
-#     )
+def process_thalia_pay_batch(batch):
+    if not settings.MONEYBIRD_SYNC_ENABLED:
+        return
+
+    moneybird = get_moneybird_api_service()
+    moneybird.create_financial_statement(
+        {
+            "financial_statement": {
+                "financial_account_id": settings.MONEYBIRD_THALIAPAY_FINANCIAL_ACCOUNT_ID,
+                "reference": f"Settlement of Thalia Pay batch {batch.id}: {batch.description}",
+                "financial_mutations_attributes": {
+                    "0": {
+                        "date": batch.processing_date.strftime("%Y-%m-%d"),
+                        "message": f"Settlement of Thalia Pay batch {batch.id}: {batch.description}",
+                        "amount": -1 * batch.total_amount,
+                    }
+                },
+            }
+        }
+    )

@@ -83,62 +83,6 @@ class MoneybirdAPIService:
             {"booking_type": booking_type, "booking_id": booking_id},
         )
 
-    # def link_transaction_to_financial_account(self, account_id, new_cash_payments):
-    #     financial_mutations_attributes = []
-    #     if account_id is None:
-    #         return
-    #
-    #     for payment in new_cash_payments:
-    #         payment_response = self._administration.post(
-    #             f"external_sales_invoices/{payment.moneybird_external_invoice.moneybird_invoice_id}/payments",
-    #             {
-    #                 "payment": {
-    #                     "payment_date": payment.created_at.strftime("%Y-%m-%d"),
-    #                     "price": str(payment.amount),
-    #                     "financial_account_id": account_id,
-    #                     "invoice_id": payment.moneybird_external_invoice.moneybird_invoice_id,
-    #                 }
-    #             },
-    #         )
-    #
-    #         financial_mutations_attributes.append(
-    #             {
-    #                 "date": payment.created_at.strftime("%Y-%m-%d"),
-    #                 "amount": str(payment.amount),
-    #                 "message": payment.topic,
-    #             }
-    #         )
-    #
-    #     if len(financial_mutations_attributes) > 0:
-    #         statement_response = self._administration.post(
-    #             "financial_statements",
-    #             {
-    #                 "financial_statement": {
-    #                     "financial_account_id": account_id,
-    #                     "reference": f"Card payments {datetime.date.today()}",
-    #                     "financial_mutations_attributes": financial_mutations_attributes,
-    #                 }
-    #             },
-    #         )
-    #         for x, payment in enumerate(new_cash_payments):
-    #             payment.moneybird_external_invoice.moneybird_financial_statement_id = (
-    #                 statement_response["id"]
-    #             )
-    #             payment.moneybird_external_invoice.moneybird_financial_mutation_id = (
-    #                 statement_response["financial_mutations"][x]["id"]
-    #             )
-    #             payment.moneybird_external_invoice.save()
-    #
-    #             mutation_response = self._administration.patch(
-    #                 f"financial_mutations/{payment.moneybird_external_invoice.moneybird_financial_mutation_id}/link_booking",
-    #                 {
-    #                     "booking_type": "ExternalSalesInvoice",
-    #                     "booking_id": payment.moneybird_external_invoice.moneybird_invoice_id,
-    #                     "price": str(payment.amount),
-    #                     "description": payment.topic,
-    #                 },
-    #             )
-
 
 def get_moneybird_api_service():
     if (
