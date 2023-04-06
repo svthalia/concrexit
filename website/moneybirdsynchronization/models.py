@@ -9,7 +9,7 @@ from moneybirdsynchronization.moneybird import get_moneybird_api_service
 from events.models import EventRegistration
 from members.models import Member
 from payments import payables
-from payments.models import Payment
+from payments.models import BankAccount, Payment
 from pizzas.models import FoodOrder
 from registrations.models import Registration, Renewal
 from sales.models.order import Order
@@ -90,6 +90,7 @@ class MoneybirdContact(models.Model):
                 "city": self.member.profile.address_city,
                 "country": self.member.profile.address_country,
                 "send_invoices_to_email": self.member.email,
+                "bank_account": BankAccount.objects.filter(owner=self.member).last(),
             }
         }
         if self.moneybird_id is not None:
