@@ -24,8 +24,8 @@ django.jQuery(function () {
     function setFields(id, data) {
         $('#id_newsletterevent_set-' +  id + '-title')
             .val(data['title']);
-        tinyMCE.get('id_newsletterevent_set-' +  id + '-description')
-            .setContent(data['caption']);
+        $('#id_newsletterevent_set-' +  id + '-description') 
+            .val(data['caption']);
         $('#id_newsletterevent_set-' +  id + '-what')
             .val(data['title']);
         $('#id_newsletterevent_set-' +  id + '-where')
@@ -50,7 +50,7 @@ django.jQuery(function () {
 
     function getEvent(pk, success) {
         $.ajax({
-            url: '/api/v1/events/' + pk,
+            url: '/api/v2/events/' + pk,
             type: 'GET',
             dataType: 'json'
         }).done(function(data) {

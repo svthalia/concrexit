@@ -17,6 +17,10 @@ website/static/
 covhtml/
 .make
 
+# make graphs
+full_models_graph.png
+partial_models_graph.png
+
 # Ignore local settings
 website/thaliawebsite/settings/localsettings.py
 website/.sass-cache/

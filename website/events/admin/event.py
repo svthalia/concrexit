@@ -40,6 +40,7 @@ class EventAdmin(DoNextModelAdmin):
         "event_date",
         "registration_date",
         "num_participants",
+        "get_organisers",
         "category",
         "published",
         "edit_link",
@@ -108,7 +109,12 @@ class EventAdmin(DoNextModelAdmin):
     )
 
     def get_queryset(self, request):
-        return super().get_queryset(request).select_properties("participant_count")
+        return (
+            super()
+            .get_queryset(request)
+            .select_properties("participant_count")
+            .prefetch_related("organisers")
+        )
 
     def get_form(self, request, obj=None, change=False, **kwargs):
         form = super().get_form(request, obj, change, **kwargs)
@@ -160,6 +166,11 @@ class EventAdmin(DoNextModelAdmin):
         return f"{num}/{obj.max_participants}"
 
     num_participants.short_description = _("Number of participants")
+
+    def get_organisers(self, obj):
+        return ", ".join(str(o) for o in obj.organisers.all())
+
+    get_organisers.short_description = _("Organisers")
 
     def make_published(self, request, queryset):
         """Change the status of the event to published."""
