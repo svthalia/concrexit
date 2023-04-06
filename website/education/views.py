@@ -5,7 +5,6 @@ from datetime import date, datetime
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
-from django.db.models import Count
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
@@ -25,11 +24,8 @@ from .models import Category, Course, Exam, Summary
 class CourseIndexView(ListView):
     """Render an overview of the courses."""
 
-    queryset = (
-        Course.objects.filter(until=None)
-        .prefetch_related("categories", "old_courses")
-        .annotate(summary_count=Count("summary"))
-        .annotate(exam_count=Count("exam"))
+    queryset = Course.objects.filter(until=None).prefetch_related(
+        "categories", "old_courses"
     )
     template_name = "education/courses.html"
 
@@ -40,15 +36,15 @@ class CourseIndexView(ListView):
         context = super().get_context_data(**kwargs)
         context.update(
             {
-                "courses": (
+                "courses": [
                     {
                         "course_code": x.course_code,
                         "name": x.name,
                         "categories": x.categories.all(),
                         "document_count": sum(
                             [
-                                x.summary_count,
-                                x.exam_count,
+                                x.summary_set.filter(accepted=True).count(),
+                                x.exam_set.filter(accepted=True).count(),
                             ]
                             + [
                                 c.summary_set.filter(accepted=True).count()
@@ -59,7 +55,7 @@ class CourseIndexView(ListView):
                         "url": x.get_absolute_url(),
                     }
                     for x in context["object_list"]
-                ),
+                ],
                 "categories": Category.objects.all(),
             }
         )
