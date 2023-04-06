@@ -159,6 +159,9 @@ EDUCATION_NOTIFICATION_ADDRESS = (
 PROMO_REQUEST_NOTIFICATION_ADDRESS = (
     f"{os.environ.get('ADDRESS_PROMOREQUESTS', 'promocie')}@{SITE_DOMAIN}"
 )
+TREASURER_NOTIFICATION_ADDRESS = (
+    f"{os.environ.get('ADDRESS_TREASURER', 'treasurer')}@{SITE_DOMAIN}"
+)
 PROMO_PUBLISH_DATE_TIMEDELTA = timezone.timedelta(weeks=1)
 
 # The scheme the app uses for oauth redirection
@@ -488,6 +491,7 @@ INSTALLED_APPS = [
     "singlepages.apps.SinglepagesConfig",
     "shortlinks.apps.ShortLinkConfig",
     "sales.apps.SalesConfig",
+    "moneybirdsynchronization.apps.MoneybirdsynchronizationConfig",
 ]
 
 MIDDLEWARE = [
@@ -944,3 +948,27 @@ GRAPH_MODELS = {
         "auth",
     ],
 }
+MONEYBIRD_ADMINISTRATION_ID = os.environ.get("MONEYBIRD_ADMINISTRATION_ID", None)
+MONEYBIRD_API_KEY = os.environ.get("MONEYBIRD_API_KEY", None)
+
+MONEYBIRD_SYNC_ENABLED = MONEYBIRD_ADMINISTRATION_ID and MONEYBIRD_API_KEY
+
+MONEYBIRD_MEMBER_PK_CUSTOM_FIELD_ID = os.environ.get(
+    "MONEYBIRD_MEMBER_PK_CUSTOM_FIELD_ID", None
+)
+MONEYBIRD_UNKOWN_PAYER_CONTACT_ID = os.environ.get(
+    "MONEYBIRD_UNKOWN_PAYER_CONTACT_ID", None
+)
+MONEYBIRD_CONTRIBUTION_LEDGER_ID = os.environ.get(
+    "MONEYBIRD_CONTRIBUTION_LEDGER_ID", None
+)
+
+MONEYBIRD_TPAY_FINANCIAL_ACCOUNT_ID = os.environ.get(
+    "MONEYBIRD_TPAY_FINANCIAL_ACCOUNT_ID", None
+)
+MONEYBIRD_CASH_FINANCIAL_ACCOUNT_ID = os.environ.get(
+    "MONEYBIRD_CASH_FINANCIAL_ACCOUNT_ID", None
+)
+MONEYBIRD_CARD_FINANCIAL_ACCOUNT_ID = os.environ.get(
+    "MONEYBIRD_CARD_FINANCIAL_ACCOUNT_ID", None
+)
