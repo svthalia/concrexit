@@ -1,9 +1,9 @@
 ---
 
-name: CD
+name: Build and deploy to staging
 on:
   push:
-    # branches: ['master']
+    branches: ['master']
 
 jobs:
   build-concrexit:
