@@ -62,7 +62,6 @@ def create_or_update_external_invoice(obj):
     external_invoice = MoneybirdExternalInvoice.get_for_object(obj)
     if external_invoice is None:
         external_invoice = MoneybirdExternalInvoice.create_for_object(obj)
-        created = True
 
     moneybird = get_moneybird_api_service()
 
