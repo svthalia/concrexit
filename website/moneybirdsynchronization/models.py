@@ -90,12 +90,12 @@ class MoneybirdContact(models.Model):
                 "city": self.member.profile.address_city,
                 "country": self.member.profile.address_country,
                 "send_invoices_to_email": self.member.email,
-                "bank_account": BankAccount.objects.filter(owner=self.member)
-                .last()
-                .iban,
                 "customer_id": f"C-{self.member.pk}",
             }
         }
+        bank_account = BankAccount.objects.filter(owner=self.member).last()
+        if bank_account:
+            data["contact"]["bank_account"] = bank_account.iban
         if self.moneybird_id is not None:
             data["id"] = self.moneybird_id
         if settings.MONEYBIRD_MEMBER_PK_CUSTOM_FIELD_ID:
