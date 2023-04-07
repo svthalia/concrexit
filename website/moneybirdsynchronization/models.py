@@ -71,11 +71,6 @@ class MoneybirdContact(models.Model):
         blank=True,
     )
     moneybird_id = models.IntegerField(_("Moneybird ID"), null=True, blank=True)
-    moneybird_version = models.IntegerField(
-        _("Moneybird version"),
-        null=True,
-        blank=True,
-    )
 
     def to_moneybird(self):
         if self.member.profile is None:
@@ -106,7 +101,6 @@ class MoneybirdContact(models.Model):
     def get_moneybird_info(self):
         return {
             "id": self.moneybird_id,
-            "version": self.moneybird_version,
             "pk": self.member.pk,
         }
 
@@ -176,7 +170,6 @@ class MoneybirdExternalInvoice(models.Model):
             if created:
                 response = moneybird.create_contact(moneybird_contact.to_moneybird())
                 moneybird_contact.moneybird_id = response["id"]
-                moneybird_contact.moneybird_version = response["version"]
                 moneybird_contact.save()
 
             contact_id = moneybird_contact.moneybird_id

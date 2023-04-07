@@ -22,14 +22,12 @@ def create_or_update_contact(member):
         # Push the contact to Moneybird
         response = moneybird.create_contact(moneybird_contact.to_moneybird())
         moneybird_contact.moneybird_id = response["id"]
-        moneybird_contact.moneybird_version = response["version"]
         moneybird_contact.save()
     else:
         # Update the contact data (right now we always do this, but we could use the version to check if it's needed)
         response = moneybird.update_contact(
             moneybird_contact.moneybird_id, moneybird_contact.to_moneybird()
         )
-        moneybird_contact.moneybird_version = response["version"]
         moneybird_contact.save()
 
     return moneybird_contact
