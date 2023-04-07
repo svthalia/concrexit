@@ -235,7 +235,7 @@ class RenewalFormView(FormView):
         if (
             self.request.member.latest_membership
             and not self.request.member.latest_membership.is_active()
-        ) and self.request.member.profile.is_minimised:
+        ) and self.request.member.profile.is_minimized:
             messages.warning(
                 self.request,
                 _(
