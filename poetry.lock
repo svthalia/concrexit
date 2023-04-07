@@ -1205,14 +1205,14 @@ grpcio-gcp = ["grpcio-gcp (>=0.2.2,<1.0dev)"]
 
 [[package]]
 name = "google-api-python-client"
-version = "2.83.0"
+version = "2.84.0"
 description = "Google API Client Library for Python"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "google-api-python-client-2.83.0.tar.gz", hash = "sha256:d07509f1b2d2b2427363b454db996f7a15e1751a48cfcaf28427050560dd51cf"},
-    {file = "google_api_python_client-2.83.0-py2.py3-none-any.whl", hash = "sha256:afa7fe2a5d77e8f136cdb8f40a120dd6660c2292f791c1b22734dfe786bd1dac"},
+    {file = "google-api-python-client-2.84.0.tar.gz", hash = "sha256:c398fd6f9ead0be23aade3b2704c72c5146df0e3352d8ff9101286077e1b010a"},
+    {file = "google_api_python_client-2.84.0-py2.py3-none-any.whl", hash = "sha256:83041bb895863225ecdd9c59dd58565fa48c57c2f10fe06f7c08da7c42c53abc"},
 ]
 
 [package.dependencies]
@@ -3116,4 +3116,4 @@ postgres = ["psycopg2"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "e3af5f389f3e02fbb4a4526768da59d3b1b3be3629b35c5bbbeee7d40b116bb5"
+content-hash = "2d984aacc6b9c5ec1194e0d8d6ecac518e4d0b1fd187bf5085b9cd877ca6d41f"
