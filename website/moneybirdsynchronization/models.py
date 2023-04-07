@@ -70,7 +70,12 @@ class MoneybirdContact(models.Model):
         null=True,
         blank=True,
     )
-    moneybird_id = models.IntegerField(_("Moneybird ID"), null=True, blank=True)
+    moneybird_id = models.CharField(
+        _("Moneybird ID"),
+        max_length=255,
+        blank=True,
+        null=True,
+    )
 
     def to_moneybird(self):
         if self.member.profile is None:
