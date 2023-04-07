@@ -96,6 +96,7 @@ class MoneybirdContact(models.Model):
         if self.moneybird_id is not None:
             data["id"] = self.moneybird_id
         if settings.MONEYBIRD_MEMBER_PK_CUSTOM_FIELD_ID:
+            data["contact"]["custom_fields_attributes"] = {}
             data["contact"]["custom_fields_attributes"]["0"] = {
                 "id": settings.MONEYBIRD_MEMBER_PK_CUSTOM_FIELD_ID,
                 "value": self.member.pk,
