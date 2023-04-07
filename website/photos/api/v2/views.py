@@ -50,6 +50,10 @@ class AlbumDetailView(RetrieveAPIView):
             photos = photos.annotate(
                 member_likes=Count("likes", filter=Q(likes__member=self.request.member))
             )
+
+        # Fix select_properties dropping the default ordering.
+        photos = photos.order_by("pk")
+
         return Album.objects.filter(hidden=False).prefetch_related(
             Prefetch("photo_set", queryset=photos)
         )
