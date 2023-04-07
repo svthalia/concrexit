@@ -18,7 +18,7 @@
       {% if request.event %}Event: {{ request.event.title }}<br>{% endif %}
       Promotion channel: {{ request.channel }}<br>
       Publish date: {{ request.publish_date }}<br>
-      Remarks: {{ request.remarks }}<br>
+      Remarks: {{ request.remarks|safe }}<br>
     </p>
   {% endfor%}
 
