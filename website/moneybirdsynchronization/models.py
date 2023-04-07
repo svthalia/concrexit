@@ -86,6 +86,7 @@ class MoneybirdContact(models.Model):
                 "country": self.member.profile.address_country,
                 "send_invoices_to_email": self.member.email,
                 "bank_account": BankAccount.objects.filter(owner=self.member).last(),
+                "customer_id": f"C-{self.member.pk}",
             }
         }
         if self.moneybird_id is not None:
