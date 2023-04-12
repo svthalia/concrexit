@@ -1,7 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.db.models import Max
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 
 from utils.media.services import get_media_url
 
@@ -20,8 +19,7 @@ def index(request):
 
 
 @login_required
-def pages(request, year, issue):
-    """Return paths of individual Thabloid pages."""
-    thabloid = get_object_or_404(Thabloid, year=int(year), issue=int(issue))
-    files = [{"src": get_media_url(p)} for p in thabloid.pages]
-    return JsonResponse(files, safe=False)
+def thabloid(request, year, issue):
+    """Redirect to the Thabloid file."""
+    thabloid = get_object_or_404(Thabloid, year=year, issue=issue)
+    return redirect(get_media_url(thabloid.file))

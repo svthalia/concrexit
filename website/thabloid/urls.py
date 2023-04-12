@@ -16,9 +16,9 @@ urlpatterns = [
                         [
                             path("", views.index, name="index"),
                             path(
-                                "pages/<int:year>/<int:issue>/",
-                                views.pages,
-                                name="pages",
+                                "<int:year>/<int:issue>/",
+                                views.thabloid,
+                                name="detail",
                             ),
                         ]
                     ),
