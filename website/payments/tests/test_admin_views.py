@@ -63,7 +63,8 @@ class PaymentAdminViewTest(TestCase):
                 "type": "cash_payment",
             },
         )
-        self.assertRedirects(response, f"/admin/login/?next={url}")
+        self.assertEqual(response.status_code, 302)
+        self.assertURLEqual(response.url, f"/admin/login/?next={url}")
 
     @mock.patch("django.contrib.messages.error")
     @mock.patch("django.contrib.messages.success")
@@ -322,7 +323,8 @@ class BatchExportAdminViewTest(TestCase):
     def test_permission(self):
         url = f"/admin/payments/batch/{self.batch.id}/export/"
         response = self.client.post(url)
-        self.assertRedirects(response, f"/admin/login/?next={url}")
+        self.assertEqual(response.status_code, 302)
+        self.assertURLEqual(response.url, f"/admin/login/?next={url}")
 
         self._give_user_permissions()
 
@@ -419,7 +421,8 @@ class BatchTopicExportAdminViewTest(TestCase):
     def test_permission(self):
         url = f"/admin/payments/batch/{self.batch.id}/export-topic/"
         response = self.client.post(url)
-        self.assertRedirects(response, f"/admin/login/?next={url}")
+        self.assertEqual(response.status_code, 302)
+        self.assertURLEqual(response.url, f"/admin/login/?next={url}")
 
         self._give_user_permissions()
 
@@ -533,7 +536,8 @@ class BatchTopicDescriptionAdminViewTest(TestCase):
     def test_permission(self):
         url = f"/admin/payments/batch/{self.batch.id}/topic-description/"
         response = self.client.post(url)
-        self.assertRedirects(response, f"/admin/login/?next={url}")
+        self.assertEqual(response.status_code, 302)
+        self.assertURLEqual(response.url, f"/admin/login/?next={url}")
 
         self._give_user_permissions()
 
@@ -644,7 +648,8 @@ class BatchNewFilledAdminViewTest(TestCase):
     def test_permission(self):
         url = "/admin/payments/batch/new_filled/"
         response = self.client.post(url)
-        self.assertRedirects(response, f"/admin/login/?next={url}")
+        self.assertEqual(response.status_code, 302)
+        self.assertURLEqual(response.url, f"/admin/login/?next={url}")
 
         self._give_user_permissions()
 
