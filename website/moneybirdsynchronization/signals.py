@@ -19,6 +19,17 @@ User = get_user_model()
 @suspendingreceiver(post_save, sender="members.Profile")
 def post_profile_save(sender, instance, **kwargs):
     """Update the contact in Moneybird when the profile is saved."""
+    updated_fields = kwargs.get("update_fields", None)
+    if (
+        updated_fields is not None
+        and "is_minimized" not in updated_fields
+        and "address_street" not in updated_fields
+        and "address_street2" not in updated_fields
+        and "address_postal_code" not in updated_fields
+        and "address_city" not in updated_fields
+        and "address_country" not in updated_fields
+    ):
+        return
     try:
         if instance.is_minimized:
             services.delete_contact(Member.objects.get(profile=instance))
@@ -51,7 +62,12 @@ def post_user_save(sender, instance, **kwargs):
         return
 
     updated_fields = kwargs.get("update_fields", None)
-    if "first_name" not in updated_fields and "last_name" not in updated_fields:
+    if (
+        updated_fields is not None
+        and "first_name" not in updated_fields
+        and "last_name" not in updated_fields
+        and "email" not in updated_fields
+    ):
         # Only update the contact when the name is changed
         return
 
@@ -80,7 +96,8 @@ def post_bankaccount_save(sender, instance, **kwargs):
     """Update the contact in Moneybird when the bank account is saved."""
     updated_fields = kwargs.get("update_fields", None)
     if (
-        "owner" not in updated_fields
+        updated_fields is not None
+        and "owner" not in updated_fields
         and "iban" not in updated_fields
         and "bic" not in updated_fields
         and "initials" not in updated_fields
