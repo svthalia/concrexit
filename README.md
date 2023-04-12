@@ -31,6 +31,17 @@ Pillow dependencies are used for the thumbnail generation. The website will give
 
 The Thabloid dependencies are less important. If you don't intall them, the only thing that doesn't work is creating Thabloid cover images.
 
+## Useful git commands
+
+- `git push` to push your branch to github
+- `git checkout -b <branch name>` to create a branch to work on
+- `git fetch origin` to synchronize your local repository with the central repository's main branch
+- `git switch <branch name>` to switch between branches (branch name `master` is the main branch)
+- `git add .` to add all your changes to a commit (mind to run `make fmt` in your terminal before adding changes)
+- `git commit (-m <commit message>)` to commit your added changes possibly with a message
+- `git rebase origin/master` to get your branch up to date with all merges
+- `git status` to check the current status of your branch
+
 ### Pillow dependencies
 
 For Ubuntu, use:
