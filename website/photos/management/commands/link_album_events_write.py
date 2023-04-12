@@ -28,7 +28,6 @@ def write(events, albums, output):
         output.writerow([event, album])
 
 
-# todo: misschien import-export, maar waarschijnlijk niet
 class Command(BaseCommand):
     help = """This is the first step in linking albums and events, the second step is link_album_events_read
         How to use this script:
