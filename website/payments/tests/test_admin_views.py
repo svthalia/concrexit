@@ -243,7 +243,7 @@ class BatchProcessAdminViewTest(TestCase):
 
         self._give_user_permissions()
 
-        response = self.client.post(url)
+        response = self.client.post(url, follow=True)
         self.assertRedirects(response, f"/admin/payments/batch/{self.batch.id}/change/")
 
     def test_next_validation(self):
@@ -326,7 +326,7 @@ class BatchExportAdminViewTest(TestCase):
 
         self._give_user_permissions()
 
-        response = self.client.post(url)
+        response = self.client.post(url, follow=True)
         self.assertEqual(response.status_code, 200)
 
     def test_post(self):
