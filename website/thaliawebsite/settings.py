@@ -603,6 +603,13 @@ LOGGING = {
     },
 }
 
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+        "LOCATION": "django_default_db_cache",
+    }
+}
+
 WSGI_APPLICATION = "thaliawebsite.wsgi.application"
 
 # Login pages
