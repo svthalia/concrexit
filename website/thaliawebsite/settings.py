@@ -501,6 +501,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.locale.LocaleMiddleware",
+    "django_ratelimit.middleware.RatelimitMiddleware",
     # Our middleware
     "members.middleware.MemberMiddleware",
     "announcements.middleware.AnnouncementMiddleware",
@@ -723,6 +724,10 @@ REST_FRAMEWORK = {
         development={"anon": None, "user": None},
     ),
 }
+
+# Rate limiting
+
+RATELIMIT_VIEW = "thaliawebsite.views.rate_limited_view"
 
 # Internationalization
 # https://docs.djangoproject.com/en/dev/topics/i18n/

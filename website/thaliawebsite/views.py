@@ -66,3 +66,7 @@ class RateLimitedLoginView(LoginView):
     @method_decorator(ratelimit(key="ip", rate="10/m"))
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
+
+
+def rate_limited_view(request, *args, **kwargs):
+    return HttpResponse("You are rate limited", status=429)
