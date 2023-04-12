@@ -9,13 +9,13 @@ urlpatterns = [
         "members/photos/",
         include(
             [
-                path("", views.index, name="index"),
-                path("liked", views.liked_photos, name="liked-photos"),
+                path("", views.IndexView.as_view(), name="index"),
+                path("liked", views.LikedPhotoView.as_view(), name="liked-photos"),
                 path(
                     "<slug>/",
                     include(
                         [
-                            path("", views.detail, name="album"),
+                            path("", views.AlbumDetailView.as_view(), name="album"),
                             path(
                                 "download/",
                                 include(
@@ -40,7 +40,11 @@ urlpatterns = [
                                     ]
                                 ),
                             ),
-                            path("<token>/", views.shared_album, name="shared-album"),
+                            path(
+                                "<token>/",
+                                views.SharedAlbumView.as_view(),
+                                name="shared-album",
+                            ),
                         ]
                     ),
                 ),

@@ -17,10 +17,8 @@ class FoodEventAdminSerializer(CleanedModelSerializer):
             "end",
             "event",
             "send_notification",
-            "end_reminder",
             "tpay_allowed",
         )
-        read_only_fields = ("end_reminder",)
 
     def to_internal_value(self, data):
         self.fields["event"] = serializers.PrimaryKeyRelatedField(

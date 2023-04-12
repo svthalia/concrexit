@@ -2,9 +2,9 @@
 import logging
 
 from django.conf import settings
-from django.core import mail
-from django.template import loader
 from django.urls import reverse
+
+from utils.snippets import send_email
 
 logger = logging.getLogger(__name__)
 
@@ -19,18 +19,15 @@ def send_document_notification(document):
         args=(document.pk,),
     )
 
-    email_body = loader.render_to_string(
-        "education/email/document_notification.txt",
-        {
+    send_email(
+        to=[settings.EDUCATION_NOTIFICATION_ADDRESS],
+        subject="Education document ready for review",
+        txt_template="education/email/document_notification.txt",
+        html_template="education/email/document_notification.html",
+        context={
             "document": document.name,
             "uploader": document.uploader.get_full_name(),
             "url": settings.BASE_URL + admin_url,
             "course": f"{document.course.name} ({document.course.course_code})",
         },
     )
-    mail.EmailMessage(
-        "Education document ready for review",
-        email_body,
-        settings.DEFAULT_FROM_EMAIL,
-        [settings.EDUCATION_NOTIFICATION_ADDRESS],
-    ).send()

@@ -1,0 +1,23 @@
+{% load i18n bleach_tags %}
+Hi Promocie,
+
+Here is your weekly overview of promotion requests.
+
+{% if upcoming_requests %}Requests to be finished:{% else %}No upcoming requests{% endif %}
+{% for request in upcoming_requests %}{% if request.event %}Event: {{ request.event.title }}{% endif %}
+Promotion channel: {{ request.channel }}
+Publish date: {{ request.publish_date }}
+Remarks: {{ request.remarks|striptags }}
+
+{% endfor%}
+{% if new_requests %}New requests:{% else %}No new requests{% endif %}
+{% for request in new_requests %}{% if request.event %}Event: {{ request.event.title }}{% endif %}
+Promotion channel: {{ request.channel }}
+Publish date: {{ request.publish_date }}
+Remarks: {{ request.remarks|striptags }}
+
+{% endfor%}
+
+Kisses,
+
+The website

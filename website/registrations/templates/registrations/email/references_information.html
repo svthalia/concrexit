@@ -1,0 +1,14 @@
+{% extends "email/html_email.html" %}
+
+{% block content %}
+  Dear {{ name }},<br>
+
+  <p>Our information indicates that you're not an iCIS employee or a former Thalia member.</p>
+
+  <p>This means that before we can review your membership registration we need to receive two references of current Thalia members.</p>
+
+  <p>Share the following link with them to obtain their reference:<br>
+  <a href="{{ reference_link }}">{{ reference_link }}</a></p>
+
+  <p>If you have any questions, then don't hesitate and send an email to info@thalia.nu.</p>
+{% endblock %}

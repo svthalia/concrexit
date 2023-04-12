@@ -208,3 +208,67 @@ class ScheduledMessage(Message):
     scheduled = models.BooleanField(default=True)
     time = models.DateTimeField()
     executed = models.DateTimeField(null=True)
+
+
+class NewAlbumMessageManager(models.Manager):
+    """Returns new album messages only."""
+
+
+class NewAlbumMessage(ScheduledMessage):
+    """A scheduled message to notify users of a new album."""
+
+    objects = NewAlbumMessageManager()
+
+    album = models.OneToOneField(
+        "photos.Album",
+        related_name="new_album_notification",
+        on_delete=models.deletion.CASCADE,
+    )
+
+
+class FoodOrderReminderMessageManager(models.Manager):
+    """Returns food event order end messages only."""
+
+
+class FoodOrderReminderMessage(ScheduledMessage):
+    """A scheduled message to notify users of a food order reminder."""
+
+    objects = FoodOrderReminderMessageManager()
+
+    food_event = models.OneToOneField(
+        "pizzas.FoodEvent",
+        related_name="end_reminder",
+        on_delete=models.deletion.CASCADE,
+    )
+
+
+class RegistrationReminderMessageManager(models.Manager):
+    """Returns event registration reminders only."""
+
+
+class RegistrationReminderMessage(ScheduledMessage):
+    """A scheduled message to notify users of something related to an event."""
+
+    objects = RegistrationReminderMessageManager()
+
+    event = models.OneToOneField(
+        "events.Event",
+        related_name="registration_reminder",
+        on_delete=models.deletion.CASCADE,
+    )
+
+
+class EventStartReminderMessageManager(models.Manager):
+    """Returns event start reminders only."""
+
+
+class EventStartReminderMessage(ScheduledMessage):
+    """A scheduled message to notify users of an event start."""
+
+    objects = EventStartReminderMessageManager()
+
+    event = models.OneToOneField(
+        "events.Event",
+        related_name="start_reminder",
+        on_delete=models.deletion.CASCADE,
+    )

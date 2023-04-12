@@ -1,0 +1,21 @@
+{% extends "email/html_email.html" %}
+
+{% block content %}
+  Dear {{ name }},<br>
+
+  <p>We would like to inform you that on {{ batch.withdrawal_date|date }}, we will withdraw an amount of € {{ total_amount|floatformat:2 }} from your bank account {{ bank_account.iban }}{% if bank_account.bic %}, {{ bank_account.bic }},{% endif %} to settle the following Thalia Pay payments:</p>
+
+  <ul>
+    {% for payment in payments %}
+      <li>{{ payment.topic }} - € {{ payment.amount|floatformat:2 }} - {{ payment.created_at|date }}</li>
+    {% endfor %}
+  </ul>
+    
+  <p>More details can be found at <a href="{{ payments_url }}">{{ payments_url }}</a>.</p>
+
+  <p>The withdrawal will be made under the name 'Studievereniging Thalia' (creditor identifier {{ creditor_id }}) and your mandate id {{ bank_account.mandate_no }}.</p>
+
+  <p>Please make sure your bank account has sufficient funds to make this withdrawal.</p>
+
+  <p>In case you have any questions, you can contact treasurer@thalia.nu</p>
+{% endblock %}

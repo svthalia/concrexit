@@ -17,9 +17,7 @@ from tinymce.models import HTMLField
 
 from events.models import status
 from events.models.categories import EVENT_CATEGORIES
-from members.models import Member
 from payments.models import PaymentAmountField
-from pushnotifications.models import Category, ScheduledMessage
 
 
 class Event(models.Model):
@@ -30,6 +28,17 @@ class Event(models.Model):
     DEFAULT_NO_REGISTRATION_MESSAGE = _("No registration required")
 
     title = models.CharField(_("title"), max_length=100)
+
+    slug = models.SlugField(
+        verbose_name=_("slug"),
+        help_text=_(
+            "A short name for the event, used in the URL. For example: thalia-weekend-2023. "
+            "Note that the slug must be unique."
+        ),
+        unique=True,
+        blank=True,
+        null=True,
+    )
 
     description = HTMLField(
         _("description"),
@@ -183,21 +192,6 @@ class Event(models.Model):
     )
 
     published = models.BooleanField(_("published"), default=False)
-
-    registration_reminder = models.ForeignKey(
-        ScheduledMessage,
-        on_delete=models.deletion.SET_NULL,
-        related_name="registration_event",
-        blank=True,
-        null=True,
-    )
-    start_reminder = models.ForeignKey(
-        ScheduledMessage,
-        on_delete=models.deletion.SET_NULL,
-        related_name="start_event",
-        blank=True,
-        null=True,
-    )
 
     documents = models.ManyToManyField(
         "documents.Document",
@@ -439,99 +433,17 @@ class Event(models.Model):
             raise ValidationError(errors)
 
     def get_absolute_url(self):
-        return reverse("events:event", args=[str(self.pk)])
-
-    def save(self, **kwargs):
-        delete_collector = Collector(
-            using=router.db_for_write(self.__class__, instance=self)
-        )
-
-        if not self.pk:
-            super().save(**kwargs)
-
-        if self.published:
-            if self.registration_required:
-                registration_reminder_time = (
-                    self.registration_start - timezone.timedelta(hours=1)
-                )
-                registration_reminder = ScheduledMessage()
-                if (
-                    self.registration_reminder is not None
-                    and not self.registration_reminder.sent
-                ):
-                    registration_reminder = self.registration_reminder
-
-                if registration_reminder_time > timezone.now():
-                    registration_reminder.title = "Event registration"
-                    registration_reminder.body = (
-                        f"Registration for '{self.title}' starts in 1 hour"
-                    )
-                    registration_reminder.category = Category.objects.get(
-                        key=Category.EVENT
-                    )
-                    registration_reminder.time = registration_reminder_time
-                    registration_reminder.url = (
-                        f"{settings.BASE_URL}{reverse('events:event', args=[self.id])}"
-                    )
-
-                    registration_reminder.save()
-                    self.registration_reminder = registration_reminder
-                    self.registration_reminder.users.set(Member.current_members.all())
-                elif registration_reminder.pk is not None:
-                    delete_collector.collect([self.registration_reminder])
-                    self.registration_reminder = None
-
-            start_reminder_time = self.start - timezone.timedelta(hours=1)
-            start_reminder = ScheduledMessage()
-            if self.start_reminder is not None and not self.start_reminder.sent:
-                start_reminder = self.start_reminder
-
-            if start_reminder_time > timezone.now():
-                start_reminder.title = "Event"
-                start_reminder.body = f"'{self.title}' starts in 1 hour"
-                start_reminder.category = Category.objects.get(key=Category.EVENT)
-                start_reminder.time = start_reminder_time
-                start_reminder.save()
-                self.start_reminder = start_reminder
-                if self.registration_required:
-                    self.start_reminder.users.set(
-                        [r.member for r in self.participants if r.member]
-                    )
-                else:
-                    self.start_reminder.users.set(Member.current_members.all())
-            elif start_reminder.pk is not None:
-                delete_collector.collect([self.start_reminder])
-                self.start_reminder = None
-        else:
-            if (
-                self.registration_reminder is not None
-                and not self.registration_reminder.sent
-            ):
-                delete_collector.collect([self.registration_reminder])
-                self.registration_reminder = None
-
-            if self.start_reminder is not None and not self.start_reminder.sent:
-                delete_collector.collect([self.start_reminder])
-                self.start_reminder = None
-
-        super().save()
-        delete_collector.delete()
+        if self.slug is None:
+            return reverse("events:event", kwargs={"pk": self.pk})
+        return reverse("events:event", kwargs={"slug": self.slug})
 
     def delete(self, using=None, keep_parents=False):
         using = using or router.db_for_write(self.__class__, instance=self)
         collector = Collector(using=using)
         collector.collect([self], keep_parents=keep_parents)
 
-        if (
-            self.registration_reminder is not None
-            and not self.registration_reminder.sent
-        ):
-            collector.collect([self.registration_reminder], keep_parents=keep_parents)
-        if self.start_reminder is not None and not self.start_reminder.sent:
-            collector.collect([self.start_reminder], keep_parents=keep_parents)
         if self.has_food_event:
             collector.add([self.food_event])
-
         return collector.delete()
 
     def __str__(self):

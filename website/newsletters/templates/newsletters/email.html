@@ -39,7 +39,7 @@
                 </td>
                 <td style="background-color: black;text-align:center;valign:middle;">
                     {% if newsletter.date %}
-                        <span style="font-size: 20px; font-family: Calibri, 'Trebuchet MS', sans-serif">WEEK</span><br/>
+                        <span style="font-size: 20px; font-family: Calibri, 'Trebuchet MS', sans-serif">WEEK</span><br>
                         <span style="font-size: 45px; font-family: Calibri, 'Trebuchet MS', sans-serif">{{ newsletter.date.isocalendar.1 }}</span>
                     {% endif %}
                 </td>
@@ -70,7 +70,7 @@
                             {% for row in agenda_events|rows_distributed:2 %}
                              <td style="vertical-align: top;">
                                 {% for item in row %}
-                                <li style="font-family: Arial, sans-serif;"><i><a href="{% baseurl %}{% url 'events:event' item.pk %}" style="text-decoration: none; color: {{ primary_color }};">{{ item.title }} - {{ item.start|date:"d F" }}</a></i></li>
+                                <li style="font-family: Arial, sans-serif;"><i><a href="{% baseurl %}{{ item.get_absolute_url }}" style="text-decoration: none; color: {{ primary_color }};">{{ item.title }} - {{ item.start|date:"d F" }}</a></i></li>
                                 {% endfor %}
                              </td>
                             {% endfor %}
@@ -208,7 +208,7 @@
                     <p style="margin: 10px; font-family: 'Gill Sans', 'Trebuchet MS', sans-serif;">
                         <a href="{{ main_partner.link }}">
                             <img src="{% baseurl %}{% thumbnail main_partner.logo THUMBNAIL_SIZE_MEDIUM fit=False %}" height="95" style="height: 95px;" alt="{{ main_partner.name }}"/>
-                        </a><br/>
+                        </a><br>
                         {% trans "our main partner"|upper %}
                     </p>
                 </td>
@@ -234,7 +234,7 @@
                                 <p style="margin: 10px; font-family: 'Gill Sans', 'Trebuchet MS', sans-serif;">
                                     <a href="{{ local_partner.link }}">
                                         <img src="{% baseurl %}{% thumbnail local_partner.logo THUMBNAIL_SIZE_MEDIUM fit=False %}" height="70" style="height: 70px; margin-bottom: 25px" alt="{{ local_partner.name }}"/>
-                                    </a><br/>
+                                    </a><br>
                                     {% trans "our local partner"|upper %}
                                 </p>
                             </td>

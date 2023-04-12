@@ -1,0 +1,19 @@
+{% extends "email/html_email.html" %}
+
+{% block content %}
+  Dear {{ name }},<br>
+
+  <p>The past year you've been a member or benificiary of Study Association Thalia.</p>
+
+  <p>If you still want to enjoy all the benefits a membership gives you the coming year then you'll have to renew it. This'll give you access to activities, the book sale, our exam collection and a symposium.</p>
+
+  <p>Renewing your membership is easy. Open the renewal page on the website and
+  select the right option: <a href="{{ renewal_url }}">{{ renewal_url }}</a>.</p>
+
+  <p>Note that if you upgrade your yearly membership to a study membership before August 31,
+  you will get a discount of €{{ membership_price }}.</p>
+
+  <p>It's possible that you've already renewed your membership and that it hasn't been processed yet. If that's the case then you don't need to do anything.</p>
+
+  <p>Are you unable to renew your membership via the website? Then send us an email: info@thalia.nu.</p>
+{% endblock %}

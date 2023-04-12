@@ -1,8 +1,8 @@
-{% extends 'simple_page.html' %}
+{% extends 'paginated_page.html' %}
 {% load static i18n compress photos_cards alert %}
 
-{% block title %}{{ album.title }} — {% trans "Photos you liked" %} — {{ block.super }}{% endblock %}
-{% block opengraph_title %}{{ album.title }} — {% trans "Photos you liked" %} — {{ block.super }}{% endblock %}
+{% block title %}{% trans "Photos you liked" %} — {{ block.super }}{% endblock %}
+{% block opengraph_title %}{% trans "Photos you liked" %} — {{ block.super }}{% endblock %}
 
 {% block header_image %}{% static "img/headers/fixed/banner7.jpg" %}{% endblock %}
 
@@ -10,7 +10,7 @@
     {% trans "Photos you liked" %}
 {% endblock %}
 
-{% block page_content %}
+{% block content %}
     <div class="row">
         {% if not photos %}
         <div class="mt-4">

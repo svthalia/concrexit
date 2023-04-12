@@ -1,4 +1,4 @@
-{% load i18n %}{% blocktrans %}Dear {{ name }},
+Dear {{ name }},
 
 Unfortunately we have some bad news for you: your membership renewal has been rejected.
 
@@ -12,4 +12,4 @@ The board of Study Association Thalia
 
 ————
 
-This email was automatically generated.{% endblocktrans %}
+This email was automatically generated.

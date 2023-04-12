@@ -17,10 +17,8 @@ class PhotoSerializer(CleanedModelSerializer):
         fields = ("pk", "rotation", "hidden", "file")
 
     file = ThumbnailSerializer(
-        size_medium="1200x900",
-        size_large="1920x1920",
-        fit_medium=False,
-        fit_large=False,
+        size_medium="photo_medium",
+        size_large="photo_large",
     )
 
 

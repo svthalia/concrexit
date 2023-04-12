@@ -43,7 +43,9 @@ def create_models_test_class(classname):
     # django keeps track of the models it knows of, and we can request that
     # here by default these are only the models implemented by the project
     for model in apps.get_models():
-        if model.__module__.startswith("django_drf_filepond"):
+        if model.__module__.startswith(
+            "django_drf_filepond"
+        ) or model.__module__.startswith("thumbnails"):
             continue
         funcname = f"test_str_method_overwritten_for_{model.__name__}"
         tests[funcname] = create_model_test_function(funcname, model)

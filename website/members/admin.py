@@ -37,6 +37,7 @@ class ProfileInline(admin.StackedInline):
         "receive_optin",
         "receive_newsletter",
         "receive_magazine",
+        "receive_oldmembers",
         "birthday",
         "show_birthday",
         "initials",
@@ -159,6 +160,7 @@ class UserAdmin(ExportMixin, BaseUserAdmin):
         "profile__receive_optin",
         "profile__receive_newsletter",
         "profile__receive_magazine",
+        "profile__receive_oldmembers",
         "profile__starting_year",
     )
 

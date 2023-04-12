@@ -91,12 +91,15 @@ class PaymentAdmin(ExportActionMixin, admin.ModelAdmin):
 
     @staticmethod
     def _member_link(user: PaymentUser) -> str:
-        url = reverse(
-            f"admin:{user._meta.app_label}_{user._meta.model_name}_change",
-            args=[user.id],
-        )
         return (
-            format_html("<a href='{}'>{}</a>", url, user.get_full_name())
+            format_html(
+                "<a href='{}'>{}</a>",
+                reverse(
+                    f"admin:{user._meta.app_label}_{user._meta.model_name}_change",
+                    args=[user.id],
+                ),
+                user.get_full_name(),
+            )
             if user
             else None
         )

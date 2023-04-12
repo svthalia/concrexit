@@ -3,6 +3,7 @@ import datetime
 from typing import Union
 
 from django.conf import settings
+from django.core import mail
 from django.db.models import Model, Q, QuerySet, Sum
 from django.urls import reverse
 from django.utils import timezone
@@ -14,6 +15,7 @@ from utils.snippets import send_email
 from .exceptions import PaymentError
 from .models import BankAccount, Payment, PaymentUser
 from .payables import Payable, payables
+from .signals import processed_batch
 
 
 def create_payment(
@@ -158,6 +160,7 @@ def process_batch(batch):
             bank_account.save()
 
     batch.save()
+    processed_batch.send(sender=None, instance=batch)
 
     send_tpay_batch_processing_emails(batch)
 
@@ -177,31 +180,34 @@ def derive_next_mandate_no(member) -> str:
 def send_tpay_batch_processing_emails(batch):
     """Send withdrawal notice emails to all members in a batch."""
     member_payments = batch.payments_set.values("paid_by").annotate(total=Sum("amount"))
-    for member_row in member_payments:
-        member = PaymentUser.objects.get(pk=member_row["paid_by"])
-        total_amount = member_row["total"]
+    with mail.get_connection() as connection:
+        for member_row in member_payments:
+            member = PaymentUser.objects.get(pk=member_row["paid_by"])
+            total_amount = member_row["total"]
 
-        send_email(
-            member.email,
-            _("Thalia Pay withdrawal notice"),
-            "payments/email/tpay_withdrawal_notice_mail.txt",
-            {
-                "name": member.get_full_name(),
-                "batch": batch,
-                "bank_account": member.bank_accounts.filter(
-                    mandate_no__isnull=False
-                ).last(),
-                "creditor_id": settings.SEPA_CREDITOR_ID,
-                "payments": batch.payments_set.filter(paid_by=member),
-                "total_amount": total_amount,
-                "payments_url": (
-                    settings.BASE_URL
-                    + reverse(
-                        "payments:payment-list",
-                    )
-                ),
-            },
-        )
+            send_email(
+                to=[member.email],
+                subject="Thalia Pay withdrawal notice",
+                txt_template="payments/email/tpay_withdrawal_notice_mail.txt",
+                html_template="payments/email/tpay_withdrawal_notice_mail.html",
+                connection=connection,
+                context={
+                    "name": member.get_full_name(),
+                    "batch": batch,
+                    "bank_account": member.bank_accounts.filter(
+                        mandate_no__isnull=False
+                    ).last(),
+                    "creditor_id": settings.SEPA_CREDITOR_ID,
+                    "payments": batch.payments_set.filter(paid_by=member),
+                    "total_amount": total_amount,
+                    "payments_url": (
+                        settings.BASE_URL
+                        + reverse(
+                            "payments:payment-list",
+                        )
+                    ),
+                },
+            )
     return len(member_payments)
 
 

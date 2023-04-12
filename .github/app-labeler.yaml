@@ -15,6 +15,8 @@ members:
   - website/members/**
 merchandise:
   - website/merchandise/**
+moneybirdsynchronization:
+  - website/moneybirdsynchronization/**
 newsletter:
   - website/newsletters/**
 partners:

@@ -1,0 +1,20 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls static compress %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    {% compress css %}<link rel="stylesheet" type="text/x-scss" href="{% static 'admin/pushnotifications/css/forms.scss' %}" />{% endcompress %}
+{% endblock %}
+
+{% block submit_buttons_bottom %}
+    <div class="submit-row pushnotifications-row">
+        <input type="submit" value="{% trans 'Send message' %}" class="default button" name="_save" data-_extension-text-contrast="">
+    </div>
+{% endblock %}
+
+{% comment %}
+Events have additional object tools, that cannot be rendered for this view,
+but would be included by default because this view is part of the EventAdmin.
+{% endcomment %}
+{% block object-tools-items %}
+{% endblock %}

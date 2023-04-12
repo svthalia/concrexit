@@ -1,4 +1,4 @@
-{% extends 'simple_page.html' %}
+{% extends 'paginated_page.html' %}
 {% load i18n static compress photos_cards alert %}
 
 {% block title %}{% trans "Photos" %} — {{ block.super }}{% endblock %}
@@ -9,7 +9,7 @@
 {% block page_title %}{% trans "Photos" %}{% endblock %}
 {% block section_tags %}id="photos-index"{% endblock %}
 
-{% block page_content %}
+{% block content %}
     {% with keys=keywords|join:" " %}
         <div class="row mb-4">
             <div class="col-12 col-lg-6">
@@ -42,33 +42,5 @@
             {% endfor %}
         </div>
         {% endif %}
-        <nav>
-            <ul class="pagination mt-4">
-                {% if albums.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link"
-                           href="{% url 'photos:index' %}?page={{ albums.previous_page_number }}{% if keywords %}&keywords={{ keys }}{% endif %}#photos-albums">
-                            <span aria-hidden="true">&laquo;</span>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                    </li>
-                {% endif %}
-                {% for page in page_range %}
-                    <li class="page-item{% if page == albums.number %} active{% endif %}">
-                        <a class="page-link" href="{% url 'photos:index' %}?page={{ page }}{% if keywords %}&keywords={{ keys }}{% endif %}#photos-albums">{{ page }}
-                        </a>
-                    </li>
-                {% endfor %}
-                {% if albums.has_next %}
-                    <li class="page-item">
-                        <a class="page-link"
-                           href="{% url 'photos:index' %}?page={{ albums.next_page_number }}{% if keywords %}&keywords={{ keys }}{% endif %}">
-                            <span aria-hidden="true">&raquo;</span>
-                            <span class="sr-only">Next</span>
-                        </a>
-                    </li>
-                {% endif %}
-            </ul>
-        </nav>
     {% endwith %}
 {% endblock %}
