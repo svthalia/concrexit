@@ -6,6 +6,6 @@
   <p>Since this event is full right now you have been put on the queue on position: {{ registration.queue_position }}.</p>
   <p>You will be contacted when you get a spot to participate in the event.</p>
   {% if event.cancel_deadline %}
-  <p>If you would like to cancel this registration please do so before {{ event.cancel_deadline }}.</p>
+    <p>If you would like to cancel this registration please do so before {{ event.cancel_deadline|date:"SHORT_DATETIME_FORMAT" }}.</p>
   {% endif %}
 {% endblock %}
