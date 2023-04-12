@@ -20,14 +20,16 @@ User = get_user_model()
 def post_profile_save(sender, instance, **kwargs):
     """Update the contact in Moneybird when the profile is saved."""
     updated_fields = kwargs.get("update_fields", None)
-    if (
-        updated_fields is not None
-        and "is_minimized" not in updated_fields
-        and "address_street" not in updated_fields
-        and "address_street2" not in updated_fields
-        and "address_postal_code" not in updated_fields
-        and "address_city" not in updated_fields
-        and "address_country" not in updated_fields
+    if not any(
+        field in updated_fields
+        for field in [
+            "is_minimized",
+            "address_street",
+            "address_street2",
+            "address_postal_code",
+            "address_city",
+            "address_country",
+        ]
     ):
         return
     try:
@@ -62,11 +64,8 @@ def post_user_save(sender, instance, **kwargs):
         return
 
     updated_fields = kwargs.get("update_fields", None)
-    if (
-        updated_fields is not None
-        and "first_name" not in updated_fields
-        and "last_name" not in updated_fields
-        and "email" not in updated_fields
+    if not any(
+        field in updated_fields for field in ["first_name", "last_name", "email"]
     ):
         # Only update the contact when the name is changed
         return
@@ -92,16 +91,12 @@ def post_user_delete(sender, instance, **kwargs):
 
 
 @suspendingreceiver(post_save, sender=BankAccount)
-def post_bankaccount_save(sender, instance, **kwargs):
+def post_bank_account_save(sender, instance, **kwargs):
     """Update the contact in Moneybird when the bank account is saved."""
     updated_fields = kwargs.get("update_fields", None)
-    if (
-        updated_fields is not None
-        and "owner" not in updated_fields
-        and "iban" not in updated_fields
-        and "bic" not in updated_fields
-        and "initials" not in updated_fields
-        and "last_name" not in updated_fields
+    if not any(
+        field in updated_fields
+        for field in ["owner", "iban", "bic", "initials", "last_name"]
     ):
         # Only update the contact when the bank account is changed
         return
@@ -118,7 +113,7 @@ def post_bankaccount_save(sender, instance, **kwargs):
 
 
 @suspendingreceiver(post_delete, sender=BankAccount)
-def post_bankaccount_delete(sender, instance, **kwargs):
+def post_bank_account_delete(sender, instance, **kwargs):
     """Update the contact in Moneybird when the bank account is deleted."""
     member = Member.objects.get(pk=instance.owner.pk)
     try:
