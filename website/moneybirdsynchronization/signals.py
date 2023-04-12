@@ -9,6 +9,7 @@ from moneybirdsynchronization.administration import Administration
 from moneybirdsynchronization.emails import send_sync_error
 
 from members.models import Member, Profile
+from payments.models import BankAccount
 from payments.signals import processed_batch
 from utils.models.signals import suspendingreceiver
 
@@ -49,6 +50,11 @@ def post_user_save(sender, instance, **kwargs):
     except Profile.DoesNotExist:
         return
 
+    updated_fields = kwargs.get("update_fields", None)
+    if "first_name" not in updated_fields and "last_name" not in updated_fields:
+        # Only update the contact when the name is changed
+        return
+
     try:
         if instance.profile.is_minimized:
             services.delete_contact(instance)
@@ -64,6 +70,42 @@ def post_user_delete(sender, instance, **kwargs):
     """Delete the contact in Moneybird when the user is deleted."""
     try:
         services.delete_contact(instance)
+    except Administration.Error as e:
+        send_sync_error(e, instance)
+        logging.error("Moneybird synchronization error: %s", e)
+
+
+@suspendingreceiver(post_save, sender=BankAccount)
+def post_bankaccount_save(sender, instance, **kwargs):
+    """Update the contact in Moneybird when the bank account is saved."""
+    updated_fields = kwargs.get("update_fields", None)
+    if (
+        "owner" not in updated_fields
+        and "iban" not in updated_fields
+        and "bic" not in updated_fields
+        and "initials" not in updated_fields
+        and "last_name" not in updated_fields
+    ):
+        # Only update the contact when the bank account is changed
+        return
+
+    member = Member.objects.get(pk=instance.owner.pk)
+    try:
+        if member.profile.is_minimized:
+            services.delete_contact(member)
+        else:
+            services.create_or_update_contact(member)
+    except Administration.Error as e:
+        send_sync_error(e, instance)
+        logging.error("Moneybird synchronization error: %s", e)
+
+
+@suspendingreceiver(post_delete, sender=BankAccount)
+def post_bankaccount_delete(sender, instance, **kwargs):
+    """Update the contact in Moneybird when the bank account is deleted."""
+    member = Member.objects.get(pk=instance.owner.pk)
+    try:
+        services.create_or_update_contact(member)
     except Administration.Error as e:
         send_sync_error(e, instance)
         logging.error("Moneybird synchronization error: %s", e)
