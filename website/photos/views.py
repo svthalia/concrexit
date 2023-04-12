@@ -2,8 +2,9 @@ import os
 
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
+from django.views.generic import TemplateView
 
 from photos.models import Album, Photo
 from photos.services import (
@@ -43,29 +44,52 @@ class IndexView(PagedView):
         return context
 
 
-def _render_album_page(request, album):
-    """Render album.html for a specified album."""
-    context = {
-        "album": album,
-        "photos": album.photo_set.filter(hidden=False).select_properties("num_likes"),
-    }
-    return render(request, "photos/album.html", context)
+class _BaseAlbumView(TemplateView):
+    template_name = "photos/album.html"
+
+    def get_album(self, **kwargs):
+        raise NotImplementedError
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        album = self.get_album(**kwargs)
+
+        context["album"] = album
+        photos = album.photo_set.filter(hidden=False).select_properties("num_likes")
+
+        # Fix select_properties dropping the default ordering.
+        photos = photos.order_by("pk")
+
+        context["photos"] = photos
+        return context
 
 
-@login_required
-def detail(request, slug):
-    """Render an album, if it accessible by the user."""
-    obj = get_object_or_404(Album, slug=slug)
-    if is_album_accessible(request, obj):
-        return _render_album_page(request, obj)
-    raise Http404("Sorry, you're not allowed to view this album")
+@method_decorator(login_required, "dispatch")
+class AlbumDetailView(_BaseAlbumView):
+    """Render an album, if it is accessible by the user."""
+
+    def get_album(self, **kwargs):
+        slug = kwargs.get("slug")
+        album = get_object_or_404(Album, slug=slug)
+
+        if not is_album_accessible(self.request, album):
+            raise Http404("Sorry, you're not allowed to view this album")
+
+        return album
 
 
-def shared_album(request, slug, token):
+class SharedAlbumView(_BaseAlbumView):
     """Render a shared album if the correct token is provided."""
-    obj = get_object_or_404(Album, slug=slug)
-    check_shared_album_token(obj, token)
-    return _render_album_page(request, obj)
+
+    def get_album(self, **kwargs):
+        slug = kwargs.get("slug")
+        token = kwargs.get("token")
+        album = get_object_or_404(Album, slug=slug)
+
+        check_shared_album_token(album, token)
+
+        return album
 
 
 def _photo_path(obj, filename):
