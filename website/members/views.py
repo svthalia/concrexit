@@ -25,6 +25,7 @@ from members import emails, services
 from members.decorators import membership_required
 from members.models import EmailChange, Member, Membership, Profile
 from thaliawebsite.views import PagedView
+from utils.media.services import fetch_thumbnails_db
 from utils.snippets import datetime_to_lectureyear
 
 from . import models
@@ -123,11 +124,13 @@ class MembersIndex(PagedView):
         else:
             memberships = Membership.objects.filter(memberships_query)
             members_query &= Q(pk__in=memberships.values("user__pk"))
-        return (
+        members = (
             Member.objects.filter(members_query)
             .order_by("first_name")
             .select_related("profile")
         )
+        fetch_thumbnails_db([member.profile.photo for member in members])
+        return members
 
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
