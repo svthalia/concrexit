@@ -4,7 +4,6 @@ import uuid
 from decimal import Decimal
 
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -19,6 +18,8 @@ from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
 from localflavor.generic.models import BICField, IBANField
 from queryable_properties.managers import QueryablePropertiesManager
 from queryable_properties.properties import AggregateProperty, queryable_property
+
+from members.models import Member
 
 
 def validate_not_zero(value):
@@ -43,10 +44,7 @@ class PaymentAmountField(models.DecimalField):
         super().__init__(**kwargs)
 
 
-UserModel = get_user_model()
-
-
-class PaymentUser(UserModel):
+class PaymentUser(Member):
     class Meta:
         proxy = True
         verbose_name = "payment user"
@@ -154,7 +152,7 @@ class Payment(models.Model):
     )
 
     paid_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        "members.Member",
         models.CASCADE,
         verbose_name=_("paid by"),
         related_name="paid_payment_set",
@@ -163,7 +161,7 @@ class Payment(models.Model):
     )
 
     processed_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        "members.Member",
         models.CASCADE,
         verbose_name=_("processed by"),
         related_name="processed_payment_set",
