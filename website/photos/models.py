@@ -16,6 +16,8 @@ from queryable_properties.managers import QueryablePropertiesManager
 from queryable_properties.properties import AnnotationProperty
 from thumbnails.fields import ImageField
 
+from members.models import Member
+
 COVER_FILENAME = "cover.jpg"
 
 
