@@ -1,5 +1,4 @@
 from django import template
-from django.urls import reverse
 
 from thabloid.models import Thabloid
 from thaliawebsite.templatetags.grid_item import grid_item

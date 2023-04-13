@@ -6,8 +6,6 @@ from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
 
-from utils.media.services import get_media_url
-
 
 def thabloid_filename(instance, filename):
     """Return path of thabloid."""
