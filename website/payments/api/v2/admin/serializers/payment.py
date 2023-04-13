@@ -1,6 +1,5 @@
 from rest_framework.fields import HiddenField
 
-from members.api.v2.serializers.member import MemberSerializer
 from payments.api.v2.serializers.payment_user import PaymentUserSerializer
 from payments.models import Payment
 from thaliawebsite.api.v2.fields import CurrentMemberDefault
