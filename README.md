@@ -34,7 +34,7 @@ The Thabloid dependencies are less important. If you don't intall them, the only
 ## Useful git commands
 
 - `git push` to push your branch to github
-- `git checkout -b <branch name>` to create a branch to work on
+- `git switch -c <branch name>` to create a branch to work on
 - `git fetch origin` to synchronize your local repository with the central repository's main branch
 - `git switch <branch name>` to switch between branches (branch name `master` is the main branch)
 - `git add .` to add all your changes to a commit (mind to run `make fmt` in your terminal before adding changes)
