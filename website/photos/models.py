@@ -93,7 +93,7 @@ class Like(models.Model):
         Photo, null=False, blank=False, related_name="likes", on_delete=models.CASCADE
     )
     member = models.ForeignKey(
-        settings.AUTH_USER_MODEL, null=True, blank=False, on_delete=models.SET_NULL
+        Member, null=True, blank=False, on_delete=models.SET_NULL
     )
 
     def __str__(self):
