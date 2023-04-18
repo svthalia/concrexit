@@ -34,9 +34,9 @@ class ProfileSerializer(CleanedModelSerializer):
     birthday = serializers.SerializerMethodField("_birthday")
 
     photo = ThumbnailSerializer(
-        size_small=settings.THUMBNAIL_SIZES["small"],
-        size_medium=settings.THUMBNAIL_SIZES["medium"],
-        size_large=settings.THUMBNAIL_SIZES["avatar_large"],
+        size_small="small",
+        size_medium="medium",
+        size_large="avatar_large",
         placeholder="members/images/default-avatar.jpg",
     )
 

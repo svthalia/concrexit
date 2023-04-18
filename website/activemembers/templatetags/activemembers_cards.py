@@ -14,7 +14,7 @@ register = template.Library()
 def membergroup_card(group):
     image_url = static("activemembers/images/placeholder_overview.png")
     if group.photo:
-        image_url = get_thumbnail_url(group.photo, settings.THUMBNAIL_SIZES["medium"])
+        image_url = get_thumbnail_url(group.photo, "medium")
 
     return grid_item(
         title=group.name,

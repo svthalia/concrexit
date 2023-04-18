@@ -871,15 +871,7 @@ THUMBNAILS = {
     },
 }
 
-THUMBNAIL_SIZES = {
-    "small": "small",
-    "medium": "medium",
-    "large": "large",
-    "avatar_large": "avatar_large",
-    "slide_small": "slide_small",
-    "slide_medium": "slide_medium",
-    "slide": "slide",
-}
+THUMBNAIL_SIZES = set(THUMBNAILS["SIZES"].keys())
 
 
 # Photos settings

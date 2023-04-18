@@ -2,7 +2,7 @@ import io
 
 from django.conf import settings
 from django.core.files.base import ContentFile
-from django.core.files.storage import DefaultStorage, get_storage_class
+from django.core.files.storage import DefaultStorage
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models.fields.files import FieldFile, ImageFieldFile
 
@@ -26,14 +26,15 @@ def save_image(storage, image, path, format):
     return storage.save(path, file)
 
 
-def get_media_url(file, attachment=False):
+def get_media_url(file, attachment: bool | str = False, absolute_url: bool = False):
     """Get the url of the provided media file to serve in a browser.
 
     If the file is private a signature will be added.
     Do NOT use this with user input
-    :param file: the file field
-    :param attachment: filename to use for the attachment or False to not download as attachment
-    :return: the url of the media
+    :param file: The file field or path.
+    :param attachment: Filename to use for the attachment or False to not download as attachment.
+    :param absolute_url: True if we want the full url including the scheme and domain.
+    :return: The url of the media.
     """
     storage = DefaultStorage()
     file_name = file
@@ -41,10 +42,16 @@ def get_media_url(file, attachment=False):
         storage = file.storage
         file_name = file.name
 
-    return str(storage.url(file_name, attachment))
+    url = storage.url(file_name, attachment)
+
+    # If the url is not absolute, but we want an absolute url, add the base url.
+    if absolute_url and not url.startswith(("http://", "https://")):
+        url = f"{settings.BASE_URL}{url}"
+
+    return url
 
 
-def get_thumbnail_url(file, size, fit=True):
+def get_thumbnail_url(file, size: str, absolute_url: bool = False):
     storage = DefaultStorage()
     name = file
 
@@ -52,15 +59,12 @@ def get_thumbnail_url(file, size, fit=True):
         storage = file.storage
         name = file.name
 
-    is_public = isinstance(storage, get_storage_class(settings.PUBLIC_FILE_STORAGE))
-
-    if name.endswith(".svg") and is_public:
-        return storage.url(name)
-
     if isinstance(file, ThumbnailedImageFile):
-        if size in settings.THUMBNAIL_SIZES.keys():
-            return get_media_url(
-                getattr(file.thumbnails, settings.THUMBNAIL_SIZES[size])
-            )
+        if not name.endswith(".svg"):
+            if size in settings.THUMBNAIL_SIZES:
+                return get_media_url(
+                    getattr(file.thumbnails, size),
+                    absolute_url=absolute_url,
+                )
 
-    return get_media_url(file)
+    return get_media_url(file, absolute_url=absolute_url)

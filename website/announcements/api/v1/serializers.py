@@ -27,5 +27,5 @@ class SlideSerializer(CleanedModelSerializer):
 
     def _file(self, obj):
         return self.context["request"].build_absolute_uri(
-            get_thumbnail_url(obj.content, settings.THUMBNAIL_SIZES["slide"])
+            get_thumbnail_url(obj.content, "slide")
         )

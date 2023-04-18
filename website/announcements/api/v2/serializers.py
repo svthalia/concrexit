@@ -26,9 +26,9 @@ class SlideSerializer(CleanedModelSerializer):
         )
 
     content = ThumbnailSerializer(
-        size_large=settings.THUMBNAIL_SIZES["slide"],
-        size_medium=settings.THUMBNAIL_SIZES["slide_medium"],
-        size_small=settings.THUMBNAIL_SIZES["slide_small"],
+        size_large="slide",
+        size_medium="slide_medium",
+        size_small="slide_small",
     )
 
 

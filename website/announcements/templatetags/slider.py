@@ -14,5 +14,5 @@ def render_slider(context):
             for s in Slide.objects.all().order_by("order")
             if s.is_visible and (not s.members_only or context["request"].member)
         ],
-        "slide_size": settings.THUMBNAIL_SIZES["slide"],
+        "slide_size": "slide",
     }

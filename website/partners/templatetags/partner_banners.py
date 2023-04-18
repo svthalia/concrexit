@@ -31,5 +31,5 @@ def render_partner_banners(context):
 
     return {
         "partners": [p for p in all_partners if p.id in chosen],
-        "thumb_size": settings.THUMBNAIL_SIZES["medium"],
+        "thumb_size": "medium",
     }

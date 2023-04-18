@@ -15,9 +15,7 @@ class PhotoRetrieveSerializer(CleanedModelSerializer):
         file = None
         if obj:
             file = obj.file
-        return create_image_thumbnail_dict(
-            self.context["request"], file, fit_large=False
-        )
+        return create_image_thumbnail_dict(self.context["request"], file)
 
     class Meta:
         """Meta class for PhotoRetrieveSerializer."""

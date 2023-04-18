@@ -81,7 +81,7 @@ class EventDetail(DetailView):
 
         context["date_now"] = timezone.now()
 
-        context["slide_size"] = settings.THUMBNAIL_SIZES["slide"]
+        context["slide_size"] = "slide"
 
         context["participants"] = event.participants.select_related(
             "member", "member__profile"
