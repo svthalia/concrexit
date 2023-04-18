@@ -29,8 +29,6 @@ Optional, but recommended: follow the tutorial! It can be found by going to the 
 
 Pillow dependencies are used for the thumbnail generation. The website will give lots of errors and work weirdly if you don't install these native dependencies.
 
-The Thabloid dependencies are less important. If you don't intall them, the only thing that doesn't work is creating Thabloid cover images.
-
 ### Pillow dependencies
 
 For Ubuntu, use:

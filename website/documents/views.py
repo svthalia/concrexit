@@ -78,4 +78,4 @@ class DocumentDownloadView(DetailView):
 
         ext = os.path.splitext(file.name)[1]
 
-        return redirect(get_media_url(file, slugify(document.name) + ext))
+        return redirect(get_media_url(file, attachment=slugify(document.name) + ext))

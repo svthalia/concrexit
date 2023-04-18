@@ -12,7 +12,7 @@
             <div class="row align-items-start">
                 {% if membergroup.photo %}
                     <img alt="{{ membergroup.name }}" class="col-12"
-                         src="{% thumbnail membergroup.photo THUMBNAIL_SIZE_LARGE fit=False %}">
+                         src="{% thumbnail membergroup.photo THUMBNAIL_SIZE_LARGE %}">
                 {% else %}
                     <img alt="{{ membergroup.name }}" class="col-12"
                          src="/static/activemembers/images/placeholder.png">

@@ -11,9 +11,9 @@ def source_commit(_):
 def thumbnail_sizes(_):
     """Get the defined sizes for thumbnails."""
     return {
-        "THUMBNAIL_SIZE_SMALL": settings.THUMBNAIL_SIZES["small"],
-        "THUMBNAIL_SIZE_MEDIUM": settings.THUMBNAIL_SIZES["medium"],
-        "THUMBNAIL_SIZE_LARGE": settings.THUMBNAIL_SIZES["large"],
+        "THUMBNAIL_SIZE_SMALL": "small",
+        "THUMBNAIL_SIZE_MEDIUM": "medium",
+        "THUMBNAIL_SIZE_LARGE": "large",
     }
 
 
