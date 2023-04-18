@@ -52,11 +52,8 @@ def get_media_url(file, attachment: bool | str = False, absolute_url: bool = Fal
 
 
 def get_thumbnail_url(file, size: str, absolute_url: bool = False):
-    storage = DefaultStorage()
     name = file
-
     if isinstance(file, (ImageFieldFile, FieldFile)):
-        storage = file.storage
         name = file.name
 
     if isinstance(file, ThumbnailedImageFile):
