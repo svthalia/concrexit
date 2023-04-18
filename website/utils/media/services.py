@@ -26,7 +26,7 @@ def save_image(storage, image, path, format):
     return storage.save(path, file)
 
 
-def get_media_url(file, attachment: bool | str = False, absolute_url: bool = False):
+def get_media_url(file, attachment=False, absolute_url: bool = False):
     """Get the url of the provided media file to serve in a browser.
 
     If the file is private a signature will be added.

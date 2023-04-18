@@ -1,7 +1,6 @@
 from random import sample
 
 from django import template
-from django.conf import settings
 
 from partners.models import Partner
 

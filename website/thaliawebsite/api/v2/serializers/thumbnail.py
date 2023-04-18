@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.templatetags.static import static
 
 from rest_framework.fields import FileField
@@ -35,9 +34,7 @@ class ThumbnailSerializer(FileField):
                 static(self.placeholder)
             )
 
-        return create_image_thumbnail_dict(
-            self.context["request"], value, placeholder, **self.options
-        )
+        return create_image_thumbnail_dict(value, placeholder, **self.options)
 
     def to_internal_value(self, data):
         if data == "":

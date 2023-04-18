@@ -1,6 +1,4 @@
 """DRF serializers defined by the announcements package."""
-from django.conf import settings
-
 from rest_framework import serializers
 
 from announcements.models import Slide
@@ -26,6 +24,4 @@ class SlideSerializer(CleanedModelSerializer):
     content = serializers.SerializerMethodField("_file")
 
     def _file(self, obj):
-        return self.context["request"].build_absolute_uri(
-            get_thumbnail_url(obj.content, "slide")
-        )
+        return get_thumbnail_url(obj.content, "slide", absolute_url=True)
