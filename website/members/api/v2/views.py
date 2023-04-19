@@ -15,13 +15,23 @@ from members.api.v2.serializers.member import (
 from members.models import Member
 from thaliawebsite.api.openapi import OAuthAutoSchema
 from thaliawebsite.api.v2.permissions import IsAuthenticatedOrTokenHasScopeForMethod
+from utils.media.services import fetch_thumbnails_db
 
 
 class MemberListView(ListAPIView):
     """Returns an overview of all members."""
 
     serializer_class = MemberListSerializer
-    queryset = Member.current_members.all().select_related("profile")
+
+    def get_queryset(self):
+        members = (
+            Member.current_members.all()
+            .select_related("profile")
+            .prefetch_related("membership_set")
+        )
+        fetch_thumbnails_db([member.profile.photo for member in members])
+        return members
+
     permission_classes = [
         IsAuthenticatedOrTokenHasScope,
     ]
