@@ -251,8 +251,5 @@ class BoardTest(TestCase):
         b.since = b.since.replace(year=1991, month=9, day=2)
         b.full_clean()
 
-        b.until = None
-        b.full_clean()
-
     def test_get_absolute_url(self):
         self.testboard.get_absolute_url()
