@@ -1,8 +1,10 @@
 {% extends "email/html_email.html" %}
 {% block content %}
   <p>Dear {{ registration.member.profile.display_name }},</p>
-
-  <p>Hereby a confirmation that you registered for the following even: '{{ event.title }}', on:  {{ registration.date }}.</p>
+  {% if event.title %}
+    <p>Hereby a confirmation that you registered for the following event: '{{ event.title }}'</p>,
+  {% endif %}
+  <p> on:  {{ registration.date|date:"SHORT_DATETIME_FORMAT" }}.</p>
   <p>Since this event is full right now you have been put on the queue on position: {{ registration.queue_position }}.</p>
   <p>You will be contacted when you get a spot to participate in the event.</p>
   {% if event.cancel_deadline %}

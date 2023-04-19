@@ -220,7 +220,7 @@ class EventRegistration(models.Model):
     def save(self, **kwargs):
         self.full_clean()
         super().save(**kwargs)
-        if self.member is None and self.is_registered:
+        if self.member is None and self.is_registered and not (self.present):
             emails.notify_registration(self.event, self)
 
         elif (
@@ -228,6 +228,7 @@ class EventRegistration(models.Model):
             and self.member.profile.receive_registration_confirmation
             and self.is_registered
             and self.queue_position is None
+            and not (self.present)
         ):
             emails.notify_registration(self.event, self)
 
@@ -235,6 +236,7 @@ class EventRegistration(models.Model):
             not (self.member is None)
             and self.member.profile.receive_registration_confirmation
             and self.is_registered
+            and not (self.present)
         ):
             emails.notify_queued(self.event, self)
 
