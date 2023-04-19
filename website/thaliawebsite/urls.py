@@ -29,9 +29,9 @@ from django.conf import settings
 from django.conf.urls import include
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.contrib.auth.views import LoginView
 from django.contrib.sitemaps.views import sitemap
 from django.urls import path, re_path
+from django.views.generic import RedirectView
 from django.views.i18n import JavaScriptCatalog
 
 import debug_toolbar
@@ -53,7 +53,12 @@ from partners.sitemaps import sitemap as partners_sitemap
 from singlepages.sitemaps import sitemap as singlepages_sitemap
 from thabloid.sitemaps import sitemap as thabloid_sitemap
 from thaliawebsite.forms import AuthenticationForm
-from thaliawebsite.views import IndexView, TestCrashView
+from thaliawebsite.views import (
+    IndexView,
+    RateLimitedLoginView,
+    RateLimitedPasswordResetView,
+    TestCrashView,
+)
 from utils.media.views import private_media
 
 from .sitemaps import StaticViewSitemap
@@ -73,6 +78,11 @@ THALIA_SITEMAP.update(events_sitemap)
 THALIA_SITEMAP.update(singlepages_sitemap)
 
 urlpatterns = [
+    path(
+        "admin/login/",
+        RedirectView.as_view(url="/user/login", query_string=True),
+        name="login-redirect",
+    ),
     path("admin/", admin.site.urls),
     path("", IndexView.as_view(), name="index"),
     # Default helpers
@@ -126,11 +136,16 @@ urlpatterns = [
             [
                 path(
                     "login/",
-                    LoginView.as_view(
+                    RateLimitedLoginView.as_view(
                         authentication_form=AuthenticationForm,
                         redirect_authenticated_user=True,
                     ),
                     name="login",
+                ),
+                path(
+                    "password_reset/",
+                    RateLimitedPasswordResetView.as_view(),
+                    name="password_reset",
                 ),
                 path("", include("django.contrib.auth.urls")),
             ]

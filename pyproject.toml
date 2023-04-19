@@ -45,6 +45,7 @@ qrcode = {version = "^7.3.1", extras = ["pil"]}
 django-drf-filepond = "^0.5.0"
 django-filepond-widget = "^0.9.0"
 django-thumbnails = "^0.7.0"
+django-ratelimit = "^4.0.0"
 
 [tool.poetry.extras]
 docs = ["recommonmark", "sphinx"]
