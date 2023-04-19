@@ -22,10 +22,11 @@ class AlbumListView(ListAPIView):
 
     serializer_class = AlbumListSerializer
 
-    def get_queryset(self):
-        albums = Album.objects.filter(hidden=False)
+    def get_serializer(self, albums, *args, **kwargs):
         fetch_thumbnails_db([album.cover.file for album in albums if album.cover])
-        return albums
+        return super().get_serializer(albums, *args, **kwargs)
+
+    queryset = Album.objects.filter(hidden=False).select_related("_cover")
 
     permission_classes = [
         IsAuthenticatedOrTokenHasScope,
