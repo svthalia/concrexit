@@ -201,6 +201,23 @@ class Board(MemberGroup):
         self.active = True
         super().save(**kwargs)
 
+    def clean(self):
+        if self.since is None:
+            raise ValidationError(
+                {
+                    "since": _("Please insert a starting year for the new board."),
+                }
+            )
+
+        if self.until is None:
+            raise ValidationError(
+                {
+                    "until": _(
+                        "Please insert the year until when the board is active."
+                    ),
+                }
+            )
+
     def get_absolute_url(self):
         return reverse(
             "activemembers:board", args=[str(self.since.year), str(self.until.year)]
