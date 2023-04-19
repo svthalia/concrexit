@@ -14,13 +14,19 @@ from photos.api.v2.serializers.album import (
     PhotoListSerializer,
 )
 from photos.models import Album, Like, Photo
+from utils.media.services import fetch_thumbnails_db
 
 
 class AlbumListView(ListAPIView):
     """Returns an overview of all albums."""
 
     serializer_class = AlbumListSerializer
-    queryset = Album.objects.filter(hidden=False)
+
+    def get_queryset(self):
+        albums = Album.objects.filter(hidden=False)
+        fetch_thumbnails_db([album.cover.file for album in albums if album.cover])
+        return albums
+
     permission_classes = [
         IsAuthenticatedOrTokenHasScope,
     ]
@@ -43,6 +49,11 @@ class AlbumDetailView(RetrieveAPIView):
         if not services.is_album_accessible(request, self.get_object()):
             raise PermissionDenied
         return super().retrieve(request, *args, **kwargs)
+
+    def get_object(self):
+        object = super().get_object()
+        fetch_thumbnails_db([photo.file for photo in object.photo_set.all()])
+        return object
 
     def get_queryset(self):
         photos = Photo.objects.select_properties("num_likes")
@@ -77,6 +88,10 @@ class LikedPhotosListView(ListAPIView):
                 status=status.HTTP_403_FORBIDDEN,
             )
         return self.list(request, *args, **kwargs)
+
+    def get_serializer(self, photos, *args, **kwargs):
+        fetch_thumbnails_db([photo.file for photo in photos])
+        return super().get_serializer(photos, *args, **kwargs)
 
     def get_queryset(self):
         return (
