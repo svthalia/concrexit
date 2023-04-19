@@ -96,7 +96,7 @@ jobs:
 
   deploy-staging:
     name: Deploy to docker-staging
-    if: github.ref = 'refs/heads/master'
+    if: github.ref == 'refs/heads/master'
     environment:
       name: staging
       url: https://staging.thalia.nu
