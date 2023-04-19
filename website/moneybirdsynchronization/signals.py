@@ -20,7 +20,7 @@ User = get_user_model()
 def post_profile_save(sender, instance, **kwargs):
     """Update the contact in Moneybird when the profile is saved."""
     updated_fields = kwargs.get("update_fields", None)
-    if not any(
+    if updated_fields is not None and not any(
         field in updated_fields
         for field in [
             "is_minimized",
@@ -64,7 +64,7 @@ def post_user_save(sender, instance, **kwargs):
         return
 
     updated_fields = kwargs.get("update_fields", None)
-    if not any(
+    if updated_fields is not None and not any(
         field in updated_fields for field in ["first_name", "last_name", "email"]
     ):
         # Only update the contact when the name is changed
@@ -94,7 +94,7 @@ def post_user_delete(sender, instance, **kwargs):
 def post_bank_account_save(sender, instance, **kwargs):
     """Update the contact in Moneybird when the bank account is saved."""
     updated_fields = kwargs.get("update_fields", None)
-    if not any(
+    if updated_fields is not None and not any(
         field in updated_fields
         for field in ["owner", "iban", "bic", "initials", "last_name"]
     ):
