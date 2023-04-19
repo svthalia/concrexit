@@ -103,7 +103,9 @@ class MoneybirdContact(models.Model):
             if bank_account.valid:
                 data["contact"]["sepa_active"] = True
                 data["contact"]["sepa_mandate_id"] = bank_account.mandate_no
-                data["contact"]["sepa_mandate_date"] = bank_account.valid_from
+                data["contact"]["sepa_mandate_date"] = bank_account.valid_from.strftime(
+                    "%Y-%m-%d"
+                )
                 data["contact"]["sepa_sequence_type"] = "RCUR"
             else:
                 data["contact"]["sepa_active"] = False
