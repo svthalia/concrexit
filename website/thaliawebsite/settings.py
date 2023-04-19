@@ -764,7 +764,7 @@ STATICFILES_STORAGE = setting(
 )
 
 # Compressor settings
-COMPRESS_ENABLED = True
+COMPRESS_ENABLED = False
 
 COMPRESS_PRECOMPILERS = (("text/x-scss", "django_libsass.SassCompiler"),)
 
