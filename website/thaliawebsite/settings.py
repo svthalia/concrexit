@@ -757,12 +757,10 @@ STATICFILES_FINDERS = (
 )
 
 NORMAL_STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
-MANIFEST_STATICFILES_STORAGE = (
-    "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
-)
+
 STATICFILES_STORAGE = setting(
     development=NORMAL_STATICFILES_STORAGE,
-    production=MANIFEST_STATICFILES_STORAGE,
+    production=NORMAL_STATICFILES_STORAGE,
 )
 
 # Compressor settings
