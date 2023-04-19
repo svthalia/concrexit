@@ -86,7 +86,8 @@ class EntryAdminViewTest(TestCase):
     def test_permissions(self):
         url = f"/registration/admin/process/{self.entry1.pk}/"
         response = self.client.post(url)
-        self.assertRedirects(response, f"/admin/login/?next={url}")
+        self.assertEqual(response.status_code, 302)
+        self.assertURLEqual(response.url, f"/admin/login/?next={url}")
 
         self._give_user_permissions()
 

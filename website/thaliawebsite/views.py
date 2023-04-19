@@ -1,10 +1,13 @@
 """General views for the website."""
 
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.views import LoginView, PasswordResetView
 from django.http import HttpResponse, HttpResponseForbidden
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, TemplateView
 from django.views.generic.base import View
+
+from django_ratelimit.decorators import ratelimit
 
 
 class IndexView(TemplateView):
@@ -51,3 +54,19 @@ class PagedView(ListView):
         )
 
         return context
+
+
+class RateLimitedPasswordResetView(PasswordResetView):
+    @method_decorator(ratelimit(key="ip", rate="5/h"))
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
+
+class RateLimitedLoginView(LoginView):
+    @method_decorator(ratelimit(key="ip", rate="10/m"))
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
+
+def rate_limited_view(request, *args, **kwargs):
+    return HttpResponse("You are rate limited", status=429)

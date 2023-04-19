@@ -108,7 +108,7 @@ def _download(request, obj, filename):
     """
     photopath = _photo_path(obj, filename)
     photo = get_object_or_404(Photo.objects.filter(album=obj, file=photopath))
-    return redirect(get_media_url(photo.file, f"{obj.slug}-{filename}"))
+    return redirect(get_media_url(photo.file, attachment=f"{obj.slug}-{filename}"))
 
 
 @login_required

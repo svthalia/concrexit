@@ -42,7 +42,7 @@ class EventRegistrationListSerializer(CleanedModelSerializer):
         if instance.member and instance.member.profile.photo:
             file = instance.member.profile.photo
         return create_image_thumbnail_dict(
-            self.context["request"], file, placeholder=placeholder, size_large="800x800"
+            file, placeholder=placeholder, size_large="avatar_large"
         )
 
 
@@ -152,7 +152,7 @@ class EventRegistrationSerializer(serializers.ModelSerializer):
         if instance.member and instance.member.profile.photo:
             file = instance.member.profile.photo
         return create_image_thumbnail_dict(
-            self.context["request"], file, placeholder=placeholder, size_large="800x800"
+            file, placeholder=placeholder, size_large="avatar_large"
         )
 
     def __init__(self, instance=None, data=empty, **kwargs):

@@ -37,7 +37,7 @@ ENV MEDIA_ROOT="/volumes/media" \
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        cron ghostscript postgresql-client libjpeg-dev zlib1g-dev libwebp-dev libmagic1 && \
+        cron postgresql-client libjpeg-dev zlib1g-dev libwebp-dev libmagic1 && \
         rm -rf /var/lib/apt/lists/*
 
 COPY infra/concrexit/cronjobs /cronjobs

@@ -29,7 +29,7 @@ def write_to_file(pk, lang, html_message):
 
     cache_dir = "newsletters"
     file_path = os.path.join(cache_dir, f"{pk}_{lang}.html")
-    storage.save(file_path, ContentFile(html_message))
+    storage.save(file_path, ContentFile(html_message.encode("utf-8")))
 
 
 def save_to_disk(newsletter):
