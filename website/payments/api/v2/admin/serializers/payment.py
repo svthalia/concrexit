@@ -1,6 +1,6 @@
 from rest_framework.fields import HiddenField
 
-from members.api.v2.serializers.member import MemberSerializer
+from payments.api.v2.serializers.payment_user import PaymentUserSerializer
 from payments.models import Payment
 from thaliawebsite.api.v2.fields import CurrentMemberDefault
 from thaliawebsite.api.v2.serializers.cleaned_model_serializer import (
@@ -50,5 +50,5 @@ class PaymentAdminSerializer(CleanedModelSerializer):
             "notes",
         )
 
-    paid_by = MemberSerializer(detailed=False, read_only=False)
-    processed_by = MemberSerializer(detailed=False, read_only=False)
+    paid_by = PaymentUserSerializer(read_only=False)
+    processed_by = PaymentUserSerializer(read_only=False)

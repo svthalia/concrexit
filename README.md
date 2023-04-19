@@ -29,8 +29,6 @@ Optional, but recommended: follow the tutorial! It can be found by going to the 
 
 Pillow dependencies are used for the thumbnail generation. The website will give lots of errors and work weirdly if you don't install these native dependencies.
 
-The Thabloid dependencies are less important. If you don't intall them, the only thing that doesn't work is creating Thabloid cover images.
-
 ### Pillow dependencies
 
 For Ubuntu, use:
@@ -47,19 +45,6 @@ For other operating systems, see the [Pillow Documentation][pillow-install].
 
 On macOS you will also need to install `libmagic`, using the brew package manager by running `brew install libmagic`.
 
-### Thabloid dependencies
-
-To be able to generate JPGs from PDFs, we need ghostscript:
-
-```bash
-apt-get install ghostscript
-```
-
-Or for macOS:
-
-```bash
-brew install ghostscript
-```
 
 ## Apps and dependencies
 We try to keep concrexit modular to improve maintainability for the future. This is roughly how the current apps depend on each other. It is important to keep this graph as simple as possible, especially when considering the building of new features.

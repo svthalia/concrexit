@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.templatetags.static import static
 
 from rest_framework.fields import FileField
@@ -14,12 +13,9 @@ class ThumbnailSerializer(FileField):
         instance=None,
         data=None,
         placeholder=None,
-        size_small=settings.THUMBNAIL_SIZES["small"],
-        size_medium=settings.THUMBNAIL_SIZES["medium"],
-        size_large=settings.THUMBNAIL_SIZES["large"],
-        fit_small=True,
-        fit_medium=True,
-        fit_large=True,
+        size_small="small",
+        size_medium="medium",
+        size_large="large",
         **kwargs
     ):
         super().__init__(**kwargs)
@@ -29,9 +25,6 @@ class ThumbnailSerializer(FileField):
             "size_small": size_small,
             "size_medium": size_medium,
             "size_large": size_large,
-            "fit_small": fit_small,
-            "fit_medium": fit_medium,
-            "fit_large": fit_large,
         }
 
     def to_representation(self, value):
@@ -41,9 +34,7 @@ class ThumbnailSerializer(FileField):
                 static(self.placeholder)
             )
 
-        return create_image_thumbnail_dict(
-            self.context["request"], value, placeholder, **self.options
-        )
+        return create_image_thumbnail_dict(value, placeholder, **self.options)
 
     def to_internal_value(self, data):
         if data == "":
