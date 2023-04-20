@@ -83,31 +83,16 @@ def notify_waiting(event, registration):
     )
 
 
-def notify_registration(event, registration):
+def notify_registration(registration):
     send_email(
         to=[registration.email],
-        subject=f"Registration confirmation for {event.title}",
-        txt_template="events/email/registration_conf_email.txt",
-        html_template="events/email/registration_conf_email.html",
+        subject=f"Registration confirmation for {registration.event.title}",
+        txt_template="events/email/registration_confirmation_email.txt",
+        html_template="events/email/registration_confirmation_email.html",
         context={
-            "event": event,
+            "event": registration.event,
             "registration": registration,
-            "name": registration.name,
-            "base_url": settings.BASE_URL,
-        },
-    )
-
-
-def notify_queued(event, registration):
-    send_email(
-        to=[registration.email],
-        subject=f"Registration confirmation for {event.title}",
-        txt_template="events/email/registration_queued_email.txt",
-        html_template="events/email/registration_queued_email.html",
-        context={
-            "event": event,
-            "registration": registration,
-            "name": registration.name,
+            "name": registration.name or registration.member.first_name,
             "base_url": settings.BASE_URL,
         },
     )

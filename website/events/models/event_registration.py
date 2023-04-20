@@ -219,26 +219,23 @@ class EventRegistration(models.Model):
 
     def save(self, **kwargs):
         self.full_clean()
+
+        created = self.pk is None
         super().save(**kwargs)
-        if self.member is None and self.is_registered and not (self.present):
-            emails.notify_registration(self.event, self)
 
-        elif (
-            not (self.member is None)
-            and self.member.profile.receive_registration_confirmation
+        if (
+            created
             and self.is_registered
-            and self.queue_position is None
-            and not (self.present)
+            and self.email
+            and self.event.registration_required
         ):
-            emails.notify_registration(self.event, self)
+            if (
+                self.member is not None
+                and not self.member.profile.receive_registration_confirmation
+            ):
+                return  # Don't send email if the user doesn't want them.
 
-        elif (
-            not (self.member is None)
-            and self.member.profile.receive_registration_confirmation
-            and self.is_registered
-            and not (self.present)
-        ):
-            emails.notify_queued(self.event, self)
+            emails.notify_registration(self)
 
     def __str__(self):
         if self.member:

@@ -733,6 +733,7 @@ RATELIMIT_VIEW = "thaliawebsite.views.rate_limited_view"
 # https://docs.djangoproject.com/en/dev/topics/i18n/
 
 DATETIME_FORMAT = "j M, Y, H:i"
+SHORT_DATETIME_FORMAT = "d-m-Y, H:i"
 
 LANGUAGE_CODE = "en"
 
