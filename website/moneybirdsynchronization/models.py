@@ -109,17 +109,11 @@ class MoneybirdContact(models.Model):
                 data["contact"]["sepa_sequence_type"] = "RCUR"
             else:
                 data["contact"]["sepa_active"] = False
-                data["contact"]["sepa_mandate_id"] = None
-                data["contact"]["sepa_mandate_date"] = None
-                data["contact"]["sepa_sequence_type"] = None
         else:
-            data["contact"]["sepa_iban"] = None
-            data["contact"]["sepa_bic"] = None
-            data["contact"]["sepa_iban_account_name"] = None
+            data["contact"]["sepa_iban_account_name"] = ""
+            data["contact"]["sepa_iban"] = ""
+            data["contact"]["sepa_bic"] = ""
             data["contact"]["sepa_active"] = False
-            data["contact"]["sepa_mandate_id"] = None
-            data["contact"]["sepa_mandate_date"] = None
-            data["contact"]["sepa_sequence_type"] = None
         if self.moneybird_id is not None:
             data["id"] = self.moneybird_id
         if settings.MONEYBIRD_MEMBER_PK_CUSTOM_FIELD_ID:
