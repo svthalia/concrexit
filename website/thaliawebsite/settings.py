@@ -272,9 +272,12 @@ if AWS_STORAGE_BUCKET_NAME is not None:
     STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/static/"
 
     STATICFILES_STORAGE = setting(
-        development="thaliawebsite.storage.backend.StaticS3Storage",
-        production="thaliawebsite.storage.backend.ManifestStaticS3Storage",
+        development="thaliawebsite.storage.backend.CachedStaticS3Storage",
+        production="thaliawebsite.storage.backend.CachedManifestStaticS3Storage",
     )
+
+    COMPRESS_URL = STATIC_URL
+    COMPRESS_STORAGE = STATICFILES_STORAGE
 
 else:
     DEFAULT_FILE_STORAGE = "thaliawebsite.storage.backend.PrivateFileSystemStorage"

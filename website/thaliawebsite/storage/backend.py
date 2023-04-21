@@ -46,12 +46,44 @@ class PrivateS3Storage(S3RenameMixin, S3AttachmentMixin, S3Boto3Storage):
     default_acl = "private"
 
 
-class StaticS3Storage(S3StaticStorage):
+class CachedStaticS3Storage(S3StaticStorage):
+    """S3 storage backend that saves the files locally, too.
+
+    See https://django-compressor.readthedocs.io/en/stable/remote-storages.html#using-staticfiles.
+    """
+
     location = "static"
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.local_storage = get_storage_class(
+            "compressor.storage.CompressorFileStorage"
+        )()
 
-class ManifestStaticS3Storage(S3ManifestStaticStorage):
+    def save(self, name, content):
+        self.local_storage.save(name, content)
+        super().save(name, self.local_storage._open(name))
+        return name
+
+
+class CachedManifestStaticS3Storage(S3ManifestStaticStorage):
+    """S3 storage backend that saves the files locally, too.
+
+    See https://django-compressor.readthedocs.io/en/stable/remote-storages.html#using-staticfiles.
+    """
+
     location = "static"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.local_storage = get_storage_class(
+            "compressor.storage.CompressorFileStorage"
+        )()
+
+    def save(self, name, content):
+        self.local_storage.save(name, content)
+        super().save(name, self.local_storage._open(name))
+        return name
 
 
 class FileSystemRenameMixin:
