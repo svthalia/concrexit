@@ -123,7 +123,7 @@ jobs:
           echo "TAG=$TAG" > infra/.env
         env:
           SECRETS_FILE: ${{ secrets.SECRETS_FILE }}
-          TAG: staging
+          TAG: master
 
       - name: Update env files
         run: |
