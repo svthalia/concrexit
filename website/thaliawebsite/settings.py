@@ -282,11 +282,13 @@ else:
     PUBLIC_MEDIA_URL = "/media/public/"
 
     STATIC_URL = "/static/"
-    STATIC_ROOT = from_env("STATIC_ROOT", development=os.path.join(BASE_DIR, "static"))
     STATICFILES_STORAGE = setting(
         development="django.contrib.staticfiles.storage.StaticFilesStorage",
         production="django.contrib.staticfiles.storage.ManifestStaticFilesStorage",
     )
+
+# Used for static files when there is no S3, and as COMPRESS_ROOT
+STATIC_ROOT = from_env("STATIC_ROOT", development=os.path.join(BASE_DIR, "static"))
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#conn-max-age
 CONN_MAX_AGE = int(from_env("CONN_MAX_AGE", development="0", production="60"))
