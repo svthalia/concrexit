@@ -290,7 +290,7 @@ else:
         production="django.contrib.staticfiles.storage.ManifestStaticFilesStorage",
     )
 
-# Used for static files when there is no S3, and as COMPRESS_ROOT
+# Used for static files when there is no S3, and as COMPRESS_ROOT.
 STATIC_ROOT = from_env("STATIC_ROOT", development=os.path.join(BASE_DIR, "static"))
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#conn-max-age
