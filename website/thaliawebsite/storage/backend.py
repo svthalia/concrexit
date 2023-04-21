@@ -4,7 +4,11 @@ from django.conf import settings
 from django.core import signing
 from django.core.files.storage import FileSystemStorage, get_storage_class
 
-from storages.backends.s3boto3 import S3Boto3Storage
+from storages.backends.s3boto3 import (
+    S3Boto3Storage,
+    S3ManifestStaticStorage,
+    S3StaticStorage,
+)
 
 
 def get_public_storage():
@@ -33,11 +37,21 @@ class S3RenameMixin:
 class PublicS3Storage(S3RenameMixin, S3AttachmentMixin, S3Boto3Storage):
     location = settings.PUBLIC_MEDIA_LOCATION
     file_overwrite = False
+    querystring_auth = False
 
 
 class PrivateS3Storage(S3RenameMixin, S3AttachmentMixin, S3Boto3Storage):
     location = settings.PRIVATE_MEDIA_LOCATION
     file_overwrite = False
+    default_acl = "private"
+
+
+class StaticS3Storage(S3StaticStorage):
+    location = "static"
+
+
+class ManifestStaticS3Storage(S3ManifestStaticStorage):
+    location = "static"
 
 
 class FileSystemRenameMixin:

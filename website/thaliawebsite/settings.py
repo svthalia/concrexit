@@ -206,11 +206,6 @@ INTERNAL_IPS = setting(development=["127.0.0.1", "172.17.0.1"], production=[])
 # https://django-compressor.readthedocs.io/en/stable/settings/#django.conf.settings.COMPRESS_OFFLINE
 COMPRESS_OFFLINE = setting(development=False, production=True)
 
-# https://docs.djangoproject.com/en/dev/ref/settings/#static-url
-STATIC_URL = "/static/"
-# https://docs.djangoproject.com/en/dev/ref/settings/#static-root
-STATIC_ROOT = from_env("STATIC_ROOT", development=os.path.join(BASE_DIR, "static"))
-
 DJANGO_DRF_FILEPOND_UPLOAD_TMP = from_env(
     "DJANGO_DRF_FILEPOND_UPLOAD_TMP",
     development=os.path.join(BASE_DIR, "filepond-temp-uploads"),
@@ -260,7 +255,6 @@ PUBLIC_MEDIA_LOCATION = "public"
 AWS_ACCESS_KEY_ID = from_env("AWS_ACCESS_KEY_ID", production=None)
 AWS_SECRET_ACCESS_KEY = from_env("AWS_SECRET_ACCESS_KEY", production=None)
 AWS_STORAGE_BUCKET_NAME = from_env("AWS_STORAGE_BUCKET_NAME", production=None)
-AWS_DEFAULT_ACL = "private"
 AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
 AWS_S3_SIGNATURE_VERSION = "s3v4"
 
@@ -274,10 +268,25 @@ if AWS_STORAGE_BUCKET_NAME is not None:
     DEFAULT_FILE_STORAGE = "thaliawebsite.storage.backend.PrivateS3Storage"
     PUBLIC_FILE_STORAGE = "thaliawebsite.storage.backend.PublicS3Storage"
     PUBLIC_MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/"
+
+    STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/static/"
+
+    STATICFILES_STORAGE = setting(
+        development="thaliawebsite.storage.backend.StaticS3Storage",
+        production="thaliawebsite.storage.backend.ManifestStaticS3Storage",
+    )
+
 else:
     DEFAULT_FILE_STORAGE = "thaliawebsite.storage.backend.PrivateFileSystemStorage"
     PUBLIC_FILE_STORAGE = "thaliawebsite.storage.backend.PublicFileSystemStorage"
     PUBLIC_MEDIA_URL = "/media/public/"
+
+    STATIC_URL = "/static/"
+    STATIC_ROOT = from_env("STATIC_ROOT", development=os.path.join(BASE_DIR, "static"))
+    STATICFILES_STORAGE = setting(
+        development="django.contrib.staticfiles.storage.StaticFilesStorage",
+        production="django.contrib.staticfiles.storage.ManifestStaticFilesStorage",
+    )
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#conn-max-age
 CONN_MAX_AGE = int(from_env("CONN_MAX_AGE", development="0", production="60"))
@@ -748,21 +757,11 @@ LANGUAGES = [("en", _("English"))]
 
 LOCALE_PATHS = ("locale",)
 
-# Static files
 STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
     # other finders
     "compressor.finders.CompressorFinder",
-)
-
-NORMAL_STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
-MANIFEST_STATICFILES_STORAGE = (
-    "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
-)
-STATICFILES_STORAGE = setting(
-    development=NORMAL_STATICFILES_STORAGE,
-    production=MANIFEST_STATICFILES_STORAGE,
 )
 
 # Compressor settings
