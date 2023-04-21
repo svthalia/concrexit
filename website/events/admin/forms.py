@@ -53,29 +53,6 @@ class RegistrationInformationFieldForm(forms.ModelForm):
 
 
 class EventAdminForm(forms.ModelForm):
-    def is_valid(self):
-        valid = super().is_valid()
-        if not valid:
-            return valid
-
-        if (
-            self.cleaned_data.get("organisers")
-            and not any(
-                organiser.contact_mailinglist is not None
-                for organiser in self.cleaned_data["organisers"]
-            )
-            and self.cleaned_data["send_cancel_email"]
-        ):
-            self.add_error(
-                "organisers",
-                _(
-                    "One of the organisers does not have a contact mailinglist so sending a cancellation email is impossible."
-                ),
-            )
-            return False
-
-        return True
-
     def clean(self):
         super().clean()
         self.instance.clean_changes(self.changed_data)
