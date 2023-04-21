@@ -38,6 +38,7 @@ class PublicS3Storage(S3RenameMixin, S3AttachmentMixin, S3Boto3Storage):
     location = settings.PUBLIC_MEDIA_LOCATION
     file_overwrite = False
     querystring_auth = False
+    default_acl = "public-read"
 
 
 class PrivateS3Storage(S3RenameMixin, S3AttachmentMixin, S3Boto3Storage):
@@ -53,6 +54,7 @@ class CachedStaticS3Storage(S3StaticStorage):
     """
 
     location = "static"
+    default_acl = "public-read"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -73,6 +75,7 @@ class CachedManifestStaticS3Storage(S3ManifestStaticStorage):
     """
 
     location = "static"
+    default_acl = "public-read"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
