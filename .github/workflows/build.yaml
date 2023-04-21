@@ -1,6 +1,6 @@
 ---
 
-name: Build and deploy to staging
+name: Build and deploy
 on:
   push:
     branches: ['master']
@@ -95,7 +95,7 @@ jobs:
           cache-to: type=gha,mode=max,scope=${{ github.ref }}-concrexit-nginx
 
   deploy-staging:
-    name: Deploy to docker-staging
+    name: Deploy to staging
     if: github.ref == 'refs/heads/master'
     environment:
       name: staging
