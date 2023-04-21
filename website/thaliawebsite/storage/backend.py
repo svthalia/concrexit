@@ -59,7 +59,7 @@ class CachedStaticS3Storage(S3StaticStorage):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.local_storage = get_storage_class(
-            "compressor.storage.CompressorFileStorage"
+            "compressor.storage.OfflineManifestFileStorage"
         )()
 
     def save(self, name, content):
@@ -80,7 +80,7 @@ class CachedManifestStaticS3Storage(S3ManifestStaticStorage):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.local_storage = get_storage_class(
-            "compressor.storage.CompressorFileStorage"
+            "compressor.storage.OfflineManifestFileStorage"
         )()
 
     def save(self, name, content):
