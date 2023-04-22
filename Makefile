@@ -177,6 +177,11 @@ website/db.sqlite3: .make/deps $(MIGRATIONS)
 .PHONY: migrate
 migrate: ## Run all database migrations
 	poetry run website/manage.py migrate
+	poetry run website/manage.py createcachetable
+
+.PHONY: cachetable
+cachetable: ## Create the cache table
+	poetry run website/manage.py createcachetable
 
 .PHONY: migrations
 migrations: ## Automatically create migration scripts
