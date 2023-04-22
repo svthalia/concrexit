@@ -615,7 +615,6 @@ WSGI_APPLICATION = "thaliawebsite.wsgi.application"
 
 # Login pages
 LOGIN_URL = "/user/login/"
-
 LOGIN_REDIRECT_URL = "/"
 
 # Cors configuration
@@ -726,27 +725,19 @@ REST_FRAMEWORK = {
 }
 
 # Rate limiting
-
 RATELIMIT_VIEW = "thaliawebsite.views.rate_limited_view"
 
 # Internationalization
 # https://docs.djangoproject.com/en/dev/topics/i18n/
-
 DATETIME_FORMAT = "j M, Y, H:i"
 SHORT_DATETIME_FORMAT = "d-m-Y, H:i"
 
 LANGUAGE_CODE = "en"
-
 TIME_ZONE = "Europe/Amsterdam"
-
 USE_I18N = True
-
 USE_L10N = False
-
 USE_TZ = True
-
 LANGUAGES = [("en", _("English"))]
-
 LOCALE_PATHS = ("locale",)
 
 # Static files
@@ -768,9 +759,7 @@ STATICFILES_STORAGE = setting(
 
 # Compressor settings
 COMPRESS_ENABLED = True
-
 COMPRESS_PRECOMPILERS = (("text/x-scss", "django_libsass.SassCompiler"),)
-
 COMPRESS_FILTERS = {
     "css": [
         "compressor.filters.css_default.CssAbsoluteFilter",
@@ -778,9 +767,6 @@ COMPRESS_FILTERS = {
     ],
     "js": ["compressor.filters.jsmin.JSMinFilter"],
 }
-
-# Precompiler settings
-STATIC_PRECOMPILER_LIST_FILES = True
 
 # See utils/model/signals.py for explanation
 SUSPEND_SIGNALS = False
@@ -886,7 +872,6 @@ THUMBNAILS = {
 
 THUMBNAIL_SIZES = set(THUMBNAILS["SIZES"].keys())
 
-
 # Photos settings
 PHOTO_UPLOAD_SIZE = 2560, 1440
 
@@ -949,6 +934,8 @@ GRAPH_MODELS = {
         "auth",
     ],
 }
+
+
 MONEYBIRD_ADMINISTRATION_ID = os.environ.get("MONEYBIRD_ADMINISTRATION_ID", None)
 MONEYBIRD_API_KEY = os.environ.get("MONEYBIRD_API_KEY", None)
 
