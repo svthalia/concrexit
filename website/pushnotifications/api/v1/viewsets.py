@@ -1,5 +1,3 @@
-from django.utils.translation import get_language_from_request
-
 from rest_framework import filters, permissions, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -20,8 +18,6 @@ class DeviceViewSet(viewsets.ModelViewSet):
         return self.queryset.filter(user=self.request.user)
 
     def perform_create(self, serializer):
-        language = get_language_from_request(self.request)
-
         try:
             serializer.instance = Device.objects.get(
                 user=self.request.user,
@@ -32,14 +28,10 @@ class DeviceViewSet(viewsets.ModelViewSet):
         data = serializer.validated_data
         if "receive_category" in data and len(data["receive_category"]) > 0:
             categories = data["receive_category"] + ["general"]
-            serializer.save(
-                user=self.request.user, language=language, receive_category=categories
-            )
+            serializer.save(user=self.request.user, receive_category=categories)
         else:
             categories = [c.pk for c in Category.objects.all()]
-            serializer.save(
-                user=self.request.user, language=language, receive_category=categories
-            )
+            serializer.save(user=self.request.user, receive_category=categories)
 
     def perform_update(self, serializer):
         serializer.save(user=self.request.user)

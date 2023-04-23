@@ -1,5 +1,3 @@
-from django.utils.translation import get_language_from_request
-
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework.filters import OrderingFilter
 from rest_framework.generics import (
@@ -37,8 +35,6 @@ class DeviceListView(ListAPIView, CreateAPIView):
         return super().get_queryset()
 
     def perform_create(self, serializer):
-        language = get_language_from_request(self.request)
-
         try:
             serializer.instance = Device.objects.get(
                 user=self.request.user,
@@ -52,9 +48,7 @@ class DeviceListView(ListAPIView, CreateAPIView):
         if "receive_category" in data and len(data["receive_category"]) > 0:
             categories = data["receive_category"] + ["general"]
 
-        serializer.save(
-            user=self.request.user, language=language, receive_category=categories
-        )
+        serializer.save(user=self.request.user, receive_category=categories)
 
 
 class DeviceDetailView(RetrieveAPIView, UpdateAPIView):
