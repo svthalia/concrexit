@@ -7,7 +7,7 @@ license = "AGPL-3.0-or-later"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-django-localflavor = "3.1"
+django-localflavor = "4.0"
 freezegun = "1.2.2"
 bleach = {extras = ["css"], version = "^6.0.0"}
 djangorestframework = "3.14.0"
