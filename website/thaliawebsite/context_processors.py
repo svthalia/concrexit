@@ -8,15 +8,6 @@ def source_commit(_):
     return {"SOURCE_COMMIT": settings.SOURCE_COMMIT}
 
 
-def thumbnail_sizes(_):
-    """Get the defined sizes for thumbnails."""
-    return {
-        "THUMBNAIL_SIZE_SMALL": "small",
-        "THUMBNAIL_SIZE_MEDIUM": "medium",
-        "THUMBNAIL_SIZE_LARGE": "large",
-    }
-
-
 def aprilfools(_):
     now = timezone.now()
     return {"APRIL_FOOLS": now.month == 4 and now.day == 1}
