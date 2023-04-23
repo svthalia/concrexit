@@ -12,6 +12,7 @@ from thaliawebsite.storage.backend import get_public_storage
 
 
 def get_file_fields():
+    """Get all FileFields of all models."""
     all_models = apps.get_models()
     fields = []
     for model in all_models:
@@ -22,6 +23,7 @@ def get_file_fields():
 
 
 def remove_empty_dirs(path=None):
+    """Remove the directory `path` if it is emty, and return whether it was removed."""
     if not path:
         path = settings.MEDIA_ROOT
 
@@ -36,15 +38,8 @@ def remove_empty_dirs(path=None):
     return False
 
 
-def _get_used_thabloid_pages(storage, path):
-    file_name = os.path.splitext(os.path.basename(path))[0]
-    folder_path = os.path.join(os.path.dirname(path), "pages", file_name)
-    return set(
-        map(lambda x: os.path.join(folder_path, x), storage.listdir(folder_path)[1])
-    )
-
-
 def get_used_media(storage):
+    """Get the filenames of all files stored in a FileField of any model."""
     media = set()
 
     for field in get_file_fields():
@@ -64,8 +59,6 @@ def get_used_media(storage):
             .exclude(**is_null)
         ):
             if value not in EMPTY_VALUES:
-                if "thabloid" in str(field.model):
-                    media.update(_get_used_thabloid_pages(field.storage, value))
                 media.add(value)
 
     return media
@@ -128,7 +121,7 @@ class Command(BaseCommand):
         parser.add_argument(
             "--minimum-file-age",
             dest="minimum_file_age",
-            default=60,
+            default=180,
             type=int,
             help="Skip files younger this age (sec)",
         )
@@ -142,12 +135,17 @@ class Command(BaseCommand):
             help="Dry run without any affect on your data",
         )
 
-    def _show_files_to_delete(self, storage_type, unused_media):
+    def _show_files_to_delete(self, storage_type, unused_media, verbosity):
+        if verbosity >= 2:
+            self.stdout.writelines(map(lambda x: f"Will remove {x}", unused_media))
+
         self.stdout.write(
-            f"Total {storage_type} files will be removed: {len(unused_media)}"
+            f"Total {storage_type} files to be removed: {len(unused_media)}"
         )
 
     def handle(self, *args, **options):
+        verbosity = options.get("verbosity")
+
         private_storage = DefaultStorage()
         unused_private_media = get_unused_media(
             private_storage,
@@ -165,14 +163,14 @@ class Command(BaseCommand):
             return
 
         if options.get("dry_run"):
-            self._show_files_to_delete("private", unused_private_media)
-            self._show_files_to_delete("public", unused_public_media)
+            self._show_files_to_delete("private", unused_private_media, verbosity)
+            self._show_files_to_delete("public", unused_public_media, verbosity)
             self.stdout.write("Dry run. Exit.")
             return
 
         if options.get("interactive"):
-            self._show_files_to_delete("private", unused_private_media)
-            self._show_files_to_delete("public", unused_public_media)
+            self._show_files_to_delete("private", unused_private_media, verbosity)
+            self._show_files_to_delete("public", unused_public_media, verbosity)
 
             question = f"Are you sure you want to remove {len(unused_private_media) + len(unused_public_media)} unused files? (y/N)"
 
