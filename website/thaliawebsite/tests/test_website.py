@@ -21,7 +21,6 @@ class SitemapTest(TestCase):
     fixtures = [
         "members.json",
         "member_groups.json",
-        "merchandiseitems.json",
     ]
 
     def test_sitemap_success(self):

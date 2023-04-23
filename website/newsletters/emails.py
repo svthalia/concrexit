@@ -3,8 +3,7 @@ import logging
 from smtplib import SMTPException
 
 from django.conf import settings
-from django.core import mail
-from django.utils import timezone, translation
+from django.utils import timezone
 from django.utils.timezone import make_aware
 
 from newsletters import services
