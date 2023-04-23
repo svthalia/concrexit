@@ -1,32 +1,32 @@
-{% load i18n baseurl %}{% load static %}THALIA {% trans "newsletter"|upper %}
+{% load baseurl static %}THALIA NEWSLETTER
 
-{% trans "dear members"|upper %},
+DEAR MEMBERS,
 
 {{ newsletter.description|striptags }}
 
 
-{% trans "agenda"|upper %}:
+AGENDA:
 {% for item in agenda_events %} {{ item.title }} - {{ item.start|date:"d F" }}
 {% endfor %}
 
 {% for item in newsletter.newslettercontent_set.all %}{{ item.title|upper }}:
  {{ item.description|striptags }}
  {% if item.newsletterevent %}{% if item.newsletterevent.show_costs_warning %}
- {% trans "Attention" %}: {% trans "Registration deadline = unregistration deadline" %}! {% trans "Thalia will recover the costs on you if you do not unregister on time" %}. {% if item.newsletterevent.penalty_costs and item.newsletterevent.penalty_costs > 0 %}{% trans "These costs are" %}: {{ item.newsletterevent.penalty_costs }} euro.{% endif %}
+Attention: Registration deadline = unregistration deadline! Thalia will recover the costs on you if you do not unregister on time. {% if item.newsletterevent.penalty_costs and item.newsletterevent.penalty_costs > 0 %}These costs are: {{ item.newsletterevent.penalty_costs }} euro.{% endif %}
 {% endif %}
- {% trans "Where"|upper %}: {{ item.newsletterevent.where }}
- {% trans "When"|upper %}: {% if item.newsletterevent.start_datetime == item.newsletterevent.end_datetime %}{{ item.newsletterevent.start_datetime }}{% elif item.newsletterevent.start_datetime|date:'d-M-Y' == item.newsletterevent.end_datetime|date:'d-M-Y' %}{{ item.newsletterevent.start_datetime }} - {{ item.newsletterevent.end_datetime|date:'H:i' }}{% else %}{{ item.newsletterevent.start_datetime }} - {{ item.newsletterevent.end_datetime }}{% endif %}
- {% if item.newsletterevent.price is not None %}{% trans "Price"|upper %}: {% if item.newsletterevent.price == 0 %}{% trans "Free" %}{% else %}{{ item.newsletterevent.price }} euro{% endif %}{% endif %}
+ WHERE: {{ item.newsletterevent.where }}
+ WHEN: {% if item.newsletterevent.start_datetime == item.newsletterevent.end_datetime %}{{ item.newsletterevent.start_datetime }}{% elif item.newsletterevent.start_datetime|date:'d-M-Y' == item.newsletterevent.end_datetime|date:'d-M-Y' %}{{ item.newsletterevent.start_datetime }} - {{ item.newsletterevent.end_datetime|date:'H:i' }}{% else %}{{ item.newsletterevent.start_datetime }} - {{ item.newsletterevent.end_datetime }}{% endif %}
+ {% if item.newsletterevent.price is not None %}PRICE: {% if item.newsletterevent.price == 0 %}Free{% else %}{{ item.newsletterevent.price }} euro{% endif %}{% endif %}
  {% endif %}
 {% endfor %}
 
-{% trans "room"|capfirst %}: M1.0.08
-{% trans "website"|capfirst %}: www.thalia.nu
-{% trans "email"|capfirst %}: info@thalia.nu
+Room: M1.0.08
+Website: www.thalia.nu
+Email: info@thalia.nu
 
-{% if main_partner and main_partner.is_active %}{% trans "our main partner"|capfirst %}: {{ main_partner.name }} - {{ main_partner.link }}{% endif %}
+{% if main_partner and main_partner.is_active %}Our main partner: {{ main_partner.name }} - {{ main_partner.link }}{% endif %}
 {% for local_partner in local_partners %}
-{% if local_partner and local_partner.is_active %}{% trans "our local partner"|capfirst %}: {{ local_partner.name }} - {{ local_partner.link }}{% endif %}
+{% if local_partner and local_partner.is_active %}Our local partner: {{ local_partner.name }} - {{ local_partner.link }}{% endif %}
 {% endfor %}
 
-{% trans "view this email in your browser"|capfirst %}: {% baseurl %}{{ newsletter.get_absolute_url }}
+View this email in your browser: {% baseurl %}{{ newsletter.get_absolute_url }}

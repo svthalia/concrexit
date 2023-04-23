@@ -8,6 +8,11 @@ from django.utils.translation import gettext_lazy as _
 from tinymce.models import HTMLField
 
 
+def newsletter_filename(instance, filename):
+    """Return path to store rendered newsletters."""
+    return f"newsletters/{instance.pk}.html"
+
+
 class Newsletter(models.Model):
     """Describes a newsletter."""
 
@@ -47,6 +52,11 @@ class Newsletter(models.Model):
     )
 
     sent = models.BooleanField(default=False)
+
+    rendered_file = models.FileField(
+        upload_to=newsletter_filename,
+        null=True,
+    )
 
     def get_absolute_url(self):
         return reverse("newsletters:preview", args=(self.pk,))
