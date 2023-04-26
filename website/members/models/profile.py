@@ -260,12 +260,6 @@ class Profile(models.Model):
         default=True,
     )
 
-    receive_magazine = models.BooleanField(
-        verbose_name=_("Receive the Thabloid"),
-        help_text=_("Receive printed Thabloid magazines"),
-        default=True,
-    )
-
     receive_oldmembers = models.BooleanField(
         verbose_name=_("Receive alumni emails"),
         help_text=_(

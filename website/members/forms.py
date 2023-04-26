@@ -30,7 +30,6 @@ class ProfileForm(forms.ModelForm):
             "photo",
             "receive_optin",
             "receive_newsletter",
-            "receive_magazine",
             "receive_registration_confirmation",
             "receive_oldmembers",
             "email_gsuite_only",

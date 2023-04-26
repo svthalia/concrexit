@@ -1,7 +1,7 @@
 from django.contrib import sitemaps
 from django.urls import reverse
 
-from . import models
+from .models import Thabloid
 
 
 class StaticViewSitemap(sitemaps.Sitemap):
@@ -25,7 +25,7 @@ class ThabloidSitemap(sitemaps.Sitemap):
 
     def items(self):
         """Return all Thabloids."""
-        return models.Thabloid.objects.all()
+        return Thabloid.objects.all()
 
     def location(self, item):
         """Return the url of a Thabloid."""

@@ -120,7 +120,6 @@ class MemberCurrentSerializer(MemberSerializer):
             "display_name_preference",
             "receive_optin",
             "receive_newsletter",
-            "receive_magazine",
             "email_gsuite_only",
         ),
         force_show_birthday=True,
