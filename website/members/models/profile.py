@@ -248,6 +248,12 @@ class Profile(models.Model):
         default=True,
     )
 
+    receive_registration_confirmation = models.BooleanField(
+        verbose_name=_("Receive registration confirmations"),
+        help_text=_("Receive confirmation emails when registering for events"),
+        default=True,
+    )
+
     receive_newsletter = models.BooleanField(
         verbose_name=_("Receive newsletter"),
         help_text=_("Receive the Thalia Newsletter"),

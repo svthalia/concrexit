@@ -18,7 +18,6 @@ The latest Thalia Website built on Django.
 5. Open the code in your favorite Python IDE (VSCode or Pycharm both work great)
 
 Optional, but recommended: follow the tutorial! It can be found by going to the Wiki (top of the GitHub page) and then clicking on "Your first contribution" or by clicking [here](https://github.com/svthalia/concrexit/wiki/your-first-contribution).
-
 ## When working on an issue
 
 - Make sure you are not working on the main branch but on a separate branch.
