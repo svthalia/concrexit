@@ -501,8 +501,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.locale.LocaleMiddleware",
+    "thaliawebsite.middleware.RealIPMiddleware",
     "django_ratelimit.middleware.RatelimitMiddleware",
-    # Our middleware
     "members.middleware.MemberMiddleware",
     "announcements.middleware.AnnouncementMiddleware",
 ]
