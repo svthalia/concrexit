@@ -13,6 +13,10 @@ from django.db.utils import IntegrityError
 from django.utils import timezone
 from django.utils.text import slugify
 
+import factory
+from faker import Faker
+from pydenticon import Generator as IconGenerator
+
 from activemembers.models import (
     Board,
     Committee,
@@ -37,17 +41,8 @@ from photos.models import Album, Photo
 from pizzas.models import Product
 from utils.snippets import datetime_to_lectureyear
 
-try:
-    import factory
-    from faker import Factory as FakerFactory
-    from pydenticon import Generator as IconGenerator
-except ImportError as error:
-    raise ValueError(
-        f"Have you installed the dev-requirements? Failed importing {error}"
-    ) from error
-
-_faker = FakerFactory.create("nl_NL")
-_pizza_name_faker = FakerFactory.create("it_IT")
+_faker = Faker(["en_US"])
+_pizza_name_faker = Faker("it_IT")
 _current_tz = timezone.get_current_timezone()
 
 
@@ -202,6 +197,8 @@ class Command(BaseCommand):
         chair = random.choice(board.membergroupmembership_set.all())
         chair.until = None
         chair.chair = True
+
+        chair.clean()
         chair.save()
 
     @maintain_integrity
@@ -256,6 +253,7 @@ class Command(BaseCommand):
         chair.until = None
         chair.chair = True
 
+        chair.clean()
         chair.save()
 
     def create_member_group_membership(self, member, group):
@@ -280,6 +278,7 @@ class Command(BaseCommand):
             membership.until = _faker.date_time_between_dates(
                 membership.since, group.until
             ).date()
+
         membership.clean()
         membership.save()
 
@@ -304,7 +303,7 @@ class Command(BaseCommand):
         event.organisers.add(*random.sample(list(groups), random.randint(1, 3)))
         event.category = random.choice(EVENT_CATEGORIES)[0]
         event.fine = 5
-        event.slug = event.title.replace(" ", "-").lower() + "-" + str(event.start.year)
+        event.slug = slugify(event.title) + "-" + str(event.start.year)
 
         if random.random() < 0.5:
             week = timedelta(days=7)
@@ -341,6 +340,7 @@ class Command(BaseCommand):
             event.max_participants = random.randint(20, 200)
 
         event.published = random.random() < 0.9
+
         event.clean()
         event.save()
 
@@ -367,6 +367,7 @@ class Command(BaseCommand):
         partner.address = _faker.street_address()
         partner.zip_code = _faker.postcode()
         partner.city = _faker.city()
+
         partner.clean()
         partner.save()
 
@@ -379,6 +380,7 @@ class Command(BaseCommand):
         product.name = f"Pizza {_pizza_name_faker.last_name()}"
         product.price = random.randint(250, 1000) / 100
         product.available = random.random() < 0.9
+
         product.clean()
         product.save()
 
@@ -429,11 +431,12 @@ class Command(BaseCommand):
             ]
         )
         membership.type = random.choice([t[0] for t in Membership.MEMBERSHIP_TYPES])
+
         user.clean()
-        profile.clean()
-        membership.clean()
         user.save()
+        profile.clean()
         profile.save()
+        membership.clean()
         membership.save()
 
     def create_vacancy(self, partners, categories):
@@ -474,6 +477,7 @@ class Command(BaseCommand):
 
         category.name_en = _faker.text(max_nb_chars=30)
         category.slug = _faker.slug()
+
         category.clean()
         category.save()
 
@@ -497,6 +501,7 @@ class Command(BaseCommand):
         newsletter.description = _faker.paragraph()
         newsletter.date = _faker.date_time_between("-3m", "+3m", _current_tz)
 
+        newsletter.clean()
         newsletter.save()
 
         for _ in range(random.randint(1, 5)):
@@ -577,6 +582,7 @@ class Command(BaseCommand):
         registration.event = possible_event
 
         registration.date = registration.event.registration_start
+
         registration.clean()
         registration.save()
 
@@ -620,11 +626,13 @@ class Command(BaseCommand):
             print("Please add an membership to the superuser.")
             return
 
-        create_payment(
+        payment = create_payment(
             registration,
             superusers[0],
             random.choice([Payment.CASH, Payment.CARD, Payment.WIRE]),
         )
+
+        payment.clean()
 
     @maintain_integrity
     def create_photo_album(self):
@@ -641,6 +649,7 @@ class Command(BaseCommand):
             album.hidden = True
         if random.random() < 0.5:
             album.shareable = True
+
         album.clean()
         album.save()
 
@@ -664,6 +673,7 @@ class Command(BaseCommand):
             output_format="jpeg",
         )  # 620x620 pixels, with 10 pixels padding on each side
         photo.file.save(f"{name}.jpg", ContentFile(icon))
+
         photo.clean()
         photo.save()
 
