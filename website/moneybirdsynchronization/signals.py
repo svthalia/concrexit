@@ -32,13 +32,17 @@ def post_profile_save(sender, instance, **kwargs):
         ]
     ):
         return
+
+    if not instance.user.first_name or not instance.user.last_name:
+        return
+
     try:
         if instance.is_minimized:
-            services.delete_contact(Member.objects.get(profile=instance))
+            services.delete_contact(instance.user)
         else:
-            services.create_or_update_contact(Member.objects.get(profile=instance))
+            services.create_or_update_contact(instance.user)
     except Administration.Error as e:
-        send_sync_error(e, instance)
+        send_sync_error(e, instance.user)
         logging.error("Moneybird synchronization error: %s", e)
 
 
@@ -46,9 +50,9 @@ def post_profile_save(sender, instance, **kwargs):
 def post_profile_delete(sender, instance, **kwargs):
     """Delete the contact in Moneybird when the profile is deleted."""
     try:
-        services.delete_contact(Member.objects.get(profile=instance))
+        services.delete_contact(instance.user)
     except Administration.Error as e:
-        send_sync_error(e, instance)
+        send_sync_error(e, instance.user)
         logging.error("Moneybird synchronization error: %s", e)
 
 
