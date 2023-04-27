@@ -32,13 +32,10 @@ def post_profile_save(sender, instance, **kwargs):
         ]
     ):
         return
-    if (
-        instance.user.first_name is None
-        or instance.user.last_name is None
-        or instance.user.first_name == ""
-        or instance.user.last_name == ""
-    ):
+
+    if not instance.user.first_name or not instance.user.last_name:
         return
+
     try:
         if instance.is_minimized:
             services.delete_contact(instance.user)
