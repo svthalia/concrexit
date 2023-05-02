@@ -7,7 +7,7 @@ import requests
 from photos.models import Photo
 from utils.media.services import get_media_url
 
-from .models import FaceEncodedPhoto
+from .models import FaceDetectionPhoto
 
 
 @receiver(post_save, sender=Photo)
@@ -17,15 +17,15 @@ def trigger_image_analysis(sender, instance, **kwargs):
     if hasattr(instance, "faceencodedphoto"):
         return
 
-    encoded_photo = FaceEncodedPhoto.objects.create(photo=instance)
+    encoded_photo = FaceDetectionPhoto.objects.create(photo=instance)
 
     body = {
-        "photo_pk": instance.pk,
-        "photo_url": get_media_url(instance.file, absolute_url=True),
+        "pk": encoded_photo.pk,
         "token": encoded_photo.token,
+        "photo_url": get_media_url(instance.file, absolute_url=True),
     }
 
-    requests.post(settings.FACE_DETECTION_LAMBDA_URL, json=body)
+    requests.post(settings.FACEDETECTION_LAMBDA_URL, json=body)
 
 
 # TODO: Also need a function (though probably not a signal, as it's internal

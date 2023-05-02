@@ -162,7 +162,11 @@ PROMO_REQUEST_NOTIFICATION_ADDRESS = (
 TREASURER_NOTIFICATION_ADDRESS = (
     f"{os.environ.get('ADDRESS_TREASURER', 'treasurer')}@{SITE_DOMAIN}"
 )
+
 PROMO_PUBLISH_DATE_TIMEDELTA = timezone.timedelta(weeks=1)
+
+# How many days to keep reference faces after a user marks them for deletion
+FACEDETECTION_REFERENCE_FACE_STORAGE_PERIOD_AFTER_DELETE_DAYS = 180
 
 # The scheme the app uses for oauth redirection
 APP_OAUTH_SCHEME = os.environ.get("APP_OAUTH_SCHEME", "nu.thalia")
@@ -934,7 +938,6 @@ GRAPH_MODELS = {
         "auth",
     ],
 }
-
 
 MONEYBIRD_ADMINISTRATION_ID = os.environ.get("MONEYBIRD_ADMINISTRATION_ID", None)
 MONEYBIRD_API_KEY = os.environ.get("MONEYBIRD_API_KEY", None)
