@@ -9,8 +9,9 @@
 {% block page_content %}
     <p>
         Upload a reference photo of yourself and we'll look for other photos you appear on.
-        Note that for the best result, this reference photo should only contain your face.
-        It may take some time until we have processed your reference photo.
+        Note that for the best result, this photo should contain only your face.
+        A reference photo with multiple faces on it will be rejected.
+        It may take some time until we have processed your reference photos.
     </p>
     <ul>
         <li>Face recognition is intended to be used for <em>your own</em> faces only.</li>
@@ -39,6 +40,9 @@
         </a>
     </div>
     <div class="row mt-3">
+    {% if has_rejected_reference_faces %}
+        {% alert "danger" "Some of your reference faces have been rejected. Please delete them and upload new ones." dismissible=False %}
+    {% endif %}
     {% if not object_list %}
         {% alert "info" "You don't have any reference faces uploaded." dismissible=False %}
     {% else %}

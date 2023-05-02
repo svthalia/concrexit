@@ -25,9 +25,11 @@
         {% if not has_reference_faces %}
             {% alert "info" "You need to upload at least one reference face in order for face recognition to work." dismissible=False %}
         {% endif %}
-        {% if has_unprocessed_reference_faces %}
-            {% alert "info" "Not all of your reference faces have been processed yet. Come back later." dismissible=False %}
-        {% elif has_reference_faces and not has_unprocessed_reference_faces and not photos %}
+        {% if has_rejected_reference_faces %}
+            {% alert "danger" "Some of your reference faces have been rejected. Please delete them and upload new ones." dismissible=False %}
+        {% elif has_processing_reference_faces %}
+            {% alert "info" "Some of your reference faces have not been processed yet. Come back later." dismissible=False %}
+        {% elif has_reference_faces and not has_processing_reference_faces and not photos %}
             {% alert "info" "You haven't been recognized on any photos (yet)." dismissible=False %}
         {% else %}
             {% for photo in photos|dictsortreversed:"album.date" %}

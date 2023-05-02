@@ -54,9 +54,17 @@ class YourPhotosView(LoginRequiredMixin, PagedView):
         context = super().get_context_data(**kwargs)
 
         context[
-            "has_unprocessed_reference_faces"
-        ] = self.request.member.reference_faces.exclude(
-            status=ReferenceFace.Status.DONE
+            "has_processing_reference_faces"
+        ] = self.request.member.reference_faces.filter(
+            status=ReferenceFace.Status.PROCESSING,
+            marked_for_deletion_at__isnull=True,
+        ).exists()
+
+        context[
+            "has_rejected_reference_faces"
+        ] = self.request.member.reference_faces.filter(
+            status=ReferenceFace.Status.REJECTED,
+            marked_for_deletion_at__isnull=True,
         ).exists()
 
         context["has_reference_faces"] = self.request.member.reference_faces.filter(

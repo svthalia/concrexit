@@ -36,9 +36,9 @@ class BaseFaceEncodingSource(models.Model):
     """Abstract model for a source of face encodings."""
 
     class Status(models.TextChoices):
-        PROCESSING = "processing", "Processing"
-        DONE = "done", "Done"
-        ERROR = "error", "Error"
+        PROCESSING = "processing"
+        DONE = "done"
+        REJECTED = "rejected"
 
     status = models.CharField(
         max_length=16,
