@@ -168,6 +168,7 @@ urlpatterns = [
     path("", include("newsletters.urls")),
     path("", include("announcements.urls")),
     path("", include("pushnotifications.urls")),
+    path("", include("facedetection.urls")),
     path("", include("photos.urls")),
     path("", include("members.urls")),
     path("", include("payments.urls")),

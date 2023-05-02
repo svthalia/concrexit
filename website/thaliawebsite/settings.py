@@ -168,6 +168,9 @@ PROMO_PUBLISH_DATE_TIMEDELTA = timezone.timedelta(weeks=1)
 # How many days to keep reference faces after a user marks them for deletion
 FACEDETECTION_REFERENCE_FACE_STORAGE_PERIOD_AFTER_DELETE_DAYS = 180
 
+# How many reference faces a user can have at the same time
+FACEDETECTION_MAX_NUM_REFERENCE_FACES = 2
+
 # The scheme the app uses for oauth redirection
 APP_OAUTH_SCHEME = os.environ.get("APP_OAUTH_SCHEME", "nu.thalia")
 
@@ -471,6 +474,7 @@ INSTALLED_APPS = [
     # Our apps ordered such that templates in the first
     # apps can override those used by the later apps.
     "pushnotifications.apps.PushNotificationsConfig",
+    "facedetection.apps.FaceDetectionConfig",
     "announcements.apps.AnnouncementsConfig",
     "promotion.apps.PromotionConfig",
     "members.apps.MembersConfig",

@@ -7,7 +7,7 @@ app_name = "facedetection"
 
 urlpatterns = [
     path(
-        "reference/encoding/",
+        "reference/<int:pk>/encoding/",
         ReferenceFaceEncodingView.as_view(),
         name="facedetection-reference-encoding",
     ),

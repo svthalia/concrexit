@@ -2,9 +2,8 @@ import os
 from secrets import token_urlsafe
 
 from django.db import models
-from django.db.models import Count, IntegerField, Max, Value
+from django.db.models import Count, IntegerField, Value
 from django.db.models.functions import Coalesce
-from django.utils.functional import cached_property
 
 from queryable_properties.properties import AnnotationProperty
 from thumbnails.fields import ImageField
@@ -227,12 +226,17 @@ class BaseFaceEncoding(models.Model):
     class Meta:
         abstract = True
 
-    @cached_property
+    @property
     def encoding(self) -> list[float]:
-        [getattr(self, f"_field{i}") for i in range(0, 128)]
+        if hasattr(self, "_encoding"):
+            return self._encoding
+
+        self._encoding = [getattr(self, f"_field{i}") for i in range(0, 128)]
+        return self._encoding
 
     @encoding.setter
     def encoding(self, value):
+        self._encoding = value
         for i in range(0, 128):
             setattr(self, f"_field{i}", value[i])
 
