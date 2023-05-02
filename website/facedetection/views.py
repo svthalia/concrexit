@@ -10,37 +10,60 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import DeleteView, FormView, ListView
 
+from photos.models import Photo
+from thaliawebsite.views import PagedView
+
 from .forms import ReferenceFaceUploadForm
 from .models import ReferenceFace
 
 
-@login_required
-def your_photos(request):
-    #     if not request.member or request.member.current_membership is None:
-    messages.error(request, _("You need to be a member to use this feature."))
-    return redirect("index")
+class YourPhotosView(LoginRequiredMixin, PagedView):
+    model = Photo
+    paginate_by = 16
+    template_name = "facedetection/your-photos.html"
+    context_object_name = "photos"
 
+    def get(self, request, *args, **kwargs):
+        if not request.member or request.member.current_membership is None:
+            messages.error(request, _("You need to be a member to use this feature."))
+            return redirect("index")
 
-#     photos = Photo.objects.prefetch_related("album").filter(
-#         face_recognition_photo__encodings__matches__member__exact=request.member,
-#         album__hidden=False,
-#     )
+        return super().get(request, *args, **kwargs)
 
-#     photos = photos.filter(
-#         album__date__gte=request.member.earliest_membership.since
-#         - timezone.timedelta(days=31)
-#     )
-#     if request.member.latest_membership.until is not None:
-#         photos = photos.filter(album__date__lte=request.member.latest_membership.until)
+    def get_queryset(self):
+        member = self.request.member
+        photos = (
+            Photo.objects.select_related("album")
+            .filter(album__hidden=False, hidden=False)
+            .filter(
+                facedetectionphoto__encodings__matches__reference__user=self.request.member
+            )
+        )
 
-#     context = {
-#         "photos": photos,
-#         "has_unprocessed_reference_faces": request.member.reference_faces.filter(
-#             encoding__isnull=True
-#         ).exists(),
-#         "has_reference_faces": request.member.reference_faces.exists(),
-#     }
-#     return render(request, "facedetection/your-photos.html", context)
+        # Filter out matches from long before the member's first membership.
+        albums_since = member.earliest_membership.since - timezone.timedelta(days=31)
+        photos.filter(album__date__gte=albums_since)
+
+        # Filter out matches from after the member's last membership.
+        if member.latest_membership.until is not None:
+            photos = photos.filter(album__date__lte=member.latest_membership.until)
+
+        return photos.select_properties("num_likes").order_by("-album__date")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context[
+            "has_unprocessed_reference_faces"
+        ] = self.request.member.reference_faces.exclude(
+            status=ReferenceFace.Status.DONE
+        ).exists()
+
+        context["has_reference_faces"] = self.request.member.reference_faces.filter(
+            marked_for_deletion_at__isnull=True
+        ).exists()
+
+        return context
 
 
 class ReferenceFaceView(LoginRequiredMixin, ListView):

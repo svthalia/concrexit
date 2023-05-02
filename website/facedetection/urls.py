@@ -9,7 +9,11 @@ urlpatterns = [
         "members/photos/facedetection/",
         include(
             [
-                path("you/", views.your_photos, name="your-photos"),
+                path(
+                    "you/",
+                    views.YourPhotosView.as_view(),
+                    name="your-photos",
+                ),
                 path(
                     "reference-faces/",
                     views.ReferenceFaceView.as_view(),

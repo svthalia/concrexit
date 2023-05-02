@@ -1,6 +1,7 @@
 import os
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
@@ -18,8 +19,7 @@ from utils.media.services import get_media_url
 COVER_FILENAME = "cover.jpg"
 
 
-@method_decorator(login_required, "dispatch")
-class IndexView(PagedView):
+class IndexView(LoginRequiredMixin, PagedView):
     model = Album
     paginate_by = 16
     template_name = "photos/index.html"
@@ -65,8 +65,7 @@ class _BaseAlbumView(TemplateView):
         return context
 
 
-@method_decorator(login_required, "dispatch")
-class AlbumDetailView(_BaseAlbumView):
+class AlbumDetailView(LoginRequiredMixin, _BaseAlbumView):
     """Render an album, if it is accessible by the user."""
 
     def get_album(self, **kwargs):
@@ -127,8 +126,7 @@ def shared_download(request, slug, token, filename):
     return _download(request, obj, filename)
 
 
-@method_decorator(login_required, "dispatch")
-class LikedPhotoView(PagedView):
+class LikedPhotoView(LoginRequiredMixin, PagedView):
     model = Photo
     paginate_by = 16
     template_name = "photos/liked-photos.html"
