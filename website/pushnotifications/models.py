@@ -5,7 +5,6 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from django.utils.translation import override
 
 from firebase_admin import exceptions, messaging
 
@@ -59,12 +58,6 @@ class Device(models.Model):
     )
     date_created = models.DateTimeField(
         verbose_name=_("registration date"), auto_now_add=True, null=False
-    )
-    language = models.CharField(
-        verbose_name=_("language"),
-        max_length=2,
-        choices=settings.LANGUAGES,
-        default="en",
     )
 
     receive_category = models.ManyToManyField(
@@ -139,56 +132,49 @@ class Message(models.Model):
             failure_total = 0
             ttl = kwargs.get("ttl", 3600)
 
-            for lang in settings.LANGUAGES:
-                with override(lang[0]):
-                    reg_ids = list(
-                        Device.objects.filter(
-                            user__in=self.users.all(),
-                            receive_category__key=self.category_id,
-                            active=True,
-                            language=lang[0],
-                        ).values_list("registration_id", flat=True)
-                    )
+            reg_ids = list(
+                Device.objects.filter(
+                    user__in=self.users.all(),
+                    receive_category__key=self.category_id,
+                    active=True,
+                ).values_list("registration_id", flat=True)
+            )
 
-                    data = kwargs.get("data", {})
-                    if self.url is not None:
-                        data["url"] = self.url
-                    data["title"] = self.title
-                    data["body"] = str(self.body)
+            data = kwargs.get("data", {})
+            if self.url is not None:
+                data["url"] = self.url
+            data["title"] = self.title
+            data["body"] = str(self.body)
 
-                    message = messaging.Message(
-                        notification=messaging.Notification(
-                            title=data["title"],
-                            body=data["body"],
-                        ),
-                        data=data,
-                        android=messaging.AndroidConfig(
-                            ttl=datetime.timedelta(seconds=ttl),
-                            priority="normal",
-                            notification=messaging.AndroidNotification(
-                                color="#E62272",
-                                sound="default",
-                            ),
-                        ),
-                    )
+            message = messaging.Message(
+                notification=messaging.Notification(
+                    title=data["title"],
+                    body=data["body"],
+                ),
+                data=data,
+                android=messaging.AndroidConfig(
+                    ttl=datetime.timedelta(seconds=ttl),
+                    priority="normal",
+                    notification=messaging.AndroidNotification(
+                        color="#E62272",
+                        sound="default",
+                    ),
+                ),
+            )
 
-                    for reg_id in reg_ids:
-                        message.token = reg_id
-                        try:
-                            messaging.send(
-                                message, dry_run=kwargs.get("dry_run", False)
-                            )
-                            success_total += 1
-                        except messaging.UnregisteredError:
-                            failure_total += 1
-                            Device.objects.filter(registration_id=reg_id).delete()
-                        except exceptions.InvalidArgumentError:
-                            failure_total += 1
-                            Device.objects.filter(registration_id=reg_id).update(
-                                active=False
-                            )
-                        except exceptions.FirebaseError:
-                            failure_total += 1
+            for reg_id in reg_ids:
+                message.token = reg_id
+                try:
+                    messaging.send(message, dry_run=kwargs.get("dry_run", False))
+                    success_total += 1
+                except messaging.UnregisteredError:
+                    failure_total += 1
+                    Device.objects.filter(registration_id=reg_id).delete()
+                except exceptions.InvalidArgumentError:
+                    failure_total += 1
+                    Device.objects.filter(registration_id=reg_id).update(active=False)
+                except exceptions.FirebaseError:
+                    failure_total += 1
 
             self.sent = timezone.now()
             self.success = success_total
