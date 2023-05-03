@@ -24,7 +24,7 @@
                 <a href="{{ current_board.get_absolute_url }}" class="current-board col-12 text-center">
                     {% if current_board.photo %}
                         <img alt="{{ current_board.name }}"
-                             src="{% thumbnail current_board.photo THUMBNAIL_SIZE_LARGE %}">
+                             src="{% thumbnail current_board.photo "large" %}">
                     {% else %}
                         <img alt="{{ current_board.name }}"
                              src="/static/activemembers/images/placeholder.png">

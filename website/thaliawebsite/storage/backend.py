@@ -11,17 +11,6 @@ def get_public_storage():
     return get_storage_class(settings.PUBLIC_FILE_STORAGE)()
 
 
-class S3AttachmentMixin:
-    def url(self, name, attachment=False):
-        params = {}
-        if attachment:
-            params[
-                "ResponseContentDisposition"
-            ] = f'attachment; filename="{attachment}"'
-
-        return super().url(name, params)
-
-
 class S3RenameMixin:
     def rename(self, old_name, new_name):
         self.bucket.Object(new_name).copy_from(
@@ -30,14 +19,56 @@ class S3RenameMixin:
         self.delete(old_name)
 
 
-class PublicS3Storage(S3RenameMixin, S3AttachmentMixin, S3Boto3Storage):
+class PublicS3Storage(S3RenameMixin, S3Boto3Storage):
+    """Storage on S3 for public media files.
+
+    This storage is used for files that are publicly accessible. We use CloudFront to
+    serve files from S3. CloudFront is configured with a behavior to serve files in the
+    PUBLIC_MEDIA_LOCATION publicly, despite the objects in the bucket having a "private"
+    ACL. Hence, we can still use the default "private" ACL to prevent people from using
+    the S3 bucket directly.
+
+    To support the "ResponseContentDisposition" parameter for the `attachment` argument
+    to `PublicS3Storage.url` we do still need to sign the url, but in other cases we can
+    strip the signing parameters from urls.
+    """
+
     location = settings.PUBLIC_MEDIA_LOCATION
     file_overwrite = False
 
+    # Cloudfront will have a behavior to serve files in PUBLIC_MEDIA_LOCATION publicly,
+    # despite the objects in the bucket having a private ACL. Hence, we can use the
+    # default "private" ACL to prevent people from reading from the bucket directly.
 
-class PrivateS3Storage(S3RenameMixin, S3AttachmentMixin, S3Boto3Storage):
+    def url(self, name, attachment=False):
+        params = {}
+        if attachment:
+            params[
+                "ResponseContentDisposition"
+            ] = f'attachment; filename="{attachment}"'
+
+        url = super().url(name, params)
+
+        if not attachment:
+            # The signature is required even for public media in order
+            # to support the "ResponseContentDisposition" parameter.
+            return self._strip_signing_parameters(url)
+
+        return url
+
+
+class PrivateS3Storage(S3RenameMixin, S3Boto3Storage):
     location = settings.PRIVATE_MEDIA_LOCATION
     file_overwrite = False
+
+    def url(self, name, attachment=False):
+        params = {}
+        if attachment:
+            params[
+                "ResponseContentDisposition"
+            ] = f'attachment; filename="{attachment}"'
+
+        return super().url(name, params)
 
 
 class FileSystemRenameMixin:

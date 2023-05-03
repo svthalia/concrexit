@@ -68,7 +68,7 @@ resource "aws_s3_bucket_acl" "example_bucket_acl" {
 resource "aws_s3_bucket_versioning" "versioning_example" {
   bucket = aws_s3_bucket.concrexit-media-bucket.id
   versioning_configuration {
-    status = "Disabled"
+    status = "Suspended"
   }
 }
 
