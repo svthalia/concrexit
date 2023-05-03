@@ -119,6 +119,11 @@ resource "aws_iam_role_policy" "concrexit-iam-role-policy" {
         "s3:DeleteObject"
       ],
       "Resource": ["${aws_s3_bucket.concrexit-media-bucket.arn}/*"]
+    },
+    {
+      "Effect": "Allow",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "${var.facedetection_lambda_arn}"
     }
   ]
 }

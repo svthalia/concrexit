@@ -14,13 +14,14 @@ terraform {
 }
 
 module "concrexit" {
-  source                = "../../concrexit"
-  aws_profile           = "thalia"
-  customer              = "thalia"
-  stage                 = "staging"
-  zone_name             = "thalia.nu"
-  domain                = "staging.thalia.nu"
-  ssh_public_key        = file("ssh-public-key.pub")
-  cloudfront_public_key = file("cloudfront-public-key.pem")
-  ec2_instance_type     = "t3a.small"
+  source                   = "../../concrexit"
+  aws_profile              = "thalia"
+  customer                 = "thalia"
+  stage                    = "staging"
+  zone_name                = "thalia.nu"
+  domain                   = "staging.thalia.nu"
+  ssh_public_key           = file("ssh-public-key.pub")
+  cloudfront_public_key    = file("cloudfront-public-key.pem")
+  ec2_instance_type        = "t3a.small"
+  facedetection_lambda_arn = "arn:aws:lambda:eu-west-1:627002765486:function:concrexit-facedetection-lambda:staging"
 }
