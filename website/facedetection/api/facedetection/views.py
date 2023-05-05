@@ -32,6 +32,7 @@ class FaceEncodingPostView(APIView):
             ],
         }
         """
+
         pk = kwargs["pk"]
         obj_type = kwargs["type"]
 
@@ -43,9 +44,8 @@ class FaceEncodingPostView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            data = json.loads(request.data)
-            encodings = data["encodings"]
-            token = data["token"]
+            encodings = request.data["encodings"]
+            token = request.data["token"]
         except (json.JSONDecodeError, KeyError):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 

@@ -133,12 +133,15 @@ def from_env(
 ###############################################################################
 # Site settings
 
-# We use this setting to generate the email addresses
-SITE_DOMAIN = from_env(
-    "SITE_DOMAIN", development="thalia.localhost", production="thalia.nu"
+# We use this setting to generate the email addresses, and for BASE_URL below.
+SITE_DOMAIN = from_env("SITE_DOMAIN", development="localhost", production="thalia.nu")
+
+# Used to generate some absolute urls when we don't have access to a request.
+BASE_URL = from_env(
+    "BASE_URL",
+    development=f"http://{SITE_DOMAIN}:8000",
+    production=f"https://{SITE_DOMAIN}",
 )
-# We use this domain to generate some absolute urls when we don't have access to a request
-BASE_URL = os.environ.get("BASE_URL", f"https://{SITE_DOMAIN}")
 
 # Default FROM email
 DEFAULT_FROM_EMAIL = f"{os.environ.get('ADDRESS_NOREPLY', 'noreply')}@{SITE_DOMAIN}"
@@ -170,6 +173,10 @@ FACEDETECTION_REFERENCE_FACE_STORAGE_PERIOD_AFTER_DELETE_DAYS = 180
 
 # How many reference faces a user can have at the same time
 FACEDETECTION_MAX_NUM_REFERENCE_FACES = 2
+
+# ARN of the concrexit-facedetection-lambda function.
+# See https://github.com/svthalia/concrexit-facedetection-lambda.
+FACEDETECTION_LAMBDA_ARN = from_env("FACEDETECTION_LAMBDA_ARN")
 
 # The scheme the app uses for oauth redirection
 APP_OAUTH_SCHEME = os.environ.get("APP_OAUTH_SCHEME", "nu.thalia")
@@ -718,7 +725,7 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_PAGINATION_CLASS": "thaliawebsite.api.pagination.APIv2LimitOffsetPagination",
     "PAGE_SIZE": 50,  # Only for API v2
-    "ALLOWED_VERSIONS": ["v1", "v2", "calendarjs"],
+    "ALLOWED_VERSIONS": ["v1", "v2", "calendarjs", "facedetection"],
     "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.NamespaceVersioning",
     "DEFAULT_SCHEMA_CLASS": "thaliawebsite.api.openapi.OAuthAutoSchema",
     "DEFAULT_THROTTLE_CLASSES": [
