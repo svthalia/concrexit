@@ -2643,19 +2643,19 @@ crt = ["botocore[crt] (>=1.20.29,<2.0a.0)"]
 
 [[package]]
 name = "sentry-sdk"
-version = "1.21.1"
+version = "1.22.0"
 description = "Python client for Sentry (https://sentry.io)"
 category = "main"
 optional = false
 python-versions = "*"
 files = [
-    {file = "sentry-sdk-1.21.1.tar.gz", hash = "sha256:99c15556a23621be9f18c2955f7ce63321713bf1c0ad396b27b61399bac5f458"},
-    {file = "sentry_sdk-1.21.1-py2.py3-none-any.whl", hash = "sha256:092888f3abf7a2ea78f0bfcefc3e0465caee2b6f0efb26f538ccc60f95dca179"},
+    {file = "sentry-sdk-1.22.0.tar.gz", hash = "sha256:827fac0ed1c7921bd198727128a8aa890ad66242598aa18f4cdfa3e46bdd9a60"},
+    {file = "sentry_sdk-1.22.0-py2.py3-none-any.whl", hash = "sha256:eb37b55ddfbbaf523dc91e59673caf10ab25e36cd4350ae71d19daa9c86506c7"},
 ]
 
 [package.dependencies]
 certifi = "*"
-urllib3 = {version = ">=1.26.11", markers = "python_version >= \"3.6\""}
+urllib3 = {version = ">=1.26.11,<2.0.0", markers = "python_version >= \"3.6\""}
 
 [package.extras]
 aiohttp = ["aiohttp (>=3.5)"]
@@ -3133,4 +3133,4 @@ postgres = ["psycopg2"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "c0970e3243cbd3b2c4c7d3727440c034a9d50ab443c0eed5c8f8ab9e12dcdd72"
+content-hash = "eb52e5d158e6054ea230344f82106783ec46ae9d71d1c1fcf27ab7a17fc733de"
