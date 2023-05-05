@@ -6,6 +6,7 @@ from django.db.models import Q
 from django.utils import timezone
 
 import boto3
+import requests
 
 from utils.media.services import get_thumbnail_url
 
@@ -85,10 +86,6 @@ def _trigger_facedetection_lambda_batch(
 
         if response["StatusCode"] != 202:
             raise Exception("Couldn't invoke Lambda function.")
-
-    for source in sources:
-        source.submitted_at = timezone.now()
-        source.save()
 
 
 def trigger_facedetection_lambda(

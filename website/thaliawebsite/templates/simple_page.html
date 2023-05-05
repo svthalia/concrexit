@@ -5,10 +5,12 @@
     <section class="page-section {% block extra_section_classes %}{% endblock %}" {% block section_tags %}{% endblock %}>
         <div class="container">
             <h1 class="section-title">{% block page_title %}{% endblock %}</h1>
-            {% bootstrap_messages %}
-            {% if form.errors %}
-                {% bootstrap_form_errors form %}
-            {% endif %}
+            <div class="col-12">
+                {% bootstrap_messages %}
+                {% if form.errors %}
+                    {% bootstrap_form_errors form %}
+                {% endif %}
+            </div>
             <div class="col-12">
                 {% block page_content %}{% endblock %}
             </div>
