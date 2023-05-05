@@ -2643,14 +2643,14 @@ crt = ["botocore[crt] (>=1.20.29,<2.0a.0)"]
 
 [[package]]
 name = "sentry-sdk"
-version = "1.22.0"
+version = "1.22.1"
 description = "Python client for Sentry (https://sentry.io)"
 category = "main"
 optional = false
 python-versions = "*"
 files = [
-    {file = "sentry-sdk-1.22.0.tar.gz", hash = "sha256:827fac0ed1c7921bd198727128a8aa890ad66242598aa18f4cdfa3e46bdd9a60"},
-    {file = "sentry_sdk-1.22.0-py2.py3-none-any.whl", hash = "sha256:eb37b55ddfbbaf523dc91e59673caf10ab25e36cd4350ae71d19daa9c86506c7"},
+    {file = "sentry-sdk-1.22.1.tar.gz", hash = "sha256:052dff5069c6f0d836ee014323576824a9b40836fc003fb12489a1f19c60a3c9"},
+    {file = "sentry_sdk-1.22.1-py2.py3-none-any.whl", hash = "sha256:c6c6946f8c927adb00af1c5ab6921df38775b2199b9003816d5935a1310352d5"},
 ]
 
 [package.dependencies]
@@ -3133,4 +3133,4 @@ postgres = ["psycopg2"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "eb52e5d158e6054ea230344f82106783ec46ae9d71d1c1fcf27ab7a17fc733de"
+content-hash = "75db2a80bae90080297c4594adf8cb85cfbfac7b4ec3dadadc0d253113cdf57f"
