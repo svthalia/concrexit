@@ -7,7 +7,7 @@ from django.utils import timezone
 
 import boto3
 
-from utils.media.services import get_media_url
+from utils.media.services import get_thumbnail_url
 
 from .models import FaceDetectionPhoto, ReferenceFace
 
@@ -43,27 +43,31 @@ def _serialize_lambda_source(source: Union[ReferenceFace, FaceDetectionPhoto]):
             "type": "reference",
             "pk": source.pk,
             "token": source.token,
-            "photo_url": get_media_url(source.file, absolute_url=True),
+            "photo_url": get_thumbnail_url(source.file, "medium", absolute_url=True),
         }
     elif isinstance(source, FaceDetectionPhoto):
         return {
             "type": "photo",
             "pk": source.pk,
             "token": source.token,
-            "photo_url": get_media_url(source.photo.file, absolute_url=True),
+            "photo_url": get_thumbnail_url(
+                source.photo.file, "large", absolute_url=True
+            ),
         }
 
 
-def trigger_facedetection_lambda(
+def _trigger_facedetection_lambda_batch(
     sources: list[Union[ReferenceFace, FaceDetectionPhoto]]
 ):
-    if any(source.status != source.Status.PROCESSING for source in sources):
-        raise Exception("A source has already been processed.")
-
+    """Submit a batch of sources to the facedetection lambda function."""
     payload = {
         "api_url": settings.BASE_URL,
         "sources": [_serialize_lambda_source(source) for source in sources],
     }
+
+    for source in sources:
+        source.submitted_at = timezone.now()
+        source.save()
 
     if settings.FACEDETECTION_LAMBDA_ARN:
         session = boto3.session.Session()
@@ -81,5 +85,29 @@ def trigger_facedetection_lambda(
 
         if response["StatusCode"] != 202:
             raise Exception("Couldn't invoke Lambda function.")
-    else:
+
+    for source in sources:
+        source.submitted_at = timezone.now()
+        source.save()
+
+
+def trigger_facedetection_lambda(
+    sources: list[Union[ReferenceFace, FaceDetectionPhoto]]
+):
+    if len(sources) == 0:
+        raise Exception("No sources to process.")
+
+    if any(source.status != source.Status.PROCESSING for source in sources):
+        raise Exception("A source has already been processed.")
+
+    if (
+        settings.FACEDETECTION_LAMBDA_ARN is None
+        and settings.FACEDETECTION_LAMBDA_URL is None
+    ):
         raise Exception("No Lambda ARN or URL configured.")
+
+    batch_size = 20
+    for batch in [
+        sources[i : i + batch_size] for i in range(0, len(sources), batch_size)
+    ]:
+        _trigger_facedetection_lambda_batch(batch)

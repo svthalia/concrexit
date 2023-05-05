@@ -55,6 +55,13 @@ class BaseFaceEncodingSource(models.Model):
         "to the API to submit encoding(s) for this source.",
     )
 
+    submitted_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="The time at which the source was "
+        "submitted to the Lambda for processing.",
+    )
+
     class Meta:
         abstract = True
 
@@ -81,6 +88,7 @@ class ReferenceFace(BaseFaceEncodingSource):
         on_delete=models.CASCADE,
         related_name="reference_faces",
     )
+
     file = ImageField(upload_to=reference_face_uploadto)
 
     marked_for_deletion_at = models.DateTimeField(null=True, blank=True)
