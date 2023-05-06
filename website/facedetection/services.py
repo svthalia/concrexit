@@ -119,7 +119,9 @@ def trigger_facedetection_lambda(
         raise Exception("A source has already been processed.")
 
     if settings.FACEDETECTION_LAMBDA_ARN is None:
-        logger.info("No Lambda ARN has been configured. Sources will not be processed.")
+        logger.warning(
+            "No Lambda ARN has been configured. Sources will not be processed."
+        )
         return
 
     batch_size = settings.FACEDETECTION_LAMBDA_BATCH_SIZE
