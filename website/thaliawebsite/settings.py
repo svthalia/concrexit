@@ -178,6 +178,10 @@ FACEDETECTION_MAX_NUM_REFERENCE_FACES = 2
 # See https://github.com/svthalia/concrexit-facedetection-lambda.
 FACEDETECTION_LAMBDA_ARN = from_env("FACEDETECTION_LAMBDA_ARN")
 
+FACEDETECTION_LAMBDA_BATCH_SIZE = int(
+    os.environ.get("FACEDETECTION_LAMBDA_BATCH_SIZE", 20)
+)
+
 # The scheme the app uses for oauth redirection
 APP_OAUTH_SCHEME = os.environ.get("APP_OAUTH_SCHEME", "nu.thalia")
 

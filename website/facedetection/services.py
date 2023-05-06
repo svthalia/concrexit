@@ -1,4 +1,5 @@
 import json
+import logging
 from typing import Union
 
 from django.conf import settings
@@ -6,11 +7,13 @@ from django.db.models import Q
 from django.utils import timezone
 
 import boto3
-import requests
+from sentry_sdk import capture_exception
 
 from utils.media.services import get_thumbnail_url
 
 from .models import FaceDetectionPhoto, ReferenceFace
+
+logger = logging.getLogger(__name__)
 
 
 def execute_data_minimisation(dry_run=False):
@@ -60,7 +63,11 @@ def _serialize_lambda_source(source: Union[ReferenceFace, FaceDetectionPhoto]):
 def _trigger_facedetection_lambda_batch(
     sources: list[Union[ReferenceFace, FaceDetectionPhoto]]
 ):
-    """Submit a batch of sources to the facedetection lambda function."""
+    """Submit a batch of sources to the facedetection lambda function.
+
+    If submitting the sources fails, this is logged and
+    reported to Sentry, but no exception is raised.
+    """
     payload = {
         "api_url": settings.BASE_URL,
         "sources": [_serialize_lambda_source(source) for source in sources],
@@ -70,7 +77,7 @@ def _trigger_facedetection_lambda_batch(
         source.submitted_at = timezone.now()
         source.save()
 
-    if settings.FACEDETECTION_LAMBDA_ARN:
+    try:
         session = boto3.session.Session()
         lambda_client = session.client(
             service_name="lambda",
@@ -85,25 +92,37 @@ def _trigger_facedetection_lambda_batch(
         )
 
         if response["StatusCode"] != 202:
-            raise Exception("Couldn't invoke Lambda function.")
+            raise Exception("Lambda response was not 202.")
+
+    except Exception as e:
+        logger.error(
+            "Submitting sources to lambda failed. Reason: %s", str(e), exc_info=True
+        )
+        capture_exception(e)
 
 
 def trigger_facedetection_lambda(
     sources: list[Union[ReferenceFace, FaceDetectionPhoto]]
 ):
+    """Submit a sources to the facedetection lambda function for processing.
+
+    This function will check if the sources are valid and, if a lambda function has
+    been configured, try to submit the sources to the lambda function in batches.
+
+    If no lambda function has been configured, or submitting (a batch of) sources fails,
+    this is ignored. The sources can be submitted again later.
+    """
     if len(sources) == 0:
         raise Exception("No sources to process.")
 
     if any(source.status != source.Status.PROCESSING for source in sources):
         raise Exception("A source has already been processed.")
 
-    if (
-        settings.FACEDETECTION_LAMBDA_ARN is None
-        and settings.FACEDETECTION_LAMBDA_URL is None
-    ):
-        raise Exception("No Lambda ARN or URL configured.")
+    if settings.FACEDETECTION_LAMBDA_ARN is None:
+        logger.info("No Lambda ARN has been configured. Sources will not be processed.")
+        return
 
-    batch_size = 20
+    batch_size = settings.FACEDETECTION_LAMBDA_BATCH_SIZE
     for batch in [
         sources[i : i + batch_size] for i in range(0, len(sources), batch_size)
     ]:
