@@ -5,6 +5,7 @@ from django.db import models
 from django.db.models import Count, IntegerField, Value
 from django.db.models.functions import Coalesce
 
+from queryable_properties.managers import QueryablePropertiesManager
 from queryable_properties.properties import AnnotationProperty
 from thumbnails.fields import ImageField
 
@@ -75,6 +76,11 @@ class FaceDetectionPhoto(BaseFaceEncodingSource):
         Coalesce(Count("encodings"), Value(0), output__field=IntegerField())
     )
 
+    objects = QueryablePropertiesManager()
+
+    def __str__(self):
+        return f"{self.photo.album} - {self.photo}"
+
 
 class ReferenceFace(BaseFaceEncodingSource):
     """A source of face encodings from a reference photo of a user's face.
@@ -91,12 +97,16 @@ class ReferenceFace(BaseFaceEncodingSource):
 
     file = ImageField(upload_to=reference_face_uploadto)
 
+    created_at = models.DateTimeField(auto_now_add=True, editable=False)
     marked_for_deletion_at = models.DateTimeField(null=True, blank=True)
 
     def delete(self, **kwargs):
         if self.file.name:
             self.file.delete()
         return super().delete(**kwargs)
+
+    def __str__(self):
+        return f"Reference face {self.user.username} ({self.pk})"
 
 
 class BaseFaceEncoding(models.Model):
@@ -269,6 +279,9 @@ class PhotoFaceEncoding(BaseFaceEncoding):
         FaceDetectionPhoto, on_delete=models.CASCADE, related_name="encodings"
     )
 
+    def __str__(self) -> str:
+        return f"Face in {self.photo} ({self.pk})"
+
     def save(self, **kwargs):
         created = self.pk is None
         super().save(**kwargs)
@@ -294,6 +307,15 @@ class ReferenceFaceEncoding(BaseFaceEncoding):
         related_name="matches",
         editable=False,
     )
+
+    num_matches = AnnotationProperty(
+        Coalesce(Count("matches"), Value(0), output__field=IntegerField())
+    )
+
+    objects = QueryablePropertiesManager()
+
+    def __str__(self) -> str:
+        return f"Encoding for {self.reference}"
 
     def save(self, **kwargs):
         created = self.pk is None
