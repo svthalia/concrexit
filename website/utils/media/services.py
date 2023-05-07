@@ -26,7 +26,12 @@ def save_image(storage, image, path, format):
     return storage.save(path, file)
 
 
-def get_media_url(file, attachment=False, absolute_url: bool = False):
+def get_media_url(
+    file,
+    attachment=False,
+    absolute_url: bool = False,
+    expire_seconds: int = None,
+):
     """Get the url of the provided media file to serve in a browser.
 
     If the file is private a signature will be added.
@@ -34,6 +39,7 @@ def get_media_url(file, attachment=False, absolute_url: bool = False):
     :param file: The file field or path.
     :param attachment: Filename to use for the attachment or False to not download as attachment.
     :param absolute_url: True if we want the full url including the scheme and domain.
+    :param expire_seconds: The number of seconds the url should be valid for if on S3.
     :return: The url of the media.
     """
     storage = DefaultStorage()
@@ -42,7 +48,7 @@ def get_media_url(file, attachment=False, absolute_url: bool = False):
         storage = file.storage
         file_name = file.name
 
-    url = storage.url(file_name, attachment)
+    url = storage.url(file_name, attachment, expire_seconds)
 
     # If the url is not absolute, but we want an absolute url, add the base url.
     if absolute_url and not url.startswith(("http://", "https://")):
@@ -51,7 +57,12 @@ def get_media_url(file, attachment=False, absolute_url: bool = False):
     return url
 
 
-def get_thumbnail_url(file, size: str, absolute_url: bool = False):
+def get_thumbnail_url(
+    file,
+    size: str,
+    absolute_url: bool = False,
+    expire_seconds: int = None,
+):
     name = file
     if isinstance(file, (ImageFieldFile, FieldFile)):
         name = file.name

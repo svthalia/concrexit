@@ -40,14 +40,14 @@ class PublicS3Storage(S3RenameMixin, S3Boto3Storage):
     # despite the objects in the bucket having a private ACL. Hence, we can use the
     # default "private" ACL to prevent people from reading from the bucket directly.
 
-    def url(self, name, attachment=False):
+    def url(self, name, attachment=False, expire_seconds=None):
         params = {}
         if attachment:
             params[
                 "ResponseContentDisposition"
             ] = f'attachment; filename="{attachment}"'
 
-        url = super().url(name, params)
+        url = super().url(name, params, expire=expire_seconds)
 
         if not attachment:
             # The signature is required even for public media in order
@@ -61,14 +61,14 @@ class PrivateS3Storage(S3RenameMixin, S3Boto3Storage):
     location = settings.PRIVATE_MEDIA_LOCATION
     file_overwrite = False
 
-    def url(self, name, attachment=False):
+    def url(self, name, attachment=False, expire_seconds=None):
         params = {}
         if attachment:
             params[
                 "ResponseContentDisposition"
             ] = f'attachment; filename="{attachment}"'
 
-        return super().url(name, params)
+        return super().url(name, params, expire=expire_seconds)
 
 
 class FileSystemRenameMixin:
@@ -82,14 +82,19 @@ class PublicFileSystemStorage(FileSystemRenameMixin, FileSystemStorage):
     location = os.path.join(settings.MEDIA_ROOT, settings.PUBLIC_MEDIA_LOCATION)
     base_url = settings.PUBLIC_MEDIA_URL
 
-    def url(self, name, attachment=False):
+    def url(self, name, attachment=False, expire_seconds=None):
         return super().url(name)
 
 
 class PrivateFileSystemStorage(FileSystemRenameMixin, FileSystemStorage):
     location = os.path.join(settings.MEDIA_ROOT, settings.PRIVATE_MEDIA_LOCATION)
 
-    def url(self, name, attachment=False):
+    def url(
+        self,
+        name,
+        attachment=False,
+        expire_seconds=None,
+    ):
         sig_info = {
             "name": name,
             "serve_path": name,

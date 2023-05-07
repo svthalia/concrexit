@@ -47,7 +47,14 @@ def _serialize_lambda_source(source: Union[ReferenceFace, FaceDetectionPhoto]):
             "type": "reference",
             "pk": source.pk,
             "token": source.token,
-            "photo_url": get_thumbnail_url(source.file, "medium", absolute_url=True),
+            "photo_url": get_thumbnail_url(
+                source.file,
+                "medium",
+                absolute_url=True,
+                # Lambda calls can be queued for up to 6 hours by default, so
+                # we make sure the url it uses is valid for at least that long.
+                expire_seconds=60 * 60 * 7,
+            ),
         }
     elif isinstance(source, FaceDetectionPhoto):
         return {
@@ -55,7 +62,10 @@ def _serialize_lambda_source(source: Union[ReferenceFace, FaceDetectionPhoto]):
             "pk": source.pk,
             "token": source.token,
             "photo_url": get_thumbnail_url(
-                source.photo.file, "large", absolute_url=True
+                source.photo.file,
+                "large",
+                absolute_url=True,
+                expire_seconds=60 * 60 * 7,
             ),
         }
 
