@@ -41,7 +41,6 @@ def execute_data_minimisation(dry_run=False):
 
 def _serialize_lambda_source(source: Union[ReferenceFace, FaceDetectionPhoto]):
     """Serialize a source object to be sent to the lambda function."""
-
     if isinstance(source, ReferenceFace):
         return {
             "type": "reference",
@@ -56,7 +55,7 @@ def _serialize_lambda_source(source: Union[ReferenceFace, FaceDetectionPhoto]):
                 expire_seconds=60 * 60 * 7,
             ),
         }
-    elif isinstance(source, FaceDetectionPhoto):
+    if isinstance(source, FaceDetectionPhoto):
         return {
             "type": "photo",
             "pk": source.pk,
@@ -68,6 +67,7 @@ def _serialize_lambda_source(source: Union[ReferenceFace, FaceDetectionPhoto]):
                 expire_seconds=60 * 60 * 7,
             ),
         }
+    raise ValueError("source must be a ReferenceFace or FaceDetectionPhoto")
 
 
 def _trigger_facedetection_lambda_batch(
@@ -102,8 +102,10 @@ def _trigger_facedetection_lambda_batch(
         )
 
         if response["StatusCode"] != 202:
+            # pylint: disable=broad-exception-raised
             raise Exception("Lambda response was not 202.")
 
+    # pylint: disable=broad-exception-caught
     except Exception as e:
         logger.error(
             "Submitting sources to lambda failed. Reason: %s", str(e), exc_info=True
@@ -123,10 +125,10 @@ def trigger_facedetection_lambda(
     this is ignored. The sources can be submitted again later.
     """
     if len(sources) == 0:
-        raise Exception("No sources to process.")
+        raise ValueError("No sources to process.")
 
     if any(source.status != source.Status.PROCESSING for source in sources):
-        raise Exception("A source has already been processed.")
+        raise ValueError("A source has already been processed.")
 
     if settings.FACEDETECTION_LAMBDA_ARN is None:
         logger.warning(

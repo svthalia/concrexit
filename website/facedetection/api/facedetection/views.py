@@ -23,16 +23,13 @@ class FaceEncodingPostView(APIView):
         Expects a json body as follows:
 
         {
-            "type": "reference" | "photo",
             "token": str,       # The base64 token for authentication.
-            "pk": int,          # The pk of the ReferenceFace or FaceDetectionPhoto.
             "encodings": [      # A list of 0 or more encodings.
                 [ <128 floats> ],
                 ...
             ],
         }
         """
-
         pk = kwargs["pk"]
         obj_type = kwargs["type"]
 
@@ -62,7 +59,7 @@ class FaceEncodingPostView(APIView):
 
         if obj.token != token:
             raise PermissionDenied(detail="Invalid token.")
-        elif obj.status != BaseFaceEncodingSource.Status.PROCESSING:
+        if obj.status != BaseFaceEncodingSource.Status.PROCESSING:
             raise ValidationError(detail="This object is not processing.")
 
         if isinstance(obj, ReferenceFace):

@@ -1,8 +1,5 @@
-from typing import Any, List, Optional, Tuple, Union
-
 from django.contrib import admin
-from django.db.models.query import Prefetch, QuerySet
-from django.http.request import HttpRequest
+from django.db.models.query import Prefetch
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
@@ -25,7 +22,7 @@ class ReferenceFaceEncodingInline(admin.TabularInline):
     def has_add_permission(self, request, obj=None):
         return False  # Encodings should not be created manually.
 
-    def get_queryset(self, request: HttpRequest) -> QuerySet[Any]:
+    def get_queryset(self, request):
         return super().get_queryset(request).only("reference")
 
 
