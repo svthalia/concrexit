@@ -9,6 +9,7 @@ from django.utils import timezone
 import boto3
 from sentry_sdk import capture_exception
 
+from photos.models import Photo
 from utils.media.services import get_thumbnail_url
 
 from .models import FaceDetectionPhoto, ReferenceFace
@@ -141,3 +142,60 @@ def trigger_facedetection_lambda(
         sources[i : i + batch_size] for i in range(0, len(sources), batch_size)
     ]:
         _trigger_facedetection_lambda_batch(batch)
+
+
+def resubmit_reference_faces() -> list[ReferenceFace]:
+    """Resubmit reference faces that (should) have already been submitted but aren't done.
+
+    Returns a list of reference faces that have been resubmitted.
+    """
+    submitted_before = timezone.now() - timezone.timedelta(hours=7)
+    references = list(
+        ReferenceFace.objects.filter(
+            status=ReferenceFace.Status.PROCESSING,
+        ).filter(Q(submitted_at__lte=submitted_before) | Q(submitted_at__isnull=True))
+    )
+    trigger_facedetection_lambda(references)
+    return references
+
+
+def resubmit_photos() -> list[FaceDetectionPhoto]:
+    """Resubmit photos that (should) have already been submitted but aren't done.
+
+    Returns a list of photos that have been resubmitted.
+    """
+    submitted_before = timezone.now() - timezone.timedelta(hours=7)
+    photos = list(
+        FaceDetectionPhoto.objects.filter(
+            status=FaceDetectionPhoto.Status.PROCESSING,
+        )
+        .filter(Q(submitted_at__lte=submitted_before) | Q(submitted_at__isnull=True))
+        .select_related("photo")
+    )
+    trigger_facedetection_lambda(photos)
+    return photos
+
+
+def submit_new_photos() -> int:
+    """Submit photos for which no FaceDetectionPhoto exists yet.
+
+    Returns the number of new photos that have been submitted.
+    """
+    count = 0
+    if not Photo.objects.filter(facedetectionphoto__isnull=True).exists():
+        return count
+
+    # We have another level of batching (outside of trigger_facedetection_lambda)
+    # for performance and responsive output when there are thousands of photos.
+    while Photo.objects.filter(facedetectionphoto__isnull=True).exists():
+        photos = FaceDetectionPhoto.objects.bulk_create(
+            [
+                FaceDetectionPhoto(photo=photo)
+                for photo in Photo.objects.filter(facedetectionphoto__isnull=True)[:400]
+            ]
+        )
+
+        trigger_facedetection_lambda(photos)
+        count += len(photos)
+
+    return count
