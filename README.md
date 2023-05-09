@@ -83,6 +83,8 @@ graph TD;
     moneybirdsynchronization --> sales;
     moneybirdsynchronization --> events;
     moneybirdsynchronization --> pizzas;
+    facedetection --> members;
+    facedetection --> photos;
 
     documents;
     partners;
