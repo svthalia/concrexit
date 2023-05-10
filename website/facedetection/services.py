@@ -89,8 +89,7 @@ def _trigger_facedetection_lambda_batch(
         source.save()
 
     try:
-        session = boto3.session.Session()
-        lambda_client = session.client(
+        lambda_client = boto3.client(
             service_name="lambda",
             aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
             aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
@@ -155,7 +154,8 @@ def resubmit_reference_faces() -> list[ReferenceFace]:
             status=ReferenceFace.Status.PROCESSING,
         ).filter(Q(submitted_at__lte=submitted_before) | Q(submitted_at__isnull=True))
     )
-    trigger_facedetection_lambda(references)
+    if references:
+        trigger_facedetection_lambda(references)
     return references
 
 
@@ -172,7 +172,8 @@ def resubmit_photos() -> list[FaceDetectionPhoto]:
         .filter(Q(submitted_at__lte=submitted_before) | Q(submitted_at__isnull=True))
         .select_related("photo")
     )
-    trigger_facedetection_lambda(photos)
+    if photos:
+        trigger_facedetection_lambda(photos)
     return photos
 
 
