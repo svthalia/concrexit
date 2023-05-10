@@ -25,6 +25,7 @@ from events.models.external_event import ExternalEvent
 from events.services import is_user_registered
 from thaliawebsite.api.v2.permissions import IsAuthenticatedOrTokenHasScopeForMethod
 from thaliawebsite.api.v2.serializers import EmptySerializer
+from utils.media.services import fetch_thumbnails_db
 
 
 class EventListView(ListAPIView):
@@ -123,6 +124,11 @@ class EventRegistrationsView(ListAPIView):
                 event=self.event, date_cancelled=None
             ).select_related("member__profile")[: self.event.max_participants]
         return EventRegistration.objects.none()
+
+    def get_serializer(self, registrations=None, *args, **kwargs):
+        if registrations:
+            fetch_thumbnails_db([r.member.profile.photo for r in registrations])
+        return super().get_serializer(registrations, *args, **kwargs)
 
     def initial(self, request, *args, **kwargs):
         """Run anything that needs to occur prior to calling the method handler."""
