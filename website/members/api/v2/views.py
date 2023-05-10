@@ -22,15 +22,15 @@ class MemberListView(ListAPIView):
     """Returns an overview of all members."""
 
     serializer_class = MemberListSerializer
+    queryset = (
+        Member.current_members.all()
+        .select_related("profile")
+        .prefetch_related("membership_set")
+    )
 
-    def get_queryset(self):
-        members = (
-            Member.current_members.all()
-            .select_related("profile")
-            .prefetch_related("membership_set")
-        )
+    def get_serializer(self, members, *args, **kwargs):
         fetch_thumbnails_db([member.profile.photo for member in members])
-        return members
+        return super().get_serializer(members, *args, **kwargs)
 
     permission_classes = [
         IsAuthenticatedOrTokenHasScope,
