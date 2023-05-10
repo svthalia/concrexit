@@ -37,7 +37,6 @@ beautifulsoup4 = "^4.11.1"
 django-storages = "^1.12.3"
 boto3 = "^1.23.7"
 gunicorn = "^20.1.0"
-requests = "^2.30.0"
 
 # docs requirements
 recommonmark = { version = "0.7.1", optional = true }

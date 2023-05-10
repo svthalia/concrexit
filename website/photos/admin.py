@@ -9,7 +9,7 @@ from .forms import AlbumForm
 from .models import Album, Like, Photo
 from .services import extract_archive, save_photo
 
-uploaded_photos = Signal()
+album_uploaded = Signal()
 
 
 @admin.register(Album)

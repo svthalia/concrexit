@@ -18,7 +18,7 @@ class FaceDetectionUser(Member):
         proxy = True
 
 
-def authentication_token() -> str:
+def secure_token() -> str:
     """Generate a 40 characters long base64 token suitable for authentication."""
     return token_urlsafe(30)
 
@@ -50,7 +50,7 @@ class BaseFaceEncodingSource(models.Model):
 
     token = models.CharField(
         max_length=40,
-        default=token_urlsafe,
+        default=secure_token,
         editable=False,
         help_text="Token used by a Lambda to authenticate "
         "to the API to submit encoding(s) for this source.",

@@ -1,6 +1,6 @@
 from django.db.models.signals import post_save
 
-from photos.admin import uploaded_photos
+from photos.admin import album_uploaded
 from utils.models.signals import suspendingreceiver
 
 from .models import FaceDetectionPhoto, ReferenceFace
@@ -16,7 +16,7 @@ def trigger_reference_face_analysis(sender, instance, created, **kwargs):
         trigger_facedetection_lambda([instance])
 
 
-@suspendingreceiver(uploaded_photos, dispatch_uid="trigger_album_analysis")
+@suspendingreceiver(album_uploaded, dispatch_uid="trigger_album_analysis")
 def trigger_album_analysis(sender, album, **kwargs):
     """Start the facedetection Lambda on any new photos in the album."""
     photos = FaceDetectionPhoto.objects.bulk_create(
