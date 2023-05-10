@@ -7,6 +7,7 @@ from partners.api.v2.serializers import VacancyCategorySerializer
 from partners.api.v2.serializers.partner import PartnerSerializer
 from partners.api.v2.serializers.vacancy import VacancySerializer
 from partners.models import Partner, Vacancy, VacancyCategory
+from utils.media.services import fetch_thumbnails_db
 
 
 class PartnerListView(ListAPIView):
@@ -18,6 +19,11 @@ class PartnerListView(ListAPIView):
         framework_filters.OrderingFilter,
         framework_filters.SearchFilter,
     )
+
+    def get_serializer(self, partners, *args, **kwargs):
+        fetch_thumbnails_db([partner.logo for partner in partners])
+        return super().get_serializer(partners, *args, **kwargs)
+
     ordering_fields = ("name", "pk")
     search_fields = ("name",)
     permission_classes = [IsAuthenticatedOrTokenHasScope]
