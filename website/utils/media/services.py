@@ -85,7 +85,8 @@ def fetch_thumbnails_db(images, sizes=None):
 
     :param images: A list of images to prefetch thumbnails for.
     :param sizes: A list of sizes to prefetch. If None, all sizes will be prefetched.
-    :return: None"""
+    :return: None
+    """
     if not images:
         return
 
