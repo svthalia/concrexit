@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.views.generic import DetailView, ListView
 
+from utils.media.services import fetch_thumbnails_db
 from utils.snippets import datetime_to_lectureyear
 
 from .models import Board, Committee, MemberGroupMembership, Society
@@ -21,8 +22,10 @@ class _MemberGroupDetailView(DetailView):
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
 
-        memberships = self._get_memberships(context["membergroup"]).prefetch_related(
-            "member__membergroupmembership_set"
+        memberships = (
+            self._get_memberships(context["membergroup"])
+            .select_related("member__profile")
+            .prefetch_related("member__membergroupmembership_set")
         )
         members = [
             {
@@ -44,6 +47,7 @@ class _MemberGroupDetailView(DetailView):
         members.sort(key=lambda x: x["since"])
 
         context.update({"members": members})
+        fetch_thumbnails_db([m["member"].profile.photo for m in members])
         return context
 
 
@@ -51,8 +55,12 @@ class CommitteeIndexView(ListView):
     """View that renders the committee overview page."""
 
     template_name = "activemembers/committee_index.html"
-    queryset = Committee.active_objects
     context_object_name = "committees"
+
+    def get_queryset(self) -> QuerySet:
+        committees = Committee.active_objects.all()
+        fetch_thumbnails_db([c.photo for c in committees])
+        return committees
 
     def get_ordering(self) -> str:
         return "name"
@@ -69,8 +77,12 @@ class SocietyIndexView(ListView):
     """View that renders the societies overview page."""
 
     template_name = "activemembers/society_index.html"
-    queryset = Society.active_objects
     context_object_name = "societies"
+
+    def get_queryset(self) -> QuerySet:
+        societies = Society.active_objects.all()
+        fetch_thumbnails_db([s.photo for s in societies])
+        return societies
 
     def get_ordering(self) -> str:
         return "name"
@@ -92,8 +104,11 @@ class BoardIndexView(ListView):
 
     def get_queryset(self) -> QuerySet:
         if self.current_board:
-            return Board.objects.exclude(pk=self.current_board.pk)
-        return Board.objects.all()
+            boards = Board.objects.exclude(pk=self.current_board.pk)
+        else:
+            boards = Board.objects.all()
+        fetch_thumbnails_db([b.photo for b in boards])
+        return boards
 
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
