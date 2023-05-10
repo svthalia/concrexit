@@ -1,0 +1,23 @@
+{% extends "small_page.html" %}
+{% load i18n fieldtype django_bootstrap5 alert %}
+
+{% block title %}Upload reference face — {{ block.super }}{% endblock %}
+{% block opengraph_title %}Upload reference face — {{ block.super }}{% endblock %}
+
+{% block page_title %}Upload reference face{% endblock %}
+
+{% block page_content %}
+    {% if form.errors %}
+        {% bootstrap_form_errors form %}
+    {% endif %}
+    <form method="post" enctype="multipart/form-data" class="col-12">
+        {% csrf_token %}
+        {% if next %}
+            <input type="hidden" name="next" value="{{ next }}">
+        {% endif %}
+        {% bootstrap_form form %}
+        <div class="form-row">
+            <input type="submit" value="Submit" class="btn btn-primary float-end">
+        </div>
+    </form>
+{% endblock %}

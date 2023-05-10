@@ -319,7 +319,7 @@ class OrderAPITest(TestCase):
                 "num_items": 4,
                 "payment": None,
                 "payer": None,
-                "payment_url": f"https://thalia.localhost/sales/order/{pk}/pay/",
+                "payment_url": f"http://localhost:8000/sales/order/{pk}/pay/",
             }
             self.assertJSONEqual(response.content, expected_response)
 
@@ -352,7 +352,7 @@ class OrderAPITest(TestCase):
                 "num_items": 7,
                 "payment": None,
                 "payer": None,
-                "payment_url": f"https://thalia.localhost/sales/order/{pk}/pay/",
+                "payment_url": f"http://localhost:8000/sales/order/{pk}/pay/",
             }
             self.assertJSONEqual(response.content, expected_response)
 
@@ -385,7 +385,7 @@ class OrderAPITest(TestCase):
                 "num_items": 3,
                 "payment": None,
                 "payer": None,
-                "payment_url": f"https://thalia.localhost/sales/order/{pk}/pay/",
+                "payment_url": f"http://localhost:8000/sales/order/{pk}/pay/",
             }
             self.assertJSONEqual(response.content, expected_response)
 
@@ -413,7 +413,7 @@ class OrderAPITest(TestCase):
                 "num_items": 3,
                 "payment": None,
                 "payer": None,
-                "payment_url": f"https://thalia.localhost/sales/order/{pk}/pay/",
+                "payment_url": f"http://localhost:8000/sales/order/{pk}/pay/",
             }
             self.assertJSONEqual(response.content, expected_response)
 
@@ -441,7 +441,7 @@ class OrderAPITest(TestCase):
                 "num_items": 3,
                 "payment": None,
                 "payer": None,
-                "payment_url": f"https://thalia.localhost/sales/order/{pk}/pay/",
+                "payment_url": f"http://localhost:8000/sales/order/{pk}/pay/",
             }
             self.assertJSONEqual(response.content, expected_response)
 
@@ -474,7 +474,7 @@ class OrderAPITest(TestCase):
                 "num_items": 3,
                 "payment": None,
                 "payer": None,
-                "payment_url": f"https://thalia.localhost/sales/order/{pk}/pay/",
+                "payment_url": f"http://localhost:8000/sales/order/{pk}/pay/",
             }
             self.assertJSONEqual(response.content, expected_response)
 
@@ -507,7 +507,7 @@ class OrderAPITest(TestCase):
                 "num_items": 3,
                 "payment": None,
                 "payer": None,
-                "payment_url": f"https://thalia.localhost/sales/order/{pk}/pay/",
+                "payment_url": f"http://localhost:8000/sales/order/{pk}/pay/",
             }
             self.assertJSONEqual(response.content, expected_response)
 
@@ -540,7 +540,7 @@ class OrderAPITest(TestCase):
                 "num_items": 3,
                 "payment": None,
                 "payer": None,
-                "payment_url": f"https://thalia.localhost/sales/order/{pk}/pay/",
+                "payment_url": f"http://localhost:8000/sales/order/{pk}/pay/",
             }
             self.assertJSONEqual(response.content, expected_response)
 
@@ -573,7 +573,7 @@ class OrderAPITest(TestCase):
                 "num_items": 3,
                 "payment": None,
                 "payer": None,
-                "payment_url": f"https://thalia.localhost/sales/order/{pk}/pay/",
+                "payment_url": f"http://localhost:8000/sales/order/{pk}/pay/",
             }
             self.assertJSONEqual(response.content, expected_response)
 
@@ -604,7 +604,7 @@ class OrderAPITest(TestCase):
                 "num_items": 1,
                 "payment": None,
                 "payer": None,
-                "payment_url": f"https://thalia.localhost/sales/order/{pk}/pay/",
+                "payment_url": f"http://localhost:8000/sales/order/{pk}/pay/",
             }
             self.assertJSONEqual(response.content, expected_response)
 

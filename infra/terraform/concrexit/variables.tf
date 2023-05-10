@@ -39,3 +39,8 @@ variable "aws_profile" {
   type        = string
   default     = "thalia"
 }
+
+variable "facedetection_lambda_arn" {
+  description = "ARN of the Lambda function for face detection"
+  type        = string
+}

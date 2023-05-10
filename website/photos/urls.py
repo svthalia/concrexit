@@ -10,7 +10,7 @@ urlpatterns = [
         include(
             [
                 path("", views.IndexView.as_view(), name="index"),
-                path("liked", views.LikedPhotoView.as_view(), name="liked-photos"),
+                path("liked/", views.LikedPhotoView.as_view(), name="liked-photos"),
                 path(
                     "<slug>/",
                     include(

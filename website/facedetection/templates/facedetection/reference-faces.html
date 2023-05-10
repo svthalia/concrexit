@@ -1,0 +1,58 @@
+{% extends "small_page.html" %}
+{% load i18n fieldtype django_bootstrap5 alert grid_item thumbnail %}
+
+{% block title %}Your reference faces — {{ block.super }}{% endblock %}
+{% block opengraph_title %}Your reference faces — {{ block.super }}{% endblock %}
+
+{% block page_title %}Your reference faces{% endblock %}
+
+{% block page_content %}
+    <p>
+        Upload a reference photo of yourself and we'll look for other photos you appear on.
+        Note that for the best result, this photo should contain only your face.
+        A reference photo with multiple faces on it will be rejected.
+        It may take some time until we have processed your reference photos.
+    </p>
+    <ul>
+        <li>Face recognition is intended to be used for <em>your own</em> faces only.</li>
+        <li>You can have a maximum of {{ reference_faces_limit }} reference faces uploaded.</li>
+        <li>You can only search for faces for the period that you've been a member.</li>
+        <li>
+            After you have uploaded a reference face, you can not just delete it.
+            We will store your reference faces for {{ storage_period_after_delete }} more days after you delete them.
+            This allows us to monitor if you actually searched for photos of others.
+        </li>
+    </ul>
+    <div class="my-4">
+        <a href="{% url "facedetection:your-photos" %}"
+           class="btn btn-primary"
+           data-bs-toggle="tooltip"
+           data-bs-placement="baseline"
+        >
+            Back to your photos
+        </a>
+        <a href="{% url "facedetection:reference-faces-upload" %}"
+           class="btn btn-primary{% if reference_faces_limit_reached %} disabled{% endif %}"
+           data-bs-toggle="tooltip"
+           data-bs-placement="baseline"
+        >
+            Upload new reference face
+        </a>
+    </div>
+    <div class="row mt-3">
+    {% if has_rejected_reference_faces %}
+        {% alert "danger" "Some of your reference faces have been rejected. Please delete them and upload new ones." dismissible=False %}
+    {% endif %}
+    {% if not object_list %}
+        {% alert "info" "You don't have any reference faces uploaded." dismissible=False %}
+    {% else %}
+        {% for obj in object_list %}
+            <div class="col-4">
+                {% url "facedetection:reference-faces-delete" obj.pk as url %}
+                {% thumbnail obj.file "medium" as thumb %}
+                {% grid_item title="" url=url image_url=thumb %}
+            </div>
+        {% endfor %}
+    {% endif %}
+    </div>
+{% endblock %}

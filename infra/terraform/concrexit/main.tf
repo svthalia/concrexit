@@ -28,14 +28,15 @@ module "dns" {
 }
 
 module "server" {
-  source            = "./modules/server"
-  customer          = var.customer
-  stage             = var.stage
-  tags              = local.tags
-  depends_on        = [module.dns]
-  aws_interface_id  = module.network.aws_interface_id
-  ssh_public_key    = var.ssh_public_key
-  ec2_instance_type = var.ec2_instance_type
+  source                   = "./modules/server"
+  customer                 = var.customer
+  stage                    = var.stage
+  tags                     = local.tags
+  depends_on               = [module.dns]
+  aws_interface_id         = module.network.aws_interface_id
+  ssh_public_key           = var.ssh_public_key
+  ec2_instance_type        = var.ec2_instance_type
+  facedetection_lambda_arn = var.facedetection_lambda_arn
 }
 
 module "cdn" {

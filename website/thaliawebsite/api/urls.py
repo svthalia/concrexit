@@ -18,6 +18,13 @@ urlpatterns = [
                     ),
                 ),
                 path(
+                    "facedetection/",
+                    include(
+                        "thaliawebsite.api.facedetection.urls",
+                        namespace="facedetection",
+                    ),
+                ),
+                path(
                     "docs",
                     TemplateView.as_view(
                         template_name="swagger/index.html",

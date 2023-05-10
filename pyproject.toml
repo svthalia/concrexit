@@ -104,6 +104,7 @@ known_first_party = [
     "documents",
     "education",
     "events",
+    "facedetection",
     "mailinglists",
     "members",
     "merchandise",
