@@ -1,4 +1,3 @@
-from django.contrib.contenttypes.fields import GenericRelation
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -85,27 +84,12 @@ class EventRegistration(models.Model):
     remarks = models.TextField(_("remarks"), null=True, blank=True)
 
     payment = models.OneToOneField(
-        "payments.Payment",
+        Payment,
         related_name="events_registration",
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
     )
-
-    _payments = GenericRelation(
-        Payment, content_type_field="payable_model", object_id_field="payable_object_id"
-    )
-
-    @property
-    def _payment(self):
-        return self._payments.first()
-
-    @_payment.setter
-    def _payment(self, value):
-        if value is None:
-            self._payments.set([])
-        else:
-            self._payments.set([value])
 
     @property
     def phone_number(self):

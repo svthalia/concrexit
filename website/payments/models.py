@@ -188,6 +188,32 @@ class Payment(models.Model):
     payable_object_id = models.CharField(max_length=200, blank=True, null=True)
     payable_obj = GenericForeignKey("payable_model", "payable_object_id")
 
+    # Currently, we also have a direct ForeignKey from a model to a payment, which we save manually.
+    # One could also define the following on a model to directly access the payment via its GenericForeignKey.
+    #
+    # > from django.contrib.contenttypes.fields import GenericRelation
+    # >
+    # > from payments.models import Payment
+    # >
+    # > class MyPayableModel(models.Model):
+    # >   ...
+    # >   _payments = GenericRelation(
+    # >       Payment, content_type_field="payable_model", object_id_field="payable_object_id"
+    # >   )
+    # >
+    # >   @property
+    # >   def _payment(self):
+    # >       return self._payments.first()
+    # >
+    # >   @_payment.setter
+    # >   def _payment(self, value):
+    # >       if value is None:
+    # >           self._payments.set([])
+    # >       else:
+    # >           self._payments.set([value])
+    #
+    # Right now, this is not used, but it might be useful in the future.
+
     @property
     def payable(self):
         if not self.payable_obj:
