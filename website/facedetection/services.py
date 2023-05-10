@@ -97,7 +97,7 @@ def _trigger_facedetection_lambda_batch(
         )
 
         response = lambda_client.invoke(
-            FunctionName=settings.FACEDECTION_LAMBDA_ARN,
+            FunctionName=settings.FACEDETECTION_LAMBDA_ARN,
             InvocationType="Event",
             Payload=json.dumps(payload),
         )
