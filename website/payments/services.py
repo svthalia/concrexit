@@ -83,6 +83,14 @@ def create_payment(
             action_flag=CHANGE,
         )
     else:
+        try:
+            payable_model = ContentType.objects.get_for_model(payable.model)
+            payable_object_id = payable.model.pk
+        except AttributeError:
+            # In case we're testing with Mock models
+            payable_model = None
+            payable_object_id = None
+
         payable.payment = Payment.objects.create(
             processed_by=processed_by,
             amount=payable.payment_amount,
@@ -90,8 +98,8 @@ def create_payment(
             topic=payable.payment_topic,
             paid_by=payer,
             type=pay_type,
-            payable_model=ContentType.objects.get_for_model(payable.model),
-            payable_object_id=payable.model.pk,
+            payable_model=payable_model,
+            payable_object_id=payable_object_id,
         )
         LogEntry.objects.log_action(
             user_id=processed_by.id,
@@ -100,6 +108,7 @@ def create_payment(
             object_repr=str(payable.payment),
             action_flag=ADDITION,
         )
+
     return payable.payment
 
 
