@@ -36,11 +36,15 @@ class ShiftSerializer(serializers.ModelSerializer):
             "end",
             "products",
             "total_revenue",
+            "total_revenue_paid",
             "num_orders",
             "product_sales",
         )
 
     total_revenue = serializers.DecimalField(
+        max_digits=10, decimal_places=2, min_value=0, read_only=True
+    )
+    total_revenue_paid = serializers.DecimalField(
         max_digits=10, decimal_places=2, min_value=0, read_only=True
     )
 
