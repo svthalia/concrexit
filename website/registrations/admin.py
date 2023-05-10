@@ -50,7 +50,6 @@ class RegistrationAdmin(admin.ModelAdmin):
         "programme",
         "membership_type",
         "no_references",
-        "payment__type",
         "contribution",
     )
     inlines = (ReferenceInline,)
@@ -272,7 +271,6 @@ class RenewalAdmin(RegistrationAdmin):
         "status",
         "membership_type",
         "no_references",
-        "payment__type",
         "contribution",
     )
     search_fields = (

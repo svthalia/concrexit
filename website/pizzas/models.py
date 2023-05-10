@@ -1,4 +1,5 @@
 """The models defined by the pizzas package."""
+from django.contrib.contenttypes.fields import GenericRelation
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import models
 from django.db.models import Q
@@ -168,6 +169,20 @@ class FoodOrder(models.Model):
         blank=True,
         null=True,
     )
+    _payments = GenericRelation(
+        Payment, content_type_field="payable_model", object_id_field="payable_object_id"
+    )
+
+    @property
+    def _payment(self):
+        return self._payments.first()
+
+    @_payment.setter
+    def _payment(self, value):
+        if value is None:
+            self._payments.set([])
+        else:
+            self._payments.set([value])
 
     product = models.ForeignKey(
         verbose_name=_("product"),

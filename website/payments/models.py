@@ -21,7 +21,7 @@ from queryable_properties.managers import QueryablePropertiesManager
 from queryable_properties.properties import AggregateProperty, queryable_property
 
 from members.models import Member
-from payments import payables, NotRegistered
+from payments import NotRegistered, payables
 
 
 def validate_not_zero(value):
@@ -190,6 +190,8 @@ class Payment(models.Model):
 
     @property
     def payable(self):
+        if not self.payable_obj:
+            return None
         try:
             return payables.get_payable(self.payable_obj)
         except NotRegistered:
@@ -250,9 +252,22 @@ class Payment(models.Model):
                 self.payable_object_id = None
                 self.payable_model = None
 
+        if (
+            self.payable_obj
+            and self.payable.model
+            and self.payable_obj != self.payable.model
+        ):
+            raise ValidationError(
+                {
+                    "payable_obj": _(
+                        "This payment is already linked to a different payable object"
+                    )
+                }
+            )
+
         super().save(**kwargs)
 
-        if self.payable_model and self.payable_obj and not self.payable.payment:
+        if self.payable_obj and not self.payable.payment:
             self.payable.payment = self
             self.payable.model.save()
 
@@ -310,7 +325,10 @@ class Payment(models.Model):
                     )
             if not self.payable:
                 raise ValidationError(
-                    {"payable_model": _("This model is not a payable")}
+                    {
+                        "payable_model": _("Cannot find this payable"),
+                        "payable_object_id": _("Cannot find this payable"),
+                    }
                 )
             if not self.amount == self.payable.payment_amount:
                 raise ValidationError(

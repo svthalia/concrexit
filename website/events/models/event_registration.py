@@ -1,3 +1,4 @@
+from django.contrib.contenttypes.fields import GenericRelation
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -10,7 +11,7 @@ from queryable_properties.managers import QueryablePropertiesManager
 from queryable_properties.properties import AnnotationProperty
 
 from events import emails
-from payments.models import PaymentAmountField
+from payments.models import Payment, PaymentAmountField
 
 from .event import Event
 
@@ -90,6 +91,21 @@ class EventRegistration(models.Model):
         blank=True,
         null=True,
     )
+
+    _payments = GenericRelation(
+        Payment, content_type_field="payable_model", object_id_field="payable_object_id"
+    )
+
+    @property
+    def _payment(self):
+        return self._payments.first()
+
+    @_payment.setter
+    def _payment(self, value):
+        if value is None:
+            self._payments.set([])
+        else:
+            self._payments.set([value])
 
     @property
     def phone_number(self):
@@ -247,3 +263,4 @@ class EventRegistration(models.Model):
         verbose_name_plural = _("Registrations")
         ordering = ("date",)
         unique_together = (("member", "event"),)
+        get_latest_by = "pk"

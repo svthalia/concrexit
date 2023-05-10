@@ -2,7 +2,6 @@
 import csv
 from collections import OrderedDict
 
-from admin_auto_filters.filters import AutocompleteFilter
 from django.contrib import admin, messages
 from django.contrib.admin import ModelAdmin
 from django.contrib.admin.utils import model_ngettext
@@ -14,6 +13,8 @@ from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.text import capfirst
 from django.utils.translation import gettext_lazy as _
+
+from admin_auto_filters.filters import AutocompleteFilter
 
 from payments import admin_views, services
 from payments.forms import BankAccountAdminForm, BatchPaymentInlineAdminForm
@@ -305,6 +306,12 @@ class PaymentAdmin(admin.ModelAdmin):
         return response
 
     export_csv.short_description = _("Export")
+
+    def save_model(self, request, obj, form, change):
+        """Set the processed_by field to the current user."""
+        if not obj.processed_by:
+            obj.processed_by = request.user
+        super().save_model(request, obj, form, change)
 
 
 class ValidAccountFilter(admin.SimpleListFilter):

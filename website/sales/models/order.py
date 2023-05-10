@@ -2,6 +2,7 @@ import uuid
 from decimal import Decimal
 
 from django.conf import settings
+from django.contrib.contenttypes.fields import GenericRelation
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models
@@ -74,6 +75,21 @@ class Order(models.Model):
         blank=True,
         null=True,
     )
+
+    _payments = GenericRelation(
+        Payment, content_type_field="payable_model", object_id_field="payable_object_id"
+    )
+
+    @property
+    def _payment(self):
+        return self._payments.first()
+
+    @_payment.setter
+    def _payment(self, value):
+        if value is None:
+            self._payments.set([])
+        else:
+            self._payments.set([value])
 
     discount = PaymentAmountField(
         verbose_name=_("discount"),

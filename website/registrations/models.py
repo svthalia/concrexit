@@ -3,6 +3,7 @@ import uuid
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.fields import GenericRelation
 from django.core import validators
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.validators import MinValueValidator, RegexValidator
@@ -15,7 +16,7 @@ from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
 from localflavor.generic.models import BICField, IBANField
 
 from members.models import Membership, Profile
-from payments.models import PaymentAmountField
+from payments.models import Payment, PaymentAmountField
 from utils import countries
 
 
@@ -106,6 +107,21 @@ class Entry(models.Model):
         blank=True,
         null=True,
     )
+
+    _payments = GenericRelation(
+        Payment, content_type_field="payable_model", object_id_field="payable_object_id"
+    )
+
+    @property
+    def _payment(self):
+        return self._payments.first()
+
+    @_payment.setter
+    def _payment(self, value):
+        if value is None:
+            self._payments.set([])
+        else:
+            self._payments.set([value])
 
     membership = models.ForeignKey(
         "members.Membership",
