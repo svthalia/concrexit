@@ -63,6 +63,14 @@ def create_payment(
     if not payable.paying_allowed:
         raise PaymentError(_("Payment restricted"))
 
+    try:
+        payable_model = ContentType.objects.get_for_model(payable.model)
+        payable_object_id = payable.model.pk
+    except AttributeError:
+        # In case we're testing with Mock models
+        payable_model = None
+        payable_object_id = None
+
     if payable.payment is not None:
         payable.payment.amount = payable.payment_amount
         payable.payment.notes = payable.payment_notes
@@ -70,10 +78,8 @@ def create_payment(
         payable.payment.paid_by = payer
         payable.payment.processed_by = processed_by
         payable.payment.type = pay_type
-        payable.payment.payable_model = (
-            ContentType.objects.get_for_model(payable.model),
-        )
-        payable.payment.payable_object_id = payable.model.pk
+        payable.payment.payable_model = payable_model
+        payable.payment.payable_object_id = payable_object_id
         payable.payment.save()
         LogEntry.objects.log_action(
             user_id=processed_by.id,
@@ -83,14 +89,6 @@ def create_payment(
             action_flag=CHANGE,
         )
     else:
-        try:
-            payable_model = ContentType.objects.get_for_model(payable.model)
-            payable_object_id = payable.model.pk
-        except AttributeError:
-            # In case we're testing with Mock models
-            payable_model = None
-            payable_object_id = None
-
         payable.payment = Payment.objects.create(
             processed_by=processed_by,
             amount=payable.payment_amount,

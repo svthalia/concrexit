@@ -295,7 +295,10 @@ class Payment(models.Model):
 
         if self.payable_obj and not self.payable.payment:
             self.payable.payment = self
-            self.payable.model.save()
+            try:
+                self.payable.model.save()
+            except Exception:  # noqa
+                pass
 
     def clean(self):
         if self.amount == 0:
@@ -360,7 +363,10 @@ class Payment(models.Model):
                 raise ValidationError(
                     {"amount": _("Payment amount does not match payable")}
                 )
-            if not self.paid_by == self.payable.payment_payer:
+            if (
+                not self.paid_by == self.payable.payment_payer
+                and self.payable.payment_payer is not None
+            ):
                 raise ValidationError({"paid_by": _("Payer does not match payable")})
             if self.payable.payment and self.payable.payment != self:
                 raise ValidationError(
