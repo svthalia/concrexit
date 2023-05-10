@@ -190,7 +190,6 @@ class Payment(models.Model):
 
     # Currently, we also have a direct ForeignKey from a model to a payment, which we save manually.
     # One could also define the following on a model to directly access the payment via its GenericForeignKey.
-    #
     # > from django.contrib.contenttypes.fields import GenericRelation
     # >
     # > from payments.models import Payment
@@ -211,7 +210,6 @@ class Payment(models.Model):
     # >           self._payments.set([])
     # >       else:
     # >           self._payments.set([value])
-    #
     # Right now, this is not used, but it might be useful in the future.
 
     @property
@@ -297,7 +295,7 @@ class Payment(models.Model):
             self.payable.payment = self
             try:
                 self.payable.model.save()
-            except Exception:  # noqa
+            except Exception:  # noqa pylint: disable=broad-except
                 pass
 
     def clean(self):

@@ -100,7 +100,7 @@ class Entry(models.Model):
     )
 
     payment = models.OneToOneField(
-        "payments.Payment",
+        Payment,
         related_name="registrations_entry",
         on_delete=models.SET_NULL,
         blank=True,
