@@ -3,10 +3,10 @@ import datetime
 from typing import Union
 
 from django.conf import settings
-from django.core import mail
-from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
+from django.contrib.admin.models import ADDITION, CHANGE, LogEntry
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import QuerySet, Q, Sum, Model
+from django.core import mail
+from django.db.models import Model, Q, QuerySet, Sum
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -16,7 +16,7 @@ from utils.snippets import send_email
 
 from .exceptions import PaymentError
 from .models import BankAccount, Payment, PaymentUser
-from .payables import Payable, payables, NotRegistered
+from .payables import NotRegistered, Payable, payables
 from .signals import processed_batch
 
 
