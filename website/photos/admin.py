@@ -57,7 +57,7 @@ class AlbumAdmin(admin.ModelAdmin):
         if archive is not None:
             try:
                 extract_archive(request, obj, archive)
-                uploaded_photos.send(sender=None, album=obj)
+                album_uploaded.send(sender=None, album=obj)
             except Exception as e:
                 raise e
             finally:
