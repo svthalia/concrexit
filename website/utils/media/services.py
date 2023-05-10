@@ -81,6 +81,11 @@ def get_thumbnail_url(
 
 
 def fetch_thumbnails_db(images, sizes=None):
+    """Prefetches thumbnails from the database in one query.
+
+    :param images: A list of images to prefetch thumbnails for.
+    :param sizes: A list of sizes to prefetch. If None, all sizes will be prefetched.
+    :return: None"""
     if not images:
         return
 
