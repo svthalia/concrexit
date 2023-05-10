@@ -32,7 +32,7 @@ def render_partner_banners(context):
     partners = [p for p in all_partners if p.id in chosen]
     fetch_thumbnails_db(
         [p.alternate_logo or p.logo for p in partners],
-        settings.THUMBNAIL_SIZES["medium"],
+        "medium",
     )
 
     return {
