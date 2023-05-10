@@ -16,7 +16,7 @@ from rest_framework.views import APIView
 
 from events import services
 from events.api.v2 import filters
-from events.api.v2.serializers.event import EventSerializer
+from events.api.v2.serializers.event import EventListSerializer, EventSerializer
 from events.api.v2.serializers.event_registration import EventRegistrationSerializer
 from events.api.v2.serializers.external_event import ExternalEventSerializer
 from events.exceptions import RegistrationError
@@ -30,7 +30,7 @@ from thaliawebsite.api.v2.serializers import EmptySerializer
 class EventListView(ListAPIView):
     """Returns an overview of all upcoming events."""
 
-    serializer_class = EventSerializer
+    serializer_class = EventListSerializer
     filter_backends = (
         framework_filters.OrderingFilter,
         framework_filters.SearchFilter,
