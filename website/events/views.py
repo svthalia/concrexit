@@ -2,6 +2,7 @@
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -225,3 +226,20 @@ class MarkPresentView(View):
                 messages.success(request, _("You have been marked as present."))
 
         return redirect(event)
+
+
+class NextEventView(View):
+    def get(self, request, *args, **kwargs):
+        """HTTP redirect to the next event.
+
+        Checks if there is an upcoming event. Raise a 404 if none exists.
+        """
+        upcoming_activity = (
+            Event.objects.filter(published=True, end__gte=timezone.now())
+            .order_by("end")
+            .first()
+        )
+        if not upcoming_activity:
+            raise Http404("There is no upcoming event.")
+
+        return redirect(upcoming_activity)
