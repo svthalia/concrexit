@@ -9,6 +9,7 @@ from events.views import (
     EventIndex,
     EventRegisterView,
     MarkPresentView,
+    NextEventView,
     RegistrationView,
 )
 
@@ -20,6 +21,7 @@ urlpatterns = [
         include(
             [
                 path("<int:pk>/", EventDetail.as_view(), name="event"),
+                path("next", NextEventView.as_view(), name="next"),
                 path("<slug:slug>/", EventDetail.as_view(), name="event"),
                 path(
                     "<int:pk>/registration/register/",
