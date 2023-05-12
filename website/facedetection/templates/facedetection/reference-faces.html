@@ -41,16 +41,20 @@
     </div>
     <div class="row mt-3">
     {% if has_rejected_reference_faces %}
-        {% alert "danger" "Some of your reference faces have been rejected. Please delete them and upload new ones." dismissible=False %}
+        <div class="col-md-12">
+            {% alert "danger" "Some of your reference faces have been rejected. Please delete them and upload new ones." dismissible=False %}
+        </div>
     {% endif %}
     {% if not object_list %}
-        {% alert "info" "You don't have any reference faces uploaded." dismissible=False %}
+        <div class="col-md-12">
+            {% alert "info" "You don't have any reference faces uploaded." dismissible=False %}
+        </div>
     {% else %}
         {% for obj in object_list %}
             <div class="col-4">
                 {% url "facedetection:reference-faces-delete" obj.pk as url %}
                 {% thumbnail obj.file "medium" as thumb %}
-                {% grid_item title="" url=url image_url=thumb %}
+                {% grid_item title=obj.get_status_display meta_text="<p>Click here to delete</p>" url=url image_url=thumb %}
             </div>
         {% endfor %}
     {% endif %}

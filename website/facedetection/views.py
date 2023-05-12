@@ -75,7 +75,6 @@ class YourPhotosView(LoginRequiredMixin, PagedView):
 
 class ReferenceFaceView(LoginRequiredMixin, ListView):
     template_name = "facedetection/reference-faces.html"
-    context_object_name = "reference_faces"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -91,6 +90,12 @@ class ReferenceFaceView(LoginRequiredMixin, ListView):
             ).count()
             >= settings.FACEDETECTION_MAX_NUM_REFERENCE_FACES
         )
+        context[
+            "has_rejected_reference_faces"
+        ] = self.request.member.reference_faces.filter(
+            status=ReferenceFace.Status.REJECTED,
+            marked_for_deletion_at__isnull=True,
+        ).exists()
         return context
 
     def get_queryset(self):
