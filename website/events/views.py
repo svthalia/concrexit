@@ -232,7 +232,8 @@ class NextEventView(View):
     def get(self, request, *args, **kwargs):
         """HTTP redirect to the next event.
 
-        Checks if there is an upcoming event. Raise a 404 if none exists."""
+        Checks if there is an upcoming event. Raise a 404 if none exists.
+        """
         upcoming_activity = (
             Event.objects.filter(published=True, end__gte=timezone.now())
             .order_by("end")
