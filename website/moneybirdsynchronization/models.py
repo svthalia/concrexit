@@ -188,7 +188,7 @@ class MoneybirdExternalInvoice(models.Model):
         moneybird = get_moneybird_api_service()
 
         if self.payable.payment_payer is None:
-            contact_id = settings.MONEYBIRD_UNKOWN_PAYER_CONTACT_ID
+            contact_id = settings.MONEYBIRD_UNKNOWN_PAYER_CONTACT_ID
         else:
             moneybird_contact, created = MoneybirdContact.objects.get_or_create(
                 member=self.payable.payment_payer
