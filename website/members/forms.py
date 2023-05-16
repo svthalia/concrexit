@@ -1,15 +1,25 @@
 """Forms defined by the members package."""
+from typing import Any
+
 from django import forms
 from django.contrib.auth.forms import UserChangeForm as BaseUserChangeForm
 from django.contrib.auth.forms import UserCreationForm as BaseUserCreationForm
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 
+from thabloid.models.thabliod_user import Thabloid_user
+
 from .models import Profile
 
 
 class ProfileForm(forms.ModelForm):
     """Form with all the user editable fields of a Profile model."""
+
+    receive_thabloid = forms.BooleanField(
+        required=False,
+        label="Receive thabloid",
+        help_text="Receive printed Thabloid magazines",
+    )
 
     class Meta:
         fields = [
@@ -50,6 +60,18 @@ class ProfileForm(forms.ModelForm):
             self.fields["email_gsuite_only"].widget = self.fields[
                 "email_gsuite_only"
             ].hidden_widget()
+        self.fields["receive_thabloid"].initial = Thabloid_user.objects.get(
+            pk=kwargs["instance"].user.pk
+        ).wants_thabloid
+
+    def save(self, commit=True):
+        instance = super().save(commit)
+        if commit:
+            if self.cleaned_data["receive_thabloid"]:
+                Thabloid_user.objects.get(pk=instance.user.pk).allow_thabloid()
+            else:
+                Thabloid_user.objects.get(pk=instance.user.pk).disallow_thabloid()
+        return instance
 
 
 class UserCreationForm(BaseUserCreationForm):

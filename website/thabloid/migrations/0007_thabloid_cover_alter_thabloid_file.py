@@ -3,7 +3,7 @@
 import os
 import django.core.validators
 from django.db import migrations, models
-import thabloid.models
+from thabloid.models.thabloid import thabloid_cover_filename, thabloid_filename
 
 
 def populate_thabloid_cover(apps, schema_editor):
@@ -40,14 +40,14 @@ class Migration(migrations.Migration):
             model_name="thabloid",
             name="cover",
             field=models.ImageField(
-                null=True, upload_to=thabloid.models.thabloid_cover_filename
+                null=True, upload_to=thabloid_cover_filename
             ),
         ),
         migrations.AlterField(
             model_name="thabloid",
             name="file",
             field=models.FileField(
-                upload_to=thabloid.models.thabloid_filename,
+                upload_to=thabloid_filename,
                 validators=[django.core.validators.FileExtensionValidator(["pdf"])],
             ),
         ),
@@ -55,6 +55,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="thabloid",
             name="cover",
-            field=models.ImageField(upload_to=thabloid.models.thabloid_cover_filename),
+            field=models.ImageField(upload_to=thabloid_cover_filename),
         ),
     ]

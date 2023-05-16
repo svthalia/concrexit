@@ -44,10 +44,7 @@ class ThabloidAdmin(admin.ModelAdmin):
 class ThabloidUserAdmin(admin.ModelAdmin):
     list_display = ("__str__", "get_wants_thabloid")
 
-    fields = (
-        "__str__",
-        "get_wants_thabloid",
-    )
+    fields = ("get_wants_thabloid",)
 
     readonly_fields = ("get_wants_thabloid",)
 
@@ -62,12 +59,3 @@ class ThabloidUserAdmin(admin.ModelAdmin):
     get_wants_thabloid.boolean = True
 
     get_wants_thabloid.short_description = "Wants Thabliod"
-
-    def has_add_permission(self, request, obj=None):
-        return False
-
-    def has_change_permission(self, request, obj=None):
-        return False
-
-    def has_delete_permission(slef, request, obj=None):
-        return False

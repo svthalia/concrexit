@@ -36,6 +36,9 @@ class Thabloid_user(Member):
         created, _ = BlacklistedThabloidUser.objects.get_or_create(thabloid_user=self)
         return created
 
+    def __str__(self):
+        return f"Thabliod user ({self.username})"
+
 
 class BlacklistedThabloidUser(models.Model):
     class Meta:
