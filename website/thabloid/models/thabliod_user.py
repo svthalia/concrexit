@@ -9,7 +9,7 @@ from queryable_properties.properties import queryable_property
 from members.models import Member
 
 
-class Thabloid_user(Member):
+class ThabloidUser(Member):
     class Meta:
         verbose_name = _("Thabloid user")
         verbose_name_plural = _("Thabloid users")
@@ -46,6 +46,6 @@ class BlacklistedThabloidUser(models.Model):
         verbose_name_plural = _("Blacklisted Thabloid users")
 
     thabloid_user = models.OneToOneField(
-        Thabloid_user,
+        ThabloidUser,
         on_delete=models.CASCADE,
     )

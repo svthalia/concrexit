@@ -7,7 +7,7 @@ from django.contrib.auth.forms import UserCreationForm as BaseUserCreationForm
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 
-from thabloid.models.thabliod_user import Thabloid_user
+from thabloid.models.thabliod_user import ThabloidUser
 
 from .models import Profile
 
@@ -60,7 +60,7 @@ class ProfileForm(forms.ModelForm):
             self.fields["email_gsuite_only"].widget = self.fields[
                 "email_gsuite_only"
             ].hidden_widget()
-        self.fields["receive_thabloid"].initial = Thabloid_user.objects.get(
+        self.fields["receive_thabloid"].initial = ThabloidUser.objects.get(
             pk=kwargs["instance"].user.pk
         ).wants_thabloid
 
@@ -68,9 +68,9 @@ class ProfileForm(forms.ModelForm):
         instance = super().save(commit)
         if commit:
             if self.cleaned_data["receive_thabloid"]:
-                Thabloid_user.objects.get(pk=instance.user.pk).allow_thabloid()
+                ThabloidUser.objects.get(pk=instance.user.pk).allow_thabloid()
             else:
-                Thabloid_user.objects.get(pk=instance.user.pk).disallow_thabloid()
+                ThabloidUser.objects.get(pk=instance.user.pk).disallow_thabloid()
         return instance
 
 

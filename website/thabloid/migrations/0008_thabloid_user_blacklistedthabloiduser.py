@@ -9,11 +9,11 @@ import members.models.member
 def populate_blacklistedthabloiduser(apps, schema_editor):
     Profile = apps.get_model("members", "Profile")
     BlacklistedThabloidUser = apps.get_model("thabloid", "BlacklistedThabloidUser")
-    for profile in Profile.objects.filter(receive_magazine = False):
+    for profile in Profile.objects.filter(receive_magazine=False):
         BlacklistedThabloidUser.objects.create(thabloid_user=profile.user)
 
-class Migration(migrations.Migration):
 
+class Migration(migrations.Migration):
     dependencies = [
         ("members", "0037_profile_receive_magazine"),
         ("thabloid", "0007_thabloid_cover_alter_thabloid_file"),
@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name="Thabloid_user",
+            name="ThabloidUser",
             fields=[],
             options={
                 "verbose_name": "Thabloid user",
@@ -53,7 +53,7 @@ class Migration(migrations.Migration):
                     "thabloid_user",
                     models.OneToOneField(
                         on_delete=django.db.models.deletion.CASCADE,
-                        to="thabloid.thabloid_user",
+                        to="thabloid.thabloiduser",
                     ),
                 ),
             ],
@@ -62,5 +62,7 @@ class Migration(migrations.Migration):
                 "verbose_name_plural": "Blacklisted Thabloid users",
             },
         ),
-        migrations.RunPython(populate_blacklistedthabloiduser, migrations.RunPython.noop)
+        migrations.RunPython(
+            populate_blacklistedthabloiduser, migrations.RunPython.noop
+        ),
     ]

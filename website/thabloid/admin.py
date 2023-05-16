@@ -2,7 +2,7 @@ from django import forms
 from django.contrib import admin
 from django.utils import timezone
 
-from thabloid.models.thabliod_user import Thabloid_user
+from thabloid.models.thabliod_user import ThabloidUser
 from thabloid.models.thabloid import Thabloid
 from utils.snippets import datetime_to_lectureyear
 
@@ -40,7 +40,7 @@ class ThabloidAdmin(admin.ModelAdmin):
     list_filter = ("year",)
 
 
-@admin.register(Thabloid_user)
+@admin.register(ThabloidUser)
 class ThabloidUserAdmin(admin.ModelAdmin):
     list_display = ("__str__", "get_wants_thabloid")
 
