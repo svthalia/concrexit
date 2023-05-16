@@ -49,3 +49,6 @@ class BlacklistedThabloidUser(models.Model):
         ThabloidUser,
         on_delete=models.CASCADE,
     )
+
+    def __str__(self):
+        return f"Blacklisted Thabloid user ({self.thabloid_user.username})"
