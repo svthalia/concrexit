@@ -8,7 +8,6 @@
 
 The latest Thalia Website built on Django.
 
-
 ## Getting started
 
 0. Get at least Python 3.9 and install [poetry](https://python-poetry.org/docs/#installation), the Pillow requirements and Thabloid dependencies as per below.
