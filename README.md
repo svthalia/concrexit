@@ -38,6 +38,62 @@ On macOS you will also need to install `libmagic`, using the brew package manage
 > **Contributing**:
 > also see the [contributing guidelines](CONTRIBUTING.md) for more information on how to contribute to concrexit.
 
+## Structure
+
+The project is split into multiple apps, each with their own purpose.
+Those apps have generally the same structure, which is explained below.
+
+- `README.md`: general information about the app. This is where you should explain what the app does and how it works on a high level.
+- `models.py`: contains the database models for the app. This is the core of the app, as it defines the data that is stored in the database.
+  - `migrations/`: contains the database migrations for the app
+- `admin.py`: contains the admin configuration for the app. This is where the admin interface is configured.
+- `urls.py`: contains the URLs for the app. If an app exposes an endpoint for users (non-admin), it should be defined here. From here, the views are imported and called. the `thaliawebsite` app contains the main `urls.py` file, which imports all the URLs from the apps.
+- `views.py`: contains the views for the app. This contains the logic for the app that interacts with the models. From here, the templates are rendered and the data is passed to the templates.
+- `services.py`: for any logic that doesn't properly fit in the views, you can define services. These services should be placed here. Services are procedures (business logic) that we want to trigger from multiple places (views, signals, management commands, admin ...).
+- `forms.py`: contains the forms for the app. For all user input, a form should be used.
+- `templates/`: contains the HTML templates for the app. Inside this container, admin forms are placed in `templates/admin/` and the rest of the templates are placed in `templates/<appname>/`. Email templates are placed in `templates/emails/` or `templates/<appname>/emails/`.
+- `static/`: contains the static files for the app. Inside this container, admin static files are placed in `static/admin/` and the rest of the static files are placed in `static/<appname>/`. Then, for every type of static file, there is a separate folder. For example, CSS files are placed in `static/<appname>/css/` and JavaScript files are placed in `static/<appname>/js/`.
+- `admin_views.py`: is used if an app has very special, non-default, admin views that would make the `admin.py` file too big.
+- `tests.py`: contains the tests for the app. This is where the tests are defined. The tests are run using `pytest`.
+- `emails.py`: used for sending emails. This is where the emails are defined. Make sure to use the `send_email` function from the utils app to send emails.
+- `apps.py`: contains the app configuration for the app. This is where the app is named and the app is configured. Any interaction with other apps should be done here (like defining the site's menu). Generally, you don't have to touch this file.
+- `decorators.py`: if you define decorators for the app, they should be placed here.
+- `exceptions.py`: if you define specific exceptions for the app, they should be placed here.
+- `signals.py`: if you define signals for the app, they should be placed here. Make sure to import the signals in the `apps.py` file to make sure they are registered.
+- `sitemaps.py`: if you define a sitemap for the app, it should be placed here. Currently, we simply import sitemaps in the `thaliawebsite` app, but in the future, we want to register them in the `apps.py` file like we do with the menu bar items too.
+- `management/commands/`: if you define management commands for the app, they should be placed here. The management commands are run using `python manage.py <command>`, which will run `management/commands/<command>.py`. Keep the code in the `management/commands/<command>.py` file as small as possible and move the logic to a service if possible.
+- `api/<version>/`: if you define an API for the app, it should be placed here.
+  - `api/<version>/serializers.py`: contains the serializers for the API. This is where the data is converted to JSON.
+  - `api/<version>/views.py`: contains the views for the API. This is where the API endpoints are defined. From here, the serializers are imported and called.
+  - `api/<version>/urls.py`: contains the URLs for the API. This is where the API endpoints are defined. From here, the views are imported and called. The `api/<version>/urls.py` file is imported in the `thaliawebsite` app's `api` module, which contains the main `urls.py` file.
+
+Whenever the contents of a single `.py` file would become too large, we split it up into a module. For example, if the admin configuration for an app would become too large, we create an `admin` module with multiple files in it. Don't forget the `__init__.py` file in the `admin` module, otherwise it won't be recognized as a module, and make sure to import the files from the `__init__.py` file.
+
+Note that you are not restricted to the filenames above and you can create new files if you think it is necessary. However, make sure to keep the structure consistent.
+
+### API
+
+#### Versions
+We currently have 2 versions of the API.
+The first version is the `v1` API, which is the old API.
+The second version is the `v2` API, which is the new API that is actively being developed.
+The `v1` API is deprecated and will be removed in the future.
+
+#### Swagger documentation
+The API has automatic documentation using Swager / OpenAPI.
+This documentation is available at `/api/docs/`.
+
+#### Authentication
+`v1` uses token authentication. `v2` uses OAuth2 authentication, which is the new standard for authentication.
+The OAuth2 authentication is implemented using the `django-oauth-toolkit` package.
+
+#### Throttling
+The API has throttling enabled.
+
+#### Other (internal) APIs
+Apart from the main versions (`v1` and `v2`), we also have a few specific mini-APIs that are used for specific purposes and are not really open to the public.
+These are the `calendarjs` and `facedetection` APIs. The `calendarjs` API is only used by the calendar on the website (to query events) and the `facedetection` API is used by the face detection service to post face encodings.
+
 
 ## About concrexit
 
