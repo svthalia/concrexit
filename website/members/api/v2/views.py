@@ -58,7 +58,7 @@ class MemberDetailView(RetrieveAPIView):
     """Returns details of a member."""
 
     serializer_class = MemberSerializer
-    queryset = Member.current_members.all()
+    queryset = Member.objects.all()
     permission_classes = [
         IsAuthenticatedOrTokenHasScope,
     ]
