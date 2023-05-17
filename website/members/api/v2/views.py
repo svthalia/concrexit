@@ -23,7 +23,7 @@ class MemberListView(ListAPIView):
 
     serializer_class = MemberListSerializer
     queryset = (
-        Member.current_members.all()
+        Member.objects.all()
         .select_related("profile")
         .prefetch_related("membership_set")
     )
@@ -43,6 +43,7 @@ class MemberListView(ListAPIView):
         framework_filters.SearchFilter,
         filters.MembershipTypeFilter,
         filters.StartingYearFilter,
+        filters.FormerMemberFilter,
     )
     ordering_fields = ("first_name", "last_name", "username")
     search_fields = (
