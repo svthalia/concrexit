@@ -59,7 +59,7 @@ Those apps have generally the same structure, which is explained below.
 - `apps.py`: contains the app configuration for the app. This is where the app is named and the app is configured. Any interaction with other apps should be done here (like defining the site's menu). Generally, you don't have to touch this file.
 - `decorators.py`: if you define decorators for the app, they should be placed here.
 - `exceptions.py`: if you define specific exceptions for the app, they should be placed here.
-- `signals.py`: if you define signals for the app, they should be placed here. Make sure to import the signals in the `apps.py` file to make sure they are registered.
+- `signals.py`: if you define signal receivers for the app, they should be placed here. Make sure to import the signals in the `apps.py` file to make sure they are registered.
 - `sitemaps.py`: if you define a sitemap for the app, it should be placed here. Currently, we simply import sitemaps in the `thaliawebsite` app, but in the future, we want to register them in the `apps.py` file like we do with the menu bar items too.
 - `management/commands/`: if you define management commands for the app, they should be placed here. The management commands are run using `python manage.py <command>`, which will run `management/commands/<command>.py`. Keep the code in the `management/commands/<command>.py` file as small as possible and move the logic to a service if possible.
 - `api/<version>/`: if you define an API for the app, it should be placed here.
