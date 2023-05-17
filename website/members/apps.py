@@ -4,10 +4,15 @@ from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
+from members.services import execute_data_minimisation
+
 
 class MembersConfig(AppConfig):
     name = "members"
     verbose_name = _("Members")
+
+    def data_minimization_methods(self):
+        return {"members": execute_data_minimisation}
 
     def menu_items(self):
         return {
