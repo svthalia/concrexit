@@ -15,6 +15,7 @@ from events.exceptions import RegistrationError
 from events.models import categories
 from events.services import is_user_registered
 from payments.models import Payment
+from utils.media.services import fetch_thumbnails_db
 
 from .forms import FieldsForm
 from .models import Event, EventRegistration
@@ -42,7 +43,7 @@ class EventDetail(DetailView):
     """Render a single event detail page."""
 
     model = Event
-    queryset = Event.objects.filter(published=True)
+    queryset = Event.objects.filter(published=True).prefetch_related("organisers")
     template_name = "events/event.html"
     context_object_name = "event"
 
@@ -86,6 +87,8 @@ class EventDetail(DetailView):
         context["participants"] = event.participants.select_related(
             "member", "member__profile"
         )
+
+        fetch_thumbnails_db([p.member.profile.photo for p in context["participants"]])
 
         return context
 

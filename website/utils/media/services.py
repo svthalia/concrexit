@@ -6,8 +6,10 @@ from django.core.files.storage import DefaultStorage
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models.fields.files import FieldFile, ImageFieldFile
 
+from thumbnails.backends.metadata import ImageMeta
 from thumbnails.files import ThumbnailedImageFile
 from thumbnails.images import Thumbnail
+from thumbnails.models import ThumbnailMeta
 
 
 def save_image(storage, image, path, format):
@@ -76,3 +78,32 @@ def get_thumbnail_url(
                 )
 
     return get_media_url(file, absolute_url=absolute_url)
+
+
+def fetch_thumbnails_db(images, sizes=None):
+    """Prefetches thumbnails from the database in one query.
+
+    :param images: A list of images to prefetch thumbnails for.
+    :param sizes: A list of sizes to prefetch. If None, all sizes will be prefetched.
+    :return: None
+    """
+    if not images:
+        return
+
+    image_dict = {image.thumbnails.source_image.name: image for image in images}
+    thumbnails = ThumbnailMeta.objects.select_related("source").filter(
+        source__name__in=image_dict.keys()
+    )
+    if sizes:
+        thumbnails.filter(size__in=sizes)
+
+    for thumb in thumbnails:
+        source_name = thumb.source.name
+
+        thumbnails = image_dict[source_name].thumbnails
+        if not thumbnails._thumbnails:
+            thumbnails._thumbnails = {}
+        image_meta = ImageMeta(source_name, thumb.name, thumb.size)
+        thumbnails._thumbnails[thumb.size] = Thumbnail(
+            image_meta, storage=thumbnails.storage
+        )
