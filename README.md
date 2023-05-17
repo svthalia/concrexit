@@ -54,7 +54,7 @@ Those apps have generally the same structure, which is explained below.
 - `templates/`: contains the HTML templates for the app. Inside this container, admin forms are placed in `templates/admin/` and the rest of the templates are placed in `templates/<appname>/`. Email templates are placed in `templates/emails/` or `templates/<appname>/emails/`.
 - `static/`: contains the static files for the app. Inside this container, admin static files are placed in `static/admin/` and the rest of the static files are placed in `static/<appname>/`. Then, for every type of static file, there is a separate folder. For example, CSS files are placed in `static/<appname>/css/` and JavaScript files are placed in `static/<appname>/js/`.
 - `admin_views.py`: is used if an app has very special, non-default, admin views that would make the `admin.py` file too big.
-- `tests.py`: contains the tests for the app. This is where the tests are defined. The tests are run using `pytest`.
+- `tests.py`: contains the tests for the app. This is where the tests are defined.
 - `emails.py`: used for sending emails. This is where the emails are defined. Make sure to use the `send_email` function from the utils app to send emails.
 - `apps.py`: contains the app configuration for the app. This is where the app is named and the app is configured. Any interaction with other apps should be done here (like defining the site's menu). Generally, you don't have to touch this file.
 - `decorators.py`: if you define decorators for the app, they should be placed here.
