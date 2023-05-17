@@ -1,8 +1,8 @@
 from django.contrib import admin
 
-from documents.services import is_owner
 from events.forms import EventDocumentForm
 from events.models.documents import EventDocument
+from events.services import is_eventdocument_owner
 
 
 @admin.register(EventDocument)
@@ -22,12 +22,12 @@ class EventDocumentAdmin(admin.ModelAdmin):
 
     def has_change_permission(self, request, obj=None):
         """Only allow access to the change form if the user is an owner."""
-        if obj is not None and not is_owner(request.member, obj):
+        if obj is not None and not is_eventdocument_owner(request.member, obj):
             return False
         return super().has_change_permission(request, obj)
 
     def has_delete_permission(self, request, obj=None):
         """Only allow delete access if the user is an owner."""
-        if obj is not None and not is_owner(request.member, obj):
+        if obj is not None and not is_eventdocument_owner(request.member, obj):
             return False
         return super().has_delete_permission(request, obj)

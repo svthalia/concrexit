@@ -4,12 +4,22 @@ from django.db import migrations, models
 import django.db.models.deletion
 
 
+def populate_eventdocument(apps, schema_editor):
+    EventDocument = apps.get_model("documents", "EventDocument")
+    NewEventDocument = apps.get_model("evetns", "EventDocument")
+    for event_document in EventDocument:
+        NewEventDocument.objects.create(
+            document_ptr=event_document.document_ptr, owner=event_document.owner
+        )
+
+
 class Migration(migrations.Migration):
     dependencies = [
         ("activemembers", "0042_alter_membergroup_photo"),
-        ("documents", "0017_delete_eventdocument"),
+        ("documents", "0010_auto20181219_2146"),
         ("events", "0066_event_slug"),
     ]
+    run_before = [("documents", "0017_delete_eventdocument")]
 
     operations = [
         migrations.CreateModel(
@@ -44,4 +54,5 @@ class Migration(migrations.Migration):
             },
             bases=("documents.document",),
         ),
+        migrations.RunPython(populate_eventdocument, migrations.RunPython.noop),
     ]
