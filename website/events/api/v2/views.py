@@ -125,10 +125,11 @@ class EventRegistrationsView(ListAPIView):
             ).select_related("member__profile")[: self.event.max_participants]
         return EventRegistration.objects.none()
 
-    def get_serializer(self, registrations=None, *args, **kwargs):
-        if registrations:
+    def get_serializer(self, *args, **kwargs):
+        if len(args) > 0:
+            registrations = args[0]
             fetch_thumbnails_db([r.member.profile.photo for r in registrations])
-        return super().get_serializer(registrations, *args, **kwargs)
+        return super().get_serializer(*args, **kwargs)
 
     def initial(self, request, *args, **kwargs):
         """Run anything that needs to occur prior to calling the method handler."""
