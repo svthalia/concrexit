@@ -2,8 +2,8 @@ from django import forms
 from django.contrib import admin
 from django.utils import timezone
 
-from thabloid.models.thabliod_user import ThabloidUser
 from thabloid.models.thabloid import Thabloid
+from thabloid.models.thabloid_user import ThabloidUser
 from utils.snippets import datetime_to_lectureyear
 
 

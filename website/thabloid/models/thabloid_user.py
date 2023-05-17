@@ -28,8 +28,8 @@ class ThabloidUser(Member):
 
     def allow_thabloid(self):
         """Unmark that the user wants to receive the Thabloid."""
-        delted, _ = BlacklistedThabloidUser.objects.filter(thabloid_user=self).delete()
-        return delted > 0
+        deleted, _ = BlacklistedThabloidUser.objects.filter(thabloid_user=self).delete()
+        return deleted > 0
 
     def disallow_thabloid(self):
         """Mark that the user does want to receive the Thabloid."""
