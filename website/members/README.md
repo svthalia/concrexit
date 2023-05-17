@@ -32,6 +32,11 @@ This is implemented using a `EmailChange` model.
 Apart from a member list view, allowing people to see who is a member of Thalia, there is not much more functionality in this app.
 Rather, this app implements some features that are used by other apps, like decorators.
 
+Note that ideally, this app should not implement any other-app-specific functionality. For example, blacklisting users from events should be implemented in the events app, not in the members app.
+We currently do not do this, but we should.
+The payments app is a good example of how this should be done: it implements a `PaymentUser` proxy model for the `Member` model that adds some functionality on users that is specific to the payments app.
+A `BlacklistedThaliaPayUser` model is also implemented, with a OneToOneField to the `PaymentUser` model. This is a good example of how we should implement separation.
+
 ## Privacy
 This app is one of the most important apps for privacy.
 It contains a lot of personal data, and we have to be careful with this.

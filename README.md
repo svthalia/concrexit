@@ -71,6 +71,11 @@ Whenever the contents of a single `.py` file would become too large, we split it
 
 Note that you are not restricted to the filenames above and you can create new files if you think it is necessary. However, make sure to keep the structure consistent.
 
+#### Data minimization
+Apps that contain personal data should implement a `execute_data_minimization` method to perform data minimization on the data in the app.
+This method should be called from the `execute_data_minimization` method in the `thaliawebsite` app.
+In the future we should register this method in the `apps.py` file of the app, but for now we do it in the `thaliawebsite` app.
+
 ### API
 
 #### Versions
