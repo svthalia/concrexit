@@ -6,7 +6,7 @@ from utils.conscribo.objects import Request, Result
 class ConscriboApi:
     def __init__(self, account, username, password):
         self._session = requests.session()
-        self._endpoint = f"https://secure.conscribo.nl" f"/{account}/request.json"
+        self._endpoint = f"https://secure.conscribo.nl/{account}/request.json"
         self._headers = {"X-Conscribo-API-Version": "0.20161212"}
         self.authenticate(username, password)
 

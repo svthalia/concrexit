@@ -4,11 +4,10 @@ import logging
 from django.contrib.auth import get_user_model
 from django.db.models.signals import post_delete, post_save
 
+from members.models import Member, Profile
 from moneybirdsynchronization import services
 from moneybirdsynchronization.administration import Administration
 from moneybirdsynchronization.emails import send_sync_error
-
-from members.models import Member, Profile
 from payments.models import BankAccount
 from payments.signals import processed_batch
 from utils.models.signals import suspendingreceiver

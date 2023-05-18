@@ -10,7 +10,6 @@ class PizzasConfig(AppConfig):
     verbose_name = _("Pizzas")
 
     def ready(self):
-        # pylint: disable=unused-import,import-outside-toplevel
         from .payables import register
 
         register()

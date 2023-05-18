@@ -1,5 +1,4 @@
 from moneybirdsynchronization.administration import HttpsAdministration
-
 from thaliawebsite import settings
 
 

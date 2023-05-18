@@ -22,8 +22,11 @@ def _allow_iframe_attrs(tag, name, value):
 
     # youtube is allowed to have `src`
     if tag == "iframe" and name == "src":
-        return value.startswith("https://www.youtube.com/embed/") or value.startswith(
-            "https://www.youtube-nocookie.com/embed/"
+        return value.startswith(
+            (
+                "https://www.youtube.com/embed/",
+                "https://www.youtube-nocookie.com/embed/",
+            )
         )
 
     return False

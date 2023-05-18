@@ -15,8 +15,7 @@ class ServicesTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        # pylint: disable=unused-import,import-outside-toplevel
-        import registrations.signals
+        import registrations.signals  # noqa: F401
 
         cls.registration = Registration.objects.create(
             first_name="John",

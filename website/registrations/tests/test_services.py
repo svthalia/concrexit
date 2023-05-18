@@ -1,4 +1,3 @@
-# pylint: disable=too-many-statements
 from datetime import timedelta
 from unittest import mock
 

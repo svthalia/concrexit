@@ -21,19 +21,20 @@ from photos.models import Photo
 
 logger = logging.getLogger(__name__)
 
+EXIF_ORIENTATION = {
+    1: 0,
+    2: 0,
+    3: 180,
+    4: 180,
+    5: 90,
+    6: 90,
+    7: 270,
+    8: 270,
+}
+
 
 def photo_determine_rotation(pil_image):
     """Get the rotation of an image."""
-    EXIF_ORIENTATION = {
-        1: 0,
-        2: 0,
-        3: 180,
-        4: 180,
-        5: 90,
-        6: 90,
-        7: 270,
-        8: 270,
-    }
 
     if isinstance(pil_image, JpegImageFile) and pil_image._getexif():
         exif = {

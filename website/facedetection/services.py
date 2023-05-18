@@ -100,10 +100,8 @@ def _trigger_facedetection_lambda_batch(
         )
 
         if response["StatusCode"] != 202:
-            # pylint: disable=broad-exception-raised
             raise Exception("Lambda response was not 202.")
 
-    # pylint: disable=broad-exception-caught
     except Exception as e:
         logger.error(
             "Submitting sources to lambda failed. Reason: %s", str(e), exc_info=True

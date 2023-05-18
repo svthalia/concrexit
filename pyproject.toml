@@ -59,8 +59,7 @@ Faker = "18.10.1"
 coverage = {extras = ["toml"], version = "^7.0.0"}
 isort = "5.12.0"
 black = "23.3.0"
-pylint = "2.17.4"
-pylint-django = "2.5.3"
+ruff = "0.0.267"
 pre-commit = "3.3.2"
 pyparsing = "^3.0.9"
 pydot = "^1.4.2"
@@ -108,6 +107,7 @@ known_first_party = [
     "mailinglists",
     "members",
     "merchandise",
+    "moneybirdsynchronization",
     "newsletters",
     "partners",
     "payments",
@@ -124,73 +124,19 @@ known_first_party = [
     "utils",
 ]
 
-[tool.pylint.main]
-ignore = "migrations"
+[tool.ruff]
+exclude = ["migrations", "docs/conf.py"]
 
-jobs = 4
+select = ["F", "E", "W", "N", "UP", "DJ008", "DJ003", "ISC", "PIE", "Q", "INT", "PLE", "PLW", "RUF"]
 
-load-plugins = [
-    "pylint_django",
-    "pylint.extensions.docstyle",
-    "pylint.extensions.for_any_all",
-    "pylint.extensions.check_elif",
-    "pylint.extensions.empty_comment",
-    "pylint.extensions.typing",
-]
-django-settings-module = "thaliawebsite.settings"
+target-version = "py39"
 
-[tool.pylint.format]
-expected-line-ending-format = "LF"
-max-line-length = "88"
-
-[tool.pylint."messages control"]
-disable = [
-    "raw-checker-failed",
-    "bad-inline-option",
-    "locally-disabled",
-    "file-ignored",
-    "suppressed-message",
-    "useless-suppression",
-    "deprecated-pragma",
-    "use-symbolic-message-instead",
-    "missing-module-docstring",
-    "missing-class-docstring",
-    "missing-function-docstring",
-    "too-few-public-methods",
-    "too-many-ancestors",
-    "no-member",
-    "redefined-outer-name",
-    "unused-argument",
-    "protected-access",
-    "arguments-differ",
-    "invalid-name",
-    "line-too-long",
-    "abstract-method",
-    "attribute-defined-outside-init",
-    "logging-fstring-interpolation",
-    "too-many-arguments",
-    "too-many-locals",
-    "too-many-public-methods",
-    "unused-variable",
-    "redefined-builtin",
-    "too-many-lines",
-    "too-many-statements",
-    "too-many-instance-attributes",
-    "too-many-branches",
-    "too-many-public-methods",
-    "too-many-return-statements",
-    "consider-using-ternary",
-    "consider-using-any-or-all",
-    "unsupported-binary-operation",
-    "docstring-first-line-empty",
-    "consider-alternative-union-syntax",
+ignore = [
+    "E501",  # line too long
+    "N818",  # exception class should have Error suffix
+    "PLW2901",  # loop variable overwritten
+    "RUF005",  # use spread operator instead of concatenation
 ]
 
-# Enable the message, report, category or checker with the given id(s). You can
-# either give multiple identifier separated by comma (,) or put this option
-# multiple time (only on the command line, not in the configuration file where it
-# should appear only once). See also the "--disable" option for examples.
-enable = [
-    "c-extension-no-member",
-    "super-with-arguments",
-]
+[tool.ruff.per-file-ignores]
+"test_*.py" = ["F841"]  # unused local variable

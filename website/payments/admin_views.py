@@ -55,7 +55,6 @@ class PaymentAdminView(View):
             )
             payable_obj.model.payment = result
             payable_obj.model.save()
-        # pylint: disable=broad-except
         except Exception as e:
             capture_exception(e)
             messages.error(

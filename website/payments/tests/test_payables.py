@@ -123,7 +123,7 @@ class ImmutablePayablesTest(TestCase):
         self.assertEqual([], Payable.immutable_model_fields_after_payment)
 
     def test_prevent_saving_changed_related_model_field(self):
-        MockModel2 = MockModel
+        MockModel2 = MockModel  # noqa: N806
         MockPayable.immutable_after_payment = True
         MockPayable.immutable_model_fields_after_payment = {MockModel2: ["test_field"]}
         model = MockModel(payer=None)

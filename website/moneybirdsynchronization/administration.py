@@ -109,7 +109,6 @@ class Administration(ABC):
 
         code = response.status_code
 
-        # pylint: disable=consider-iterating-dictionary
         code_is_known: bool = code in good_codes | bad_codes.keys()
 
         if not code_is_known:

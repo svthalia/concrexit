@@ -1,5 +1,3 @@
-# pylint: disable=imported-auth-user
-
 import logging
 import operator
 from datetime import timedelta

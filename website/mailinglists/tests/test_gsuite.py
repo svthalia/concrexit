@@ -164,7 +164,7 @@ class GSuiteSyncTestCase(TestCase):
 
         with self.subTest("Failure"):
             self.directory_api.groups().insert().execute.side_effect = HttpError(
-                Response({"status": 500}), bytes()
+                Response({"status": 500}), b""
             )
 
             self.sync_service.create_group(
@@ -220,7 +220,7 @@ class GSuiteSyncTestCase(TestCase):
 
         with self.subTest("Failure"):
             self.directory_api.groups().update().execute.side_effect = HttpError(
-                Response({"status": 500}), bytes()
+                Response({"status": 500}), b""
             )
 
             self.sync_service.update_group(
@@ -259,7 +259,7 @@ class GSuiteSyncTestCase(TestCase):
 
         with self.subTest("Failure"):
             self.settings_api.groups().patch().execute.side_effect = HttpError(
-                Response({"status": 500}), bytes()
+                Response({"status": 500}), b""
             )
 
             self.sync_service.archive_group("new_group")
@@ -275,7 +275,7 @@ class GSuiteSyncTestCase(TestCase):
     def test_update_group_aliases(self, logger_mock):
         with self.subTest("Error getting existing list"):
             self.directory_api.groups().aliases().list().execute.side_effect = (
-                HttpError(Response({"status": 500}), bytes())
+                HttpError(Response({"status": 500}), b"")
             )
             self.sync_service._update_group_aliases(
                 GSuiteSyncService.GroupData(name="update_group")
@@ -305,12 +305,12 @@ class GSuiteSyncTestCase(TestCase):
 
             self.directory_api.groups().aliases().insert().execute.side_effect = [
                 "success",
-                HttpError(Response({"status": 500}), bytes()),
+                HttpError(Response({"status": 500}), b""),
             ]
 
             self.directory_api.groups().aliases().delete().execute.side_effect = [
                 "success",
-                HttpError(Response({"status": 500}), bytes()),
+                HttpError(Response({"status": 500}), b""),
             ]
 
             self.sync_service._update_group_aliases(group_data)
@@ -329,7 +329,7 @@ class GSuiteSyncTestCase(TestCase):
     def test_update_group_members(self, logger_mock):
         with self.subTest("Error getting existing list"):
             self.directory_api.members().list().execute.side_effect = HttpError(
-                Response({"status": 500}), bytes()
+                Response({"status": 500}), b""
             )
             self.sync_service._update_group_members(
                 GSuiteSyncService.GroupData(name="update_group")
@@ -365,12 +365,12 @@ class GSuiteSyncTestCase(TestCase):
 
             self.directory_api.members().insert().execute.side_effect = [
                 "success",
-                HttpError(Response({"status": 500}), bytes()),
+                HttpError(Response({"status": 500}), b""),
             ]
 
             self.directory_api.members().delete().execute.side_effect = [
                 "success",
-                HttpError(Response({"status": 500}), bytes()),
+                HttpError(Response({"status": 500}), b""),
             ]
 
             self.sync_service._update_group_members(group_data)
@@ -402,7 +402,7 @@ class GSuiteSyncTestCase(TestCase):
 
         with self.subTest("Error getting existing list"):
             self.directory_api.groups().list().execute.side_effect = HttpError(
-                Response({"status": 500}), bytes()
+                Response({"status": 500}), b""
             )
             self.sync_service.sync_mailing_lists()
 

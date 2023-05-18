@@ -317,7 +317,6 @@ class Event(models.Model):
 
     @property
     def has_food_event(self):
-        # pylint: disable=pointless-statement
         try:
             self.food_event
             return True
@@ -360,7 +359,6 @@ class Event(models.Model):
             raise ValidationError(errors)
 
     def clean(self):
-        # pylint: disable=too-many-branches
         super().clean()
         errors = {}
         if self.start is None:
