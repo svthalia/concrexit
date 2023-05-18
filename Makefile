@@ -221,8 +221,6 @@ blackcheck: .make/deps $(PYTHONFILES) ## Check if everything is formatted correc
 ruff: .make .make/deps $(PYTHONFILES) ## Check python linting with ruff.
 	poetry run ruff check website
 
-
-
 .make/check: .make .make/deps $(PYTHONFILES)
 	poetry run python website/manage.py check
 	@touch .make/check
