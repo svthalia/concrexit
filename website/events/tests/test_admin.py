@@ -168,10 +168,7 @@ class EventAdminTest(TestCase):
         self.rf = RequestFactory()
 
     def test_overview_link(self):
-        """
-        Check the overview link goes to the correct event and
-        contains the name.
-        """
+        """The overview link goes to the correct event and contains the name."""
         self.assertEqual(
             self.admin.overview_link(self.event),
             '<a href="/admin/events/event/1/details/">testevent</a>',

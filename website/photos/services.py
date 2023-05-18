@@ -35,7 +35,6 @@ EXIF_ORIENTATION = {
 
 def photo_determine_rotation(pil_image):
     """Get the rotation of an image."""
-
     if isinstance(pil_image, JpegImageFile) and pil_image._getexif():
         exif = {
             ExifTags.TAGS[k]: v

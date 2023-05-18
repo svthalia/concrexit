@@ -127,7 +127,44 @@ known_first_party = [
 [tool.ruff]
 exclude = ["migrations", "docs/conf.py"]
 
-select = ["F", "E", "W", "N", "UP", "DJ008", "DJ003", "ISC", "PIE", "Q", "INT", "PLE", "PLW", "RUF"]
+select = [
+    "F",
+    "E",
+    "W",
+    "N",
+    "UP",
+    "DJ008",
+    "DJ003",
+    "ISC",
+    "PIE",
+    "Q",
+    "INT",
+    "PLE",
+    "PLW",
+    "RUF",
+    "D200",
+    "D201",
+    "D202",
+    "D204",
+    "D205",
+    "D206",
+    "D207",
+    "D208",
+    "D209",
+    "D210",
+    "D211",
+    "D212",
+    "D300",
+    "D301",
+    "D400",
+    "D401",
+    "D402",
+    "D403",
+    "D412",
+    "D414",
+    "D418",
+    "D419",
+]
 
 target-version = "py39"
 
@@ -139,4 +176,10 @@ ignore = [
 ]
 
 [tool.ruff.per-file-ignores]
-"test_*.py" = ["F841"]  # unused local variable
+"test_*.py" = [
+    "F841",  # unused local variable
+    "D400",  # docstring first line should end with a period
+    "D401",  # docstring summary imperative mood
+    "D205",  # docstring 1 line between summary and description
+    "D212",  # docstring should start at first line
+]

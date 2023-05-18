@@ -264,9 +264,7 @@ class BankAccountRevokeViewTest(TestCase):
         self.assertEqual(404, response.status_code)
 
     def test_cannot_revoke_cannot_revoke(self):
-        """
-        If a bank account cannot be revoked, an error should be displayed.
-        """
+        """If a bank account cannot be revoked, an error should be displayed."""
         with patch(
             "payments.models.BankAccount.can_be_revoked", new_callable=mock.PropertyMock
         ) as can_be_revoked:
