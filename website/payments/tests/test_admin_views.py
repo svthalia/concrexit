@@ -12,8 +12,9 @@ from django.utils.translation import gettext_lazy as _
 from freezegun import freeze_time
 
 from members.models import Member, Profile
-from payments import admin_views, payables
+from payments import admin_views
 from payments.models import BankAccount, Batch, Payment, PaymentUser
+from payments.payables import payables
 from payments.tests.__mocks__ import MockModel
 from payments.tests.test_services import MockPayable
 
@@ -70,7 +71,7 @@ class PaymentAdminViewTest(TestCase):
     @mock.patch("django.contrib.messages.success")
     @mock.patch("django.shortcuts.resolve_url")
     @mock.patch("payments.services.create_payment")
-    @mock.patch("payments.payables.get_payable")
+    @mock.patch("payments.payables.payables.get_payable")
     def test_post(
         self, get_payable, create_payment, resolve_url, messages_success, messages_error
     ):

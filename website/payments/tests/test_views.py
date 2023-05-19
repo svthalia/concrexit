@@ -10,9 +10,9 @@ from django.utils import timezone
 from freezegun import freeze_time
 
 from members.models import Member
-from payments import payables
 from payments.exceptions import PaymentError
 from payments.models import BankAccount, Payment, PaymentUser
+from payments.payables import payables
 from payments.tests.__mocks__ import MockModel
 from payments.tests.test_services import MockPayable
 
@@ -533,7 +533,7 @@ class PaymentProcessViewTest(TestCase):
 
     @mock.patch("django.contrib.messages.error")
     def test_tpay_not_allowed(self, messages_error):
-        with mock.patch("payments.Payable.tpay_allowed") as mock_tpay_allowed:
+        with mock.patch("payments.payables.Payable.tpay_allowed") as mock_tpay_allowed:
             mock_tpay_allowed.__get__ = mock.Mock(return_value=False)
 
             response = self.client.post(

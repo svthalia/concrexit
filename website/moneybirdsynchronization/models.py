@@ -7,8 +7,8 @@ from django.utils.translation import gettext_lazy as _
 from events.models import EventRegistration
 from members.models import Member
 from moneybirdsynchronization.moneybird import get_moneybird_api_service
-from payments import payables
 from payments.models import BankAccount, Payment
+from payments.payables import payables
 from pizzas.models import FoodOrder
 from registrations.models import Registration, Renewal
 from sales.models.order import Order

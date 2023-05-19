@@ -3,7 +3,8 @@ from unittest.mock import MagicMock
 from django.core.exceptions import ObjectDoesNotExist
 from django.test import TestCase
 
-from payments import (
+from payments.models import Payment
+from payments.payables import (
     NotRegistered,
     Payable,
     PaymentError,
@@ -11,7 +12,6 @@ from payments import (
     prevent_saving,
     prevent_saving_related,
 )
-from payments.models import Payment
 from payments.tests.__mocks__ import MockModel, MockPayable
 
 

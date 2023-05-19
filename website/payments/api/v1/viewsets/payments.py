@@ -8,10 +8,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from payments import payables, services
+from payments import services
 from payments.api.v1.serializers import PaymentCreateSerializer, PaymentSerializer
 from payments.exceptions import PaymentError
 from payments.models import Payment, PaymentUser
+from payments.payables import payables
 
 
 class PaymentViewset(ListModelMixin, RetrieveModelMixin, GenericViewSet):
