@@ -213,7 +213,9 @@ class Album(models.Model):
     @property
     def access_token(self):
         """Return access token for album."""
-        return hashlib.sha256(f"{settings.SECRET_KEY}album{self.pk}").hexdigest()
+        return hashlib.sha256(
+            f"{settings.SECRET_KEY}album{self.pk}".encode()
+        ).hexdigest()
 
     class Meta:
         """Meta class for Album."""

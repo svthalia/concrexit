@@ -12,9 +12,6 @@ class NotRegistered(Exception):
     pass
 
 
-print("imported payables.py")
-
-
 class Payable:
     def __init__(self, model: Model):
         self.model = model

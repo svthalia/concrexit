@@ -1,7 +1,7 @@
 from rest_framework.fields import BooleanField, CharField, DecimalField
 from rest_framework.serializers import Serializer
 
-from payments.api.v2.serializers import PaymentSerializer
+from .payment import PaymentSerializer
 
 
 class PayableSerializer(Serializer):

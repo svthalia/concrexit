@@ -16,8 +16,6 @@ from sales.models.order import Order, OrderItem
 from sales.models.shift import Shift
 from sales.services import is_manager
 
-print("hi i was imported")
-
 
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
