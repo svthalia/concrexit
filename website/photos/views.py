@@ -13,7 +13,7 @@ from photos.services import (
     is_album_accessible,
 )
 from thaliawebsite.views import PagedView
-from utils.media.services import get_media_url
+from utils.media.services import fetch_thumbnails_db, get_media_url
 
 COVER_FILENAME = "cover.jpg"
 
@@ -35,6 +35,8 @@ class IndexView(LoginRequiredMixin, PagedView):
             albums = albums.filter(**{"title__icontains": key})
         albums = get_annotated_accessible_albums(self.request, albums)
         albums = albums.order_by("-date")
+        fetch_thumbnails_db([x.cover.file for x in albums if x.cover])
+
         return albums
 
     def get_context_data(self, **kwargs):
@@ -59,6 +61,9 @@ class _BaseAlbumView(TemplateView):
 
         # Fix select_properties dropping the default ordering.
         photos = photos.order_by("pk")
+
+        # Prefetch thumbnails for efficiency
+        fetch_thumbnails_db([p.file for p in photos])
 
         context["photos"] = photos
         return context
@@ -132,9 +137,11 @@ class LikedPhotoView(LoginRequiredMixin, PagedView):
     context_object_name = "photos"
 
     def get_queryset(self):
-        return (
+        photos = (
             Photo.objects.filter(likes__member=self.request.member, album__hidden=False)
             .select_related("album")
             .select_properties("num_likes")
             .order_by("-album__date")
         )
+        fetch_thumbnails_db([p.file for p in photos])
+        return photos

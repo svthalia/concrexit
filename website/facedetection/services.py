@@ -30,7 +30,7 @@ def execute_data_minimisation(dry_run=False):
 
     queryset = ReferenceFace.objects.filter(
         Q(marked_for_deletion_at__lte=delete_period_marked_for_deletion)
-        | Q(member__last_login__lte=delete_period_inactive_member)
+        | Q(user__last_login__lte=delete_period_inactive_member)
     )
 
     if not dry_run:

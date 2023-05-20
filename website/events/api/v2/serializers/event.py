@@ -120,3 +120,37 @@ class EventSerializer(CleanedModelSerializer):
 
     def _maps_url(self, instance):
         return create_google_maps_url(instance.map_location, zoom=13, size="450x250")
+
+
+class EventListSerializer(EventSerializer):
+    class Meta:
+        model = Event
+        fields = (
+            "pk",
+            "slug",
+            "url",
+            "title",
+            "description",
+            "caption",
+            "start",
+            "end",
+            "category",
+            "registration_start",
+            "registration_end",
+            "cancel_deadline",
+            "optional_registrations",
+            "location",
+            "price",
+            "fine",
+            "num_participants",
+            "max_participants",
+            "no_registration_message",
+            "registration_status",
+            "cancel_too_late_message",
+            "has_fields",
+            "food_event",
+            "maps_url",
+            "user_permissions",
+            "user_registration",
+            "documents",
+        )

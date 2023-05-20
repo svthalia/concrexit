@@ -2,6 +2,7 @@
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -14,6 +15,7 @@ from events.exceptions import RegistrationError
 from events.models import categories
 from events.services import is_user_registered
 from payments.models import Payment
+from utils.media.services import fetch_thumbnails_db
 
 from .forms import FieldsForm
 from .models import Event, EventRegistration
@@ -41,7 +43,7 @@ class EventDetail(DetailView):
     """Render a single event detail page."""
 
     model = Event
-    queryset = Event.objects.filter(published=True)
+    queryset = Event.objects.filter(published=True).prefetch_related("organisers")
     template_name = "events/event.html"
     context_object_name = "event"
 
@@ -85,6 +87,8 @@ class EventDetail(DetailView):
         context["participants"] = event.participants.select_related(
             "member", "member__profile"
         )
+
+        fetch_thumbnails_db([p.member.profile.photo for p in context["participants"]])
 
         return context
 
@@ -225,3 +229,20 @@ class MarkPresentView(View):
                 messages.success(request, _("You have been marked as present."))
 
         return redirect(event)
+
+
+class NextEventView(View):
+    def get(self, request, *args, **kwargs):
+        """HTTP redirect to the next event.
+
+        Checks if there is an upcoming event. Raise a 404 if none exists.
+        """
+        upcoming_activity = (
+            Event.objects.filter(published=True, end__gte=timezone.now())
+            .order_by("end")
+            .first()
+        )
+        if not upcoming_activity:
+            raise Http404("There is no upcoming event.")
+
+        return redirect(upcoming_activity)
