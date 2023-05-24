@@ -35,13 +35,14 @@ class IndexView(LoginRequiredMixin, PagedView):
             albums = albums.filter(**{"title__icontains": key})
         albums = get_annotated_accessible_albums(self.request, albums)
         albums = albums.order_by("-date")
-        fetch_thumbnails_db([x.cover.file for x in albums if x.cover])
 
         return albums
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["keywords"] = self.keywords
+        fetch_thumbnails_db([x.cover.file for x in context["object_list"] if x.cover])
+
         return context
 
 
