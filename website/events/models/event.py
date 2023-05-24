@@ -349,7 +349,7 @@ class Event(models.Model):
         # pylint: disable=too-many-branches
         super().clean()
         errors = {}
-        if Event.objects.get(slug=self.slug) is not None:
+        if Event.objects.exclude(id=self.id).filter(slug=self.slug).exists():
             errors.update({"slug": _("Slug must be unique")})
         if self.start is None:
             errors.update({"start": _("Start cannot have an empty date or time field")})
