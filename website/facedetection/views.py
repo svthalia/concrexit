@@ -31,21 +31,25 @@ class YourPhotosView(LoginRequiredMixin, PagedView):
 
     def get_queryset(self):
         member = self.request.member
-        photos = (
-            Photo.objects.select_related("album")
-            .filter(album__hidden=False, hidden=False)
-            .filter(
-                facedetectionphoto__encodings__matches__reference__user=self.request.member
-            )
+
+        reference_faces = member.reference_faces.filter(
+            marked_for_deletion_at__isnull=True,
         )
 
         # Filter out matches from long before the member's first membership.
         albums_since = member.earliest_membership.since - timezone.timedelta(days=31)
-        photos = photos.filter(album__date__gte=albums_since)
+        photos = Photo.objects.select_related("album").filter(
+            album__date__gte=albums_since
+        )
 
         # Filter out matches from after the member's last membership.
         if member.latest_membership.until is not None:
             photos = photos.filter(album__date__lte=member.latest_membership.until)
+
+        # Actually match the reference faces.
+        photos = photos.filter(album__hidden=False, hidden=False).filter(
+            facedetectionphoto__encodings__matches__reference__in=reference_faces,
+        )
 
         return photos.select_properties("num_likes").order_by("-album__date")
 
