@@ -28,9 +28,11 @@ class MemberListView(ListAPIView):
         .prefetch_related("membership_set")
     )
 
-    def get_serializer(self, members, *args, **kwargs):
-        fetch_thumbnails_db([member.profile.photo for member in members])
-        return super().get_serializer(members, *args, **kwargs)
+    def get_serializer(self, *args, **kwargs):
+        if len(args) > 0:
+            members = args[0]
+            fetch_thumbnails_db([member.profile.photo for member in members])
+        return super().get_serializer(*args, **kwargs)
 
     permission_classes = [
         IsAuthenticatedOrTokenHasScope,

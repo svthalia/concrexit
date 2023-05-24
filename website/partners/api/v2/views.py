@@ -20,9 +20,11 @@ class PartnerListView(ListAPIView):
         framework_filters.SearchFilter,
     )
 
-    def get_serializer(self, partners, *args, **kwargs):
-        fetch_thumbnails_db([partner.logo for partner in partners])
-        return super().get_serializer(partners, *args, **kwargs)
+    def get_serializer(self, *args, **kwargs):
+        if len(args) > 0:
+            partners = args[0]
+            fetch_thumbnails_db([partner.logo for partner in partners])
+        return super().get_serializer(*args, **kwargs)
 
     ordering_fields = ("name", "pk")
     search_fields = ("name",)
