@@ -41,7 +41,7 @@ class YourPhotosView(LoginRequiredMixin, PagedView):
 
         # Filter out matches from long before the member's first membership.
         albums_since = member.earliest_membership.since - timezone.timedelta(days=31)
-        photos.filter(album__date__gte=albums_since)
+        photos = photos.filter(album__date__gte=albums_since)
 
         # Filter out matches from after the member's last membership.
         if member.latest_membership.until is not None:
