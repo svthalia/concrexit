@@ -18,7 +18,7 @@ from .models import ReferenceFace
 
 class YourPhotosView(LoginRequiredMixin, PagedView):
     model = Photo
-    paginate_by = 16
+    paginate_by = 50
     template_name = "facedetection/your-photos.html"
     context_object_name = "photos"
 
@@ -51,7 +51,7 @@ class YourPhotosView(LoginRequiredMixin, PagedView):
             facedetectionphoto__encodings__matches__reference__in=reference_faces,
         )
 
-        return photos.select_properties("num_likes").order_by("-album__date")
+        return photos.select_properties("num_likes").order_by("-album__date", "-pk")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
