@@ -172,7 +172,7 @@ PROMO_PUBLISH_DATE_TIMEDELTA = timezone.timedelta(weeks=1)
 FACEDETECTION_REFERENCE_FACE_STORAGE_PERIOD_AFTER_DELETE_DAYS = 180
 
 # How many reference faces a user can have at the same time
-FACEDETECTION_MAX_NUM_REFERENCE_FACES = 2
+FACEDETECTION_MAX_NUM_REFERENCE_FACES = 5
 
 # ARN of the concrexit-facedetection-lambda function.
 # See https://github.com/svthalia/concrexit-facedetection-lambda.
