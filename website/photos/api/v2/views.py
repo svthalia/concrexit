@@ -22,9 +22,11 @@ class AlbumListView(ListAPIView):
 
     serializer_class = AlbumListSerializer
 
-    def get_serializer(self, albums, *args, **kwargs):
-        fetch_thumbnails_db([album.cover.file for album in albums if album.cover])
-        return super().get_serializer(albums, *args, **kwargs)
+    def get_serializer(self, *args, **kwargs):
+        if len(args) > 0:
+            albums = args[0]
+            fetch_thumbnails_db([album.cover.file for album in albums if album.cover])
+        return super().get_serializer(*args, **kwargs)
 
     queryset = Album.objects.filter(hidden=False).select_related("_cover")
 
@@ -90,9 +92,11 @@ class LikedPhotosListView(ListAPIView):
             )
         return self.list(request, *args, **kwargs)
 
-    def get_serializer(self, photos, *args, **kwargs):
-        fetch_thumbnails_db([photo.file for photo in photos])
-        return super().get_serializer(photos, *args, **kwargs)
+    def get_serializer(self, *args, **kwargs):
+        if len(args) > 0:
+            photos = args[0]
+            fetch_thumbnails_db([photo.file for photo in photos])
+        return super().get_serializer(*args, **kwargs)
 
     def get_queryset(self):
         return (
