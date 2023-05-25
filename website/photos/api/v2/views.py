@@ -105,6 +105,8 @@ class LikedPhotosListView(ListAPIView):
                 member_likes=Count("likes", filter=Q(likes__member=self.request.member))
             )
             .select_properties("num_likes")
+            # Fix select_properties dropping the default ordering.
+            .order_by("pk")
         )
 
 
