@@ -128,7 +128,9 @@ class EventRegistrationsView(ListAPIView):
     def get_serializer(self, *args, **kwargs):
         if len(args) > 0:
             registrations = args[0]
-            fetch_thumbnails_db([r.member.profile.photo for r in registrations])
+            fetch_thumbnails_db(
+                [r.member.profile.photo for r in registrations if r.member]
+            )
         return super().get_serializer(*args, **kwargs)
 
     def initial(self, request, *args, **kwargs):
