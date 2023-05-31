@@ -222,7 +222,7 @@ ALLOWED_HOSTS = [
 INTERNAL_IPS = setting(development=["127.0.0.1", "172.17.0.1"], production=[])
 
 # https://django-compressor.readthedocs.io/en/stable/settings/#django.conf.settings.COMPRESS_OFFLINE
-COMPRESS_OFFLINE = setting(development=False, production=True)
+COMPRESS_OFFLINE = setting(development=False, production=False)
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = "/static/"
@@ -628,12 +628,7 @@ CACHES = {
         "BACKEND": "django.core.cache.backends.db.DatabaseCache",
         "LOCATION": "django_default_db_cache",
     },
-    "compressor": {
-        "BACKEND": "django.core.cache.backends.dummy.DummyCache",
-    },
 }
-
-COMPRESS_CACHE_BACKEND = "compressor"
 
 WSGI_APPLICATION = "thaliawebsite.wsgi.application"
 
