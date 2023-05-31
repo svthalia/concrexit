@@ -325,7 +325,7 @@ class Event(models.Model):
             return False
 
     @property
-    def get_location_link(self):
+    def location_link(self):
         """Return the link to the location on google maps."""
         if self.show_map_location is False:
             return None
