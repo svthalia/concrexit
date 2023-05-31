@@ -51,7 +51,7 @@
                         </tr>
                         <tr>
                             <th>{% trans "location"|capfirst %}</th>
-                            <td>{{ event.location }}</td>
+                            <td>{% if not event.location_link %}{{ event.location }}{% else %}<a href={{event.location_link}}>{{ event.location }}</a>{% endif %}</td>
                         </tr>
                         <tr>
                             <th>{% trans "organisers"|capfirst %}</th>

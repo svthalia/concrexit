@@ -151,6 +151,11 @@ class Event(models.Model):
         ),
     )
 
+    show_map_location = models.BooleanField(
+        _("show url for location"),
+        default=True,
+    )
+
     price = PaymentAmountField(
         verbose_name=_("price"),
         allow_zero=True,
@@ -318,6 +323,15 @@ class Event(models.Model):
             return True
         except ObjectDoesNotExist:
             return False
+
+    @property
+    def location_link(self):
+        """Return the link to the location on google maps."""
+        if self.show_map_location is False:
+            return None
+        return "https://www.google.com/maps/place/" + self.map_location.replace(
+            " ", "+"
+        )
 
     def clean_changes(self, changed_data):
         """Check if changes from `changed_data` are allowed.
