@@ -1,9 +1,9 @@
 import os
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
-from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 
 from photos.models import Album, Photo
@@ -13,13 +13,12 @@ from photos.services import (
     is_album_accessible,
 )
 from thaliawebsite.views import PagedView
-from utils.media.services import get_media_url
+from utils.media.services import fetch_thumbnails_db, get_media_url
 
 COVER_FILENAME = "cover.jpg"
 
 
-@method_decorator(login_required, "dispatch")
-class IndexView(PagedView):
+class IndexView(LoginRequiredMixin, PagedView):
     model = Album
     paginate_by = 16
     template_name = "photos/index.html"
@@ -36,11 +35,14 @@ class IndexView(PagedView):
             albums = albums.filter(**{"title__icontains": key})
         albums = get_annotated_accessible_albums(self.request, albums)
         albums = albums.order_by("-date")
+
         return albums
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["keywords"] = self.keywords
+        fetch_thumbnails_db([x.cover.file for x in context["object_list"] if x.cover])
+
         return context
 
 
@@ -61,12 +63,14 @@ class _BaseAlbumView(TemplateView):
         # Fix select_properties dropping the default ordering.
         photos = photos.order_by("pk")
 
+        # Prefetch thumbnails for efficiency
+        fetch_thumbnails_db([p.file for p in photos])
+
         context["photos"] = photos
         return context
 
 
-@method_decorator(login_required, "dispatch")
-class AlbumDetailView(_BaseAlbumView):
+class AlbumDetailView(LoginRequiredMixin, _BaseAlbumView):
     """Render an album, if it is accessible by the user."""
 
     def get_album(self, **kwargs):
@@ -108,7 +112,7 @@ def _download(request, obj, filename):
     """
     photopath = _photo_path(obj, filename)
     photo = get_object_or_404(Photo.objects.filter(album=obj, file=photopath))
-    return redirect(get_media_url(photo.file, f"{obj.slug}-{filename}"))
+    return redirect(get_media_url(photo.file, attachment=f"{obj.slug}-{filename}"))
 
 
 @login_required
@@ -127,17 +131,18 @@ def shared_download(request, slug, token, filename):
     return _download(request, obj, filename)
 
 
-@method_decorator(login_required, "dispatch")
-class LikedPhotoView(PagedView):
+class LikedPhotoView(LoginRequiredMixin, PagedView):
     model = Photo
     paginate_by = 16
     template_name = "photos/liked-photos.html"
     context_object_name = "photos"
 
     def get_queryset(self):
-        return (
+        photos = (
             Photo.objects.filter(likes__member=self.request.member, album__hidden=False)
             .select_related("album")
             .select_properties("num_likes")
             .order_by("-album__date")
         )
+        fetch_thumbnails_db([p.file for p in photos])
+        return photos

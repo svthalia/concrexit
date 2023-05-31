@@ -1,14 +1,11 @@
 import base64
 import logging
 import math
-import os
 from io import BytesIO
 
-from django.conf import settings
 from django.core.files.base import ContentFile
-from django.core.files.storage import DefaultStorage
 from django.template.loader import get_template
-from django.utils import timezone, translation
+from django.utils import timezone
 
 import requests
 from bs4 import BeautifulSoup
@@ -23,15 +20,6 @@ from .signals import sent_newsletter
 logger = logging.getLogger(__name__)
 
 
-def write_to_file(pk, lang, html_message):
-    """Write newsletter to a file."""
-    storage = DefaultStorage()
-
-    cache_dir = "newsletters"
-    file_path = os.path.join(cache_dir, f"{pk}_{lang}.html")
-    storage.save(file_path, ContentFile(html_message))
-
-
 def save_to_disk(newsletter):
     """Write the newsletter as HTML to file (in all languages)."""
     main_partner = Partner.objects.filter(is_main_partner=True).first()
@@ -39,25 +27,22 @@ def save_to_disk(newsletter):
 
     html_template = get_template("newsletters/email.html")
 
-    for language in settings.LANGUAGES:
-        translation.activate(language[0])
+    context = {
+        "newsletter": newsletter,
+        "agenda_events": (
+            newsletter.newslettercontent_set.filter(newsletteritem=None).order_by(
+                "newsletterevent__start_datetime"
+            )
+        ),
+        "main_partner": main_partner,
+        "local_partners": local_partners,
+    }
 
-        context = {
-            "newsletter": newsletter,
-            "agenda_events": (
-                newsletter.newslettercontent_set.filter(newsletteritem=None).order_by(
-                    "newsletterevent__start_datetime"
-                )
-            ),
-            "main_partner": main_partner,
-            "local_partners": local_partners,
-            "lang_code": language[0],
-        }
+    html_message = html_template.render(context)
+    html_message = embed_linked_html_images(html_message)
 
-        html_message = html_template.render(context)
-        html_message = embed_linked_html_images(html_message)
-
-        write_to_file(newsletter.pk, language[0], html_message)
+    newsletter.rendered_file = ContentFile(html_message.encode("utf-8"))
+    newsletter.save()
 
 
 def embed_linked_html_images(html_input):

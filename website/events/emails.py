@@ -20,9 +20,7 @@ def notify_first_waiting(event):
         ).order_by("date")[event.max_participants]
 
         organiser_emails = [
-            organiser.contact_address
-            for organiser in event.organisers.all()
-            if organiser.contact_address is not None
+            organiser.contact_address for organiser in event.organisers.all()
         ]
 
         send_email(
@@ -50,10 +48,7 @@ def notify_organiser(event, registration):
         return
 
     send_email(
-        to=[
-            organiser.contact_mailinglist.name + "@" + settings.SITE_DOMAIN
-            for organiser in event.organisers.all()
-        ],
+        to=[organiser.contact_address for organiser in event.organisers.all()],
         subject=f"Registration for {event.title} cancelled by member",
         txt_template="events/email/organiser_email.txt",
         html_template="events/email/organiser_email.html",
@@ -63,9 +58,7 @@ def notify_organiser(event, registration):
 
 def notify_waiting(event, registration):
     organiser_emails = [
-        organiser.contact_address
-        for organiser in event.organisers.all()
-        if organiser.contact_address is not None
+        organiser.contact_address for organiser in event.organisers.all()
     ]
 
     send_email(
@@ -79,5 +72,20 @@ def notify_waiting(event, registration):
             "name": registration.name or registration.member.first_name,
             "base_url": settings.BASE_URL,
             "organisers": organiser_emails,
+        },
+    )
+
+
+def notify_registration(registration):
+    send_email(
+        to=[registration.email],
+        subject=f"Registration confirmation for {registration.event.title}",
+        txt_template="events/email/registration_confirmation_email.txt",
+        html_template="events/email/registration_confirmation_email.html",
+        context={
+            "event": registration.event,
+            "registration": registration,
+            "name": registration.name or registration.member.first_name,
+            "base_url": settings.BASE_URL,
         },
     )

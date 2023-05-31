@@ -120,7 +120,7 @@ server {
     }
 
     location = /.well-known/apple-app-site-association {
-        alias /resources/apple-app-site-association;
+        alias /resources/apple-app-site-association.json;
         default_type application/json;
     }
 

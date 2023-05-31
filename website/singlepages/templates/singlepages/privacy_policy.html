@@ -7,7 +7,7 @@
 {% block page_title %}{% trans "privacy policy"|capfirst %}{% endblock %}
 
 {% block page_content %}
-    <h3>{% trans "Version" %} 2.4, 25-10-2021</h3>
+    <h3>{% trans "Version" %} 2.5, 24-05-2021</h3>
     <p>
         {% blocktrans trimmed %}
             This document contains the privacy conditions of Study Association Thalia.
@@ -166,6 +166,26 @@
             A registration that is still in the process of collecting references, reviewing by the board,
             or waiting for payment is not removed automatically. A person can request immediate deletion
             of their data by sending an email to <a href="mailto:info@thalia.nu">info@thalia.nu</a>.
+        {% endblocktrans %}
+    </p>
+    <h5>{% trans "Face recognition" %}</h5>
+    <p>
+        {% blocktrans trimmed %}
+            Photos uploaded to Thalia's website are scanned on faces. This is done on our own servers, using open source
+            models. No third parties will receive these photos for this purpose and the photos are not used to train
+            models. Face recognition is only used to allow members to easily search for photos they appear on, and not
+            for any other purpose. Members are not allowed to use face recognition to search for photos of other
+            members. Measures are implemented to prevent this as much as possible.
+        {% endblocktrans %}
+    </p>
+    <p>
+        {% blocktrans trimmed %}
+            In order to use face recognition, members need to upload a photo of their own face, a so-called reference
+            face. This photo is stored on our servers and is used to compare faces in photos uploaded to the website.
+            This reference face is only used for face recognition and is not used for any other purpose. It will never
+            be made public. Members can delete their reference face at any time. After deletion, however, the reference
+            face will not be immediately deleted. This allows us to monitor if people actually searched for photos of
+            others.
         {% endblocktrans %}
     </p>
     <h5>{% trans "Other processing of personal data" %}</h5>

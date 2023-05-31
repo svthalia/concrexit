@@ -1,0 +1,21 @@
+{% extends "email/html_email.html" %}
+{% block content %}
+  Dear {{ name }},<br>
+
+  <p>We are pleased to confirm that you registered for the following event '{{ event.title }}' on {{ registration.date|date:"SHORT_DATETIME_FORMAT" }}.</p>
+
+  {% if registration.queue_position %}
+    <p>Sadly, this event is full right now, so you have been put on the queue on position: {{ registration.queue_position }}. You will be contacted if you get a spot to participate in the event.</p>
+  {% endif %}
+
+  {% if event.has_fields and not registration.queue_position %}
+    <p>Please don't forget to fill in any other information needed from you to complete your registration.<br>
+    You can do this on <a href="{{ base_url }}{% url "events:registration" event.pk %}">{{ base_url }}{% url "events:registration" event.pk %}</a>.
+  {% endif %}
+
+  <p>You can find more information about the event on the website: <a href="{{ base_url }}{{ event.get_absolute_url }}">{{ base_url }}{{ event.get_absolute_url }}</a>.</p>
+
+  {% if event.cancel_deadline %}
+    <p>If you would like to cancel this registration please do so before {{ event.cancel_deadline|date:"SHORT_DATETIME_FORMAT" }}.</p>
+  {% endif %}
+{% endblock %}

@@ -1,4 +1,3 @@
-{% load i18n %}
 {% load listutil %}
 {% load baseurl %}
 {% load static %}
@@ -25,7 +24,7 @@
 <div style="background-color: #F0F0F0; padding: 20px;">
 
     <p style="margin:0px 0px 10px 0px; background-color: #F0F0F0; font-family: Arial, sans-serif; text-align: center; font-size: 11px;">
-        <a style="color: {{ primary_color }}; text-decoration: underline;" href="{% baseurl %}{{ newsletter.get_absolute_url }}">{% trans "view this email in your browser"|capfirst %}</a>
+        <a style="color: {{ primary_color }}; text-decoration: underline;" href="{% baseurl %}{{ newsletter.get_absolute_url }}">View this email in your browser</a>
     </p>
 
     <div style="background-color: white; width: 700px ; margin-left: auto ; margin-right: auto;">
@@ -48,7 +47,7 @@
             <tr>
                 <td colspan="2" style="{{ item_tr_style }}">
                     <h2 style="{{ item_h2_style }}">
-                        {% trans "dear members"|upper %},
+                        DEAR MEMBERS,
                     </h2>
             </tr>
             <tr>
@@ -59,7 +58,7 @@
             {% if agenda_events %}
             <tr>
                 <td colspan="2" style="{{ item_tr_style }}">
-                    <h2 style="{{ item_h2_style }}">{% trans "agenda"|upper %}</h2>
+                    <h2 style="{{ item_h2_style }}">AGENDA</h2>
                 </td>
             </tr>
             <tr>
@@ -98,10 +97,10 @@
 
                         {% if item.newsletterevent.show_costs_warning %}
                             <p style="font-family: Arial, sans-serif">
-                                <i><b>{% trans "Attention" %}:</b> {% trans "Registration deadline = unregistration deadline" %}!
-                                {% trans "Thalia will recover the costs on you if you do not unregister on time" %}.
+                                <i><b>Attention:</b> Registration deadline = unregistration deadline!
+                                Thalia will recover the costs on you if you do not unregister on time.
                                 {% if item.newsletterevent.penalty_costs and item.newsletterevent.penalty_costs > 0 %}
-                                    {% trans "These costs are" %}: <b>&euro;{{ item.newsletterevent.penalty_costs }}.</b>
+                                    These costs are: <b>&euro;{{ item.newsletterevent.penalty_costs }}.</b>
                                 {% endif %}
                                 </i>
                             </p>
@@ -112,7 +111,7 @@
                         <div style="padding: 20px; background-color: black; border-left: 5px solid {{ primary_color }};">
                             <div style="margin-bottom: 5px;">
                                 <b style="font-family: Calibri, 'Trebuchet MS', sans-serif;font-size: 15px; color: {{ primary_color }};">
-                                    {% trans "Where"|upper %}
+                                    WHERE
                                 </b>
                                 <br>
                                 <span style="font-family: Arial, sans-serif; font-size: 15px; color: white; ">
@@ -122,7 +121,7 @@
 
                             <div style="margin-bottom: 5px;">
                                 <b style="font-family: Calibri, 'Trebuchet MS', sans-serif;font-size: 15px; color: {{ primary_color }};">
-                                    {% trans "When"|upper %}
+                                    WHEN
                                 </b>
                                 <br>
                                 <span style="font-family: Arial, sans-serif; font-size: 15px; color: white; ">
@@ -139,12 +138,12 @@
                             {% if item.newsletterevent.price is not None %}
                             <div style="margin-bottom: 5px;">
                                 <b style="font-family: Calibri, 'Trebuchet MS', sans-serif;font-size: 15px; color: {{ primary_color }};">
-                                    {% trans "Price"|upper %}
+                                    PRICE
                                 </b>
                                 <br>
                                 <span style="font-family: Arial, sans-serif; font-size: 15px; color: white; ">
                                     {% if item.newsletterevent.price == 0 %}
-                                        {% trans "Free" %}
+                                        Free
                                     {% else %}
                                         &euro;{{ item.newsletterevent.price }}
                                     {% endif %}
@@ -207,9 +206,9 @@
                 <td align="center" style="color: black; font-size: 12px;">
                     <p style="margin: 10px; font-family: 'Gill Sans', 'Trebuchet MS', sans-serif;">
                         <a href="{{ main_partner.link }}">
-                            <img src="{% baseurl %}{% thumbnail main_partner.logo THUMBNAIL_SIZE_MEDIUM fit=False %}" height="95" style="height: 95px;" alt="{{ main_partner.name }}"/>
+                            <img src="{% thumbnail main_partner.logo "medium" absolute_url=True %}" height="95" style="height: 95px;" alt="{{ main_partner.name }}"/>
                         </a><br>
-                        {% trans "our main partner"|upper %}
+                        OUR MAIN PARTNER
                     </p>
                 </td>
                 {% endif %}
@@ -233,9 +232,9 @@
                             <td align="center" style="color: black; font-size: 12px;">
                                 <p style="margin: 10px; font-family: 'Gill Sans', 'Trebuchet MS', sans-serif;">
                                     <a href="{{ local_partner.link }}">
-                                        <img src="{% baseurl %}{% thumbnail local_partner.logo THUMBNAIL_SIZE_MEDIUM fit=False %}" height="70" style="height: 70px; margin-bottom: 25px" alt="{{ local_partner.name }}"/>
+                                        <img src="{% thumbnail local_partner.logo "medium" absolute_url=True %}" height="70" style="height: 70px; margin-bottom: 25px" alt="{{ local_partner.name }}"/>
                                     </a><br>
-                                    {% trans "our local partner"|upper %}
+                                    OUR LOCAL PARTNER
                                 </p>
                             </td>
                             {% endif %}

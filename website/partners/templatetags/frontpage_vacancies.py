@@ -10,7 +10,7 @@ register = template.Library()
 def render_frontpage_vacancies():
     vacancies = []
 
-    for vacancy in Vacancy.objects.order_by("?")[:6]:
+    for vacancy in Vacancy.objects.order_by("?")[:6].select_related("partner"):
         url = f"{reverse('partners:vacancies')}#vacancy-{vacancy.id}"
         if vacancy.partner and vacancy.partner.is_active:
             url = f"{vacancy.partner.get_absolute_url()}#vacancy-{vacancy.id}"

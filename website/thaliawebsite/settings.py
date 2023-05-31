@@ -133,12 +133,15 @@ def from_env(
 ###############################################################################
 # Site settings
 
-# We use this setting to generate the email addresses
-SITE_DOMAIN = from_env(
-    "SITE_DOMAIN", development="thalia.localhost", production="thalia.nu"
+# We use this setting to generate the email addresses, and for BASE_URL below.
+SITE_DOMAIN = from_env("SITE_DOMAIN", development="localhost", production="thalia.nu")
+
+# Used to generate some absolute urls when we don't have access to a request.
+BASE_URL = from_env(
+    "BASE_URL",
+    development=f"http://{SITE_DOMAIN}:8000",
+    production=f"https://{SITE_DOMAIN}",
 )
-# We use this domain to generate some absolute urls when we don't have access to a request
-BASE_URL = os.environ.get("BASE_URL", f"https://{SITE_DOMAIN}")
 
 # Default FROM email
 DEFAULT_FROM_EMAIL = f"{os.environ.get('ADDRESS_NOREPLY', 'noreply')}@{SITE_DOMAIN}"
@@ -162,7 +165,22 @@ PROMO_REQUEST_NOTIFICATION_ADDRESS = (
 TREASURER_NOTIFICATION_ADDRESS = (
     f"{os.environ.get('ADDRESS_TREASURER', 'treasurer')}@{SITE_DOMAIN}"
 )
+
 PROMO_PUBLISH_DATE_TIMEDELTA = timezone.timedelta(weeks=1)
+
+# How many days to keep reference faces after a user marks them for deletion
+FACEDETECTION_REFERENCE_FACE_STORAGE_PERIOD_AFTER_DELETE_DAYS = 180
+
+# How many reference faces a user can have at the same time
+FACEDETECTION_MAX_NUM_REFERENCE_FACES = 5
+
+# ARN of the concrexit-facedetection-lambda function.
+# See https://github.com/svthalia/concrexit-facedetection-lambda.
+FACEDETECTION_LAMBDA_ARN = from_env("FACEDETECTION_LAMBDA_ARN")
+
+FACEDETECTION_LAMBDA_BATCH_SIZE = int(
+    os.environ.get("FACEDETECTION_LAMBDA_BATCH_SIZE", 20)
+)
 
 # The scheme the app uses for oauth redirection
 APP_OAUTH_SCHEME = os.environ.get("APP_OAUTH_SCHEME", "nu.thalia")
@@ -468,6 +486,7 @@ INSTALLED_APPS = [
     # Our apps ordered such that templates in the first
     # apps can override those used by the later apps.
     "pushnotifications.apps.PushNotificationsConfig",
+    "facedetection.apps.FaceDetectionConfig",
     "announcements.apps.AnnouncementsConfig",
     "promotion.apps.PromotionConfig",
     "members.apps.MembersConfig",
@@ -502,7 +521,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.locale.LocaleMiddleware",
-    # Our middleware
+    "thaliawebsite.middleware.RealIPMiddleware",
+    "django_ratelimit.middleware.RatelimitMiddleware",
     "members.middleware.MemberMiddleware",
     "announcements.middleware.AnnouncementMiddleware",
 ]
@@ -604,11 +624,17 @@ LOGGING = {
     },
 }
 
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+        "LOCATION": "django_default_db_cache",
+    }
+}
+
 WSGI_APPLICATION = "thaliawebsite.wsgi.application"
 
 # Login pages
 LOGIN_URL = "/user/login/"
-
 LOGIN_REDIRECT_URL = "/"
 
 # Cors configuration
@@ -704,7 +730,7 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_PAGINATION_CLASS": "thaliawebsite.api.pagination.APIv2LimitOffsetPagination",
     "PAGE_SIZE": 50,  # Only for API v2
-    "ALLOWED_VERSIONS": ["v1", "v2", "calendarjs"],
+    "ALLOWED_VERSIONS": ["v1", "v2", "calendarjs", "facedetection"],
     "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.NamespaceVersioning",
     "DEFAULT_SCHEMA_CLASS": "thaliawebsite.api.openapi.OAuthAutoSchema",
     "DEFAULT_THROTTLE_CLASSES": [
@@ -712,29 +738,26 @@ REST_FRAMEWORK = {
         "thaliawebsite.api.throttling.UserRateThrottle",
     ],
     "DEFAULT_THROTTLE_RATES": setting(
-        production={"anon": "30/min", "user": "60/min"},
-        staging={"anon": "30/min", "user": "60/min"},
+        production={"anon": "30/min", "user": "90/min"},
+        staging={"anon": "30/min", "user": "90/min"},
         development={"anon": None, "user": None},
     ),
 }
 
+# Rate limiting
+RATELIMIT_VIEW = "thaliawebsite.views.rate_limited_view"
+
 # Internationalization
 # https://docs.djangoproject.com/en/dev/topics/i18n/
-
 DATETIME_FORMAT = "j M, Y, H:i"
+SHORT_DATETIME_FORMAT = "d-m-Y, H:i"
 
 LANGUAGE_CODE = "en"
-
 TIME_ZONE = "Europe/Amsterdam"
-
 USE_I18N = True
-
 USE_L10N = False
-
 USE_TZ = True
-
 LANGUAGES = [("en", _("English"))]
-
 LOCALE_PATHS = ("locale",)
 
 # Static files
@@ -756,9 +779,7 @@ STATICFILES_STORAGE = setting(
 
 # Compressor settings
 COMPRESS_ENABLED = True
-
 COMPRESS_PRECOMPILERS = (("text/x-scss", "django_libsass.SassCompiler"),)
-
 COMPRESS_FILTERS = {
     "css": [
         "compressor.filters.css_default.CssAbsoluteFilter",
@@ -766,9 +787,6 @@ COMPRESS_FILTERS = {
     ],
     "js": ["compressor.filters.jsmin.JSMinFilter"],
 }
-
-# Precompiler settings
-STATIC_PRECOMPILER_LIST_FILES = True
 
 # See utils/model/signals.py for explanation
 SUSPEND_SIGNALS = False
@@ -872,16 +890,7 @@ THUMBNAILS = {
     },
 }
 
-THUMBNAIL_SIZES = {
-    "small": "small",
-    "medium": "medium",
-    "large": "large",
-    "avatar_large": "avatar_large",
-    "slide_small": "slide_small",
-    "slide_medium": "slide_medium",
-    "slide": "slide",
-}
-
+THUMBNAIL_SIZES = set(THUMBNAILS["SIZES"].keys())
 
 # Photos settings
 PHOTO_UPLOAD_SIZE = 2560, 1440
@@ -945,6 +954,7 @@ GRAPH_MODELS = {
         "auth",
     ],
 }
+
 MONEYBIRD_ADMINISTRATION_ID = os.environ.get("MONEYBIRD_ADMINISTRATION_ID", None)
 MONEYBIRD_API_KEY = os.environ.get("MONEYBIRD_API_KEY", None)
 
@@ -953,8 +963,8 @@ MONEYBIRD_SYNC_ENABLED = MONEYBIRD_ADMINISTRATION_ID and MONEYBIRD_API_KEY
 MONEYBIRD_MEMBER_PK_CUSTOM_FIELD_ID = os.environ.get(
     "MONEYBIRD_MEMBER_PK_CUSTOM_FIELD_ID", None
 )
-MONEYBIRD_UNKOWN_PAYER_CONTACT_ID = os.environ.get(
-    "MONEYBIRD_UNKOWN_PAYER_CONTACT_ID", None
+MONEYBIRD_UNKNOWN_PAYER_CONTACT_ID = os.environ.get(
+    "MONEYBIRD_UNKNOWN_PAYER_CONTACT_ID", None
 )
 MONEYBIRD_CONTRIBUTION_LEDGER_ID = os.environ.get(
     "MONEYBIRD_CONTRIBUTION_LEDGER_ID", None

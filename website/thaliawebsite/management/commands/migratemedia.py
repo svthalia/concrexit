@@ -15,8 +15,7 @@ class Command(BaseCommand):
             return
 
         # create session to s3
-        session = boto3.session.Session()
-        s3_client = session.client(
+        s3_client = boto3.client(
             service_name="s3",
             aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
             aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,

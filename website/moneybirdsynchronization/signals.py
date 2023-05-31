@@ -9,6 +9,7 @@ from moneybirdsynchronization.administration import Administration
 from moneybirdsynchronization.emails import send_sync_error
 
 from members.models import Member, Profile
+from payments.models import BankAccount
 from payments.signals import processed_batch
 from utils.models.signals import suspendingreceiver
 
@@ -18,13 +19,30 @@ User = get_user_model()
 @suspendingreceiver(post_save, sender="members.Profile")
 def post_profile_save(sender, instance, **kwargs):
     """Update the contact in Moneybird when the profile is saved."""
+    updated_fields = kwargs.get("update_fields", None)
+    if updated_fields is not None and not any(
+        field in updated_fields
+        for field in [
+            "is_minimized",
+            "address_street",
+            "address_street2",
+            "address_postal_code",
+            "address_city",
+            "address_country",
+        ]
+    ):
+        return
+
+    if not instance.user.first_name or not instance.user.last_name:
+        return
+
     try:
         if instance.is_minimized:
-            services.delete_contact(Member.objects.get(profile=instance))
+            services.delete_contact(instance.user)
         else:
-            services.create_or_update_contact(Member.objects.get(profile=instance))
+            services.create_or_update_contact(instance.user)
     except Administration.Error as e:
-        send_sync_error(e, instance)
+        send_sync_error(e, instance.user)
         logging.error("Moneybird synchronization error: %s", e)
 
 
@@ -32,9 +50,9 @@ def post_profile_save(sender, instance, **kwargs):
 def post_profile_delete(sender, instance, **kwargs):
     """Delete the contact in Moneybird when the profile is deleted."""
     try:
-        services.delete_contact(Member.objects.get(profile=instance))
+        services.delete_contact(instance.user)
     except Administration.Error as e:
-        send_sync_error(e, instance)
+        send_sync_error(e, instance.user)
         logging.error("Moneybird synchronization error: %s", e)
 
 
@@ -47,6 +65,13 @@ def post_user_save(sender, instance, **kwargs):
     try:
         instance.profile
     except Profile.DoesNotExist:
+        return
+
+    updated_fields = kwargs.get("update_fields", None)
+    if updated_fields is not None and not any(
+        field in updated_fields for field in ["first_name", "last_name", "email"]
+    ):
+        # Only update the contact when the name is changed
         return
 
     try:
@@ -64,6 +89,39 @@ def post_user_delete(sender, instance, **kwargs):
     """Delete the contact in Moneybird when the user is deleted."""
     try:
         services.delete_contact(instance)
+    except Administration.Error as e:
+        send_sync_error(e, instance)
+        logging.error("Moneybird synchronization error: %s", e)
+
+
+@suspendingreceiver(post_save, sender=BankAccount)
+def post_bank_account_save(sender, instance, **kwargs):
+    """Update the contact in Moneybird when the bank account is saved."""
+    updated_fields = kwargs.get("update_fields", None)
+    if updated_fields is not None and not any(
+        field in updated_fields
+        for field in ["owner", "iban", "bic", "initials", "last_name"]
+    ):
+        # Only update the contact when the bank account is changed
+        return
+
+    member = Member.objects.get(pk=instance.owner.pk)
+    try:
+        if member.profile.is_minimized:
+            services.delete_contact(member)
+        else:
+            services.create_or_update_contact(member)
+    except Administration.Error as e:
+        send_sync_error(e, instance)
+        logging.error("Moneybird synchronization error: %s", e)
+
+
+@suspendingreceiver(post_delete, sender=BankAccount)
+def post_bank_account_delete(sender, instance, **kwargs):
+    """Update the contact in Moneybird when the bank account is deleted."""
+    member = Member.objects.get(pk=instance.owner.pk)
+    try:
+        services.create_or_update_contact(member)
     except Administration.Error as e:
         send_sync_error(e, instance)
         logging.error("Moneybird synchronization error: %s", e)

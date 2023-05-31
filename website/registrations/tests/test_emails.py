@@ -38,7 +38,7 @@ class EmailsTest(TestCase):
             context={
                 "name": reg.get_full_name(),
                 "confirm_link": (
-                    "https://thalia.localhost"
+                    "http://localhost:8000"
                     + reverse("registrations:confirm-email", args=[reg.pk])
                 ),
             },
@@ -105,7 +105,7 @@ class EmailsTest(TestCase):
             context={
                 "name": registration.get_full_name(),
                 "url": (
-                    "https://thalia.localhost"
+                    "http://localhost:8000"
                     + reverse(
                         "admin:registrations_registration_change",
                         args=[registration.pk],
@@ -208,7 +208,7 @@ class EmailsTest(TestCase):
             context={
                 "name": renewal.member.get_full_name(),
                 "url": (
-                    "https://thalia.localhost"
+                    "http://localhost:8000"
                     + reverse("admin:registrations_renewal_change", args=[renewal.pk])
                 ),
             },
@@ -234,7 +234,7 @@ class EmailsTest(TestCase):
                 context={
                     "name": registration.get_full_name(),
                     "reference_link": (
-                        "https://thalia.localhost"
+                        "http://localhost:8000"
                         + reverse("registrations:reference", args=[registration.pk])
                     ),
                 },
@@ -262,7 +262,7 @@ class EmailsTest(TestCase):
                 context={
                     "name": renewal.member.get_full_name(),
                     "reference_link": (
-                        "https://thalia.localhost"
+                        "http://localhost:8000"
                         + reverse("registrations:reference", args=[renewal.pk])
                     ),
                 },

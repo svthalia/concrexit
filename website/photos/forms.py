@@ -24,7 +24,7 @@ class AlbumForm(forms.ModelForm):
         required=False,
         help_text=_("Uploading a zip or tar file adds all contained images as photos."),
         validators=[ArchiveFileTypeValidator()],
-        filepond_options={"chunkSize": 5000000},
+        filepond_options={"chunkSize": 15_000_000},
     )
 
     class Meta:

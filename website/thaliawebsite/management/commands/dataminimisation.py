@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 
 from events import services as events_services
+from facedetection import services as facedetection_services
 from members import services as members_services
 from payments import services as payments_services
 from pizzas import services as pizzas_services
@@ -40,6 +41,10 @@ class Command(BaseCommand):
         processed = sales_services.execute_data_minimisation(options["dry-run"])
         for p in processed:
             self.stdout.write(f"Removed sales orders for {p}")
+
+        processed = facedetection_services.execute_data_minimisation(options["dry-run"])
+        for p in processed:
+            self.stdout.write(f"Removed reference faces: {p}")
 
         processed = minimise_logentries_data(options["dry-run"])
         for p in processed:

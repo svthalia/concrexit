@@ -289,15 +289,15 @@ class GSuiteSyncService:
                 members_list += members_response.get("members", [])
 
             existing_members = [
-                m["email"] for m in members_list if m["role"] == "MEMBER"
+                m["email"].lower() for m in members_list if m["role"] == "MEMBER"
             ]
             existing_managers = [
-                m["email"] for m in members_list if m["role"] == "MANAGER"
+                m["email"].lower() for m in members_list if m["role"] == "MANAGER"
             ]
         except HttpError:
             logger.exception(f"Could not obtain list member data for {group.name}")
             return  # the list does not exist or something else is wrong
-        new_members = group.addresses
+        new_members = [x.lower() for x in group.addresses]
 
         remove_list = [x for x in existing_members if x not in new_members]
         insert_list = [

@@ -1,0 +1,80 @@
+{% extends "paginated_page.html" %}
+{% load static i18n compress photos_cards alert %}
+
+{% block title %}Photos you're on — {{ block.super }}{% endblock %}
+{% block opengraph_title %}Photos you're on — {{ block.super }}{% endblock %}
+
+{% block header_image %}{% static "img/headers/fixed/banner7.jpg" %}{% endblock %}
+
+{% block page_title %}Photos you're on{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <p>Your face is detected based on references faces that you uploaded.</p>
+            <a href="{% url "facedetection:reference-faces" %}"
+            class="btn btn-primary"
+            data-bs-toggle="tooltip"
+            data-bs-placement="baseline"
+            >
+                Your reference faces
+            </a>
+        </div>
+    </div>
+    <div class="row mt-4">
+        {% if not has_reference_faces %}
+            <div class="col-md-12">
+                {% alert "info" "You need to upload at least one reference face in order for face recognition to work." dismissible=False %}
+            </div>
+        {% endif %}
+        {% if has_rejected_reference_faces %}
+            <div class="col-md-12">
+                {% alert "danger" "Some of your reference faces have been rejected. Please delete them and upload new ones." dismissible=False %}
+            </div>
+        {% elif has_processing_reference_faces %}
+            <div class="col-md-12">
+                {% alert "info" "Some of your reference faces have not been processed yet. Come back later." dismissible=False %}
+            </div>
+        {% elif has_reference_faces and not has_processing_reference_faces and not photos %}
+            <div class="col-md-12">
+                {% alert "info" "You haven't been recognized on any photos (yet)." dismissible=False %}
+            </div>
+        {% else %}
+            {% for photo in photos|dictsortreversed:"album.date" %}
+                {% ifchanged photo.album %}
+                    <h2 class="mt-3">
+                        {{ photo.album.title }} (<span class="">{{ photo.album.date|date:"d-m-Y" }}</span>)
+                        <a href="{{ photo.album.get_absolute_url }}"
+                           class="btn btn-primary float-end"
+                           data-bs-toggle="tooltip"
+                           data-bs-placement="baseline"
+                           title=""
+                           data-original-title="Album"
+                        >
+                            Go to full album
+                        </a>
+                    </h2>
+                {% endifchanged %}
+                <div class="col-4 col-md-3 my-3">
+                    {% liked_photo_card photo %}
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block css_head %}
+    {{ block.super }}
+    {% compress css %}
+        <link href="{% static "photos/css/style.scss" %}" rel="stylesheet" type="text/x-scss">
+    {% endcompress %}
+    <link href="{% static "css/fancybox.css" %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block js_body %}
+    {{ block.super }}
+    <script src="{% static "js/fancybox.umd.js" %}"></script>
+    {% compress js %}
+        <script type="text/javascript" src="{% static "photos/js/main.js" %}"></script>
+    {% endcompress %}
+{% endblock %}
