@@ -79,6 +79,7 @@ class EventAdmin(DoNextModelAdmin):
                     "caption",
                     "location",
                     "map_location",
+                    "show_map_location",
                 ),
                 "classes": ("collapse", "start-open"),
             },
