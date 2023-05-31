@@ -627,8 +627,14 @@ CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.db.DatabaseCache",
         "LOCATION": "django_default_db_cache",
-    }
+    },
+    "compressor": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "django_default_locmem_cache",
+    },
 }
+
+COMPRESS_CACHE_BACKEND = "compressor"
 
 WSGI_APPLICATION = "thaliawebsite.wsgi.application"
 
