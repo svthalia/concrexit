@@ -119,7 +119,13 @@ class EventAdmin(DoNextModelAdmin):
 
     def get_form(self, request, obj=None, change=False, **kwargs):
         form = super().get_form(request, obj, change, **kwargs)
-        form.clean = lambda form: form.instance.clean_changes(form.changed_data)
+        default_clean = form.clean
+
+        def clean(form):
+            default_clean(form)
+            form.instance.clean_changes(form.changed_data)
+
+        form.clean = clean
         form.request = request
         return form
 
