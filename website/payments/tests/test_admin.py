@@ -373,7 +373,7 @@ class PaymentAdminTest(TestCase):
         response = self.client.get(reverse("admin:payments_payment_changelist"))
 
         actions = self.admin.get_actions(response.wsgi_request)
-        self.assertCountEqual(actions, ["delete_selected", "export_csv"])
+        self.assertCountEqual(actions, ["delete_selected", "export_admin_action"])
 
         self._give_user_permissions()
         response = self.client.get(reverse("admin:payments_payment_changelist"))
@@ -385,7 +385,7 @@ class PaymentAdminTest(TestCase):
                 "delete_selected",
                 "add_to_new_batch",
                 "add_to_last_batch",
-                "export_csv",
+                "export_admin_action",
             ],
         )
 
@@ -415,28 +415,6 @@ class PaymentAdminTest(TestCase):
         """Test that the custom urls are added to the admin."""
         urls = self.admin.get_urls()
         self.assertEqual(urls[0].name, "payments_payment_create")
-
-    @freeze_time("2019-01-01")
-    def test_export_csv(self) -> None:
-        """Test that the CSV export of payments is correct."""
-        Payment.objects.create(
-            amount=7.5, processed_by=self.user, paid_by=self.user, type=Payment.CARD
-        ).save()
-        Payment.objects.create(
-            amount=17.5, processed_by=self.user, paid_by=self.user, type=Payment.CASH
-        ).save()
-
-        response = self.admin.export_csv(HttpRequest(), Payment.objects.all())
-
-        self.assertEqual(
-            f"Created,Amount,Type,Processor,Payer id,Payer name,"
-            f"Notes\r\n2019-01-01 00:00:00+00:00,"
-            f"7.50,Card payment,Sébastiaan Versteeg,{self.user.pk},Sébastiaan Versteeg,"
-            f"\r\n2019-01-01 00:00:00+00:00,17.50,"
-            f"Cash payment,Sébastiaan Versteeg,{self.user.pk},Sébastiaan Versteeg,"
-            f"\r\n",
-            response.content.decode("utf-8"),
-        )
 
     def test_get_field_queryset(self) -> None:
         b1 = Batch.objects.create(id=1)
@@ -778,49 +756,6 @@ class BankAccountAdminTest(TestCase):
             self.assertFalse(
                 self.admin.can_be_revoked(bank_account1),
             )
-
-    def test_export_csv(self) -> None:
-        """Test that the CSV export of accounts is correct."""
-        BankAccount.objects.create(
-            owner=self.user, initials="J", last_name="Test", iban="NL91ABNA0417164300"
-        )
-        BankAccount.objects.create(
-            owner=self.user, initials="J2", last_name="Test", iban="NL91ABNA0417164300"
-        )
-        BankAccount.objects.create(
-            owner=self.user,
-            initials="J3",
-            last_name="Test",
-            iban="NL91ABNA0417164300",
-            mandate_no="12-1",
-            valid_from=timezone.now().date() - timezone.timedelta(days=5),
-            valid_until=timezone.now().date(),
-            signature="sig",
-        )
-        BankAccount.objects.create(
-            owner=self.user,
-            initials="J4",
-            last_name="Test",
-            iban="DE12500105170648489890",
-            bic="NBBEBEBB",
-            mandate_no="11-1",
-            valid_from=timezone.now().date(),
-            valid_until=timezone.now().date() + timezone.timedelta(days=5),
-            signature="sig",
-        )
-
-        response = self.admin.export_csv(HttpRequest(), BankAccount.objects.all())
-
-        self.assertEqual(
-            b"Created,Name,Reference,IBAN,BIC,Valid from,Valid until,"
-            b"Signature\r\n2019-01-01 00:00:00+00:00,J Test,,"
-            b"NL91ABNA0417164300,,,,\r\n2019-01-01 00:00:00+00:00,J2 Test,,"
-            b"NL91ABNA0417164300,,,,\r\n2019-01-01 00:00:00+00:00,J3 Test,"
-            b"12-1,NL91ABNA0417164300,,2018-12-27,2019-01-01,"
-            b"sig\r\n2019-01-01 00:00:00+00:00,J4 Test,11-1,"
-            b"DE12500105170648489890,NBBEBEBB,2019-01-01,2019-01-06,sig\r\n",
-            response.content,
-        )
 
     @mock.patch("django.contrib.admin.ModelAdmin.message_user")
     @mock.patch("payments.services.update_last_used")
