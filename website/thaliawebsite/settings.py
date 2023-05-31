@@ -629,8 +629,7 @@ CACHES = {
         "LOCATION": "django_default_db_cache",
     },
     "compressor": {
-        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-        "LOCATION": "django_default_locmem_cache",
+        "BACKEND": "django.core.cache.backends.dummy.DummyCache",
     },
 }
 
