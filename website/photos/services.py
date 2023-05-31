@@ -14,7 +14,7 @@ from django.db.models import BooleanField, Case, ExpressionWrapper, Q, Value, Wh
 from django.http import Http404
 from django.utils.translation import gettext_lazy as _
 
-from PIL import ExifTags, Image, UnidentifiedImageError
+from PIL import ExifTags, Image, ImageOps, UnidentifiedImageError
 from PIL.JpegImagePlugin import JpegImageFile
 
 from photos.models import Photo
@@ -33,6 +33,29 @@ def photo_determine_rotation(pil_image):
         6: 90,
         7: 270,
         8: 270,
+    }
+
+    if isinstance(pil_image, JpegImageFile) and pil_image._getexif():
+        exif = {
+            ExifTags.TAGS[k]: v
+            for k, v in pil_image._getexif().items()
+            if k in ExifTags.TAGS
+        }
+        if exif.get("Orientation"):
+            return EXIF_ORIENTATION[exif.get("Orientation")]
+    return 0
+
+
+def photo_determine_mirrored(pil_image):
+    EXIF_ORIENTATION = {
+        1: 0,
+        2: 1,
+        3: 0,
+        4: 1,
+        5: 1,
+        6: 0,
+        7: 1,
+        8: 0,
     }
 
     if isinstance(pil_image, JpegImageFile) and pil_image._getexif():
@@ -174,10 +197,14 @@ def save_photo(photo_obj, file, filename):
         return False
 
     rotation = photo_determine_rotation(image)
+    mirrored = photo_determine_mirrored(image)
+
     if rotation != 0:
         image = image.rotate(360 - rotation, expand=True)
-
     photo_obj.rotation = 0
+
+    if mirrored == 1:
+        image = ImageOps.mirror(image)
 
     image_path, _ext = os.path.splitext(filename)
     image_path = f"{image_path}.jpg"
