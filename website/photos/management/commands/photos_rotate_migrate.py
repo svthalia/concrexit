@@ -11,7 +11,7 @@ from photos.models import Photo
 
 
 class Command(BaseCommand):
-    """Rotate all rotated images by actually rotating them as defined in issue #3133 and replacing them in the database with the fixed variant"""
+    """Rotate all rotated images by actually rotating them as defined in issue #3133 and replacing them in the database with the fixed variant."""
 
     def handle(self, *args, **options):
         verbosity = options.get("verbosity")
