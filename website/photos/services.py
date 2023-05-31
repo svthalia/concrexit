@@ -173,10 +173,14 @@ def save_photo(photo_obj, file, filename):
     ):
         return False
 
+    rotation = photo_determine_rotation(image)
+    if rotation != 0:
+        image = image.rotate(360 - rotation, expand=True)
+
+    photo_obj.rotation = 0
+
     image_path, _ext = os.path.splitext(filename)
     image_path = f"{image_path}.jpg"
-
-    photo_obj.rotation = photo_determine_rotation(image)
 
     # Image.thumbnail does not upscale an image that is smaller
     image.thumbnail(settings.PHOTO_UPLOAD_SIZE, Image.ANTIALIAS)
