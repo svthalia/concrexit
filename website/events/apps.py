@@ -3,6 +3,8 @@ from django.apps import AppConfig
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
+from events.services import execute_data_minimisation
+
 
 class EventsConfig(AppConfig):
     """AppConfig for the events package."""
@@ -15,6 +17,9 @@ class EventsConfig(AppConfig):
         from .payables import register
 
         register()
+
+    def data_minimization_methods(self):
+        return {"events": execute_data_minimisation}
 
     def menu_items(self):
         return {
