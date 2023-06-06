@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ("activemembers", "0042_alter_membergroup_photo"),
         ("documents", "0010_auto_20181219_2146"),
-        ("events", "0066_event_slug"),
+        ("events", "0067_event_show_map_location"),
     ]
     run_before = [("documents", "0017_delete_eventdocument")]
 
