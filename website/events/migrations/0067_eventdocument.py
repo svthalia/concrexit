@@ -16,7 +16,7 @@ def populate_eventdocument(apps, schema_editor):
 class Migration(migrations.Migration):
     dependencies = [
         ("activemembers", "0042_alter_membergroup_photo"),
-        ("documents", "0010_auto20181219_2146"),
+        ("documents", "0010_auto_20181219_2146"),
         ("events", "0066_event_slug"),
     ]
     run_before = [("documents", "0017_delete_eventdocument")]
