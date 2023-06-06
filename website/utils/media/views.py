@@ -18,11 +18,10 @@ def get_thumb_modified_time(storage, path):
         f"thumbnails_{path}", timezone.make_aware(timezone.datetime.min)
     )
     if storage_value.timestamp() <= 0:
-        # noinspection PyBroadException
         try:
             storage_value = storage.get_modified_time(path)
             cache.set(f"thumbnails_{path}", storage_value, 60 * 60)
-        except:  # pylint: disable=bare-except
+        except:  # noqa: E722
             # File probably does not exist
             pass
     return storage_value

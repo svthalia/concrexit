@@ -2,8 +2,6 @@ website/media
 website/static
 website/db.sqlite3
 infra/modules
-infra/nixos
-infra/stages
 scripts
 
 **/Dockerfile
@@ -19,5 +17,4 @@ docs
 .gitattributes
 .gitignore
 .mailmap
-.pylintrc
 renovate.json

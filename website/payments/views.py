@@ -23,10 +23,11 @@ from django.views.generic.edit import CreateView, FormView, UpdateView
 
 from dateutil.relativedelta import relativedelta
 
-from payments import payables, services
+from payments import services
 from payments.exceptions import PaymentError
 from payments.forms import BankAccountForm, BankAccountUserRevokeForm, PaymentCreateForm
 from payments.models import BankAccount, Payment, PaymentUser
+from payments.payables import payables
 
 
 @method_decorator(login_required, name="dispatch")

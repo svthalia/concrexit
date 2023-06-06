@@ -217,18 +217,9 @@ isortcheck: .make/deps $(PYTHONFILES) ## Check if python imports are sorted
 blackcheck: .make/deps $(PYTHONFILES) ## Check if everything is formatted correctly
 	poetry run black $(BLACK_FLAGS) --check website
 
-.make/pylint: .make .make/deps $(PYTHONFILES)
-	poetry run pylint website
-	@touch .make/pylint
-
-.PHONY: pylint
-pylint: .make/pylint ## Check python code with pylint
-
-.make/pydocstyle: .make .make/deps $(PYTHONFILES)
-	poetry run pydocstyle --match-dir='(?!migrations).*' --add-ignore D100,D101,D102,D103,D104,D105,D106,D107 --add-select D212 website/
-
-.PHONY: pydocstyle
-pydocstyle: .make/pydocstyle
+.PHONY: ruff
+ruff: .make .make/deps $(PYTHONFILES) ## Check python linting with ruff.
+	poetry run ruff check website
 
 .make/check: .make .make/deps $(PYTHONFILES)
 	poetry run python website/manage.py check
@@ -305,13 +296,13 @@ graphs: ## Generate model graphs
 docker: .make/docker
 
 .PHONY: lint
-lint: blackcheck pylint pydocstyle ## Run all linters
+lint: isortcheck blackcheck ruff ## Run all linters
 
 .PHONY: test
 test: check templatecheck migrationcheck tests ## Run every kind of test
 
 .PHONY: ci
-ci: isortcheck blackcheck pydocstyle coverage doctest docs apidocscheck ## Do all the checks the GitHub Actions CI does
+ci: isortcheck blackcheck ruff coverage doctest docs apidocscheck ## Do all the checks the GitHub Actions CI does
 
 # Sometimes you don't want make to do the whole modification time checking thing
 # so this cleans up the whole repository and allows you to start over from

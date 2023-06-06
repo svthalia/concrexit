@@ -11,7 +11,7 @@ register = template.Library()
 BANNERDIR = "img/headers"
 
 
-@functools.lru_cache()
+@functools.lru_cache
 def _banners():
     """Get the available banners."""
     imgdir = finders.find(BANNERDIR)

@@ -242,7 +242,7 @@ class EventMessageView(FormView):
 if apps.is_installed("announcements"):
     from announcements.admin import EventAdmin as BaseEventAdmin
 else:
-    from events.admin import EventAdmin as BaseEventAdmin  # pylint: disable=C0412
+    from events.admin import EventAdmin as BaseEventAdmin
 
 
 class EventAdmin(BaseEventAdmin):

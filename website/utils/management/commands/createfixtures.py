@@ -1,6 +1,5 @@
 """Provides the command to generate fixtures."""
 
-# pylint: disable=too-many-statements,too-many-branches
 import math
 import random
 import string
@@ -269,7 +268,6 @@ class Command(BaseCommand):
         membership.group = group
 
         today = date.today()
-        month = timedelta(days=30)
         membership.since = _faker.date_time_between_dates(
             group.since, group.until
         ).date()

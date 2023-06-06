@@ -10,9 +10,9 @@ from django.utils import timezone
 from freezegun import freeze_time
 
 from members.models import Member
-from payments import payables
 from payments.exceptions import PaymentError
 from payments.models import BankAccount, Payment, PaymentUser
+from payments.payables import payables
 from payments.tests.__mocks__ import MockModel
 from payments.tests.test_services import MockPayable
 
@@ -264,9 +264,7 @@ class BankAccountRevokeViewTest(TestCase):
         self.assertEqual(404, response.status_code)
 
     def test_cannot_revoke_cannot_revoke(self):
-        """
-        If a bank account cannot be revoked, an error should be displayed.
-        """
+        """If a bank account cannot be revoked, an error should be displayed."""
         with patch(
             "payments.models.BankAccount.can_be_revoked", new_callable=mock.PropertyMock
         ) as can_be_revoked:
@@ -535,7 +533,7 @@ class PaymentProcessViewTest(TestCase):
 
     @mock.patch("django.contrib.messages.error")
     def test_tpay_not_allowed(self, messages_error):
-        with mock.patch("payments.Payable.tpay_allowed") as mock_tpay_allowed:
+        with mock.patch("payments.payables.Payable.tpay_allowed") as mock_tpay_allowed:
             mock_tpay_allowed.__get__ = mock.Mock(return_value=False)
 
             response = self.client.post(

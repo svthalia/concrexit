@@ -5,7 +5,6 @@ from moneybirdsynchronization.models import (
     financial_account_id_for_payment_type,
 )
 from moneybirdsynchronization.moneybird import get_moneybird_api_service
-
 from thaliawebsite import settings
 
 

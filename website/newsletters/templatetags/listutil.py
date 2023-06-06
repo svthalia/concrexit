@@ -160,7 +160,6 @@ register.filter(columns)
 
 
 def _test():
-    # pylint: disable=import-outside-toplevel
     import doctest
 
     doctest.testmod()

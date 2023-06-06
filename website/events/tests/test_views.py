@@ -83,28 +83,28 @@ class AdminTest(TestCase):
         self.assertEqual(200, response.status_code)
 
     def test_modeladmin_change_organiser_allowed(self):
-        """Change event as an organiser
+        """Change event as an organiser.
 
-        If I'm an organiser I should be allowed access
+        If I'm an organiser I should be allowed access.
         """
         MemberGroupMembership.objects.create(member=self.member, group=self.committee)
         response = self.client.get("/admin/events/event/1/change/")
         self.assertEqual(200, response.status_code)
 
     def test_modeladmin_change_override_organiser_allowed(self):
-        """Test the override organiser permission for changing events
+        """Test the override organiser permission for changing events.
 
-        If I'm allowed to override organiser restrictions..
+        If I'm allowed to override organiser restrictions.
         """
         self._add_override_organiser_permission()
         response = self.client.get("/admin/events/event/1/change/")
         self.assertEqual(200, response.status_code)
 
     def test_modeladmin_change_organiser_no_permissions_denied(self):
-        """Committee members without change permissions are banned
+        """Committee members without change permissions are banned.
 
         If I'm an organiser, but don't have perms I should not
-        be allowed access
+        be allowed access.
         """
         self._remove_event_permission()
         MemberGroupMembership.objects.create(member=self.member, group=self.committee)
@@ -553,7 +553,7 @@ class RegistrationTest(TestCase):
 
 @override_settings(SUSPEND_SIGNALS=True)
 class EventPageTest(TestCase):
-    """Tests for event list page"""
+    """Tests for event list page."""
 
     fixtures = ["members.json", "member_groups.json"]
 

@@ -8,13 +8,14 @@ from rest_framework.generics import ListAPIView, RetrieveAPIView, get_object_or_
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
 
-from payments import NotRegistered, payables, services
+from payments import services
 from payments.api.v2 import filters
 from payments.api.v2.serializers import PaymentSerializer
 from payments.api.v2.serializers.payable_detail import PayableSerializer
 from payments.api.v2.serializers.payment_user import PaymentUserSerializer
 from payments.exceptions import PaymentError
 from payments.models import Payment, PaymentUser
+from payments.payables import NotRegistered, payables
 from thaliawebsite.api.v2.permissions import IsAuthenticatedOrTokenHasScopeForMethod
 from thaliawebsite.api.v2.serializers import EmptySerializer
 

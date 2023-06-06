@@ -150,7 +150,6 @@ class MemberGroup(models.Model):
                 try:
                     return self.society.get_absolute_url()
                 except self.DoesNotExist:
-                    # pylint: disable=raise-missing-from
                     raise NotImplementedError(
                         f"get_absolute_url() not implemented for {self.__class__.__name__}"
                     )

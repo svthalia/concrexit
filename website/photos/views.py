@@ -32,7 +32,7 @@ class IndexView(LoginRequiredMixin, PagedView):
     def get_queryset(self):
         albums = Album.objects.filter(hidden=False).select_related("_cover")
         for key in self.keywords:
-            albums = albums.filter(**{"title__icontains": key})
+            albums = albums.filter(title__icontains=key)
         albums = get_annotated_accessible_albums(self.request, albums)
         albums = albums.order_by("-date")
 
