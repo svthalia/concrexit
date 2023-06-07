@@ -49,7 +49,7 @@ class EventFeed(ICalFeed):
         return item.title
 
     def item_description(self, item):
-        return f'{item.description} <a href="' f'{self.item_link(item)}">Website</a>'
+        return f'{item.description} <a href="{self.item_link(item)}">Website</a>'
 
     def item_start_datetime(self, item):
         return item.start

@@ -4,12 +4,11 @@ from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from moneybirdsynchronization.moneybird import get_moneybird_api_service
-
 from events.models import EventRegistration
 from members.models import Member
-from payments import payables
+from moneybirdsynchronization.moneybird import get_moneybird_api_service
 from payments.models import BankAccount, Payment
+from payments.payables import payables
 from pizzas.models import FoodOrder
 from registrations.models import Registration, Renewal
 from sales.models.order import Order
@@ -97,9 +96,9 @@ class MoneybirdContact(models.Model):
         if bank_account:
             data["contact"]["sepa_iban"] = bank_account.iban
             data["contact"]["sepa_bic"] = bank_account.bic or ""
-            data["contact"]["sepa_iban_account_name"] = (
-                f"{bank_account.initials} {bank_account.last_name}" or ""
-            )
+            data["contact"][
+                "sepa_iban_account_name"
+            ] = f"{bank_account.initials} {bank_account.last_name}"
             if bank_account.valid:
                 data["contact"]["sepa_active"] = True
                 data["contact"]["sepa_mandate_id"] = bank_account.mandate_no

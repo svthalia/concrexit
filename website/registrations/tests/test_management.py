@@ -8,9 +8,9 @@ from registrations.management.commands.minimiseregistrations import Command
 
 class ManagementMinimiseTest(TestCase):
     def test_add_argument(self):
-        mockParser = MagicMock()
-        Command().add_arguments(mockParser)
-        mockParser.add_argument.assert_called_with(
+        mock_parser = MagicMock()
+        Command().add_arguments(mock_parser)
+        mock_parser.add_argument.assert_called_with(
             "--dry-run",
             action="store_true",
             default=False,

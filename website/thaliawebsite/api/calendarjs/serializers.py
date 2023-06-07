@@ -1,3 +1,4 @@
+# ruff: noqa: N815
 from html import unescape
 
 from django.utils import timezone

@@ -1,7 +1,7 @@
 from django.template.defaultfilters import date
 from django.utils.functional import classproperty
 
-from payments import Payable, payables
+from payments.payables import Payable, payables
 from pizzas.models import FoodOrder
 from pizzas.services import can_change_order
 

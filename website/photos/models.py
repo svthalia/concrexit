@@ -214,7 +214,7 @@ class Album(models.Model):
     def access_token(self):
         """Return access token for album."""
         return hashlib.sha256(
-            f"{settings.SECRET_KEY}album{self.pk}".encode("utf-8")
+            f"{settings.SECRET_KEY}album{self.pk}".encode()
         ).hexdigest()
 
     class Meta:

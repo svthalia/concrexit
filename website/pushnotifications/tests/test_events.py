@@ -29,10 +29,7 @@ class TestEventNotifications(TestCase):
         payables.register()
 
     def test_create_event_and_update_registrations_start_reminder(self):
-        """Creating an event schedules a start reminder for the right users.
-
-        Creating, cancelling and deleting"""
-
+        """Creating an event schedules a start reminder for the right users."""
         with self.subTest("past event"):
             event = Event.objects.create(
                 title="Test event",
@@ -157,7 +154,6 @@ class TestEventNotifications(TestCase):
 
     def test_create_event_registration_reminder(self):
         """Creating an event that requires registration schedules registration reminder."""
-
         with self.subTest("past registration period"):
             event = Event.objects.create(
                 title="Test event",

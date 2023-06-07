@@ -1,9 +1,9 @@
 from django import template
 from django.db.models import Model
 
-from payments import payables
 from payments.exceptions import PaymentError
 from payments.models import PaymentUser
+from payments.payables import payables
 
 register = template.Library()
 

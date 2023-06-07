@@ -193,7 +193,7 @@ def revert_entry(user_id: int or None, entry: Entry) -> None:
     :param user_id: Id of the user executing this action
     :param entry: Entry that should be reverted
     """
-    if not (entry.status in [Entry.STATUS_ACCEPTED, Entry.STATUS_REJECTED]):
+    if entry.status not in [Entry.STATUS_ACCEPTED, Entry.STATUS_REJECTED]:
         return
 
     payment = entry.payment

@@ -5,8 +5,7 @@ from django.test import TestCase
 
 
 def create_models_test_class(classname):
-    """
-    Create the class for all the model __str__ tests.
+    """Create the class for all the model __str__ tests.
 
     This class is created dynamically with the type(name, bases, dict)
     function, it includes test functions to test all the models in the project.
@@ -19,8 +18,10 @@ def create_models_test_class(classname):
         """Create a test function that tests database model test_model."""
 
         def str_function_is_overwritten_for(self):
-            """Check if the test_model overrides __str__ by comparing the implementation to the super class version."""
+            """Check if the test_model overrides __str__.
 
+            Compares the implementation to the super class version.
+            """
             instance = test_model()
             try:
                 # the implemented __str__ method should be different from the
