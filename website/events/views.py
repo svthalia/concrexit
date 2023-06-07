@@ -88,7 +88,9 @@ class EventDetail(DetailView):
             "member", "member__profile"
         )
 
-        fetch_thumbnails_db([p.member.profile.photo for p in context["participants"]])
+        fetch_thumbnails_db(
+            [p.member.profile.photo for p in context["participants"] if p.member]
+        )
 
         return context
 

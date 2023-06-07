@@ -23,7 +23,6 @@ from members.models.profile import Profile
 class Command(OriginalCommand):
     # Copied from django/contrib/auth/management/commands/createsuperuser.py
     def handle(self, *args, **options):
-        # pylint: disable=C0209,R1702,R1720,W0707
         username = options[self.UserModel.USERNAME_FIELD]
         database = options["database"]
         user_data = {}

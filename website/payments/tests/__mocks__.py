@@ -2,7 +2,7 @@ from unittest.mock import MagicMock
 
 from django.utils.functional import classproperty
 
-from payments import Payable
+from payments.payables import Payable
 
 
 class MockManager:

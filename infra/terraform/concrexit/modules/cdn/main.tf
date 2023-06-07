@@ -7,7 +7,7 @@ data "aws_cloudfront_cache_policy" "caching_optimized" {
 }
 
 resource "aws_cloudfront_origin_access_control" "s3_access" {
-  name                              = "s3_access"
+  name                              = "${var.customer}-${var.stage}-concrexit-s3-access"
   origin_access_control_origin_type = "s3"
   signing_behavior                  = "always"
   signing_protocol                  = "sigv4"

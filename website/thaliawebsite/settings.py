@@ -46,8 +46,7 @@ def _set_django_env(env):
 
     This is a helper function for the doctests below because doctests cannot set global variables.
     """
-    # pylint: disable=global-statement
-    global DJANGO_ENV
+    global DJANGO_ENV  # noqa: PLW0603
     DJANGO_ENV = env
 
 
@@ -108,7 +107,6 @@ def from_env(
             DJANGO_ENV == "staging" and staging is _NOT_SET
         ):
             if production is _NOT_SET and os.environ.get("MANAGE_PY", "0") == "0":
-                # pylint: disable=raise-missing-from
                 raise Misconfiguration(
                     f"Environment variable `{name}` must be supplied in production"
                 )
@@ -126,7 +124,6 @@ def from_env(
             return development
         if DJANGO_ENV == "testing":
             return testing
-        # pylint: disable=raise-missing-from
         raise Misconfiguration(f"DJANGO_ENV set to unsupported value: {DJANGO_ENV}")
 
 
@@ -172,7 +169,7 @@ PROMO_PUBLISH_DATE_TIMEDELTA = timezone.timedelta(weeks=1)
 FACEDETECTION_REFERENCE_FACE_STORAGE_PERIOD_AFTER_DELETE_DAYS = 180
 
 # How many reference faces a user can have at the same time
-FACEDETECTION_MAX_NUM_REFERENCE_FACES = 2
+FACEDETECTION_MAX_NUM_REFERENCE_FACES = 5
 
 # ARN of the concrexit-facedetection-lambda function.
 # See https://github.com/svthalia/concrexit-facedetection-lambda.
@@ -222,7 +219,7 @@ ALLOWED_HOSTS = [
 INTERNAL_IPS = setting(development=["127.0.0.1", "172.17.0.1"], production=[])
 
 # https://django-compressor.readthedocs.io/en/stable/settings/#django.conf.settings.COMPRESS_OFFLINE
-COMPRESS_OFFLINE = setting(development=False, production=True)
+COMPRESS_OFFLINE = setting(development=False, production=False)
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = "/static/"
@@ -389,7 +386,7 @@ if FIREBASE_CREDENTIALS != {}:
 
     try:
         initialize_app(credential=credentials.Certificate(FIREBASE_CREDENTIALS))
-    except ValueError as e:
+    except ValueError:
         logger.error("Firebase application failed to initialise")
 
 ###############################################################################
@@ -442,8 +439,6 @@ if "SENTRY_DSN" in os.environ:
     import sentry_sdk
     from sentry_sdk.integrations.django import DjangoIntegration
 
-    # Pylint sees the faked init class that sentry uses for typing purposes
-    # pylint: disable=abstract-class-instantiated
     sentry_sdk.init(
         dsn=os.environ.get("SENTRY_DSN"),
         integrations=[DjangoIntegration()],
@@ -627,7 +622,7 @@ CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.db.DatabaseCache",
         "LOCATION": "django_default_db_cache",
-    }
+    },
 }
 
 WSGI_APPLICATION = "thaliawebsite.wsgi.application"

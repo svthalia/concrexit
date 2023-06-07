@@ -6,9 +6,10 @@ from django.utils import timezone
 
 from freezegun import freeze_time
 
-from payments import payables, services
+from payments import services
 from payments.exceptions import PaymentError
 from payments.models import BankAccount, Batch, Payment, PaymentUser
+from payments.payables import payables
 from payments.tests.__mocks__ import MockModel, MockPayable
 
 

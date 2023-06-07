@@ -9,9 +9,9 @@ from freezegun import freeze_time
 from rest_framework.test import APIClient
 
 from members.models import Member
-from payments import payables
 from payments.exceptions import PaymentError
 from payments.models import BankAccount, Payment, PaymentUser
+from payments.payables import payables
 from payments.tests.__mocks__ import MockModel, MockPayable
 
 
@@ -106,7 +106,7 @@ class PaymentProcessViewTest(TestCase):
         )
 
     @mock.patch("payments.services.create_payment")
-    @mock.patch("payments.payables.get_payable")
+    @mock.patch("payments.payables.payables.get_payable")
     def test_creates_payment(self, get_payable, create_payment):
         def set_payments_side_effect(*args, **kwargs):
             self.payable.model.payment = Payment.objects.create(amount=8)

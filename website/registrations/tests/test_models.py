@@ -49,7 +49,7 @@ class EntryTest(TestCase):
         entry = Entry(registration=self.registration)
         self.assertEqual(
             str(entry),
-            "{} {} ({})".format(  # pylint: disable=consider-using-f-string
+            "{} {} ({})".format(
                 self.registration.first_name,
                 self.registration.last_name,
                 self.registration.email,
@@ -59,7 +59,7 @@ class EntryTest(TestCase):
         entry = Entry(renewal=self.renewal)
         self.assertEqual(
             str(entry),
-            "{} {} ({})".format(  # pylint: disable=consider-using-f-string
+            "{} {} ({})".format(
                 self.member.first_name,
                 self.member.last_name,
                 self.member.email,
@@ -168,7 +168,7 @@ class RegistrationTest(TestCase):
     def test_str(self):
         self.assertEqual(
             str(self.registration),
-            "{} {} ({})".format(  # pylint: disable=consider-using-f-string
+            "{} {} ({})".format(
                 self.registration.first_name,
                 self.registration.last_name,
                 self.registration.email,
@@ -322,7 +322,7 @@ class RenewalTest(TestCase):
     def test_str(self):
         self.assertEqual(
             str(self.renewal),
-            "{} {} ({})".format(  # pylint: disable=consider-using-f-string
+            "{} {} ({})".format(
                 self.member.first_name,
                 self.member.last_name,
                 self.member.email,

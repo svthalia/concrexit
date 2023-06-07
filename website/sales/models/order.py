@@ -1,3 +1,4 @@
+import uuid
 from decimal import Decimal
 
 from django.conf import settings
@@ -13,7 +14,7 @@ from django.utils.translation import gettext_lazy as _
 from queryable_properties.managers import QueryablePropertiesManager
 from queryable_properties.properties import AnnotationProperty
 
-from members.models import Member, uuid
+from members.models import Member
 from payments.models import Payment, PaymentAmountField
 from sales.models.product import ProductListItem
 from sales.models.shift import Shift

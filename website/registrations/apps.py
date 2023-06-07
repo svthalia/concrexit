@@ -12,8 +12,7 @@ class RegistrationsConfig(AppConfig):
 
     def ready(self):
         """Import the signals when the app is ready."""
-        # pylint: disable=unused-import,import-outside-toplevel
-        from . import signals
+        from . import signals  # noqa: F401
         from .payables import register
 
         register()

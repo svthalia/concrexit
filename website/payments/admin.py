@@ -729,8 +729,7 @@ class PaymentUserAdmin(admin.ModelAdmin):
             changed = x.disallow_tpay()
             count += 1 if changed else 0
         messages.success(
-            request,
-            _(f"Succesfully disallowed Thalia Pay for {count} users."),
+            request, f"Succesfully disallowed Thalia Pay for {count} users."
         )
 
     disallow_thalia_pay.short_description = _("Disallow Thalia Pay for selected users")
@@ -740,10 +739,7 @@ class PaymentUserAdmin(admin.ModelAdmin):
         for x in queryset:
             changed = x.allow_tpay()
             count += 1 if changed else 0
-        messages.success(
-            request,
-            _(f"Succesfully allowed Thalia Pay for {count} users."),
-        )
+        messages.success(request, f"Succesfully allowed Thalia Pay for {count} users.")
 
     allow_thalia_pay.short_description = _("Allow Thalia Pay for selected users")
 

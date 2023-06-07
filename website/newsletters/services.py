@@ -61,7 +61,7 @@ def embed_linked_html_images(html_input):
             base64_image = base64.b64encode(buffer.getvalue()).decode("utf-8")
             encoded_image = "data:image/png;base64, " + base64_image
             output = output.replace(source, encoded_image)
-        except IOError:
+        except OSError:
             logger.warning(f"Image could not be found: {image}")
 
     return output

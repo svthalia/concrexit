@@ -10,7 +10,7 @@ import boto3
 from sentry_sdk import capture_exception
 
 from photos.models import Photo
-from utils.media.services import get_thumbnail_url
+from utils.media.services import get_media_url
 
 from .models import FaceDetectionPhoto, ReferenceFace
 
@@ -47,9 +47,8 @@ def _serialize_lambda_source(source: Union[ReferenceFace, FaceDetectionPhoto]):
             "type": "reference",
             "pk": source.pk,
             "token": source.token,
-            "photo_url": get_thumbnail_url(
+            "photo_url": get_media_url(
                 source.file,
-                "medium",
                 absolute_url=True,
                 # Lambda calls can be queued for up to 6 hours by default, so
                 # we make sure the url it uses is valid for at least that long.
@@ -61,9 +60,8 @@ def _serialize_lambda_source(source: Union[ReferenceFace, FaceDetectionPhoto]):
             "type": "photo",
             "pk": source.pk,
             "token": source.token,
-            "photo_url": get_thumbnail_url(
+            "photo_url": get_media_url(
                 source.photo.file,
-                "large",
                 absolute_url=True,
                 expire_seconds=60 * 60 * 7,
             ),
@@ -102,10 +100,8 @@ def _trigger_facedetection_lambda_batch(
         )
 
         if response["StatusCode"] != 202:
-            # pylint: disable=broad-exception-raised
             raise Exception("Lambda response was not 202.")
 
-    # pylint: disable=broad-exception-caught
     except Exception as e:
         logger.error(
             "Submitting sources to lambda failed. Reason: %s", str(e), exc_info=True

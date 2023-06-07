@@ -40,7 +40,6 @@ class TestFoodEventNotifications(TestCase):
 
     def test_create_food_event_schedules_notification(self):
         """Creating a food event schedules a notification with the right users."""
-
         with self.subTest("send_notification=True, registration not required"):
             food_event = FoodEvent.objects.create(
                 event=self.event,
@@ -113,7 +112,6 @@ class TestFoodEventNotifications(TestCase):
 
     def test_update_food_event(self):
         """Updating the event creates or deletes the notification."""
-
         food_event = FoodEvent.objects.create(
             event=self.event,
             send_notification=False,
@@ -143,7 +141,6 @@ class TestFoodEventNotifications(TestCase):
 
     def test_register_updates_message_users(self):
         """Registering for an event updates the notification users."""
-
         self.event.registration_start = self.time - timezone.timedelta(days=1)
         self.event.registration_end = self.time
         self.event.save()
@@ -171,7 +168,6 @@ class TestFoodEventNotifications(TestCase):
 
     def test_order_updates_message_users(self):
         """Ordering food updates the notification users."""
-
         food_event = FoodEvent.objects.create(
             event=self.event,
             send_notification=True,

@@ -59,7 +59,7 @@ def photo_card(photo):
     if photo.rotation > 0:
         class_name += f" rotate{photo.rotation}"
         anchor_attrs += (
-            f" data-options=" f'\'{{"slideClass": "rotate{photo.rotation}"}}\''
+            f""" data-options=\'{{"slideClass": "rotate{photo.rotation}"}}\'"""
         )
 
     return grid_item(

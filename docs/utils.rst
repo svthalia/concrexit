@@ -60,14 +60,6 @@ utils.snippets module
    :undoc-members:
    :show-inheritance:
 
-utils.threading module
-----------------------
-
-.. automodule:: utils.threading
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 utils.translation module
 ------------------------
 

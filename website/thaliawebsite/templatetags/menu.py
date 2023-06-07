@@ -10,7 +10,7 @@ register = template.Library()
 
 @cache
 def collect_menus():
-    categories = defaultdict(lambda: [])
+    categories = defaultdict(list)
     main_menu = []
 
     for app in apps.get_app_configs():
