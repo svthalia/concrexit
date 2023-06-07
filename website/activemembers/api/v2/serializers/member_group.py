@@ -72,3 +72,16 @@ class MemberGroupListSerializer(MemberGroupSerializer):
             "contact_address",
             "photo",
         )
+
+
+class MemberGroupShortSerializer(MemberGroupListSerializer):
+    class Meta:
+        model = MemberGroup
+        fields = (
+            "pk",
+            "name",
+            "type",
+            "since",
+            "until",
+            "contact_address",
+        )

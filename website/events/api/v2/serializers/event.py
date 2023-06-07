@@ -1,7 +1,10 @@
 from rest_framework import serializers
 from rest_framework.reverse import reverse
 
-from activemembers.api.v2.serializers.member_group import MemberGroupSerializer
+from activemembers.api.v2.serializers.member_group import (
+    MemberGroupSerializer,
+    MemberGroupShortSerializer,
+)
 from documents.api.v2.serializers.document import DocumentSerializer
 from events import services
 from events.api.v2.serializers.event_registration import EventRegistrationSerializer
@@ -123,34 +126,4 @@ class EventSerializer(CleanedModelSerializer):
 
 
 class EventListSerializer(EventSerializer):
-    class Meta:
-        model = Event
-        fields = (
-            "pk",
-            "slug",
-            "url",
-            "title",
-            "description",
-            "caption",
-            "start",
-            "end",
-            "category",
-            "registration_start",
-            "registration_end",
-            "cancel_deadline",
-            "optional_registrations",
-            "location",
-            "price",
-            "fine",
-            "num_participants",
-            "max_participants",
-            "no_registration_message",
-            "registration_status",
-            "cancel_too_late_message",
-            "has_fields",
-            "food_event",
-            "maps_url",
-            "user_permissions",
-            "user_registration",
-            "documents",
-        )
+    organisers = MemberGroupShortSerializer(many=True)
