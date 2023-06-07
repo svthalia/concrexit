@@ -31,7 +31,6 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 from django.urls import path, re_path
-from django.views.generic import RedirectView
 from django.views.i18n import JavaScriptCatalog
 
 import debug_toolbar
@@ -58,6 +57,7 @@ from thaliawebsite.views import (
     RateLimitedLoginView,
     RateLimitedPasswordResetView,
     TestCrashView,
+    admin_unauthorized_view,
 )
 from utils.media.views import private_media
 
@@ -80,7 +80,7 @@ THALIA_SITEMAP.update(singlepages_sitemap)
 urlpatterns = [
     path(
         "admin/login/",
-        RedirectView.as_view(url="/user/login", query_string=True),
+        admin_unauthorized_view,
         name="login-redirect",
     ),
     path("admin/", admin.site.urls),

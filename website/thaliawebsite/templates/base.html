@@ -181,12 +181,14 @@
                                 </a>
                             </li>
                             <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <a class="dropdown-item"
-                                   href="{% url 'admin:index' %}">
-                                    {% trans "Site administration" %}
-                                </a>
-                            </li>
+                            {% if user.is_staff %}
+                                <li>
+                                    <a class="dropdown-item"
+                                       href="{% url 'admin:index' %}">
+                                        {% trans "Site administration" %}
+                                    </a>
+                                </li>
+                            {% endif %}
                             <li>
                                 <a class="dropdown-item"
                                    href="{% url 'logout' %}">

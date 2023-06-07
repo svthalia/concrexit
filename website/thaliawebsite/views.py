@@ -2,7 +2,9 @@
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.views import LoginView, PasswordResetView
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse, HttpResponseForbidden
+from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, TemplateView
 from django.views.generic.base import View
@@ -70,3 +72,17 @@ class RateLimitedLoginView(LoginView):
 
 def rate_limited_view(request, *args, **kwargs):
     return HttpResponse("You are rate limited", status=429)
+
+
+def admin_unauthorized_view(request):
+    if not request.member:
+        url = "/user/login"
+        args = request.META.get("QUERY_STRING", "")
+        if args:
+            url = f"{url}?{args}"
+        return redirect(url)
+    elif not request.member.is_staff:
+        # user is logged in but not authorized
+        raise PermissionDenied("You are not allowed to access the administration page.")
+    else:
+        return redirect(request.GET.get("next", "/"))
