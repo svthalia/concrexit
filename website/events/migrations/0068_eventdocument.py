@@ -6,7 +6,7 @@ import django.db.models.deletion
 
 def populate_eventdocument(apps, schema_editor):
     EventDocument = apps.get_model("documents", "EventDocument")
-    NewEventDocument = apps.get_model("evetns", "EventDocument")
+    NewEventDocument = apps.get_model("events", "EventDocument")
     for event_document in EventDocument:
         NewEventDocument.objects.create(
             document_ptr=event_document.document_ptr, owner=event_document.owner
