@@ -27,7 +27,7 @@ class ThabloidConfig(AppConfig):
         from thabloid.models import ThabloidUser
         from thabloid.services import update_thabloid_blacklist_for_user
 
-        default_value = False
+        default_value = True
         if instance:
             default_value = ThabloidUser.objects.get(pk=instance.user.pk).wants_thabloid
 
