@@ -850,14 +850,14 @@ django-drf-filepond = ">=0.4.0"
 
 [[package]]
 name = "django-ical"
-version = "1.9.1"
+version = "1.9.2"
 description = "iCal feeds for Django based on Django's syndication feed framework."
 category = "main"
 optional = false
 python-versions = "*"
 files = [
-    {file = "django-ical-1.9.1.tar.gz", hash = "sha256:6b94d5c3cf2112ae4c6e42fe6391e5c083b9079c0e570797ed49d3471b5a4ec2"},
-    {file = "django_ical-1.9.1-py3-none-any.whl", hash = "sha256:b24ea828db1979529b1b719730fd049841f1f7a06f6a09e97df2425ec2b1e8bd"},
+    {file = "django-ical-1.9.2.tar.gz", hash = "sha256:44c9b6fa90d09f25e9ebaa91ed9eb007f079afbc23d6aac909cfc18188a8e90c"},
+    {file = "django_ical-1.9.2-py3-none-any.whl", hash = "sha256:74a16bca05735f91a00120cad7250f3c3aa292a9f698a6cfdc544a922c11de70"},
 ]
 
 [package.dependencies]
@@ -2986,4 +2986,4 @@ postgres = ["psycopg2"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "f5a78275a1e10121469632098f17dbcbf1f3bc58a1be711d24b3b5a757bf25ec"
+content-hash = "efa9bc2f98956e6a21f7eaa4e42b70c449dcd8c56764a712a2c24497b11f10a5"
