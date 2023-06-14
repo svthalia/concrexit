@@ -188,10 +188,7 @@ class UserAdmin(BaseUserAdmin):
 
     def email_csv_export(self, request, queryset):
         response = HttpResponse(content_type="text/csv")
-        response[
-            "Content-Disposition"
-        ] = 'attachment;\
-                                           filename="email.csv"'
+        response["Content-Disposition"] = 'attachment;filename="email.csv"'
         writer = csv.writer(response)
         writer.writerow([_("First name"), _("Last name"), _("Email")])
         for user in queryset:
