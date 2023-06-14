@@ -15,7 +15,7 @@ def announcements(request):
     announcements_list = [
         a
         for a in Announcement.objects.all()
-        if a.is_visible and a.pk not in closed_announcements
+        if a.is_visible and a.pk not in closed_announcements and not a.closeable
     ]
 
     # Announcements set by AnnouncementMiddleware.
