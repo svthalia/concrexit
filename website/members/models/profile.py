@@ -279,7 +279,7 @@ class Profile(models.Model):
         verbose_name=_("Only receive Thalia emails on G Suite-account"),
         help_text=_(
             "If you enable this option you will no longer receive "
-            "emails send to you by Thalia on your personal email "
+            "emails sent to you by Thalia on your personal email "
             "address. We will only use your G Suite email address."
         ),
         default=False,
