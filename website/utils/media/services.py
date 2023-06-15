@@ -97,13 +97,13 @@ def fetch_thumbnails_db(images, sizes=None):
     if sizes:
         thumbnails.filter(size__in=sizes)
 
-    for thumb in thumbnails:
-        source_name = thumb.source.name
-
+    for source_name, thumb_name, thumb_size in thumbnails.values_list(
+        "source__name", "name", "size"
+    ):
         thumbnails = image_dict[source_name].thumbnails
         if not thumbnails._thumbnails:
             thumbnails._thumbnails = {}
-        image_meta = ImageMeta(source_name, thumb.name, thumb.size)
-        thumbnails._thumbnails[thumb.size] = Thumbnail(
+        image_meta = ImageMeta(source_name, thumb_name, thumb_size)
+        thumbnails._thumbnails[thumb_size] = Thumbnail(
             image_meta, storage=thumbnails.storage
         )
