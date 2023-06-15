@@ -129,7 +129,6 @@ class MembersIndex(PagedView):
             .order_by("first_name")
             .select_related("profile")
         )
-        fetch_thumbnails_db([member.profile.photo for member in members])
         return members
 
     def get_context_data(self, **kwargs) -> dict:
@@ -141,6 +140,10 @@ class MembersIndex(PagedView):
                 "year_range": self.year_range,
                 "keywords": self.keywords,
             }
+        )
+
+        fetch_thumbnails_db(
+            [x.profile.photo for x in context["object_list"] if x.profile.photo]
         )
 
         return context

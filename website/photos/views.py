@@ -144,5 +144,11 @@ class LikedPhotoView(LoginRequiredMixin, PagedView):
             .select_properties("num_likes")
             .order_by("-album__date")
         )
-        fetch_thumbnails_db([p.file for p in photos])
         return photos
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        fetch_thumbnails_db([p.file for p in context["photos"]])
+
+        return context
