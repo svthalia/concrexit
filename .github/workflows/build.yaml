@@ -39,7 +39,7 @@ jobs:
             ghcr.io/svthalia/concrexit
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v4.1.0
+        uses: docker/build-push-action@v4.1.1
         with:
           context: ./
           file: ./infra/concrexit/Dockerfile
@@ -83,7 +83,7 @@ jobs:
             ghcr.io/svthalia/concrexit-nginx
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v4.1.0
+        uses: docker/build-push-action@v4.1.1
         with:
           context: ./infra/nginx
           push: true
