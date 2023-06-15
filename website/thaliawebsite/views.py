@@ -81,8 +81,7 @@ def admin_unauthorized_view(request):
         if args:
             url = f"{url}?{args}"
         return redirect(url)
-    elif not request.member.is_staff:
-        # user is logged in but not authorized
+    elif not request.member.is_staff and not request.member.is_superuser:
         raise PermissionDenied("You are not allowed to access the administration page.")
     else:
         return redirect(request.GET.get("next", "/"))
