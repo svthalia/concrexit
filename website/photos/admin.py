@@ -70,6 +70,18 @@ class AlbumAdmin(admin.ModelAdmin):
                 _("Full-sized photos will not be saved on the Thalia-website."),
             )
 
+    def get_deleted_objects(self, objs, request):
+        (
+            deleted_objects,
+            model_count,
+            perms_needed,
+            protected,
+        ) = super().get_deleted_objects(objs, request)
+
+        # Drop any missing delete permissions. If the user has `delete_album` permission,
+        # they should automatically be allowed to cascade e.g. related pushnotifications.
+        return deleted_objects, model_count, set(), protected
+
 
 class LikeInline(admin.StackedInline):
     model = Like
@@ -93,6 +105,16 @@ class PhotoAdmin(admin.ModelAdmin):
     inlines = [
         LikeInline,
     ]
+
+    def get_deleted_objects(self, objs, request):
+        (
+            deleted_objects,
+            model_count,
+            perms_needed,
+            protected,
+        ) = super().get_deleted_objects(objs, request)
+
+        return deleted_objects, model_count, set(), protected
 
     def save_model(self, request, obj, form, change):
         """Save new Photo."""
