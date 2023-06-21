@@ -11,12 +11,12 @@ def populate_eventdocument(apps, schema_editor):
         NewEventDocument.objects.create(
             document_ptr=event_document.document_ptr,
             owner=event_document.owner,
-            # For some reason, django INSERTs the existing Document row again (not only
-            # the new EventDocument row), but without the `created` field, as it's not
-            # actually creating a new Document. The DB doesn't allow this, as INSERT
-            # statements must specify all columns, and `created` is not nullable.
-            # So we can manually set created explicitly to solve this.
+            # For some reason we need to copy all fields, because
+            # Django uses an INSERT query on the Document table.
             created=event_document.created,
+            file=event_document.file,
+            members_only=event_document.members_only,
+            name=event_document.name,
         )
 
 
