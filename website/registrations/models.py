@@ -204,7 +204,7 @@ class Registration(Entry):
         max_length=30,
         validators=[
             RegexValidator(
-                regex=r"^[/@:;%_?\|]",
+                regex="^([^/@:;%_]*)$",
                 message=_(
                     "The first name should not contain special characters like '/' or '@'."
                 ),
@@ -217,9 +217,9 @@ class Registration(Entry):
         max_length=200,
         validators=[
             RegexValidator(
-                regex=r"^[/@:;%_?\|]",
+                regex="^([^/@:;%_]*)$",
                 message=_(
-                    "The first name should not contain special characters like '/' or '@'."
+                    "The last name should not contain special characters like '/' or '@'."
                 ),
             )
         ],
