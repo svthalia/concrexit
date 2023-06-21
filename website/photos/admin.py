@@ -69,6 +69,12 @@ class AlbumAdmin(admin.ModelAdmin):
                 messages.WARNING,
                 _("Full-sized photos will not be saved on the Thalia-website."),
             )
+            messages.add_message(
+                request,
+                messages.WARNING,
+                "Thumbnails have not yet been generated. The first time you visit the "
+                "album (both in the website and the app) will be slow. Please do so now.",
+            )
 
     def get_deleted_objects(self, objs, request):
         (
