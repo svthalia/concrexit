@@ -4,10 +4,9 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ("members", "0045_profile_receive_registration_confirmation"),
-        ("thabloid", "0008_thabloid_user_blacklistedthabloiduser")
+        ("members", "0046_alter_profile_email_gsuite_only"),
+        ("thabloid", "0008_thabloid_user_blacklistedthabloiduser"),
     ]
 
     operations = [
