@@ -1,9 +1,12 @@
 """Forms defined by the members package."""
 from django import forms
+from django.apps import apps
 from django.contrib.auth.forms import UserChangeForm as BaseUserChangeForm
 from django.contrib.auth.forms import UserCreationForm as BaseUserCreationForm
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
+
+from thabloid.models.thabloid_user import ThabloidUser
 
 from .models import Profile
 
@@ -30,7 +33,6 @@ class ProfileForm(forms.ModelForm):
             "photo",
             "receive_optin",
             "receive_newsletter",
-            "receive_magazine",
             "receive_registration_confirmation",
             "receive_oldmembers",
             "email_gsuite_only",
@@ -51,6 +53,31 @@ class ProfileForm(forms.ModelForm):
             self.fields["email_gsuite_only"].widget = self.fields[
                 "email_gsuite_only"
             ].hidden_widget()
+
+        self.render_app_specific_profile_form_fields()
+
+    def render_app_specific_profile_form_fields(self):
+        """Render app-specific profile form fields."""
+        for app in apps.get_app_configs():
+            if hasattr(app, "user_profile_form_fields"):
+                fields, _ = app.user_profile_form_fields(self.instance)
+                self.fields.update(fields)
+
+    def save(self, commit=True):
+        instance = super().save(commit)
+        if commit:
+            if self.cleaned_data["receive_thabloid"]:
+                ThabloidUser.objects.get(pk=instance.user.pk).allow_thabloid()
+            else:
+                ThabloidUser.objects.get(pk=instance.user.pk).disallow_thabloid()
+
+        # Save app-specific fields by calling the callback that was registered
+        for app in apps.get_app_configs():
+            if hasattr(app, "user_profile_form_fields"):
+                _, callback = app.user_profile_form_fields()
+                callback(self, instance, commit)
+
+        return instance
 
 
 class UserCreationForm(BaseUserCreationForm):

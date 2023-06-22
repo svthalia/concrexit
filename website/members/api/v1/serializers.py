@@ -129,7 +129,6 @@ class ProfileEditSerializer(CleanedModelSerializer):
             "display_name_preference",
             "receive_optin",
             "receive_newsletter",
-            "receive_magazine",
             "display_name",
             "avatar",
             "birthday",

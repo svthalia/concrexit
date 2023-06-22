@@ -37,6 +37,8 @@ We currently do not do this, but we should.
 The payments app is a good example of how this should be done: it implements a `PaymentUser` proxy model for the `Member` model that adds some functionality on users that is specific to the payments app.
 A `BlacklistedThaliaPayUser` model is also implemented, with a OneToOneField to the `PaymentUser` model. This is a good example of how we should implement separation.
 
+In order to allow other apps to add app-specific fields to the profile edit form (as needed e.g. to indicate whether users want to receive the thabloid), the members app checks for a `user_profile_form_fields(self.instance) -> dict, <save callback>` hook on other apps' `AppConfig`s. See `thabloid/apps.py` for an example.
+
 ## Privacy
 This app is one of the most important apps for privacy.
 It contains a lot of personal data, and we have to be careful with this.
