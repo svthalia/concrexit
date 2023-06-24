@@ -1,14 +1,12 @@
 {% extends 'admin/index.html' %}
-{% load i18n admin_urls static admin_modify compress %}
+{% load i18n admin_urls static sass_tags admin_modify %}
 
 {% block title %}{{ event.title }} | {{ site_title|default:_('Thalia site admin') }}{% endblock %}
 {% block opengraph_title %}{{ event.title }} | {{ site_title|default:_('Thalia site admin') }}{% endblock %}
 
 {% block extrastyle %}
     {{ block.super }}
-    {% compress css %}
-    <link href="{% static "events/css/admin.scss" %}" rel="stylesheet" type="text/x-scss">
-    {% endcompress %}
+    <link href="{% sass_src "events/css/admin.scss" %}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block extrahead %}

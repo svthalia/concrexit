@@ -1,9 +1,9 @@
 {% extends "admin/change_form.html" %}
-{% load i18n admin_urls static compress %}
+{% load i18n admin_urls sass_tags %}
 
 {% block extrastyle %}
     {{ block.super }}
-    {% compress css %}<link rel="stylesheet" type="text/x-scss" href="{% static 'admin/newsletters/css/forms.scss' %}" />{% endcompress %}
+    <link href="{% sass_src 'admin/newsletters/css/forms.scss' %}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block object-tools %}

@@ -1,5 +1,5 @@
 {% extends "simple_page.html" %}
-{% load i18n static compress %}
+{% load i18n static %}
 
 {% block title %}{% trans "Statistics" %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans "Statistics" %} — {{ block.super }}{% endblock %}
@@ -62,8 +62,6 @@
 
 {% block js_body %}
     {{ block.super }}
-    {% compress js %}
-        <script type="text/javascript" src="{% static 'members/js/chart.min.js' %}"></script>
-        <script type="text/javascript" src="{% static 'members/js/statistics.js' %}"></script>
-    {% endcompress %}
+    <script type="text/javascript" src="{% static 'members/js/chart.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'members/js/statistics.js' %}"></script>
 {% endblock %}

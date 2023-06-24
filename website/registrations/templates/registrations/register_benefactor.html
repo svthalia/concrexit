@@ -1,17 +1,14 @@
 {% extends "simple_page.html" %}
-{% load i18n static compress django_bootstrap5 %}
+{% load i18n static django_bootstrap5 %}
 
 {% block title %}{% trans "registration"|capfirst %} — {{ block.super }}{% endblock %}
 
 {% block js_body %}
     {{ block.super }}
-    <script type="text/javascript"
-            src="https://maps.googleapis.com/maps/api/js?key={{ google_api_key }}&libraries=places"></script>
-    {% compress js %}
-        <script type="text/javascript" src="{% static 'registrations/js/main.js' %}"></script>
-        <script type="text/javascript" src="{% static "payments/js/signature_pad.min.js" %}"></script>
-        <script type="text/javascript" src="{% static "payments/js/main.js" %}"></script>
-    {% endcompress %}
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{ google_api_key }}&libraries=places"></script>
+    <script type="text/javascript" src="{% static 'registrations/js/main.js' %}"></script>
+    <script type="text/javascript" src="{% static "payments/js/signature_pad.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "payments/js/main.js" %}"></script>
 {% endblock %}
 
 {% block page_title %}{% trans "registration" %} {% trans "Benefactor" %}{% endblock %}

@@ -1,5 +1,5 @@
 {% extends 'education/base.html' %}
-{% load i18n compress static %}
+{% load i18n static %}
 
 {% block title %}{% trans "Course overview" %} —
     {{ block.super }}{% endblock %}
@@ -99,10 +99,6 @@
 
 {% block js_body %}
     {{ block.super }}
-    {% compress js %}
-        <script type="text/javascript"
-                src="{% static 'js/mixitup.min.js' %}"></script>
-        <script type="text/javascript"
-                src="{% static 'education/js/main.js' %}"></script>
-    {% endcompress %}
+    <script type="text/javascript" src="{% static 'js/mixitup.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'education/js/main.js' %}"></script>
 {% endblock %}
