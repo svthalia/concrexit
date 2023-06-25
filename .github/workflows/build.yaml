@@ -5,6 +5,7 @@ on:
   push:
     branches: ['master']
     tags: ['v*']
+  workflow_dispatch:
 
 jobs:
   build-concrexit:
@@ -96,7 +97,9 @@ jobs:
 
   deploy-staging:
     name: Deploy to staging
-    if: github.ref == 'refs/heads/master'
+    if: | # Deploy to staging on push to master or workflow_dispatch
+      github.event_name == 'workflow_dispatch'
+      || (github.event_name == 'push' && github.ref == 'refs/heads/master')
     environment:
       name: staging
       url: https://staging.thalia.nu
