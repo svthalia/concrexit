@@ -99,7 +99,7 @@ PORT ?= 8000
 ifdef CI
 # These add to any existing POETRY_FLAGS variable, it doesn't replace existing
 # flags.
-	POETRY_FLAGS := $(POETRY_FLAGS) --no-interaction --extras postgres
+	POETRY_FLAGS := $(POETRY_FLAGS) --no-interaction --with postgres
 	BLACK_FLAGS := $(BLACK_FLAGS) --quiet
 	DOCKER_FLAGS := $(DOCKER_FLAGS) --quiet
 endif
@@ -259,7 +259,7 @@ covhtml: .coverage ## Generate an HTML coverage report
 	poetry run coverage html --directory=covhtml --no-skip-covered --title="Coverage Report"
 
 .make/docsdeps: .make .make/deps
-	poetry install $(POETRY_FLAGS) --extras "docs"
+	poetry install $(POETRY_FLAGS) --with docs
 	@touch .make/docsdeps
 
 .PHONY: apidocs
