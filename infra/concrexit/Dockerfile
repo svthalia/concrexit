@@ -2,7 +2,8 @@ FROM python:3.11-slim-bullseye AS base
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    DJANGO_ENV=production
+    DJANGO_ENV=production \
+    TZ=Europe/Amsterdam
 
 WORKDIR /app
 

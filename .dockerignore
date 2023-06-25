@@ -1,9 +1,12 @@
 website/media
 website/static
+website/filepond-temp-uploads
+website/filepond-uploaded
+website/static
 website/db.sqlite3
 
 **/Dockerfile
-README.md
+**/README.md
 docs
 
 .git
@@ -15,7 +18,7 @@ docs
 
 infra/terraform
 infra/env.*
-.env
+**/.env
 
 
 .codeclimate.yml
@@ -25,6 +28,6 @@ infra/env.*
 .mailmap
 renovate.json
 
-.DS_Store
-__pycache__
+**/.DS_Store
+**/__pycache__
 *.pyc
