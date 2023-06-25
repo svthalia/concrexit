@@ -6,7 +6,6 @@
 
 {% block css_head %}
     {{ block.super }}
-    {% comment %} TODO: SCSS per app is both imported in the main.scss, and included in html... We need only one of the 2. {% endcomment %}
     <link href="{% sass_src "documents/css/style.scss" %}" rel="stylesheet" type="text/css">
 {% endblock %}
 

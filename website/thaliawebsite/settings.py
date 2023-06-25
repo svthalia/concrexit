@@ -771,17 +771,6 @@ STATICFILES_STORAGE = setting(
     production=MANIFEST_STATICFILES_STORAGE,
 )
 
-# # Compressor settings
-# COMPRESS_ENABLED = True
-# COMPRESS_PRECOMPILERS = (("text/x-scss", "django_libsass.SassCompiler"),)
-# COMPRESS_FILTERS = {
-#     "css": [
-#         "compressor.filters.css_default.CssAbsoluteFilter",
-#         "compressor.filters.cssmin.rCSSMinFilter",
-#     ],
-#     "js": ["compressor.filters.jsmin.JSMinFilter"],
-# }
-
 # See utils/model/signals.py for explanation
 SUSPEND_SIGNALS = False
 
