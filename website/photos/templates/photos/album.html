@@ -1,5 +1,5 @@
 {% extends 'simple_page.html' %}
-{% load static i18n compress photos_cards %}
+{% load static i18n sass_tags photos_cards %}
 
 {% block title %}{{ album.title }} — {% trans "Photos" %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{{ album.title }} — {% trans "Photos" %} — {{ block.super }}{% endblock %}
@@ -42,16 +42,12 @@
 
 {% block css_head %}
     {{ block.super }}
-    {% compress css %}
-        <link href="{% static "photos/css/style.scss" %}" rel="stylesheet" type="text/x-scss">
-    {% endcompress %}
+    <link href="{% sass_src "photos/css/style.scss" %}" rel="stylesheet" type="text/css">
     <link href="{% static "css/fancybox.css" %}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block js_body %}
     {{ block.super }}
     <script src="{% static "js/fancybox.umd.js" %}"></script>
-    {% compress js %}
-        <script type="text/javascript" src="{% static "photos/js/main.js" %}"></script>
-    {% endcompress %}
+    <script type="text/javascript" src="{% static "photos/js/main.js" %}"></script>
 {% endblock %}

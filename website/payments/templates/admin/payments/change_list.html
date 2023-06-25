@@ -1,5 +1,5 @@
 {% extends "admin/change_list.html" %}
-{% load i18n admin_urls static compress %}
+{% load i18n admin_urls %}
 
 {% block object-tools-items %}
     {% if opts.model_name == "payment" or opts.model_name == "batch" %}

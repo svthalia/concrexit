@@ -1,5 +1,5 @@
 {% extends 'simple_page.html' %}
-{% load i18n static compress thabloid_cards %}
+{% load i18n static thabloid_cards %}
 
 {% block title %}{% trans "Thabloid" %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans "Thabloid" %} —
@@ -72,7 +72,5 @@
     {{ block.super }}
     <script src="{% static "js/fancybox.umd.js" %}"></script>
     <script type="text/javascript" src="{% static 'js/mixitup.min.js' %}"></script>
-    {% compress js %}
-        <script type="text/javascript" src="{% static 'thabloid/js/main.js' %}"></script>
-    {% endcompress %}
+    <script type="text/javascript" src="{% static 'thabloid/js/main.js' %}"></script>
 {% endblock %}

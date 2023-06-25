@@ -3,11 +3,9 @@
 chown -R appuser /volumes/static
 chown -R appuser /volumes/media
 
-MANAGE_PY=1 runuser -u appuser -- /venv/bin/python manage.py collectstatic --no-input
-MANAGE_PY=1 runuser -u appuser -- /venv/bin/python manage.py compress
-
-MANAGE_PY=1 runuser -u appuser -- /venv/bin/python manage.py migrate --no-input
-MANAGE_PY=1 runuser -u appuser -- /venv/bin/python manage.py createcachetable
+MANAGE_PY=1 runuser -u appuser -- ./manage.py collectstatic --no-input
+MANAGE_PY=1 runuser -u appuser -- ./manage.py migrate --no-input
+MANAGE_PY=1 runuser -u appuser -- ./manage.py createcachetable
 
 # Store all environment variables in /etc/environment for cron to use.
 printenv > /etc/environment

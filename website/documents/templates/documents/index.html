@@ -1,15 +1,12 @@
 {% extends 'base.html' %}
-{% load static i18n compress document_cards %}
+{% load sass_tags i18n document_cards %}
 
 {% block title %}Documents — {{ block.super }}{% endblock %}
 {% block opengraph_title %}Documents — {{ block.super }}{% endblock %}
 
 {% block css_head %}
     {{ block.super }}
-    {% compress css %}
-        <link href="{% static "documents/css/style.scss" %}" rel="stylesheet"
-              type="text/x-scss">
-    {% endcompress %}
+    <link href="{% sass_src "documents/css/style.scss" %}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block body %}

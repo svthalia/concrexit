@@ -218,9 +218,6 @@ ALLOWED_HOSTS = [
 # https://docs.djangoproject.com/en/dev/ref/settings/#internal-ips
 INTERNAL_IPS = setting(development=["127.0.0.1", "172.17.0.1"], production=[])
 
-# https://django-compressor.readthedocs.io/en/stable/settings/#django.conf.settings.COMPRESS_OFFLINE
-COMPRESS_OFFLINE = setting(development=False, production=False)
-
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = "/static/"
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-root
@@ -465,8 +462,8 @@ INSTALLED_APPS = [
     "tinymce",
     "rest_framework",
     "rest_framework.authtoken",
-    "compressor",
     "debug_toolbar",
+    "sass_processor",
     "admin_auto_filters",
     "django_drf_filepond",
     "django_filepond_widget",
@@ -758,9 +755,12 @@ LOCALE_PATHS = ("locale",)
 STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
-    # other finders
-    "compressor.finders.CompressorFinder",
+    "sass_processor.finders.CssFinder",
 )
+
+# Allow importing .scss files that don't start with an underscore.
+# See https://github.com/jrief/django-sass-processor
+SASS_PROCESSOR_INCLUDE_FILE_PATTERN = r"^.+\.scss$"
 
 NORMAL_STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 MANIFEST_STATICFILES_STORAGE = (
@@ -770,17 +770,6 @@ STATICFILES_STORAGE = setting(
     development=NORMAL_STATICFILES_STORAGE,
     production=MANIFEST_STATICFILES_STORAGE,
 )
-
-# Compressor settings
-COMPRESS_ENABLED = True
-COMPRESS_PRECOMPILERS = (("text/x-scss", "django_libsass.SassCompiler"),)
-COMPRESS_FILTERS = {
-    "css": [
-        "compressor.filters.css_default.CssAbsoluteFilter",
-        "compressor.filters.cssmin.rCSSMinFilter",
-    ],
-    "js": ["compressor.filters.jsmin.JSMinFilter"],
-}
 
 # See utils/model/signals.py for explanation
 SUSPEND_SIGNALS = False

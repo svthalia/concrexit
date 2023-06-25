@@ -79,7 +79,7 @@ jobs:
             ${{ runner.os }}-poetry-
 
       - name: Install any new dependencies
-        run: poetry install --extras "postgres"
+        run: poetry install --with postgres
         if: steps.cache.outputs.cache-hit != 'true'
 
       - name: Run tests
@@ -132,7 +132,7 @@ jobs:
             ${{ runner.os }}-poetry-
 
       - name: Install any new dependencies
-        run: poetry install --extras "postgres"
+        run: poetry install --with postgres
         if: steps.cache.outputs.cache-hit != 'true'
 
       - name: Run create fixtures

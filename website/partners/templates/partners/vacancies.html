@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n bleach_tags thumbnail partner_cards compress static %}
+{% load i18n bleach_tags thumbnail partner_cards static %}
 
 {% block title %}{% trans "Vacancies" %} — {% trans "Career" %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans "Vacancies" %} — {% trans "Career" %} — {{ block.super }}{% endblock %}
@@ -74,8 +74,6 @@
 {% block js_body %}
     {{ block.super }}
     <script src="{% static "js/fancybox.umd.js" %}"></script>
-    {% compress js %}
-        <script type="text/javascript" src="{% static 'js/mixitup.min.js' %}"></script>
-        <script type="text/javascript" src="{% static 'partners/js/main.js' %}"></script>
-    {% endcompress %}
+    <script type="text/javascript" src="{% static 'js/mixitup.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'partners/js/main.js' %}"></script>
 {% endblock %}
