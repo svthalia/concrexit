@@ -1,20 +1,30 @@
 website/media
 website/static
 website/db.sqlite3
-infra/modules
-scripts
 
 **/Dockerfile
 README.md
 docs
 
-# These files would not be copied, but increase the size of the build context
 .git
 .github
 .make
+.venv
+.vscode
+.ruff_cache
+
+infra/terraform
+infra/env.*
+.env
+
+
 .codeclimate.yml
 .coverage
 .gitattributes
 .gitignore
 .mailmap
 renovate.json
+
+.DS_Store
+__pycache__
+*.pyc
