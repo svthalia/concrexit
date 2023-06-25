@@ -4,7 +4,7 @@ from django.conf import settings
 from django.core import signing
 from django.core.files.storage import FileSystemStorage, get_storage_class
 
-from storages.backends.s3boto3 import S3Boto3Storage
+from storages.backends.s3boto3 import S3Boto3Storage, S3ManifestStaticStorage
 
 
 def get_public_storage():
@@ -69,6 +69,11 @@ class PrivateS3Storage(S3RenameMixin, S3Boto3Storage):
             ] = f'attachment; filename="{attachment}"'
 
         return super().url(name, params, expire=expire_seconds)
+
+
+class StaticS3Storage(S3ManifestStaticStorage):
+    location = settings.STATICFILES_LOCATION
+    object_parameters = {"CacheControl": "max-age=31536000"}
 
 
 class FileSystemRenameMixin:

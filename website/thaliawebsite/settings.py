@@ -218,11 +218,6 @@ ALLOWED_HOSTS = [
 # https://docs.djangoproject.com/en/dev/ref/settings/#internal-ips
 INTERNAL_IPS = setting(development=["127.0.0.1", "172.17.0.1"], production=[])
 
-# https://docs.djangoproject.com/en/dev/ref/settings/#static-url
-STATIC_URL = "/static/"
-# https://docs.djangoproject.com/en/dev/ref/settings/#static-root
-STATIC_ROOT = from_env("STATIC_ROOT", development=os.path.join(BASE_DIR, "static"))
-
 DJANGO_DRF_FILEPOND_UPLOAD_TMP = from_env(
     "DJANGO_DRF_FILEPOND_UPLOAD_TMP",
     development=os.path.join(BASE_DIR, "filepond-temp-uploads"),
@@ -253,21 +248,25 @@ DJANGO_DRF_FILEPOND_PERMISSION_CLASSES = {
     ],
 }
 
-# https://docs.djangoproject.com/en/dev/ref/settings/#media-url
-MEDIA_URL = "/media/private/"
+# https://docs.djangoproject.com/en/dev/ref/settings/#static-root
+STATIC_ROOT = from_env("STATIC_ROOT", development=os.path.join(BASE_DIR, "static"))
+
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-root
 MEDIA_ROOT = from_env("MEDIA_ROOT", development=os.path.join(BASE_DIR, "media"))
 
+# https://github.com/johnsensible/django-sendfile#nginx-backend
+SENDFILE_URL = "/media/sendfile/"
+SENDFILE_ROOT = MEDIA_ROOT
 SENDFILE_BACKEND = setting(
     development="django_sendfile.backends.development",
     production="django_sendfile.backends.nginx",
 )
-# https://github.com/johnsensible/django-sendfile#nginx-backend
-SENDFILE_URL = "/media/sendfile/"
-SENDFILE_ROOT = MEDIA_ROOT
 
 PRIVATE_MEDIA_LOCATION = ""
 PUBLIC_MEDIA_LOCATION = "public"
+STATICFILES_LOCATION = "static"
+
+MEDIA_URL = "/media/private/"
 
 AWS_ACCESS_KEY_ID = from_env("AWS_ACCESS_KEY_ID", production=None)
 AWS_SECRET_ACCESS_KEY = from_env("AWS_SECRET_ACCESS_KEY", production=None)
@@ -283,13 +282,25 @@ if AWS_STORAGE_BUCKET_NAME is not None:
     AWS_CLOUDFRONT_KEY_ID = os.environ.get("AWS_CLOUDFRONT_KEY_ID", None)
     AWS_S3_CUSTOM_DOMAIN = os.environ.get("AWS_CLOUDFRONT_DOMAIN", None)
 
+    STATICFILES_STORAGE = "thaliawebsite.storage.backend.StaticS3Storage"
+    STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/"
+
     DEFAULT_FILE_STORAGE = "thaliawebsite.storage.backend.PrivateS3Storage"
+
     PUBLIC_FILE_STORAGE = "thaliawebsite.storage.backend.PublicS3Storage"
     PUBLIC_MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/"
 else:
+    STATICFILES_STORAGE = setting(
+        development="django.contrib.staticfiles.storage.StaticFilesStorage",
+        production="django.contrib.staticfiles.storage.ManifestStaticFilesStorage",
+    )
+    STATIC_URL = "/static/"
+
     DEFAULT_FILE_STORAGE = "thaliawebsite.storage.backend.PrivateFileSystemStorage"
+
     PUBLIC_FILE_STORAGE = "thaliawebsite.storage.backend.PublicFileSystemStorage"
     PUBLIC_MEDIA_URL = "/media/public/"
+
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#conn-max-age
 CONN_MAX_AGE = int(from_env("CONN_MAX_AGE", development="0", production="60"))
@@ -761,15 +772,6 @@ STATICFILES_FINDERS = (
 # Allow importing .scss files that don't start with an underscore.
 # See https://github.com/jrief/django-sass-processor
 SASS_PROCESSOR_INCLUDE_FILE_PATTERN = r"^.+\.scss$"
-
-NORMAL_STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
-MANIFEST_STATICFILES_STORAGE = (
-    "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
-)
-STATICFILES_STORAGE = setting(
-    development=NORMAL_STATICFILES_STORAGE,
-    production=MANIFEST_STATICFILES_STORAGE,
-)
 
 # See utils/model/signals.py for explanation
 SUSPEND_SIGNALS = False

@@ -51,6 +51,17 @@ resource "aws_cloudfront_distribution" "this" {
     cache_policy_id = data.aws_cloudfront_cache_policy.caching_optimized.id
   }
 
+  ordered_cache_behavior {
+    path_pattern           = "/static/*"
+    target_origin_id       = "s3_bucket"
+    viewer_protocol_policy = "redirect-to-https"
+    allowed_methods        = ["GET", "HEAD", "OPTIONS"]
+    cached_methods         = ["GET", "HEAD"]
+    compress               = true
+
+    cache_policy_id = data.aws_cloudfront_cache_policy.caching_optimized.id
+  }
+
   viewer_certificate {
     acm_certificate_arn      = module.acm.acm_certificate_arn
     ssl_support_method       = "sni-only"
