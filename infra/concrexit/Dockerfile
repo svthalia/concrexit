@@ -8,7 +8,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 WORKDIR /app
 
 
-FROM base as build-final
+FROM base as build-venv
 # This stage installs the dependencies that need to be installed in the final image.
 
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
@@ -29,7 +29,7 @@ COPY pyproject.toml poetry.lock ./
 RUN poetry install --only main --only postgres
 
 
-FROM build-final as build-scss
+FROM build-venv as build-scss
 # This stage builds the SASS, using dependencies that are not needed in the final image.
 
 RUN poetry install --only main --only postgres --only scss
@@ -63,7 +63,7 @@ RUN crontab /cronjobs && rm /cronjobs
 COPY infra/concrexit/docker-entrypoint.sh /app/docker-entrypoint.sh
 CMD [ "/app/docker-entrypoint.sh" ]
 
-COPY --from=build-final /venv /venv
+COPY --from=build-venv /venv /venv
 COPY --from=build-scss /app/website /app/website
 WORKDIR /app/website
 
