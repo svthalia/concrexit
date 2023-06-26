@@ -13,6 +13,28 @@ resource "aws_cloudfront_origin_access_control" "s3_access" {
   signing_protocol                  = "sigv4"
 }
 
+resource "aws_cloudfront_response_headers_policy" "static_cors_headers" {
+  name = "${var.customer}-${var.stage}-static-cors-headers-policy"
+
+  cors_config {
+    origin_override                  = true
+    access_control_allow_credentials = false
+    access_control_max_age_sec       = 600
+
+    access_control_allow_headers {
+      items = ["*"]
+    }
+
+    access_control_allow_methods {
+      items = ["ALL"]
+    }
+
+    access_control_allow_origins {
+      items = ["*"]
+    }
+  }
+}
+
 resource "aws_cloudfront_distribution" "this" {
   aliases = [var.webdomain]
 
@@ -59,7 +81,8 @@ resource "aws_cloudfront_distribution" "this" {
     cached_methods         = ["GET", "HEAD"]
     compress               = true
 
-    cache_policy_id = data.aws_cloudfront_cache_policy.caching_optimized.id
+    cache_policy_id            = data.aws_cloudfront_cache_policy.caching_optimized.id
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.static_cors_headers.id
   }
 
   viewer_certificate {
