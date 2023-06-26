@@ -1,24 +1,21 @@
 """Get a random header image."""
-import functools
-import os
 import random
 
 from django import template
-from django.conf import settings
-from django.contrib.staticfiles import finders
+from django.contrib.staticfiles.storage import staticfiles_storage
 
 register = template.Library()
-BANNERDIR = "img/headers"
 
-
-@functools.lru_cache
-def _banners():
-    """Get the available banners."""
-    imgdir = finders.find(BANNERDIR)
-    return [pic for pic in os.listdir(imgdir) if pic.endswith(".jpg")]
+HEADERS = [
+    "img/headers/banner_default.jpg",
+    "img/headers/banner2.jpg",
+    "img/headers/banner4.jpg",
+    "img/headers/banner5.jpg",
+    "img/headers/banner6.jpg",
+]
 
 
 @register.simple_tag
 def pick_header_image():
     """Render a random header image."""
-    return settings.STATIC_URL + BANNERDIR + "/" + random.choice(_banners())
+    return staticfiles_storage.url(random.choice(HEADERS))
