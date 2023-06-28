@@ -19,6 +19,7 @@ urlpatterns = [
     path("", include("pizzas.api.v2.urls")),
     path("", include("pushnotifications.api.v2.urls")),
     path("", include("sales.api.v2.urls")),
+    path("", include("facedetection.api.v2.urls")),
     path(
         "schema",
         get_schema_view(
