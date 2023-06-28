@@ -68,3 +68,44 @@ def render_main_menu(context):
         item["active"] = active
 
     return {"menu": main_menu, "request": context.get("request")}
+
+
+@cache
+def collect_usermenu():
+    sections = defaultdict(list)
+
+    for app in apps.get_app_configs():
+        if hasattr(app, "user_menu_items"):
+            menu = app.user_menu_items()
+            if "sections" in menu:
+                for section in menu["sections"]:
+                    assert "key" in section
+                    if section["name"] not in sections:
+                        sections[section["name"]] = {"items": [], **section}
+
+            for item in menu["items"]:
+                assert "url" in item, item
+                assert item["section"] in sections
+                sections[item["section"]]["items"].append(item)
+
+    sections = sections.values()
+    for section in sections:
+        submenu = sorted(section["items"], key=lambda x: (x["key"], x["title"]))
+        section["submenu"] = submenu
+
+    return sorted(sections, key=lambda x: (x["key"], x["name"]))
+
+
+@register.inclusion_tag("menu/usermenu.html", takes_context=True)
+def render_user_menu(context):
+    path = None
+    if "request" in context:
+        path = context.get("request").path
+
+    user_menu = collect_usermenu()
+
+    for section in user_menu:
+        for item in section["submenu"]:
+            item["active"] = item["url"] == path
+
+    return {"menu": user_menu, "request": context.get("request")}
