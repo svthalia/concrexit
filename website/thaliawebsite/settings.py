@@ -800,6 +800,8 @@ OAUTH2_PROVIDER = {
         "events:read": "Read access to events and your event registrations",
         "events:register": "Write access to the state of your event registrations",
         "events:admin": "Admin access to the events",
+        "facedetection:read": "Read access to facedetection",
+        "facedetection:write": "Write access to facedetection",
         "food:read": "Read access to food events",
         "food:order": "Order access to food events",
         "food:admin": "Admin access to food events",
