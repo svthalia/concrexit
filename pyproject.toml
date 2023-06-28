@@ -43,7 +43,7 @@ freezegun = "1.2.2"
 # These dependencies are only needed to compile SASS, which can be done
 # offline during a build. So these are not needed in production.
 django-libsass = "0.8.0"
-django-compressor = "4.3.1"
+django-compressor = "4.4"
 
 [tool.poetry.group.postgres]
 optional = true
