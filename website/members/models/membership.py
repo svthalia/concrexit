@@ -68,16 +68,26 @@ class Membership(models.Model):
 
         errors = {}
         if self.until and (not self.since or self.until < self.since):
-            raise ValidationError({"until": _("End date can't be before start date")})
+            raise ValidationError({"until": _("End date can't be before start date.")})
 
-        if self.since is not None:
-            memberships = self.user.membership_set.all()
-            if overlaps(self, memberships):
+        memberships = self.user.membership_set.all()
+        if overlaps(self, memberships):
+            errors.update(
+                {
+                    "since": _("A membership already exists for that period."),
+                    "until": _("A membership already exists for that period."),
+                }
+            )
+
+        if self.type == self.HONORARY:
+            if self.until is not None:
                 errors.update(
-                    {
-                        "since": _("A membership already exists for that period"),
-                        "until": _("A membership already exists for that period"),
-                    }
+                    {"until": _("An honorary membership can't have an end date.")}
+                )
+        else:
+            if self.until is None:
+                errors.update(
+                    {"until": _("A non-honorary membership must have an end date.")}
                 )
 
         if errors:
