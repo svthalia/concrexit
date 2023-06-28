@@ -14,41 +14,94 @@ from utils.snippets import send_email
 logger = logging.getLogger(__name__)
 
 
-def send_membership_announcement(dry_run=False):
-    """Send an email to all members with a never ending membership excluding honorary members.
-
-    :param dry_run: does not really send emails if True
-    """
+def send_membership_check(dry_run=False):
     members = (
-        Member.current_members.filter(membership__since__lt=timezone.now())
-        .filter(membership__until__isnull=True)
-        .exclude(membership__type=Membership.HONORARY)
+        Member.current_members.filter(membership__study_long_member=True)
         .exclude(email="")
         .distinct()
     )
-
     with mail.get_connection() as connection:
         for member in members:
             logger.info("Sent email to %s (%s)", member.get_full_name(), member.email)
             if not dry_run:
-                send_email(
-                    to=[member.email],
-                    subject="Membership announcement",
-                    txt_template="members/email/membership_announcement.txt",
-                    html_template="members/email/membership_announcement.html",
-                    context={"name": member.get_full_name()},
-                    connection=connection,
+                expiry_date = timezone.now() + timedelta(days=31)
+                members = (
+                    Member.current_members.filter(membership__until__lte=expiry_date)
+                    .exclude(membership__study_long_member=False)
+                    .exclude(email="")
+                    .distinct()
                 )
 
-        if not dry_run:
-            send_email(
-                to=[settings.BOARD_NOTIFICATION_ADDRESS],
-                subject="Membership announcement sent",
-                txt_template="members/email/membership_announcement_notification.txt",
-                html_template="members/email/membership_announcement_notification.html",
-                context={"members": members},
-                connection=connection,
-            )
+                with mail.get_connection() as connection:
+                    for member in members:
+                        logger.info(
+                            "Sent email to %s (%s)",
+                            member.get_full_name(),
+                            member.email,
+                        )
+                        if not dry_run:
+                            send_email(
+                                to=[member.email],
+                                subject="Membership expiration announcement",
+                                txt_template="members/email/expiration_announcement.txt",
+                                html_template="members/email/expiration_announcement.html",
+                                connection=connection,
+                                context={
+                                    "name": member.get_full_name(),
+                                    "membership_price": floatformat(
+                                        settings.MEMBERSHIP_PRICES["year"], 2
+                                    ),
+                                    "renewal_url": settings.BASE_URL
+                                    + reverse("registrations:renew"),
+                                },
+                            )
+
+                    if not dry_run:
+                        send_email(
+                            to=[settings.BOARD_NOTIFICATION_ADDRESS],
+                            subject="Membership expiration announcement sent",
+                            txt_template="members/email/expiration_announcement_notification.txt",
+                            html_template="members/email/expiration_announcement_notification.html",
+                            connection=connection,
+                            context={"members": members},
+                        )
+
+
+# def send_membership_announcement(dry_run=False):
+#     """Send an email to all members with a never ending membership excluding honorary members.
+
+#     :param dry_run: does not really send emails if True
+#     """
+#     members = (
+#         Member.current_members.filter(membership__since__lt=timezone.now())
+#         .filter(membership__study_long_member=False)
+#         .exclude(membership__type=Membership.HONORARY)
+#         .exclude(email="")
+#         .distinct()
+#     )
+
+#     with mail.get_connection() as connection:
+#         for member in members:
+#             logger.info("Sent email to %s (%s)", member.get_full_name(), member.email)
+#             if not dry_run:
+#                 send_email(
+#                     to=[member.email],
+#                     subject="Membership announcement",
+#                     txt_template="members/email/membership_announcement.txt",
+#                     html_template="members/email/membership_announcement.html",
+#                     context={"name": member.get_full_name()},
+#                     connection=connection,
+#                 )
+
+#         if not dry_run:
+#             send_email(
+#                 to=[settings.BOARD_NOTIFICATION_ADDRESS],
+#                 subject="Membership announcement sent",
+#                 txt_template="members/email/membership_announcement_notification.txt",
+#                 html_template="members/email/membership_announcement_notification.html",
+#                 context={"members": members},
+#                 connection=connection,
+#             )
 
 
 def send_information_request(dry_run=False):
@@ -109,7 +162,7 @@ def send_expiration_announcement(dry_run=False):
     expiry_date = timezone.now() + timedelta(days=31)
     members = (
         Member.current_members.filter(membership__until__lte=expiry_date)
-        .exclude(membership__until__isnull=True)
+        .exclude(membership__study_long_member=True)
         .exclude(email="")
         .distinct()
     )

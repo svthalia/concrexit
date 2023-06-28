@@ -303,6 +303,25 @@ class RenewalFormView(FormView):
 
 
 @method_decorator(login_required, name="dispatch")
+class NewYearForStudylong(FormView):
+    template_name = "registrations/get_a_extra_year.html"
+
+    def get_form(self):
+        form_class = forms.NewYearForm
+        form = super().get_form(form_class)
+        member = self.request.member
+        if member is not None and member.current_membership.study_long_member:
+            latest_membership = member.latest_membership
+            # If latest membership has not ended or does not ends
+            # within 1 month: do not show 'year' length and disable benefactor option
+            # if((latest_membership.until - timezone.now().date()).days <= 31):
+            return form
+
+    def form_valid(self, form):
+        newYear = form.save()
+
+
+@method_decorator(login_required, name="dispatch")
 @method_decorator(membership_required, name="dispatch")
 class ReferenceCreateView(CreateView):
     """View that renders a reference creation form."""

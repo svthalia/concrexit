@@ -312,11 +312,13 @@ def _create_membership_from_entry(
     """
     lecture_year = datetime_to_lectureyear(timezone.now())
     since = calculate_membership_since()
-    until = None
+    member_all_study = False
     if timezone.now().month == 8:
         lecture_year += 1
+    until = timezone.datetime(year=lecture_year + 1, month=9, day=1).date()
 
     if entry.length == Entry.MEMBERSHIP_STUDY:
+        member_all_study = True
         try:
             renewal = entry.renewal
             member = renewal.member
@@ -328,12 +330,10 @@ def _create_membership_from_entry(
             # and no new membership is needed.
             # The rules for this behaviour are taken from the HR
             if membership is not None:
-                if membership.until is None:
-                    raise ValueError(
-                        "This member already has a never ending membership"
-                    )
+                if membership.study_long_member:
+                    raise ValueError("This member already has a study long membership")
+
                 if entry.created_at.date() < membership.until:
-                    membership.until = None
                     membership.save()
                     return membership
         except Renewal.DoesNotExist:
@@ -345,17 +345,18 @@ def _create_membership_from_entry(
             member = entry.renewal.member
             membership = member.current_membership
             if membership is not None:
-                if membership.until is None:
-                    raise ValueError(
-                        "This member already has a never ending membership"
-                    )
+                if membership.study_long_member:
+                    raise ValueError("This member already has a study long membership")
                 since = membership.until
         except Renewal.DoesNotExist:
             pass
-        until = timezone.datetime(year=lecture_year + 1, month=9, day=1).date()
 
     return Membership.objects.create(
-        user=member, since=since, until=until, type=entry.membership_type
+        user=member,
+        since=since,
+        study_long_member=member_all_study,
+        until=until,
+        type=entry.membership_type,
     )
 
 

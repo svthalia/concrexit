@@ -1,0 +1,35 @@
+{% extends "simple_page.html" %}
+{% load i18n django_bootstrap5 alert compress static %}
+
+{% block title %}{% trans "renewal"|capfirst %} — {{ block.super }}{% endblock %}
+
+{% block js_body %}
+    {{ block.super }}
+        <script type="text/javascript"
+                src="{% static 'registrations/js/main.js' %}"></script>
+{% endblock %}
+
+{% block page_title %}{% trans "Additional thalia year" %}{% endblock %}
+
+{% block page_content %}
+    {% if current_membership.until is None %}
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <fieldset>
+                {% bootstrap_field form.privacy_policy %}
+                <p>By pressing the following button, you are confirming that you are
+                    still studying computing science or software science at Radboud.
+                </p>
+                {% bootstrap_field form.extension%}
+            </fieldset>
+            <input type="submit" value="{% trans 'send'|capfirst %}"
+            class="btn btn-primary float-end"/>
+        </form>
+    {% else %}
+        {% blocktrans trimmed %}
+            This is not the page for renewal of your
+            account since you do not have a study long membership.
+            Please visit the appropriate page.
+        {% endblocktrans %}
+    {% endif %}
+{% endblock %}

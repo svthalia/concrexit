@@ -37,6 +37,14 @@ class Membership(models.Model):
         default=timezone.now,
     )
 
+    study_long_member = models.BooleanField(
+        verbose_name=("Membership for study"),
+        help_text=(
+            "Indicates whether the member should have a membership for entire study."
+        ),
+        default=False,
+    )
+
     until = models.DateField(
         verbose_name=_("Membership until"),
         help_text=_("The date the member stops holding this membership."),

@@ -8,6 +8,7 @@ from .views import (
     ConfirmEmailView,
     EntryAdminView,
     MemberRegistrationFormView,
+    NewYearForStudylong,
     ReferenceCreateView,
     RenewalFormView,
 )
@@ -47,6 +48,7 @@ urlpatterns = [
         include(
             [
                 path("", RenewalFormView.as_view(), name="renew"),
+                path("renew/studylong/", NewYearForStudylong.as_view(), name="newYear"),
                 path(
                     "renew/success/",
                     TemplateView.as_view(

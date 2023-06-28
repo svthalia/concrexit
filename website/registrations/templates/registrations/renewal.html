@@ -117,14 +117,14 @@
                         reviewed.
                     {% endblocktrans %}
                 </p>
-            {% elif latest_membership is None %}
+            <!-- {% elif latest_membership is None %}
                 <p>
                     {% blocktrans trimmed %}
                         We do not have any previous memberships in our system.
                         Contact the board to renew your
                         membership.
                     {% endblocktrans %}
-                </p>
+                </p> -->
             {% elif latest_membership.type == 'honorary' %}
                 <p>
                     {% blocktrans trimmed %}
@@ -132,15 +132,13 @@
                         have to renew your membership.
                     {% endblocktrans %}
                 </p>
-            {% elif latest_membership.until is None %}
-                <p>
-                    {% blocktrans trimmed %}
-                        You currently have an active membership for your entire
-                        study duration. Did you graduate or stop with your
-                        studies for some other reason? Please let us know by
-                        sending an email to info@thalia.nu.
-                    {% endblocktrans %}
-                </p>
+            {% elif latest_membership.study_long_member %}
+                {% blocktrans trimmed %}
+                    Since you have a study lasting membership,
+                    you might need to confirm you are still studying at Radboud.
+                    If so you will have an email with all the required
+                    information and you can leave this page.
+                {% endblocktrans %}
             {% else %}
                 {% for error in form.errors.items %}
                     {% for message in error.1 %}
