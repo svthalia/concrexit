@@ -111,6 +111,9 @@ class Member(User):
     @property
     def latest_membership(self):
         """Get the most recent membership of this user."""
+        if hasattr(self, "_latest_membership"):
+            return self._latest_membership[0]
+
         if not self.membership_set.exists():
             return None
         return self.membership_set.latest("since")
