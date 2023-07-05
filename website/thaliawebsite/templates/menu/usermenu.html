@@ -1,6 +1,6 @@
 <div class="navbar-user order-1 d-flex">
     <div class="btn-group dropdown">
-        {% if not request.user.is_authenticated %}
+        {% if not authenticated %}
             <a href="{% url 'login' %}" class="btn btn-primary" title="Login"><i aria-hidden="true" class="fas fa-user"></i></a>
         {% else %}
             <button type="button"

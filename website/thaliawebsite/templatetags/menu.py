@@ -99,9 +99,11 @@ def collect_usermenu():
 
 @register.inclusion_tag("menu/usermenu.html", takes_context=True)
 def render_user_menu(context):
-    path = None
-    if "request" in context:
-        path = context.get("request").path
+    if "request" not in context or not context["request"].user.is_authenticated:
+        return {"authenticated": False}
+
+    request = context.get("request")
+    path = request.path
 
     user_menu = collect_usermenu()
 
@@ -109,7 +111,7 @@ def render_user_menu(context):
         # Create filtered copy of items that only shows 'enabled' items
         section["submenu"] = list(
             filter(
-                lambda item: "show" not in item or item["show"](context.get("request")),
+                lambda item: "show" not in item or item["show"](request),
                 section["items"],
             )
         )
@@ -121,4 +123,4 @@ def render_user_menu(context):
     # Hide sections with no shown items
     user_menu = filter(lambda section: len(section["submenu"]) > 0, user_menu)
 
-    return {"menu": user_menu, "request": context.get("request")}
+    return {"menu": user_menu, "request": request, "authenticated": True}
