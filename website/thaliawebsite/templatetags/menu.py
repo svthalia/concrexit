@@ -90,8 +90,9 @@ def collect_usermenu():
 
     sections = sections.values()
     for section in sections:
-        submenu = sorted(section["items"], key=lambda x: (x["key"], x["title"]))
-        section["submenu"] = submenu
+        section["items"] = sorted(
+            section["items"], key=lambda x: (x["key"], x["title"])
+        )
 
     return sorted(sections, key=lambda x: (x["key"], x["name"]))
 
@@ -105,7 +106,19 @@ def render_user_menu(context):
     user_menu = collect_usermenu()
 
     for section in user_menu:
+        # Create filtered copy of items that only shows 'enabled' items
+        section["submenu"] = list(
+            filter(
+                lambda item: "show" not in item or item["show"](context.get("request")),
+                section["items"],
+            )
+        )
+
+        # Highlight active item
         for item in section["submenu"]:
             item["active"] = item["url"] == path
+
+    # Hide sections with no shown items
+    user_menu = filter(lambda section: len(section["submenu"]) > 0, user_menu)
 
     return {"menu": user_menu, "request": context.get("request")}

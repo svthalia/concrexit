@@ -16,6 +16,7 @@ class ThaliaWebsiteConfig(AppConfig):
                     "section": "general",
                     "title": "Site administration",
                     "url": reverse("admin:index"),
+                    "show": lambda request: request.user.is_staff,
                     "key": 0,
                 },
                 {
