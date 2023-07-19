@@ -61,7 +61,7 @@ sphinx = "6.2.1"
 
 [tool.poetry.group.dev.dependencies]
 django-template-check = "0.4.0"
-factory_boy = "3.2.1"
+factory_boy = "3.3.0"
 pydenticon = "0.3.1"
 Faker = "18.13.0"
 coverage = {extras = ["toml"], version = "^7.0.0"}
