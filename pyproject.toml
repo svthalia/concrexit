@@ -50,7 +50,7 @@ django-compressor = "4.4"
 optional = true
 
 [tool.poetry.group.postgres.dependencies]
-psycopg2 = "2.9.6"
+psycopg2 = "2.9.7"
 
 [tool.poetry.group.docs]
 optional = true
