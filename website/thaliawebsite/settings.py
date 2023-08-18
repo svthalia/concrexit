@@ -323,6 +323,13 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 # https://docs.djangoproject.com/en/dev/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
+
+###############################################################################
+# Celery settings
+# https://docs.celeryq.dev/en/stable/userguide/configuration.html#configuration
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", "redis://127.0.0.1:6379")
+
+
 ###############################################################################
 # Email settings
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
