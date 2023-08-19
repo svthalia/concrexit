@@ -1,6 +1,6 @@
 {% load listutil %}
 {% load baseurl %}
-{% load static %}
+{% load fullstatic %}
 {% load thumbnail %}
 
 {% with primary_color="#EE227A" item_h2_style="color:#EE227A;font-family:Calibri, 'Trebuchet MS', sans-serif; font-size: 18px; margin-bottom: 10px; margin-top: 30px;" item_tr_style="padding-left: 30px; padding-right: 30px; padding-bottom: 10px; margin: 0px; vertical-align: top;" %}
@@ -34,7 +34,7 @@
 
             <tr style="height: 127px; color: white; overflow: hidden; ">
                 <td style="background-color: {{ primary_color }}; text-align:center;">
-                    <a href="{% baseurl %}{% url 'index' %}"><img src="{% baseurl %}{% static 'newsletters/logo-en.png' %}" alt="Thalia" style="margin: 10px" width="280" height="107" style="width: 280px; height: 107px;"></a>
+                    <a href="{% baseurl %}{% url 'index' %}"><img src="{% fullstatic 'newsletters/logo-en.png' %}" alt="Thalia" style="margin: 10px" width="280" height="107" style="width: 280px; height: 107px;"></a>
                 </td>
                 <td style="background-color: black;text-align:center;valign:middle;">
                     {% if newsletter.date %}
@@ -168,7 +168,7 @@
 
             <tr style="margin-top: 20px;">
                 <td style="background-color: {{ primary_color }}; overflow: hidden; padding-left:30px; padding-top: 10px; padding-bottom: 10px;">
-                    <a href="{% baseurl %}{% url 'index' %}"><img src="{% baseurl %}{% static 'img/logo-magenta-bg-en.png' %}" alt="Thalia" width="180" height="75" style="float:left;width: 180px; height: 75px;"></a>
+                    <a href="{% baseurl %}{% url 'index' %}"><img src="{% fullstatic 'img/logo-magenta-bg-en.png' %}" alt="Thalia" width="180" height="75" style="float:left;width: 180px; height: 75px;"></a>
                 </td>
                 <td align="center" style="background-color: black; color: white;font-size: 12px; padding: 10px;">
                     <p style="font-size: 18px; color: white; font-family: 'Calibri', 'Trebuchet MS', sans-serif;">
@@ -178,19 +178,19 @@
                     </p>
                     <div>
                         <a target="_blank" rel="noopener" href="https://www.facebook.com/svThalia" title="Facebook page for Thalia" style="width: 20px; height: 20px; text-decoration:none;">
-                            <img src="{% baseurl %}{% static 'newsletters/square-facebook.png' %}" alt="Instagram logo" width="20" height="23">
+                            <img src="{% fullstatic 'newsletters/square-facebook.png' %}" alt="Instagram logo" width="20" height="23">
                         </a>
                         <a target="_blank" rel="noopener" href="https://twitter.com/svThalia" title="Twitter account for Thalia" style="width: 20px; height: 20px; text-decoration:none;">
-                           <img src="{% baseurl %}{% static 'newsletters/square-twitter.png' %}" alt="Twitter logo" width="20" height="23">
+                           <img src="{% fullstatic 'newsletters/square-twitter.png' %}" alt="Twitter logo" width="20" height="23">
                         </a>
                         <a target="_blank" rel="noopener" href="https://www.instagram.com/thalia_nijmegen/" title="Instagram page for Thalia" style="width: 20px; height: 20px; text-decoration:none;">
-                            <img src="{% baseurl %}{% static 'newsletters/square-instagram.png' %}" alt="Instagram logo" width="20" height="23">
+                            <img src="{% fullstatic 'newsletters/square-instagram.png' %}" alt="Instagram logo" width="20" height="23">
                         </a>
                         <a target="_blank" rel="noopener" href="https://www.linkedin.com/company/study-association-thalia" title="LinkedIn page for Thalia" style="width: 20px; height: 20px; text-decoration:none;">
-                            <img src="{% baseurl %}{% static 'newsletters/linkedin.png' %}" alt="Instagram logo" width="20" height="23">
+                            <img src="{% fullstatic 'newsletters/linkedin.png' %}" alt="Instagram logo" width="20" height="23">
                         </a>
                         <a target="_blank" rel="noopener" href="https://github.com/svthalia/" title="GitHub page for Thalia" style="width: 20px; height: 20px; text-decoration:none;" >
-                            <img src="{% baseurl %}{% static 'newsletters/square-github.png' %}" alt="Instagram logo" width="20" height="23" >
+                            <img src="{% fullstatic 'newsletters/square-github.png' %}" alt="Instagram logo" width="20" height="23" >
                         </a>
                      </div>
                 </td>

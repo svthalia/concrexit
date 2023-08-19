@@ -1,11 +1,10 @@
-{% load baseurl %}
-{% load static %}
+{% load fullstatic %}
 
 <html style="background-color: #F0F0F0;">
   <body style="background-color: #F0F0F0; border-spacing:0px; font-size:15px; font-family:Arial;">
     <div style="background-color: white; max-width:700px; margin-left:auto; margin-right: auto;">
       <div style="background-color:#E6227A; color:white; text-align:center; padding:20px;">
-        <img src="{% baseurl %}{% static 'img/logo-magenta-bg-en.png' %}" style="max-width:200px;" />
+        <img src="{% fullstatic 'img/logo-magenta-bg-en.png' %}" style="max-width:200px;" />
       </div>
       <div style="background-color: white; max-width:700px; margin-left:auto; margin-right: auto; padding:20px">
         {% block content %}
