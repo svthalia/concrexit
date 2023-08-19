@@ -283,7 +283,7 @@ if AWS_STORAGE_BUCKET_NAME is not None:
     AWS_S3_CUSTOM_DOMAIN = os.environ.get("AWS_CLOUDFRONT_DOMAIN", None)
 
     STATICFILES_STORAGE = "thaliawebsite.storage.backend.StaticS3Storage"
-    STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/"
+    STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/static/"
 
     DEFAULT_FILE_STORAGE = "thaliawebsite.storage.backend.PrivateS3Storage"
 
