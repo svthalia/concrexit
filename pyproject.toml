@@ -35,7 +35,7 @@ google-api-python-client = "2.97.0"
 sentry-sdk = "1.30.0"
 beautifulsoup4 = "^4.11.1"
 boto3 = "^1.23.7"
-gunicorn = "^20.1.0"
+gunicorn = "^21.0.0"
 qrcode = {version = "^7.3.1", extras = ["pil"]}
 freezegun = "1.2.2"
 PyYAML = "6.0.1"
