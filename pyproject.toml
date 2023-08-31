@@ -57,7 +57,7 @@ optional = true
 
 [tool.poetry.group.docs.dependencies]
 recommonmark = "0.7.1"
-sphinx = "6.2.1"
+sphinx = "7.2.5"
 
 [tool.poetry.group.dev.dependencies]
 django-template-check = "0.4.0"
