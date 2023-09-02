@@ -72,11 +72,9 @@ class MembershipTypeListFilter(admin.SimpleListFilter):
             return queryset
         if self.value() == "none":
             return queryset.exclude(
-                ~Q(membership=None)
-                & (
-                    Q(membership__until__isnull=True)
-                    | Q(membership__until__gt=timezone.now().date())
-                )
+                Q(membership__until__isnull=True)
+                | Q(membership__until__gt=timezone.now().date()),
+                membership__isnull=False,
             )
 
         return queryset.exclude(membership=None).filter(

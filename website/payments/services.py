@@ -120,12 +120,12 @@ def update_last_used(queryset: QuerySet, date: datetime.date = None) -> int:
     :param date: date to set last_used to
     :return: number of affected rows
     """
+    now = timezone.now()
     if not date:
-        date = timezone.now().date()
+        date = now.date()
 
     result = queryset.filter(
-        (Q(valid_from__gte=timezone.now()) & Q(valid_until__lt=timezone.now()))
-        | Q(valid_until=None)
+        Q(valid_from__gte=now, valid_until__lt=now) | Q(valid_until=None)
     ).update(last_used=date)
     return result
 
