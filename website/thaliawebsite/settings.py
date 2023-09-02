@@ -436,12 +436,6 @@ GOOGLE_MAPS_API_SECRET = os.environ.get("GOOGLE_MAPS_API_SECRET", "")
 GOOGLE_PLACES_API_KEY = os.environ.get("GOOGLE_PLACES_API_KEY", "")
 
 ###############################################################################
-# Conscribo settings
-CONSCRIBO_ACCOUNT = os.environ.get("CONSCRIBO_ACCOUNT", "")
-CONSCRIBO_USER = os.environ.get("CONSCRIBO_USER", "")
-CONSCRIBO_PASSWORD = os.environ.get("CONSCRIBO_PASSWORD", "")
-
-###############################################################################
 # Sentry setup
 if "SENTRY_DSN" in os.environ:
     import sentry_sdk

@@ -1,7 +1,6 @@
 */5 *   *   *   *   /venv/bin/python /app/website/manage.py send_scheduled_messages
 */5 *   *   *   *   /venv/bin/python /app/website/manage.py send_planned_newsletters
 30  *   *   *   *   /venv/bin/python /app/website/manage.py sync_mailinglists
-15  23  *   *   *   /venv/bin/python /app/website/manage.py conscribosync
 0   23  *   *   *   /venv/bin/python /app/website/manage.py clearsessions
 0   3   *   *   *   /venv/bin/python /app/website/manage.py dataminimisation
 0   1   *   *   *   /venv/bin/python /app/website/manage.py trigger_facedetection_lambda
