@@ -40,6 +40,7 @@ class MemberGroup(models.Model):
 
     photo = ImageField(
         verbose_name=_("Image"),
+        resize_source_to="source",
         upload_to="committeephotos/",
         storage=get_public_storage,
         null=True,

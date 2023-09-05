@@ -960,13 +960,21 @@ THUMBNAILS = {
                 },
             ],
         },
+        "source": {
+            "FORMAT": "jpg",
+            "PROCESSORS": [
+                {
+                    "PATH": "utils.media.processors.process_upload",
+                    "width": 8_000,
+                    "height": 8_000,
+                    "format": "jpg",
+                }
+            ],
+        },
     },
 }
 
 THUMBNAIL_SIZES = set(THUMBNAILS["SIZES"].keys())
-
-# Photos settings
-PHOTO_UPLOAD_SIZE = 2560, 1440
 
 # TinyMCE config
 TINYMCE_DEFAULT_CONFIG = {

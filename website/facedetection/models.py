@@ -1,10 +1,6 @@
-import io
 import os
 from secrets import token_urlsafe
 
-from django.conf import settings
-from django.core.files.base import ContentFile
-from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import models
 from django.db.models import Count, IntegerField, Value
 from django.db.models.functions import Coalesce
@@ -16,7 +12,6 @@ from thumbnails.fields import ImageField
 
 from members.models import Member
 from photos.models import Photo
-from photos.services import photo_determine_rotation
 
 
 class FaceDetectionUser(Member):
@@ -101,34 +96,16 @@ class ReferenceFace(BaseFaceEncodingSource):
         related_name="reference_faces",
     )
 
-    file = ImageField(upload_to=reference_face_uploadto)
+    file = ImageField(resize_source_to="source", upload_to=reference_face_uploadto)
 
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     marked_for_deletion_at = models.DateTimeField(null=True, blank=True)
 
     def save(self, **kwargs):
-        # Rotate the image and sotre an uprght version.
-        with self.file.open() as image_handle:
-            image = Image.open(image_handle)
+        # Try to open the image to make sure it's valid.
+        if not self.file._committed:
+            image = Image.open(self.file)
             image.load()
-
-        rotation = photo_determine_rotation(image)
-
-        image.thumbnail(settings.PHOTO_UPLOAD_SIZE, Image.ANTIALIAS)
-        image = image.rotate(360 - rotation, expand=True)
-
-        buffer = io.BytesIO()
-        image.convert("RGB").save(fp=buffer, format="JPEG")
-        buff_val = buffer.getvalue()
-        content = ContentFile(buff_val)
-        self.file = InMemoryUploadedFile(
-            content,
-            None,
-            "reference_face.jpg",
-            "image/jpeg",
-            content.tell,
-            None,
-        )
 
         super().save(**kwargs)
 

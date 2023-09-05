@@ -6,8 +6,8 @@ from django.utils.translation import gettext_lazy as _
 from django_filepond_widget.fields import FilePondFile
 
 from .forms import AlbumForm
-from .models import Album, Like, Photo
-from .services import extract_archive, save_photo
+from .models import Album, DuplicatePhotoException, Like, Photo
+from .services import extract_archive
 
 album_uploaded = Signal()
 
@@ -58,17 +58,12 @@ class AlbumAdmin(admin.ModelAdmin):
             try:
                 extract_archive(request, obj, archive)
                 album_uploaded.send(sender=None, album=obj)
-            except Exception as e:
-                raise e
+            except Exception:
+                raise
             finally:
                 if isinstance(archive, FilePondFile):
                     archive.remove()
 
-            messages.add_message(
-                request,
-                messages.WARNING,
-                _("Full-sized photos will not be saved on the Thalia-website."),
-            )
             messages.add_message(
                 request,
                 messages.WARNING,
@@ -123,17 +118,11 @@ class PhotoAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         """Save new Photo."""
-        super().save_model(request, obj, form, change)
-        if change and obj.original_file == obj.file.name:
-            return
-
-        if save_photo(obj, obj.file, obj.file.name):
-            messages.add_message(
+        try:
+            super().save_model(request, obj, form, change)
+        except DuplicatePhotoException:
+            self.message_user(
                 request,
-                messages.WARNING,
-                _("Full-sized photos will not be saved on the Thalia-website."),
-            )
-        else:
-            messages.add_message(
-                request, messages.ERROR, _("This photo already exists in the album.")
+                "This photo already exists in the album.",
+                messages.ERROR,
             )

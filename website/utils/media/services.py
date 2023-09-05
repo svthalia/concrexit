@@ -1,32 +1,13 @@
-import io
 from typing import Optional
 
 from django.conf import settings
-from django.core.files.base import ContentFile
 from django.core.files.storage import DefaultStorage
-from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models.fields.files import FieldFile, ImageFieldFile
 
 from thumbnails.backends.metadata import ImageMeta
 from thumbnails.files import ThumbnailedImageFile
 from thumbnails.images import Thumbnail
 from thumbnails.models import ThumbnailMeta
-
-
-def save_image(storage, image, path, format):
-    buffer = io.BytesIO()
-    image.convert("RGB" if format == "JPEG" else "RGBA").save(fp=buffer, format=format)
-    buff_val = buffer.getvalue()
-    content = ContentFile(buff_val)
-    file = InMemoryUploadedFile(
-        content,
-        None,
-        f"foo.{format.lower()}",
-        f"image/{format.lower()}",
-        content.tell,
-        None,
-    )
-    return storage.save(path, file)
 
 
 def get_media_url(

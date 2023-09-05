@@ -25,7 +25,11 @@ class MerchandiseItem(models.Model):
     description = models.TextField()
 
     #: Image of the merchandise item
-    image = ImageField(upload_to="merchandise", storage=get_public_storage)
+    image = ImageField(
+        upload_to="merchandise",
+        storage=get_public_storage,
+        resize_source_to="source",
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
