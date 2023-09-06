@@ -8,7 +8,6 @@ from django.urls import reverse
 
 from members.models import Member, Membership
 from photos.models import Album, Photo
-from photos.services import save_photo
 
 
 @override_settings(SUSPEND_SIGNALS=True)
@@ -158,15 +157,15 @@ class AlbumTest(TestCase):
             until=None,
         )
 
-        for i in range(10):
+        for i in range(1, 4):
             with open(
-                os.path.join(settings.BASE_DIR, "photos/fixtures/thom_assessor.png"),
+                os.path.join(settings.BASE_DIR, f"photos/fixtures/poker_{i}.jpg"),
                 "rb",
             ) as f:
                 fi = SimpleUploadedFile(
-                    name=f"photo{i}.png",
+                    name=f"photo{i}.jpg",
                     content=f.read(),
-                    content_type="image/png",
+                    content_type="image/jpeg",
                 )
                 photo = Photo(album=self.album, file=fi)
                 photo.save()
@@ -174,7 +173,7 @@ class AlbumTest(TestCase):
         response = self.client.get(reverse("photos:album", args=(self.album.slug,)))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["album"], self.album)
-        self.assertEqual(len(response.context["photos"]), 10)
+        self.assertEqual(len(response.context["photos"]), 3)
 
     def test_unaccessible(self):
         Membership.objects.create(
@@ -217,18 +216,17 @@ class SharedAlbumTest(TestCase):
         )
 
     def test_get(self):
-        for i in range(10):
+        for i in range(1, 4):
             with open(
-                os.path.join(settings.BASE_DIR, "photos/fixtures/thom_assessor.png"),
+                os.path.join(settings.BASE_DIR, f"photos/fixtures/poker_{i}.jpg"),
                 "rb",
             ) as f:
-                fi = SimpleUploadedFile(
-                    name=f"photo{i}.png",
+                file = SimpleUploadedFile(
+                    name=f"photo{i}.jpg",
                     content=f.read(),
-                    content_type="image/png",
+                    content_type="image/jpeg",
                 )
-                photo = Photo(album=self.album, file=fi)
-                photo.save()
+                Photo.objects.create(album=self.album, file=file)
 
         response = self.client.get(
             reverse(
@@ -241,7 +239,7 @@ class SharedAlbumTest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["album"], self.album)
-        self.assertEqual(len(response.context["photos"]), 10)
+        self.assertEqual(len(response.context["photos"]), 3)
 
 
 @override_settings(SUSPEND_SIGNALS=True)
@@ -264,12 +262,11 @@ class DownloadTest(TestCase):
         with open(
             os.path.join(settings.BASE_DIR, "photos/fixtures/thom_assessor.png"), "rb"
         ) as f:
-            fi = SimpleUploadedFile(
+            file = SimpleUploadedFile(
                 name="photo.png", content=f.read(), content_type="image/png"
             )
 
-        self.photo = Photo(album=self.album)
-        save_photo(self.photo, fi, fi.name)
+        self.photo = Photo.objects.create(album=self.album, file=file)
 
     def test_download(self):
         self.client.force_login(self.member)
@@ -315,13 +312,11 @@ class _DownloadBaseTestCase(TestCase):
         with open(
             os.path.join(settings.BASE_DIR, "photos/fixtures/thom_assessor.png"), "rb"
         ) as f:
-            fi = SimpleUploadedFile(
+            file = SimpleUploadedFile(
                 name="photo.png", content=f.read(), content_type="image/png"
             )
 
-        self.photo = Photo(album=self.album)
-        self.photo.file.save(fi.name, fi)
-        save_photo(self.photo, fi, fi.name)
+        self.photo = Photo.objects.create(album=self.album, file=file)
 
 
 @override_settings(SUSPEND_SIGNALS=True)
