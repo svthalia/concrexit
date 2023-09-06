@@ -15,6 +15,7 @@ from utils.snippets import send_email
 from .exceptions import PaymentError
 from .models import BankAccount, Payment, PaymentUser
 from .payables import Payable, payables
+from .signals import processed_batch
 
 
 def create_payment(
@@ -151,14 +152,16 @@ def process_batch(batch):
     for payment in payments:
         bank_account = payment.paid_by.bank_accounts.last()
         if not bank_account:  # pragma: no cover
-            # This should not happen, cannot haver, does not happen (right... ;p), but if it does, we don't want to crash, but just remove the payment from the batch (make it unprocessed)
+            # This should not happen, cannot happen, does not happen (right... ;p)
+            # but if it does, we don't want to crash, but just remove the payment from the batch (make it unprocessed)
             payment.batch = None
             payment.save()
         else:
             bank_account.last_used = batch.withdrawal_date
-            bank_account.save()
+            bank_account.save(update_fields=["last_used"])
 
     batch.save()
+    processed_batch.send(sender=None, instance=batch)
 
     send_tpay_batch_processing_emails(batch)
 

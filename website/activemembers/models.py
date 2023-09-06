@@ -3,6 +3,7 @@ import datetime
 import logging
 
 from django.conf import settings
+from django.contrib.admin import display as admin_display
 from django.contrib.auth.models import Permission
 from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
 from django.core.validators import MinValueValidator
@@ -95,6 +96,7 @@ class MemberGroup(models.Model):
     )
 
     @property
+    @admin_display(description=_("email"))
     def contact_address(self):
         if self.contact_mailinglist:
             return f"{self.contact_mailinglist.name}@{settings.SITE_DOMAIN}"
@@ -148,7 +150,6 @@ class MemberGroup(models.Model):
                 try:
                     return self.society.get_absolute_url()
                 except self.DoesNotExist:
-                    # pylint: disable=raise-missing-from
                     raise NotImplementedError(
                         f"get_absolute_url() not implemented for {self.__class__.__name__}"
                     )

@@ -3,7 +3,8 @@ from unittest.mock import MagicMock
 from django.core.exceptions import ObjectDoesNotExist
 from django.test import TestCase
 
-from payments import (
+from payments.models import Payment
+from payments.payables import (
     NotRegistered,
     Payable,
     PaymentError,
@@ -11,7 +12,6 @@ from payments import (
     prevent_saving,
     prevent_saving_related,
 )
-from payments.models import Payment
 from payments.tests.__mocks__ import MockModel, MockPayable
 
 
@@ -123,7 +123,7 @@ class ImmutablePayablesTest(TestCase):
         self.assertEqual([], Payable.immutable_model_fields_after_payment)
 
     def test_prevent_saving_changed_related_model_field(self):
-        MockModel2 = MockModel
+        MockModel2 = MockModel  # noqa: N806
         MockPayable.immutable_after_payment = True
         MockPayable.immutable_model_fields_after_payment = {MockModel2: ["test_field"]}
         model = MockModel(payer=None)

@@ -16,8 +16,8 @@ def send_weekly_overview():
     send_email(
         to=[settings.PROMO_REQUEST_NOTIFICATION_ADDRESS],
         subject="[PROMO] Weekly request overview",
-        txt_template="requests/weekly_overview.txt",
-        html_template="requests/weekly_overview.html",
+        txt_template="promotion/email/weekly_overview.txt",
+        html_template="promotion/email/weekly_overview.html",
         context={
             "new_requests": new_requests,
             "upcoming_requests": upcoming_requests,

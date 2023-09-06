@@ -1,6 +1,6 @@
 from django.utils.functional import classproperty
 
-from payments import Payable, payables
+from payments.payables import Payable, payables
 from sales.models.order import Order, OrderItem
 from sales.services import is_adult, is_manager
 

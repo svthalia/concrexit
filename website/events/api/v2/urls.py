@@ -22,11 +22,6 @@ urlpatterns = [
         name="event-detail",
     ),
     path(
-        "events/<slug:slug>/",
-        EventDetailView.as_view(lookup_field="slug"),
-        name="event-detail",
-    ),
-    path(
         "events/<int:pk>/registrations/",
         EventRegistrationsView.as_view(),
         name="event-registrations",
@@ -53,5 +48,10 @@ urlpatterns = [
         "events/external/<int:pk>/",
         ExternalEventDetailView.as_view(),
         name="external-event-detail",
+    ),
+    path(  # Slug endpoint last to prioritize `/external/`
+        "events/<slug:slug>/",
+        EventDetailView.as_view(lookup_field="slug"),
+        name="event-detail",
     ),
 ]

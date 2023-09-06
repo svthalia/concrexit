@@ -89,17 +89,12 @@ class PaymentAdmin(admin.ModelAdmin):
     ]
 
     @staticmethod
-    def _member_link(user: PaymentUser) -> str:
+    def _member_link(member: PaymentUser) -> str:
         return (
             format_html(
-                "<a href='{}'>{}</a>",
-                reverse(
-                    f"admin:{user._meta.app_label}_{user._meta.model_name}_change",
-                    args=[user.id],
-                ),
-                user.get_full_name(),
+                "<a href='{}'>{}</a>", member.get_absolute_url(), member.get_full_name()
             )
-            if user
+            if member
             else None
         )
 
@@ -734,8 +729,7 @@ class PaymentUserAdmin(admin.ModelAdmin):
             changed = x.disallow_tpay()
             count += 1 if changed else 0
         messages.success(
-            request,
-            _(f"Succesfully disallowed Thalia Pay for {count} users."),
+            request, f"Succesfully disallowed Thalia Pay for {count} users."
         )
 
     disallow_thalia_pay.short_description = _("Disallow Thalia Pay for selected users")
@@ -745,10 +739,7 @@ class PaymentUserAdmin(admin.ModelAdmin):
         for x in queryset:
             changed = x.allow_tpay()
             count += 1 if changed else 0
-        messages.success(
-            request,
-            _(f"Succesfully allowed Thalia Pay for {count} users."),
-        )
+        messages.success(request, f"Succesfully allowed Thalia Pay for {count} users.")
 
     allow_thalia_pay.short_description = _("Allow Thalia Pay for selected users")
 

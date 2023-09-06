@@ -248,15 +248,15 @@ class Profile(models.Model):
         default=True,
     )
 
-    receive_newsletter = models.BooleanField(
-        verbose_name=_("Receive newsletter"),
-        help_text=_("Receive the Thalia Newsletter"),
+    receive_registration_confirmation = models.BooleanField(
+        verbose_name=_("Receive registration confirmations"),
+        help_text=_("Receive confirmation emails when registering for events"),
         default=True,
     )
 
-    receive_magazine = models.BooleanField(
-        verbose_name=_("Receive the Thabloid"),
-        help_text=_("Receive printed Thabloid magazines"),
+    receive_newsletter = models.BooleanField(
+        verbose_name=_("Receive newsletter"),
+        help_text=_("Receive the Thalia Newsletter"),
         default=True,
     )
 
@@ -273,7 +273,7 @@ class Profile(models.Model):
         verbose_name=_("Only receive Thalia emails on G Suite-account"),
         help_text=_(
             "If you enable this option you will no longer receive "
-            "emails send to you by Thalia on your personal email "
+            "emails sent to you by Thalia on your personal email "
             "address. We will only use your G Suite email address."
         ),
         default=False,
@@ -284,7 +284,6 @@ class Profile(models.Model):
     )
 
     def display_name(self):
-        # pylint: disable=too-many-return-statements
         pref = self.display_name_preference
         if pref == "nickname" and self.nickname is not None:
             return f"'{self.nickname}'"

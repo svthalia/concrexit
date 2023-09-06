@@ -68,8 +68,6 @@ def cancel_info_string(event: Event, cancel_status, reg_status):
 
 
 def registration_status(event: Event, registration: EventRegistration, member):
-    now = timezone.now()
-
     if not event.registration_required and not event.optional_registration_allowed:
         return status.STATUS_NONE
 
@@ -475,7 +473,7 @@ def generate_category_statistics() -> dict:
         ],
     }
 
-    for index, (key, _) in enumerate(categories.EVENT_CATEGORIES):
+    for index, (key, category) in enumerate(categories.EVENT_CATEGORIES):
         for i in range(5):
             year_start = date(year=current_year - 4 + i, month=9, day=1)
             year_end = date(year=current_year - 3 + i, month=9, day=1)
@@ -500,3 +498,14 @@ def execute_data_minimisation(dry_run=False):
     if not dry_run:
         queryset.update(payment=None, member=None, name="<removed>")
     return queryset.all()
+
+
+def is_eventdocument_owner(member, event_doc):
+    if member and member.is_authenticated:
+        if member.is_superuser or member.has_perm("documents.override_owner"):
+            return True
+
+        if event_doc and member.has_perm("documents.change_document"):
+            return member.get_member_groups().filter(pk=event_doc.owner.pk).exists()
+
+    return False

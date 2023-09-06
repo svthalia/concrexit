@@ -1,5 +1,5 @@
 {% extends "simple_page.html" %}
-{% load i18n static compress personal_feed %}}
+{% load i18n static personal_feed %}}
 {% get_current_language as LANGUAGE_CODE %}
 
 {% block title %}{% trans "Calendar"|capfirst %} —
@@ -9,14 +9,9 @@
 
 {% block css_head %}
     {{ block.super }}
-    {% compress css %}
-        <link href="{% static "events/css/fullcalendar.core.css" %}"
-              rel="stylesheet" type="text/css">
-        <link href="{% static "events/css/fullcalendar.timegrid.css" %}"
-              rel="stylesheet" type="text/css">
-        <link href="{% static "events/css/fullcalendar.bootstrap.css" %}"
-              rel="stylesheet" type="text/css">
-    {% endcompress %}
+    <link href="{% static "events/css/fullcalendar.core.css" %}" rel="stylesheet" type="text/css">
+    <link href="{% static "events/css/fullcalendar.timegrid.css" %}" rel="stylesheet" type="text/css">
+    <link href="{% static "events/css/fullcalendar.bootstrap.css" %}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block page_title %}
@@ -60,20 +55,11 @@
 
 {% block js_body %}
     {{ block.super }}
-    {% compress js %}
-        <script type="text/javascript"
-                src="{% static "events/js/fullcalendar.locale.js" %}"></script>
-        <script type="text/javascript"
-                src="{% static "events/js/fullcalendar.core.js" %}"></script>
-        <script type="text/javascript"
-                src="{% static "events/js/fullcalendar.bootstrap.js" %}"></script>
-        <script type="text/javascript"
-                src="{% static "events/js/fullcalendar.daygrid.js" %}"></script>
-        <script type="text/javascript"
-                src="{% static "events/js/fullcalendar.timegrid.js" %}"></script>
-        <script type="text/javascript"
-                src="{% static "events/js/listview.js" %}"></script>
-        <script type="text/javascript"
-                src="{% static "events/js/main.js" %}"></script>
-    {% endcompress %}
+    <script type="text/javascript" src="{% static "events/js/fullcalendar.locale.js" %}"></script>
+    <script type="text/javascript" src="{% static "events/js/fullcalendar.core.js" %}"></script>
+    <script type="text/javascript" src="{% static "events/js/fullcalendar.bootstrap.js" %}"></script>
+    <script type="text/javascript" src="{% static "events/js/fullcalendar.daygrid.js" %}"></script>
+    <script type="text/javascript" src="{% static "events/js/fullcalendar.timegrid.js" %}"></script>
+    <script type="text/javascript" src="{% static "events/js/listview.js" %}"></script>
+    <script type="text/javascript" src="{% static "events/js/main.js" %}"></script>
 {% endblock js_body %}

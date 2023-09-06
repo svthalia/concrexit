@@ -14,13 +14,22 @@ from photos.api.v2.serializers.album import (
     PhotoListSerializer,
 )
 from photos.models import Album, Like, Photo
+from utils.media.services import fetch_thumbnails_db
 
 
 class AlbumListView(ListAPIView):
     """Returns an overview of all albums."""
 
     serializer_class = AlbumListSerializer
-    queryset = Album.objects.filter(hidden=False)
+
+    def get_serializer(self, *args, **kwargs):
+        if len(args) > 0:
+            albums = args[0]
+            fetch_thumbnails_db([album.cover.file for album in albums if album.cover])
+        return super().get_serializer(*args, **kwargs)
+
+    queryset = Album.objects.filter(hidden=False).select_related("_cover")
+
     permission_classes = [
         IsAuthenticatedOrTokenHasScope,
     ]
@@ -44,12 +53,21 @@ class AlbumDetailView(RetrieveAPIView):
             raise PermissionDenied
         return super().retrieve(request, *args, **kwargs)
 
+    def get_object(self):
+        object = super().get_object()
+        fetch_thumbnails_db([photo.file for photo in object.photo_set.all()])
+        return object
+
     def get_queryset(self):
         photos = Photo.objects.select_properties("num_likes")
         if self.request.member:
             photos = photos.annotate(
                 member_likes=Count("likes", filter=Q(likes__member=self.request.member))
             )
+
+        # Fix select_properties dropping the default ordering.
+        photos = photos.order_by("pk")
+
         return Album.objects.filter(hidden=False).prefetch_related(
             Prefetch("photo_set", queryset=photos)
         )
@@ -74,6 +92,12 @@ class LikedPhotosListView(ListAPIView):
             )
         return self.list(request, *args, **kwargs)
 
+    def get_serializer(self, *args, **kwargs):
+        if len(args) > 0:
+            photos = args[0]
+            fetch_thumbnails_db([photo.file for photo in photos])
+        return super().get_serializer(*args, **kwargs)
+
     def get_queryset(self):
         return (
             Photo.objects.filter(likes__member=self.request.member, album__hidden=False)
@@ -81,6 +105,8 @@ class LikedPhotosListView(ListAPIView):
                 member_likes=Count("likes", filter=Q(likes__member=self.request.member))
             )
             .select_properties("num_likes")
+            # Fix select_properties dropping the default ordering.
+            .order_by("pk")
         )
 
 

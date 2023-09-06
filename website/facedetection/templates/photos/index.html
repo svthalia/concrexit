@@ -1,0 +1,8 @@
+{% extends 'photos/index.html' %}
+
+{% block search_form %}
+    {{ block.super }}
+    <a href="{% url 'facedetection:your-photos' %}" class="btn btn-lg btn-primary col-6 mt-2 mt-md-0 col-md-1 ms-0 ms-md-2 d-flex align-items-center justify-content-center">
+        <i class="fas fa-user me-2 me-md-0"></i><span class="d-md-none">Photos you're on</span>
+    </a>
+{% endblock search_form %}

@@ -202,13 +202,27 @@ class Registration(Entry):
     first_name = models.CharField(
         _("First name"),
         max_length=30,
-        blank=False,
+        validators=[
+            RegexValidator(
+                regex="^([^/@:;%_]*)$",
+                message=_(
+                    "The first name should not contain special characters like '/' or '@'."
+                ),
+            )
+        ],
     )
 
     last_name = models.CharField(
         _("Last name"),
         max_length=200,
-        blank=False,
+        validators=[
+            RegexValidator(
+                regex="^([^/@:;%_]*)$",
+                message=_(
+                    "The last name should not contain special characters like '/' or '@'."
+                ),
+            )
+        ],
     )
 
     birthday = models.DateField(

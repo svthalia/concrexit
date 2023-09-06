@@ -12,8 +12,9 @@ from django.utils.translation import gettext_lazy as _
 from freezegun import freeze_time
 
 from members.models import Member, Profile
-from payments import admin_views, payables
+from payments import admin_views
 from payments.models import BankAccount, Batch, Payment, PaymentUser
+from payments.payables import payables
 from payments.tests.__mocks__ import MockModel
 from payments.tests.test_services import MockPayable
 
@@ -63,13 +64,14 @@ class PaymentAdminViewTest(TestCase):
                 "type": "cash_payment",
             },
         )
-        self.assertRedirects(response, f"/admin/login/?next={url}")
+        self.assertEqual(response.status_code, 302)
+        self.assertURLEqual(response.url, f"/admin/login/?next={url}")
 
     @mock.patch("django.contrib.messages.error")
     @mock.patch("django.contrib.messages.success")
     @mock.patch("django.shortcuts.resolve_url")
     @mock.patch("payments.services.create_payment")
-    @mock.patch("payments.payables.get_payable")
+    @mock.patch("payments.payables.payables.get_payable")
     def test_post(
         self, get_payable, create_payment, resolve_url, messages_success, messages_error
     ):
@@ -243,7 +245,7 @@ class BatchProcessAdminViewTest(TestCase):
 
         self._give_user_permissions()
 
-        response = self.client.post(url)
+        response = self.client.post(url, follow=True)
         self.assertRedirects(response, f"/admin/payments/batch/{self.batch.id}/change/")
 
     def test_next_validation(self):
@@ -322,11 +324,12 @@ class BatchExportAdminViewTest(TestCase):
     def test_permission(self):
         url = f"/admin/payments/batch/{self.batch.id}/export/"
         response = self.client.post(url)
-        self.assertRedirects(response, f"/admin/login/?next={url}")
+        self.assertEqual(response.status_code, 302)
+        self.assertURLEqual(response.url, f"/admin/login/?next={url}")
 
         self._give_user_permissions()
 
-        response = self.client.post(url)
+        response = self.client.post(url, follow=True)
         self.assertEqual(response.status_code, 200)
 
     def test_post(self):
@@ -419,7 +422,8 @@ class BatchTopicExportAdminViewTest(TestCase):
     def test_permission(self):
         url = f"/admin/payments/batch/{self.batch.id}/export-topic/"
         response = self.client.post(url)
-        self.assertRedirects(response, f"/admin/login/?next={url}")
+        self.assertEqual(response.status_code, 302)
+        self.assertURLEqual(response.url, f"/admin/login/?next={url}")
 
         self._give_user_permissions()
 
@@ -533,7 +537,8 @@ class BatchTopicDescriptionAdminViewTest(TestCase):
     def test_permission(self):
         url = f"/admin/payments/batch/{self.batch.id}/topic-description/"
         response = self.client.post(url)
-        self.assertRedirects(response, f"/admin/login/?next={url}")
+        self.assertEqual(response.status_code, 302)
+        self.assertURLEqual(response.url, f"/admin/login/?next={url}")
 
         self._give_user_permissions()
 
@@ -644,7 +649,8 @@ class BatchNewFilledAdminViewTest(TestCase):
     def test_permission(self):
         url = "/admin/payments/batch/new_filled/"
         response = self.client.post(url)
-        self.assertRedirects(response, f"/admin/login/?next={url}")
+        self.assertEqual(response.status_code, 302)
+        self.assertURLEqual(response.url, f"/admin/login/?next={url}")
 
         self._give_user_permissions()
 

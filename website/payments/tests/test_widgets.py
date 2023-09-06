@@ -1,7 +1,7 @@
 from django.test import TestCase, override_settings
 
-from payments import payables
 from payments.models import Payment, PaymentUser
+from payments.payables import payables
 from payments.tests.__mocks__ import MockModel, MockPayable
 from payments.widgets import PaymentWidget
 

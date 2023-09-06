@@ -16,7 +16,7 @@ from rest_framework.views import APIView
 
 from events import services
 from events.api.v2 import filters
-from events.api.v2.serializers.event import EventSerializer
+from events.api.v2.serializers.event import EventListSerializer, EventSerializer
 from events.api.v2.serializers.event_registration import EventRegistrationSerializer
 from events.api.v2.serializers.external_event import ExternalEventSerializer
 from events.exceptions import RegistrationError
@@ -25,12 +25,13 @@ from events.models.external_event import ExternalEvent
 from events.services import is_user_registered
 from thaliawebsite.api.v2.permissions import IsAuthenticatedOrTokenHasScopeForMethod
 from thaliawebsite.api.v2.serializers import EmptySerializer
+from utils.media.services import fetch_thumbnails_db
 
 
 class EventListView(ListAPIView):
     """Returns an overview of all upcoming events."""
 
-    serializer_class = EventSerializer
+    serializer_class = EventListSerializer
     filter_backends = (
         framework_filters.OrderingFilter,
         framework_filters.SearchFilter,
@@ -123,6 +124,14 @@ class EventRegistrationsView(ListAPIView):
                 event=self.event, date_cancelled=None
             ).select_related("member__profile")[: self.event.max_participants]
         return EventRegistration.objects.none()
+
+    def get_serializer(self, *args, **kwargs):
+        if len(args) > 0:
+            registrations = args[0]
+            fetch_thumbnails_db(
+                [r.member.profile.photo for r in registrations if r.member]
+            )
+        return super().get_serializer(*args, **kwargs)
 
     def initial(self, request, *args, **kwargs):
         """Run anything that needs to occur prior to calling the method handler."""
@@ -297,6 +306,9 @@ class ExternalEventDetailView(RetrieveAPIView):
 
 class MarkPresentAPIView(APIView):
     """A view that allows uses to mark their presence at an event using a secret token."""
+
+    permission_classes = [IsAuthenticatedOrTokenHasScope]
+    required_scopes = ["events:register"]
 
     def patch(self, request, *args, **kwargs):
         """Mark a user as present.

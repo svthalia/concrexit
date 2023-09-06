@@ -16,6 +16,8 @@ from queryable_properties.managers import QueryablePropertiesManager
 from queryable_properties.properties import AnnotationProperty
 from thumbnails.fields import ImageField
 
+from members.models import Member
+
 COVER_FILENAME = "cover.jpg"
 
 
@@ -39,11 +41,7 @@ class Photo(models.Model):
         "Album", on_delete=models.CASCADE, verbose_name=_("album")
     )
 
-    file = ImageField(
-        _("file"),
-        upload_to=photo_uploadto,
-        pregenerated_sizes=["small", "medium", "large", "photo_medium", "photo_large"],
-    )
+    file = ImageField(_("file"), upload_to=photo_uploadto)
 
     rotation = models.IntegerField(
         verbose_name=_("rotation"),
@@ -93,7 +91,7 @@ class Like(models.Model):
         Photo, null=False, blank=False, related_name="likes", on_delete=models.CASCADE
     )
     member = models.ForeignKey(
-        settings.AUTH_USER_MODEL, null=True, blank=False, on_delete=models.SET_NULL
+        Member, null=True, blank=False, on_delete=models.SET_NULL
     )
 
     def __str__(self):
@@ -212,7 +210,7 @@ class Album(models.Model):
     def access_token(self):
         """Return access token for album."""
         return hashlib.sha256(
-            f"{settings.SECRET_KEY}album{self.pk}".encode("utf-8")
+            f"{settings.SECRET_KEY}album{self.pk}".encode()
         ).hexdigest()
 
     class Meta:

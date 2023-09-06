@@ -1,0 +1,17 @@
+Dear {{ name|safe }},
+
+We are pleased to confirm that you registered for the event '{{ event.title }}' on {{ registration.date|date:"SHORT_DATETIME_FORMAT" }}.
+{% if registration.queue_position %}
+Sadly, this event is full right now, so you have been put on the queue on position: {{ registration.queue_position }}.
+You will be contacted if you get a spot to participate in the event.
+{% endif %}{% if event.has_fields and not registration.queue_position %}
+Please don't forget to fill in any other information needed from you to complete your registration.
+You can do this on {{ base_url }}{% url "events:registration" event.pk %}.
+{% endif %}
+You can find more information about the event on the website: {{ base_url }}{{ event.get_absolute_url }}.
+{% if event.cancel_deadline %}
+If you would like to cancel this registration please do so before {{ event.cancel_deadline|date:"SHORT_DATETIME_FORMAT" }}.
+{% endif %}
+
+With kind regards,
+The board of Study Association Thalia

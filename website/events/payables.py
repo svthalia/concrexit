@@ -3,7 +3,7 @@ from django.utils.functional import classproperty
 
 from events.models import EventRegistration
 from events.services import is_organiser
-from payments import Payable, payables
+from payments.payables import Payable, payables
 
 
 class EventRegistrationPayable(Payable):

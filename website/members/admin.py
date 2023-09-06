@@ -34,8 +34,8 @@ class ProfileInline(admin.StackedInline):
         "student_number",
         "phone_number",
         "receive_optin",
+        "receive_registration_confirmation",
         "receive_newsletter",
-        "receive_magazine",
         "receive_oldmembers",
         "birthday",
         "show_birthday",
@@ -160,7 +160,6 @@ class UserAdmin(BaseUserAdmin):
         "profile__event_permissions",
         "profile__receive_optin",
         "profile__receive_newsletter",
-        "profile__receive_magazine",
         "profile__receive_oldmembers",
         "profile__starting_year",
     )
@@ -189,10 +188,7 @@ class UserAdmin(BaseUserAdmin):
 
     def email_csv_export(self, request, queryset):
         response = HttpResponse(content_type="text/csv")
-        response[
-            "Content-Disposition"
-        ] = 'attachment;\
-                                           filename="email.csv"'
+        response["Content-Disposition"] = 'attachment;filename="email.csv"'
         writer = csv.writer(response)
         writer.writerow([_("First name"), _("Last name"), _("Email")])
         for user in queryset:

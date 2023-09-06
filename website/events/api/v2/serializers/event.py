@@ -1,7 +1,10 @@
 from rest_framework import serializers
 from rest_framework.reverse import reverse
 
-from activemembers.api.v2.serializers.member_group import MemberGroupSerializer
+from activemembers.api.v2.serializers.member_group import (
+    MemberGroupSerializer,
+    MemberGroupShortSerializer,
+)
 from documents.api.v2.serializers.document import DocumentSerializer
 from events import services
 from events.api.v2.serializers.event_registration import EventRegistrationSerializer
@@ -120,3 +123,7 @@ class EventSerializer(CleanedModelSerializer):
 
     def _maps_url(self, instance):
         return create_google_maps_url(instance.map_location, zoom=13, size="450x250")
+
+
+class EventListSerializer(EventSerializer):
+    organisers = MemberGroupShortSerializer(many=True)

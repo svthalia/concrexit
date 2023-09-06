@@ -63,7 +63,7 @@ class ProfileRetrieveSerializer(CleanedModelSerializer):
         if instance.photo:
             file = instance.photo
         return create_image_thumbnail_dict(
-            self.context["request"], file, placeholder=placeholder, size_large="800x800"
+            file, placeholder=placeholder, size_large="avatar_large"
         )
 
 
@@ -93,7 +93,7 @@ class MemberListSerializer(serializers.ModelSerializer):
         if instance.profile.photo:
             file = instance.profile.photo
         return create_image_thumbnail_dict(
-            self.context["request"], file, placeholder=placeholder, size_large="800x800"
+            file, placeholder=placeholder, size_large="avatar_large"
         )
 
     def _membership_type(self, instance):
@@ -129,7 +129,6 @@ class ProfileEditSerializer(CleanedModelSerializer):
             "display_name_preference",
             "receive_optin",
             "receive_newsletter",
-            "receive_magazine",
             "display_name",
             "avatar",
             "birthday",
@@ -183,5 +182,5 @@ class ProfileEditSerializer(CleanedModelSerializer):
         if instance.photo:
             file = instance.photo
         return create_image_thumbnail_dict(
-            self.context["request"], file, placeholder=placeholder, size_large="800x800"
+            file, placeholder=placeholder, size_large="avatar_large"
         )

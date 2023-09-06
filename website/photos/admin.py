@@ -1,5 +1,6 @@
 from django.contrib import admin, messages
 from django.db.models import Count
+from django.dispatch import Signal
 from django.utils.translation import gettext_lazy as _
 
 from django_filepond_widget.fields import FilePondFile
@@ -7,6 +8,8 @@ from django_filepond_widget.fields import FilePondFile
 from .forms import AlbumForm
 from .models import Album, Like, Photo
 from .services import extract_archive, save_photo
+
+album_uploaded = Signal()
 
 
 @admin.register(Album)
@@ -52,15 +55,38 @@ class AlbumAdmin(admin.ModelAdmin):
 
         archive = form.cleaned_data.get("album_archive", None)
         if archive is not None:
-            extract_archive(request, obj, archive)
-            if isinstance(archive, FilePondFile):
-                archive.remove()
+            try:
+                extract_archive(request, obj, archive)
+                album_uploaded.send(sender=None, album=obj)
+            except Exception as e:
+                raise e
+            finally:
+                if isinstance(archive, FilePondFile):
+                    archive.remove()
 
             messages.add_message(
                 request,
                 messages.WARNING,
                 _("Full-sized photos will not be saved on the Thalia-website."),
             )
+            messages.add_message(
+                request,
+                messages.WARNING,
+                "Thumbnails have not yet been generated. The first time you visit the "
+                "album (both in the website and the app) will be slow. Please do so now.",
+            )
+
+    def get_deleted_objects(self, objs, request):
+        (
+            deleted_objects,
+            model_count,
+            perms_needed,
+            protected,
+        ) = super().get_deleted_objects(objs, request)
+
+        # Drop any missing delete permissions. If the user has `delete_album` permission,
+        # they should automatically be allowed to cascade e.g. related pushnotifications.
+        return deleted_objects, model_count, set(), protected
 
 
 class LikeInline(admin.StackedInline):
@@ -85,6 +111,16 @@ class PhotoAdmin(admin.ModelAdmin):
     inlines = [
         LikeInline,
     ]
+
+    def get_deleted_objects(self, objs, request):
+        (
+            deleted_objects,
+            model_count,
+            perms_needed,
+            protected,
+        ) = super().get_deleted_objects(objs, request)
+
+        return deleted_objects, model_count, set(), protected
 
     def save_model(self, request, obj, form, change):
         """Save new Photo."""

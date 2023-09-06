@@ -1,8 +1,8 @@
 """Widgets provided by the payments package."""
 from django.forms import Widget
 
-from payments import payables
 from payments.models import Payment, PaymentUser
+from payments.payables import payables
 
 
 class PaymentWidget(Widget):

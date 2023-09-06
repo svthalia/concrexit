@@ -1,38 +1,21 @@
 {% extends 'base.html' %}
-{% load static i18n compress document_cards %}
+{% load sass_tags i18n document_cards %}
 
-{% block title %}{% trans 'Documents' %} — {{ block.super }}{% endblock %}
-{% block opengraph_title %}{% trans 'Documents' %} —
-    {{ block.super }}{% endblock %}
+{% block title %}Documents — {{ block.super }}{% endblock %}
+{% block opengraph_title %}Documents — {{ block.super }}{% endblock %}
 
 {% block css_head %}
     {{ block.super }}
-    {% compress css %}
-        <link href="{% static "documents/css/style.scss" %}" rel="stylesheet"
-              type="text/x-scss">
-    {% endcompress %}
+    <link href="{% sass_src "documents/css/style.scss" %}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block body %}
     <section class="page-section" id="documents-misc">
         <div class="container">
-            <h1 class="section-title">{% trans "Association Documents" %}</h1>
-
+            <h1 class="section-title">Association Documents</h1>
             <p>
-                {% blocktrans trimmed %}
-                    Thalia was officially founded on November 7th, 1990. The
-                    relevant statutes and internal rules can be
-                    accessed here. The statues have last been amended in
-                    September 2007; the internal rules have been
-                    changed on several occasions. Other miscellaneous documents
-                    can be found here as well, such as the
-                    expanse form. The documents regarding the canteens can be
-                    found on
-                    <a href="https://olympus.science.ru.nl">the website of
-                        umbrella association Olympus</a>.
-                {% endblocktrans %}
+                Thalia was officially founded on November 7th, 1990. The relevant statutes and internal rules can be accessed here. Other miscellaneous documents can be found here as well, such as the expense form. The documents regarding the canteens can be found on <a href="https://olympus.science.ru.nl">the website of umbrella association Olympus</a>.
             </p>
-
             <div class="row">
                 {% for doc in association_documents %}
                     <div class="col-6 col-md-2 my-3">
@@ -45,16 +28,13 @@
 
     <section class="page-section" id="documents-annual">
         <div class="container">
-            <h1 class="section-title">{% trans "Annual documents" %}</h1>
-
+            <h1 class="section-title">Annual documents</h1>
             <p>
-                {% trans "Every candidate board of Thalia drafts a policy document before being installed, to detail their plans for the next year. This also includes a general planning of all activities, as well as the budget for that year. Furthermore, the association is obliged to deliver an annual report and provide a financial overview. These documents show the financial developments over the year, what contacts Thalia maintained and what activities were organized. All historical policy documents and reports are made available, below." %}
+                Every candidate board of Thalia drafts a policy document before being installed, to detail their plans for the next year. This also includes a general planning of all activities, as well as the budget for that year. Furthermore, the association is obliged to deliver an annual report and provide a financial overview. These documents show the financial developments over the year, what contacts Thalia maintained and what activities were organized. All historical policy documents and reports are made available, below.
             </p>
-
             <p>
-                {% trans "The General Meetings (ALVs) can be attended by all members, honorary members and donors. Thalia organizes at least two general meetings each year. Minutes of these meetings are made available below. This allows (honorary) members and donors that did not attend to get an insight in what was discussed as well." %}
+                The General Meetings (ALVs) can be attended by all members, honorary members and donors. Thalia organizes at least two general meetings each year. Minutes of these meetings are made available below. This allows (honorary) members and donors that did not attend to get an insight in what was discussed as well.
             </p>
-
             <ul class="nav nav-tabs mt-4" role="tablist">
                 {% for year, data in years|slice:":6" %}
                     <li class="nav-item">
@@ -67,7 +47,7 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="dropdownYearsButton" data-bs-toggle="dropdown" data-bs-target="#dropdownYears"
                        aria-controls="dropdownYears" aria-expanded="false"
-                       aria-label="Dropdown years">{% trans "Older" %}</a>
+                       aria-label="Dropdown years">Older</a>
                     <div class="dropdown-menu dropdown-years" id="dropdownYears" aria-labelledby="dropdownYearsButton">
                         {% for year, data in years|slice:"6:" %}
                             <a class="dropdown-item" href="#tab-{{ year }}" id="tab-{{ year }}-button"
@@ -94,15 +74,15 @@
                                                 data-bs-toggle="collapse"
                                                 data-bs-target="#gm-content-{{ forloop.counter0 }}">
                                                 <div class="title">
-                                                    {% trans "GM" %} {{ forloop.counter }}: {{ gm.datetime }}
+                                                    GM {{ forloop.counter }}: {{ gm.datetime }}
                                                 </div>
                                             </div>
                                             <div class="collapse"
                                                  id="gm-content-{{ forloop.counter0 }}">
                                                 <div class="card-body">
                                                     <p>
-                                                        {% trans "location"|capfirst %}: {{ gm.location }}<br/>
-                                                        {% trans "documents"|capfirst %}:<br/>
+                                                        Location: {{ gm.location }}<br/>
+                                                        Documents:<br/>
                                                     <ol>
                                                         {% for doc in gm.documents.all %}
                                                             <li>
@@ -117,7 +97,7 @@
                                                         <p>
                                                             <a href="{{ gm.minutes.get_absolute_url }}"
                                                                class="btn btn-primary">
-                                                                {% trans "Minutes" %}
+                                                                Minutes
                                                             </a>
                                                         </p>
                                                     {% endif %}
@@ -128,11 +108,8 @@
                                 </div>
                             </div>
                         {% else %}
-                            <div
-                                class="col-12 col-md-6 my-3 d-flex justify-content-center align-items-center">
-
-                                    {% trans "There have not been any general meetings yet." %}
-
+                            <div lass="col-12 col-md-6 my-3 d-flex justify-content-center align-items-center">
+                                There have not been any general meetings yet.
                             </div>
                         {% endif %}
                         {% for type, doc in data.documents.items %}

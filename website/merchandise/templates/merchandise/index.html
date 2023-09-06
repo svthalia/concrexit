@@ -12,7 +12,7 @@
         <hr />
         <div class="row">
             <div class="col-12 col-md-3">
-                <img src="{% thumbnail item.image THUMBNAIL_SIZE_MEDIUM fit=False %}" id="image" alt="{{ item.name }}" />
+                <img src="{% thumbnail item.image "medium" %}" id="image" alt="{{ item.name }}" />
             </div>
             <div class="col-12 col-md-9 pt-4 pt-md-0">
                 <h2>{{ item.name }}</h2>

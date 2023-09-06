@@ -67,6 +67,7 @@
 
 th.sortable {
     outline: none;
+    white-space: nowrap;
 
     &:hover {
         background-color: var(--selected-bg);

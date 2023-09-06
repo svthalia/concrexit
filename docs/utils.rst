@@ -12,7 +12,6 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   utils.conscribo
    utils.management
    utils.media
    utils.templatetags
@@ -56,14 +55,6 @@ utils.snippets module
 ---------------------
 
 .. automodule:: utils.snippets
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-utils.threading module
-----------------------
-
-.. automodule:: utils.threading
    :members:
    :undoc-members:
    :show-inheritance:

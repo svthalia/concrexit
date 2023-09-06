@@ -10,7 +10,6 @@ from django.http import Http404
 from django.shortcuts import redirect
 from django.utils import timezone
 
-import sentry_sdk
 from django_sendfile import sendfile
 
 
@@ -19,11 +18,10 @@ def get_thumb_modified_time(storage, path):
         f"thumbnails_{path}", timezone.make_aware(timezone.datetime.min)
     )
     if storage_value.timestamp() <= 0:
-        # noinspection PyBroadException
         try:
             storage_value = storage.get_modified_time(path)
             cache.set(f"thumbnails_{path}", storage_value, 60 * 60)
-        except:  # pylint: disable=bare-except
+        except:  # noqa: E722
             # File probably does not exist
             pass
     return storage_value
@@ -57,11 +55,7 @@ def private_media(request, request_path):
 
     # Serve the file, or redirect to a signed bucket url in the case of S3
     if hasattr(storage, "bucket"):
-        with sentry_sdk.start_span(
-            op="generate_private_media_url",
-            description="Generate the presigned s3 url for a media file",
-        ) as span:
-            serve_url = storage.url(sig_info["serve_path"])
+        serve_url = storage.url(sig_info["serve_path"])
         return redirect(
             f"{serve_url}",
             permanent=False,

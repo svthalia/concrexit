@@ -46,8 +46,7 @@ def _set_django_env(env):
 
     This is a helper function for the doctests below because doctests cannot set global variables.
     """
-    # pylint: disable=global-statement
-    global DJANGO_ENV
+    global DJANGO_ENV  # noqa: PLW0603
     DJANGO_ENV = env
 
 
@@ -108,7 +107,6 @@ def from_env(
             DJANGO_ENV == "staging" and staging is _NOT_SET
         ):
             if production is _NOT_SET and os.environ.get("MANAGE_PY", "0") == "0":
-                # pylint: disable=raise-missing-from
                 raise Misconfiguration(
                     f"Environment variable `{name}` must be supplied in production"
                 )
@@ -126,19 +124,21 @@ def from_env(
             return development
         if DJANGO_ENV == "testing":
             return testing
-        # pylint: disable=raise-missing-from
         raise Misconfiguration(f"DJANGO_ENV set to unsupported value: {DJANGO_ENV}")
 
 
 ###############################################################################
 # Site settings
 
-# We use this setting to generate the email addresses
-SITE_DOMAIN = from_env(
-    "SITE_DOMAIN", development="thalia.localhost", production="thalia.nu"
+# We use this setting to generate the email addresses, and for BASE_URL below.
+SITE_DOMAIN = from_env("SITE_DOMAIN", development="localhost", production="thalia.nu")
+
+# Used to generate some absolute urls when we don't have access to a request.
+BASE_URL = from_env(
+    "BASE_URL",
+    development=f"http://{SITE_DOMAIN}:8000",
+    production=f"https://{SITE_DOMAIN}",
 )
-# We use this domain to generate some absolute urls when we don't have access to a request
-BASE_URL = os.environ.get("BASE_URL", f"https://{SITE_DOMAIN}")
 
 # Default FROM email
 DEFAULT_FROM_EMAIL = f"{os.environ.get('ADDRESS_NOREPLY', 'noreply')}@{SITE_DOMAIN}"
@@ -159,7 +159,25 @@ EDUCATION_NOTIFICATION_ADDRESS = (
 PROMO_REQUEST_NOTIFICATION_ADDRESS = (
     f"{os.environ.get('ADDRESS_PROMOREQUESTS', 'promocie')}@{SITE_DOMAIN}"
 )
+TREASURER_NOTIFICATION_ADDRESS = (
+    f"{os.environ.get('ADDRESS_TREASURER', 'treasurer')}@{SITE_DOMAIN}"
+)
+
 PROMO_PUBLISH_DATE_TIMEDELTA = timezone.timedelta(weeks=1)
+
+# How many days to keep reference faces after a user marks them for deletion
+FACEDETECTION_REFERENCE_FACE_STORAGE_PERIOD_AFTER_DELETE_DAYS = 180
+
+# How many reference faces a user can have at the same time
+FACEDETECTION_MAX_NUM_REFERENCE_FACES = 5
+
+# ARN of the concrexit-facedetection-lambda function.
+# See https://github.com/svthalia/concrexit-facedetection-lambda.
+FACEDETECTION_LAMBDA_ARN = from_env("FACEDETECTION_LAMBDA_ARN")
+
+FACEDETECTION_LAMBDA_BATCH_SIZE = int(
+    os.environ.get("FACEDETECTION_LAMBDA_BATCH_SIZE", 20)
+)
 
 # The scheme the app uses for oauth redirection
 APP_OAUTH_SCHEME = os.environ.get("APP_OAUTH_SCHEME", "nu.thalia")
@@ -200,14 +218,6 @@ ALLOWED_HOSTS = [
 # https://docs.djangoproject.com/en/dev/ref/settings/#internal-ips
 INTERNAL_IPS = setting(development=["127.0.0.1", "172.17.0.1"], production=[])
 
-# https://django-compressor.readthedocs.io/en/stable/settings/#django.conf.settings.COMPRESS_OFFLINE
-COMPRESS_OFFLINE = setting(development=False, production=True)
-
-# https://docs.djangoproject.com/en/dev/ref/settings/#static-url
-STATIC_URL = "/static/"
-# https://docs.djangoproject.com/en/dev/ref/settings/#static-root
-STATIC_ROOT = from_env("STATIC_ROOT", development=os.path.join(BASE_DIR, "static"))
-
 DJANGO_DRF_FILEPOND_UPLOAD_TMP = from_env(
     "DJANGO_DRF_FILEPOND_UPLOAD_TMP",
     development=os.path.join(BASE_DIR, "filepond-temp-uploads"),
@@ -238,25 +248,25 @@ DJANGO_DRF_FILEPOND_PERMISSION_CLASSES = {
     ],
 }
 
+# https://docs.djangoproject.com/en/dev/ref/settings/#static-root
+STATIC_ROOT = from_env("STATIC_ROOT", development=os.path.join(BASE_DIR, "static"))
+
+# https://docs.djangoproject.com/en/dev/ref/settings/#media-root
+MEDIA_ROOT = from_env("MEDIA_ROOT", development=os.path.join(BASE_DIR, "media"))
+
+# https://github.com/johnsensible/django-sendfile#nginx-backend
+SENDFILE_URL = "/media/sendfile/"
+SENDFILE_ROOT = MEDIA_ROOT
 SENDFILE_BACKEND = setting(
     development="django_sendfile.backends.development",
     production="django_sendfile.backends.nginx",
 )
-# https://github.com/johnsensible/django-sendfile#nginx-backend
-SENDFILE_URL = "/media/sendfile/"
-SENDFILE_ROOT = from_env(
-    "SENDFILE_ROOT",
-    production="/concrexit/media/",
-    development=os.path.join(BASE_DIR, "media"),
-)
-
-# https://docs.djangoproject.com/en/dev/ref/settings/#media-url
-MEDIA_URL = "/media/private/"
-# https://docs.djangoproject.com/en/dev/ref/settings/#media-root
-MEDIA_ROOT = from_env("MEDIA_ROOT", development=os.path.join(BASE_DIR, "media"))
 
 PRIVATE_MEDIA_LOCATION = ""
 PUBLIC_MEDIA_LOCATION = "public"
+STATICFILES_LOCATION = "static"
+
+MEDIA_URL = "/media/private/"
 
 AWS_ACCESS_KEY_ID = from_env("AWS_ACCESS_KEY_ID", production=None)
 AWS_SECRET_ACCESS_KEY = from_env("AWS_SECRET_ACCESS_KEY", production=None)
@@ -272,13 +282,25 @@ if AWS_STORAGE_BUCKET_NAME is not None:
     AWS_CLOUDFRONT_KEY_ID = os.environ.get("AWS_CLOUDFRONT_KEY_ID", None)
     AWS_S3_CUSTOM_DOMAIN = os.environ.get("AWS_CLOUDFRONT_DOMAIN", None)
 
+    STATICFILES_STORAGE = "thaliawebsite.storage.backend.StaticS3Storage"
+    STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/static/"
+
     DEFAULT_FILE_STORAGE = "thaliawebsite.storage.backend.PrivateS3Storage"
+
     PUBLIC_FILE_STORAGE = "thaliawebsite.storage.backend.PublicS3Storage"
     PUBLIC_MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/"
 else:
+    STATICFILES_STORAGE = setting(
+        development="django.contrib.staticfiles.storage.StaticFilesStorage",
+        production="django.contrib.staticfiles.storage.ManifestStaticFilesStorage",
+    )
+    STATIC_URL = "/static/"
+
     DEFAULT_FILE_STORAGE = "thaliawebsite.storage.backend.PrivateFileSystemStorage"
+
     PUBLIC_FILE_STORAGE = "thaliawebsite.storage.backend.PublicFileSystemStorage"
     PUBLIC_MEDIA_URL = "/media/public/"
+
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#conn-max-age
 CONN_MAX_AGE = int(from_env("CONN_MAX_AGE", development="0", production="60"))
@@ -372,7 +394,7 @@ if FIREBASE_CREDENTIALS != {}:
 
     try:
         initialize_app(credential=credentials.Certificate(FIREBASE_CREDENTIALS))
-    except ValueError as e:
+    except ValueError:
         logger.error("Firebase application failed to initialise")
 
 ###############################################################################
@@ -414,19 +436,11 @@ GOOGLE_MAPS_API_SECRET = os.environ.get("GOOGLE_MAPS_API_SECRET", "")
 GOOGLE_PLACES_API_KEY = os.environ.get("GOOGLE_PLACES_API_KEY", "")
 
 ###############################################################################
-# Conscribo settings
-CONSCRIBO_ACCOUNT = os.environ.get("CONSCRIBO_ACCOUNT", "")
-CONSCRIBO_USER = os.environ.get("CONSCRIBO_USER", "")
-CONSCRIBO_PASSWORD = os.environ.get("CONSCRIBO_PASSWORD", "")
-
-###############################################################################
 # Sentry setup
 if "SENTRY_DSN" in os.environ:
     import sentry_sdk
     from sentry_sdk.integrations.django import DjangoIntegration
 
-    # Pylint sees the faked init class that sentry uses for typing purposes
-    # pylint: disable=abstract-class-instantiated
     sentry_sdk.init(
         dsn=os.environ.get("SENTRY_DSN"),
         integrations=[DjangoIntegration()],
@@ -453,8 +467,8 @@ INSTALLED_APPS = [
     "tinymce",
     "rest_framework",
     "rest_framework.authtoken",
-    "compressor",
     "debug_toolbar",
+    "sass_processor",
     "admin_auto_filters",
     "django_drf_filepond",
     "django_filepond_widget",
@@ -468,6 +482,7 @@ INSTALLED_APPS = [
     # Our apps ordered such that templates in the first
     # apps can override those used by the later apps.
     "pushnotifications.apps.PushNotificationsConfig",
+    "facedetection.apps.FaceDetectionConfig",
     "announcements.apps.AnnouncementsConfig",
     "promotion.apps.PromotionConfig",
     "members.apps.MembersConfig",
@@ -488,6 +503,7 @@ INSTALLED_APPS = [
     "singlepages.apps.SinglepagesConfig",
     "shortlinks.apps.ShortLinkConfig",
     "sales.apps.SalesConfig",
+    "moneybirdsynchronization.apps.MoneybirdsynchronizationConfig",
 ]
 
 MIDDLEWARE = [
@@ -501,7 +517,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.locale.LocaleMiddleware",
-    # Our middleware
+    "thaliawebsite.middleware.RealIPMiddleware",
+    "django_ratelimit.middleware.RatelimitMiddleware",
     "members.middleware.MemberMiddleware",
     "announcements.middleware.AnnouncementMiddleware",
 ]
@@ -603,11 +620,17 @@ LOGGING = {
     },
 }
 
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+        "LOCATION": "django_default_db_cache",
+    },
+}
+
 WSGI_APPLICATION = "thaliawebsite.wsgi.application"
 
 # Login pages
 LOGIN_URL = "/user/login/"
-
 LOGIN_REDIRECT_URL = "/"
 
 # Cors configuration
@@ -617,7 +640,7 @@ CORS_URLS_REGEX = r"^/(?:api/v1|api/v2|user/oauth)/.*"
 # OAuth configuration
 OIDC_RSA_PRIVATE_KEY = from_env("OIDC_RSA_PRIVATE_KEY", testing=None)
 if OIDC_RSA_PRIVATE_KEY is not None:
-    OIDC_RSA_PRIVATE_KEY = base64.urlsafe_b64decode(OIDC_RSA_PRIVATE_KEY)
+    OIDC_RSA_PRIVATE_KEY = base64.urlsafe_b64decode(OIDC_RSA_PRIVATE_KEY).decode()
 
 OAUTH2_PROVIDER = {
     "OIDC_ENABLED": True,
@@ -703,7 +726,7 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_PAGINATION_CLASS": "thaliawebsite.api.pagination.APIv2LimitOffsetPagination",
     "PAGE_SIZE": 50,  # Only for API v2
-    "ALLOWED_VERSIONS": ["v1", "v2", "calendarjs"],
+    "ALLOWED_VERSIONS": ["v1", "v2", "calendarjs", "facedetection"],
     "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.NamespaceVersioning",
     "DEFAULT_SCHEMA_CLASS": "thaliawebsite.api.openapi.OAuthAutoSchema",
     "DEFAULT_THROTTLE_CLASSES": [
@@ -711,63 +734,38 @@ REST_FRAMEWORK = {
         "thaliawebsite.api.throttling.UserRateThrottle",
     ],
     "DEFAULT_THROTTLE_RATES": setting(
-        production={"anon": "30/min", "user": "60/min"},
-        staging={"anon": "30/min", "user": "60/min"},
+        production={"anon": "30/min", "user": "90/min"},
+        staging={"anon": "30/min", "user": "90/min"},
         development={"anon": None, "user": None},
     ),
 }
 
+# Rate limiting
+RATELIMIT_VIEW = "thaliawebsite.views.rate_limited_view"
+
 # Internationalization
 # https://docs.djangoproject.com/en/dev/topics/i18n/
-
 DATETIME_FORMAT = "j M, Y, H:i"
+SHORT_DATETIME_FORMAT = "d-m-Y, H:i"
 
 LANGUAGE_CODE = "en"
-
 TIME_ZONE = "Europe/Amsterdam"
-
 USE_I18N = True
-
 USE_L10N = False
-
 USE_TZ = True
-
 LANGUAGES = [("en", _("English"))]
-
 LOCALE_PATHS = ("locale",)
 
 # Static files
 STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
-    # other finders
-    "compressor.finders.CompressorFinder",
+    "sass_processor.finders.CssFinder",
 )
 
-NORMAL_STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
-MANIFEST_STATICFILES_STORAGE = (
-    "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
-)
-STATICFILES_STORAGE = setting(
-    development=NORMAL_STATICFILES_STORAGE,
-    production=MANIFEST_STATICFILES_STORAGE,
-)
-
-# Compressor settings
-COMPRESS_ENABLED = True
-
-COMPRESS_PRECOMPILERS = (("text/x-scss", "django_libsass.SassCompiler"),)
-
-COMPRESS_FILTERS = {
-    "css": [
-        "compressor.filters.css_default.CssAbsoluteFilter",
-        "compressor.filters.cssmin.rCSSMinFilter",
-    ],
-    "js": ["compressor.filters.jsmin.JSMinFilter"],
-}
-
-# Precompiler settings
-STATIC_PRECOMPILER_LIST_FILES = True
+# Allow importing .scss files that don't start with an underscore.
+# See https://github.com/jrief/django-sass-processor
+SASS_PROCESSOR_INCLUDE_FILE_PATTERN = r"^.+\.scss$"
 
 # See utils/model/signals.py for explanation
 SUSPEND_SIGNALS = False
@@ -871,16 +869,7 @@ THUMBNAILS = {
     },
 }
 
-THUMBNAIL_SIZES = {
-    "small": "small",
-    "medium": "medium",
-    "large": "large",
-    "avatar_large": "avatar_large",
-    "slide_small": "slide_small",
-    "slide_medium": "slide_medium",
-    "slide": "slide",
-}
-
+THUMBNAIL_SIZES = set(THUMBNAILS["SIZES"].keys())
 
 # Photos settings
 PHOTO_UPLOAD_SIZE = 2560, 1440
@@ -944,3 +933,28 @@ GRAPH_MODELS = {
         "auth",
     ],
 }
+
+MONEYBIRD_ADMINISTRATION_ID = os.environ.get("MONEYBIRD_ADMINISTRATION_ID", None)
+MONEYBIRD_API_KEY = os.environ.get("MONEYBIRD_API_KEY", None)
+
+MONEYBIRD_SYNC_ENABLED = MONEYBIRD_ADMINISTRATION_ID and MONEYBIRD_API_KEY
+
+MONEYBIRD_MEMBER_PK_CUSTOM_FIELD_ID = os.environ.get(
+    "MONEYBIRD_MEMBER_PK_CUSTOM_FIELD_ID", None
+)
+MONEYBIRD_UNKNOWN_PAYER_CONTACT_ID = os.environ.get(
+    "MONEYBIRD_UNKNOWN_PAYER_CONTACT_ID", None
+)
+MONEYBIRD_CONTRIBUTION_LEDGER_ID = os.environ.get(
+    "MONEYBIRD_CONTRIBUTION_LEDGER_ID", None
+)
+
+MONEYBIRD_TPAY_FINANCIAL_ACCOUNT_ID = os.environ.get(
+    "MONEYBIRD_TPAY_FINANCIAL_ACCOUNT_ID", None
+)
+MONEYBIRD_CASH_FINANCIAL_ACCOUNT_ID = os.environ.get(
+    "MONEYBIRD_CASH_FINANCIAL_ACCOUNT_ID", None
+)
+MONEYBIRD_CARD_FINANCIAL_ACCOUNT_ID = os.environ.get(
+    "MONEYBIRD_CARD_FINANCIAL_ACCOUNT_ID", None
+)

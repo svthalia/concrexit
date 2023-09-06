@@ -1,0 +1,9 @@
+Hi,
+
+There has been an error when trying to synchronize with Moneybird.
+Error: {{ error }}
+Object: {{ obj }}
+Link to payment: {{ url }}
+
+Kisses,
+The Website

@@ -1,5 +1,8 @@
 from django import forms
 
+from documents.forms import DocumentFileInput
+from events.models.documents import EventDocument
+
 from .models import RegistrationInformationField
 
 
@@ -27,3 +30,19 @@ class FieldsForm(forms.Form):
     def field_values(self):
         for key in self.information_fields:
             yield key, self.cleaned_data[key]
+
+
+class EventDocumentForm(forms.ModelForm):
+    """Form that overrides the widgets for the files."""
+
+    class Meta:
+        model = EventDocument
+        fields = (
+            "name",
+            "file",
+            "members_only",
+            "owner",
+        )
+        widgets = {
+            "file": DocumentFileInput,
+        }

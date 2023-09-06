@@ -164,10 +164,8 @@ def get_automatic_lists():
             "description": "Automatic moderated mailinglist that is a "
             "collection of all committee lists",
             "addresses": [
-                f"{c.contact_mailinglist.name}@{settings.GSUITE_DOMAIN}"
-                for c in Committee.objects.exclude(
-                    contact_mailinglist=None
-                ).select_related("contact_mailinglist")
+                c.contact_address
+                for c in Committee.objects.all().select_related("contact_mailinglist")
             ],
             "moderated": True,
         },
@@ -176,10 +174,8 @@ def get_automatic_lists():
             "description": "Automatic moderated mailinglist that is a "
             "collection of all society lists",
             "addresses": [
-                f"{c.contact_mailinglist.name}@{settings.GSUITE_DOMAIN}"
-                for c in Society.objects.exclude(
-                    contact_mailinglist=None
-                ).select_related("contact_mailinglist")
+                c.contact_address
+                for c in Society.objects.all().select_related("contact_mailinglist")
             ],
             "moderated": True,
         },

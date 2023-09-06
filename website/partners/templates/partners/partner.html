@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n bleach_tags google_map_url thumbnail compress partner_cards static %}
+{% load i18n bleach_tags google_map_url thumbnail partner_cards static %}
 
 {% block title %}{{ partner.name }} — {% trans "Partners" %} — {% trans "Career" %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{{ partner.name }} — {% trans "Partners" %} — {% trans "Career" %} —
@@ -20,7 +20,7 @@
 
             <div class="row">
                 <div class="col-12 col-md-4">
-                    <img src="{% thumbnail partner.logo THUMBNAIL_SIZE_MEDIUM fit=False %}" alt="Logo {{ partner.name }}"/>
+                    <img src="{% thumbnail partner.logo "medium" %}" alt="Logo {{ partner.name }}"/>
 
                     <h4 class="mt-4">{% trans "Address" %}</h4>
                     <p>
@@ -100,7 +100,5 @@
 {% block js_body %}
     {{ block.super }}
     <script src="{% static "js/fancybox.umd.js" %}"></script>
-    {% compress js %}
-        <script type="text/javascript" src="{% static 'partners/js/main.js' %}"></script>
-    {% endcompress %}
+    <script type="text/javascript" src="{% static 'partners/js/main.js' %}"></script>
 {% endblock %}

@@ -2,7 +2,7 @@
 
 import django.core.validators
 from django.db import migrations, models
-import thabloid.models
+from thabloid.models.thabloid import thabloid_filename
 
 
 class Migration(migrations.Migration):
@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='thabloid',
             name='file',
-            field=models.FileField(upload_to=thabloid.models.thabloid_filename, validators=[django.core.validators.FileExtensionValidator(['.txt', '.pdf', '.jpg', '.jpeg', '.png'])]),
+            field=models.FileField(upload_to=thabloid_filename, validators=[django.core.validators.FileExtensionValidator(['.txt', '.pdf', '.jpg', '.jpeg', '.png'])]),
         ),
     ]

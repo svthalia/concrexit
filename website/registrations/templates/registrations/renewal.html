@@ -1,14 +1,11 @@
 {% extends "simple_page.html" %}
-{% load i18n django_bootstrap5 alert compress static payments %}
+{% load i18n django_bootstrap5 alert static payments %}
 
 {% block title %}{% trans "renewal"|capfirst %} — {{ block.super }}{% endblock %}
 
 {% block js_body %}
     {{ block.super }}
-    {% compress js %}
-        <script type="text/javascript"
-                src="{% static 'registrations/js/main.js' %}"></script>
-    {% endcompress %}
+    <script type="text/javascript" src="{% static 'registrations/js/main.js' %}"></script>
 {% endblock %}
 
 {% block page_title %}{% trans "renewal" %}{% endblock %}

@@ -8,8 +8,8 @@ on:
   pull_request:
 
 jobs:
-  codestyle:
-    name: Codestyle
+  linting:
+    name: Linting
     runs-on: ubuntu-latest
     steps:
       - name: Setup python
@@ -41,65 +41,8 @@ jobs:
       - name: Run black
         run: make blackcheck
 
-  linting:
-    name: Linting
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-
-      - name: Setup Poetry
-        uses: snok/install-poetry@v1
-
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Restore any cached Poetry dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-poetry-
-
-      - name: Install any new dependencies
-        run: poetry install
-        if: steps.cache.outputs.cache-hit != 'true'
-
-      - name: Run pylint
-        run: mkdir -p website/filepond-temp-uploads website/filepond-uploaded && make pylint
-
-  docstyle:
-    name: Docstring style
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-
-      - name: Setup Poetry
-        uses: snok/install-poetry@v1
-
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Restore any cached Poetry dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-poetry-
-
-      - name: Install any new dependencies
-        run: poetry install
-        if: steps.cache.outputs.cache-hit != 'true'
-
-      - name: Run pydocstyle
-        run: make pydocstyle
+      - name: Run Ruff
+        run: make ruff
 
   tests:
     name: Django Tests
@@ -136,7 +79,7 @@ jobs:
             ${{ runner.os }}-poetry-
 
       - name: Install any new dependencies
-        run: poetry install --extras "postgres"
+        run: poetry install --with postgres
         if: steps.cache.outputs.cache-hit != 'true'
 
       - name: Run tests
@@ -189,7 +132,7 @@ jobs:
             ${{ runner.os }}-poetry-
 
       - name: Install any new dependencies
-        run: poetry install --extras "postgres"
+        run: poetry install --with postgres
         if: steps.cache.outputs.cache-hit != 'true'
 
       - name: Run create fixtures

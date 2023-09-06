@@ -1,9 +1,9 @@
 from random import sample
 
 from django import template
-from django.conf import settings
 
 from partners.models import Partner
+from utils.media.services import fetch_thumbnails_db
 
 register = template.Library()
 
@@ -29,7 +29,13 @@ def render_partner_banners(context):
     chosen, rest = sequence[:4], sequence[4:]
     request.session["partner_sequence"] = rest + chosen
 
+    partners = [p for p in all_partners if p.id in chosen]
+    fetch_thumbnails_db(
+        [p.alternate_logo or p.logo for p in partners],
+        "medium",
+    )
+
     return {
-        "partners": [p for p in all_partners if p.id in chosen],
-        "thumb_size": settings.THUMBNAIL_SIZES["medium"],
+        "partners": partners,
+        "thumb_size": "medium",
     }

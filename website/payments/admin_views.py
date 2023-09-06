@@ -23,7 +23,8 @@ from django.views import View
 
 from sentry_sdk import capture_exception
 
-from payments import payables, services
+from payments import services
+from payments.payables import payables
 
 from .models import Batch, Payment, PaymentUser
 
@@ -55,13 +56,12 @@ class PaymentAdminView(View):
             )
             payable_obj.model.payment = result
             payable_obj.model.save()
-        # pylint: disable=broad-except
         except Exception as e:
             capture_exception(e)
             messages.error(
                 request,
                 _("Something went wrong paying %s: %s")
-                % (model_ngettext(payable_obj, 1), str(e)),
+                % (model_ngettext(payable_obj.model, 1), str(e)),
             )
             return redirect(f"admin:{app_label}_{model_name}_change", payable_obj.pk)
 

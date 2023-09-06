@@ -17,6 +17,6 @@ class AnnouncementMiddleware:
         for app in apps.get_app_configs():
             if hasattr(app, "announcements"):
                 announcements += app.announcements(request)
-        setattr(request, "_announcements", announcements)
+        request._announcements = announcements
 
         return self.get_response(request)

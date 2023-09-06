@@ -1,5 +1,5 @@
 {% extends "simple_page.html" %}
-{% load i18n static django_bootstrap5 compress alert %}
+{% load i18n static django_bootstrap5 alert %}
 
 {% block title %}{% trans "add bank account"|capfirst %} —
     {% trans "finances"|capfirst %} — {{ block.super }}{% endblock %}
@@ -149,10 +149,6 @@
 
 {% block js_body %}
     {{ block.super }}
-    {% compress js %}
-        <script type="text/javascript"
-                src="{% static "payments/js/signature_pad.min.js" %}"></script>
-        <script type="text/javascript"
-                src="{% static "payments/js/main.js" %}"></script>
-    {% endcompress %}
+    <script type="text/javascript" src="{% static "payments/js/signature_pad.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "payments/js/main.js" %}"></script>
 {% endblock js_body %}

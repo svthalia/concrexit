@@ -8,8 +8,9 @@ from django.utils import timezone
 
 from freezegun import freeze_time
 
-from payments import Payable, services
+from payments import services
 from payments.models import BankAccount, Batch, Payment, PaymentUser, validate_not_zero
+from payments.payables import Payable
 from payments.tests.__mocks__ import MockModel, MockPayable
 
 
@@ -547,5 +548,5 @@ class BlacklistedPaymentUserTest(TestCase):
         member.disallow_tpay()
         self.assertEqual(
             str(member.blacklistedpaymentuser),
-            "thom (blacklisted from using Thalia Pay)",
+            "Thom Wiggers (thom) (blacklisted from using Thalia Pay)",
         )

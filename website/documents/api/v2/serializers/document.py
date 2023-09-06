@@ -1,10 +1,10 @@
 from rest_framework.fields import SerializerMethodField
-from rest_framework.reverse import reverse
 
 from documents.models import Document
 from thaliawebsite.api.v2.serializers.cleaned_model_serializer import (
     CleanedModelSerializer,
 )
+from utils.media.services import get_media_url
 
 
 class DocumentSerializer(CleanedModelSerializer):
@@ -15,6 +15,12 @@ class DocumentSerializer(CleanedModelSerializer):
     url = SerializerMethodField("_url")
 
     def _url(self, instance):
-        return self.context["request"].build_absolute_uri(
-            reverse("documents:document", kwargs={"pk": instance.pk})
-        )
+        if instance.members_only and (
+            not self.context["request"].user.is_authenticated
+            or not self.context["request"].member.has_active_membership()
+        ):
+            return self.context["request"].build_absolute_uri(
+                instance.get_absolute_url()
+            )
+
+        return get_media_url(instance.file, absolute_url=True)
