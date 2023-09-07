@@ -15,7 +15,7 @@ from utils.snippets import datetime_to_lectureyear
 
 
 class MemberGroupMembershipInlineFormSet(forms.BaseInlineFormSet):
-    """Solely here for performance reasons.
+    """Here for performance reasons, and to filter out old memberships.
 
     Needed because the `__str__()` of `MemberGroupMembership` (which is
     displayed above each inline form) uses the username, name of the member
@@ -25,9 +25,14 @@ class MemberGroupMembershipInlineFormSet(forms.BaseInlineFormSet):
     def __init__(self, *args, **kwargs):
         """Initialize and set queryset."""
         super().__init__(*args, **kwargs)
-        self.queryset = self.queryset.select_related("member", "group").filter(
-            until=None
-        )
+        now = timezone.now()
+        self.queryset = self.queryset.select_related("member", "group")
+
+        # Show only memberships that are active now.
+        if not isinstance(self.instance, models.Board):
+            self.queryset = self.queryset.filter(
+                Q(until=None) | (Q(since__lte=now, until__gte=now))
+            )
 
 
 class MemberGroupMembershipInline(admin.StackedInline):

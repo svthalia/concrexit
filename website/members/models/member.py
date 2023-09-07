@@ -175,13 +175,16 @@ class Member(User):
 
     def get_member_groups(self):
         """Get the groups this user is a member of."""
+        now = timezone.now()
         return MemberGroup.objects.filter(
-            Q(membergroupmembership__member=self)
-            & (
-                Q(membergroupmembership__until=None)
-                | Q(membergroupmembership__until__gt=timezone.now())
-            )
-        ).exclude(active=False)
+            Q(membergroupmembership__member=self),
+            Q(membergroupmembership__until=None)
+            | Q(
+                membergroupmembership__since__lte=now,
+                membergroupmembership__until__gte=now,
+            ),
+            active=True,
+        )
 
     def get_absolute_url(self):
         return reverse("members:profile", args=[str(self.pk)])

@@ -7,13 +7,17 @@ from members.models.member import Member
 
 def generate_statistics() -> dict:
     """Generate statistics about number of members in each committee."""
+    now = timezone.now()
     committees = Committee.active_objects.annotate(
         member_count=(
             Count(
                 "members",
                 filter=(
                     Q(membergroupmembership__until=None)
-                    | Q(membergroupmembership__until__gte=timezone.now())
+                    | Q(
+                        membergroupmembership__since__lte=now,
+                        membergroupmembership__until__gte=now,
+                    )
                 ),
             )
         )
