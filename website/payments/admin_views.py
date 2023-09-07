@@ -61,7 +61,7 @@ class PaymentAdminView(View):
             messages.error(
                 request,
                 _("Something went wrong paying %s: %s")
-                % (model_ngettext(payable_obj, 1), str(e)),
+                % (model_ngettext(payable_obj.model, 1), str(e)),
             )
             return redirect(f"admin:{app_label}_{model_name}_change", payable_obj.pk)
 

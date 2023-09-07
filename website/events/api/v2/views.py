@@ -307,6 +307,9 @@ class ExternalEventDetailView(RetrieveAPIView):
 class MarkPresentAPIView(APIView):
     """A view that allows uses to mark their presence at an event using a secret token."""
 
+    permission_classes = [IsAuthenticatedOrTokenHasScope]
+    required_scopes = ["events:register"]
+
     def patch(self, request, *args, **kwargs):
         """Mark a user as present.
 
