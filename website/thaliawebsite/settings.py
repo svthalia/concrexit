@@ -873,90 +873,90 @@ THUMBNAILS = {
     },
     "SIZES": {
         "small": {
+            "FORMAT": "webp",
             "PROCESSORS": [
                 {
-                    "PATH": "thumbnails.processors.resize",
-                    "width": 300,
-                    "height": 300,
-                    "method": "fit",
+                    "PATH": "utils.media.processors.thumbnail",
+                    "size": (300, 300),
+                    "cover": True,
                 },
             ],
         },
         "medium": {
+            "FORMAT": "webp",
             "PROCESSORS": [
                 {
-                    "PATH": "thumbnails.processors.resize",
-                    "width": 600,
-                    "height": 600,
-                    "method": "fit",
+                    "PATH": "utils.media.processors.thumbnail",
+                    "size": (600, 600),
+                    "cover": True,
                 },
             ],
         },
         "large": {
+            "FORMAT": "webp",
             "PROCESSORS": [
                 {
-                    "PATH": "thumbnails.processors.resize",
-                    "width": 1200,
-                    "height": 900,
-                    "method": "fit",
+                    "PATH": "utils.media.processors.thumbnail",
+                    "size": (1200, 900),
+                    "cover": True,
                 },
             ],
         },
         "photo_medium": {
+            "FORMAT": "webp",
             "PROCESSORS": [
                 {
-                    "PATH": "thumbnails.processors.resize",
-                    "width": 1200,
-                    "height": 900,
+                    "PATH": "utils.media.processors.thumbnail",
+                    "size": (1200, 900),
                 },
             ],
         },
         "photo_large": {
+            "FORMAT": "webp",
             "PROCESSORS": [
                 {
-                    "PATH": "thumbnails.processors.resize",
-                    "width": 1920,
-                    "height": 1920,
+                    "PATH": "utils.media.processors.thumbnail",
+                    "size": (1920, 1920),
                 },
             ],
         },
         "avatar_large": {
+            "FORMAT": "webp",
             "PROCESSORS": [
                 {
-                    "PATH": "thumbnails.processors.resize",
-                    "width": 900,
-                    "height": 900,
-                    "method": "fit",
+                    "PATH": "utils.media.processors.thumbnail",
+                    "size": (900, 900),
+                    "cover": True,
                 },
             ],
         },
         "slide_small": {
+            "FORMAT": "webp",
             "PROCESSORS": [
                 {
-                    "PATH": "thumbnails.processors.resize",
-                    "width": 500,
-                    "height": 108,
-                    "method": "fit",
+                    "PATH": "utils.media.processors.thumbnail",
+                    "size": (500, 108),
+                    "cover": True,
                 },
             ],
         },
         "slide_medium": {
+            "FORMAT": "webp",
             "PROCESSORS": [
                 {
-                    "PATH": "thumbnails.processors.resize",
-                    "width": 1000,
-                    "height": 215,
-                    "method": "fit",
+                    "PATH": "utils.media.processors.thumbnail",
+                    "size": (1000, 215),
+                    "cover": True,
                 },
             ],
         },
         "slide": {
+            "FORMAT": "webp",
             "PROCESSORS": [
                 {
-                    "PATH": "thumbnails.processors.resize",
-                    "width": 200,
-                    "height": 430,
-                    "method": "fit",
+                    "PATH": "utils.media.processors.thumbnail",
+                    "size": (2000, 430),
+                    "cover": True,
                 },
             ],
         },
