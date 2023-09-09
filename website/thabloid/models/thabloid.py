@@ -40,7 +40,9 @@ class Thabloid(models.Model):
         validators=[FileExtensionValidator(["pdf"])],
     )
 
-    cover = models.ImageField(upload_to=thabloid_cover_filename)
+    cover = models.ImageField(
+        upload_to=thabloid_cover_filename, resize_source_to="source"
+    )
 
     class Meta:
         """Meta class for Thabloid model."""

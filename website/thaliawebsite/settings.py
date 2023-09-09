@@ -965,9 +965,18 @@ THUMBNAILS = {
             "PROCESSORS": [
                 {
                     "PATH": "utils.media.processors.process_upload",
-                    "width": 8_000,
-                    "height": 8_000,
+                    "size": (8_000, 8_000),
                     "format": "jpg",
+                }
+            ],
+        },
+        "source_png": {
+            "FORMAT": "png",
+            "PROCESSORS": [
+                {
+                    "PATH": "utils.media.processors.process_upload",
+                    "size": (8_000, 8_000),
+                    "format": "png",
                 }
             ],
         },
