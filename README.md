@@ -21,7 +21,7 @@ Optional, but recommended: follow the tutorial! It can be found by going to the 
 
 The Thabloid dependencies are less important. If you don't intall them, the only thing that doesn't work is creating Thabloid cover images.
 
-## Useful git commands
+### Useful git commands
 
 - `git push` to push your branch to github
 - `git switch -c <branch name>` to create a branch to work on
@@ -32,10 +32,10 @@ The Thabloid dependencies are less important. If you don't intall them, the only
 - `git rebase origin/master` to get your branch up to date with all merges
 - `git status` to check the current status of your branch
 
+
 ### Pillow dependencies
 
 
-### Native dependencies
 Pillow dependencies are used for the thumbnail generation. The website will give lots of errors and work weirdly if you don't install these native dependencies.
 
 For Ubuntu, use:
@@ -125,7 +125,7 @@ These are the `calendarjs` and `facedetection` APIs. The `calendarjs` API is onl
 > We had developed an aversion against Concrete5, its community and the horrible documentation (never mention it's maintainer, Andrew Embler).
 > The CMS was never meant to do the job we wanted it to do.
 > Thus we initiated Project #concrexit (Brexit was in the news at that time, update fall 2019: 4 years later it still is) to make things easy and fun again.
-> The name eventually stuck._
+> The name eventually stuck.
 
 ### Scope
 The purpose of this website is to provide a dedicated platform for the members of Thalia.
