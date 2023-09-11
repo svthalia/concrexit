@@ -60,6 +60,38 @@ def ledger_id_for_payable_model(obj):
     return None
 
 
+class MoneybirdProject(models.Model):
+    name = models.CharField(
+        _("Name"),
+        max_length=255,
+        blank=False,
+        null=False,
+        unique=True,
+        db_index=True,
+    )
+
+    moneybird_id = models.CharField(
+        _("Moneybird ID"),
+        max_length=255,
+        blank=True,
+        null=True,
+    )
+
+    class Meta:
+        verbose_name = _("moneybird project")
+        verbose_name_plural = _("moneybird projects")
+
+    def __str__(self):
+        return f"Moneybird project {self.name}"
+
+    def to_moneybird(self):
+        return {
+            "project": {
+                "name": self.name,
+            }
+        }
+
+
 class MoneybirdContact(models.Model):
     member = models.OneToOneField(
         Member,
@@ -202,8 +234,13 @@ class MoneybirdExternalInvoice(models.Model):
         invoice_date = date_for_payable_model(self.payable_object).strftime("%Y-%m-%d")
 
         project_name = project_name_for_payable_model(self.payable_object)
+        project = MoneybirdProject.objects.get_or_create(name=project_name)
+        if project.moneybird_id is None:
+            response = moneybird.create_project(project.to_moneybird())
+            project.moneybird_id = response["id"]
+            project.save()
 
-        project_id = moneybird.get_or_create_project(project_name)
+        project_id = project.moneybird_id
 
         ledger_id = ledger_id_for_payable_model(self.payable_object)
 
