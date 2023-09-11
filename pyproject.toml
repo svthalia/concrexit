@@ -66,7 +66,7 @@ pydenticon = "0.3.1"
 Faker = "18.13.0"
 coverage = {extras = ["toml"], version = "^7.0.0"}
 isort = "5.12.0"
-black = "23.9.0"
+black = "23.9.1"
 ruff = "0.0.272"
 pre-commit = "3.4.0"
 pyparsing = "^3.0.9"
