@@ -15,15 +15,8 @@ class MoneybirdAPIService:
     def delete_contact(self, contact_id):
         self._administration.delete(f"contacts/{contact_id}")
 
-    def get_or_create_project(self, name):
-        if name is None:
-            return None
-
-        for project in self._administration.get("projects"):
-            if project["name"] == name:
-                return project["id"]
-
-        return self._administration.post("projects", {"project": {"name": name}})["id"]
+    def create_project(self, name):
+        return self._administration.post("projects", {"project": {"name": name}})
 
     def create_external_sales_invoice(self, invoice_data):
         return self._administration.post("external_sales_invoices", invoice_data)
