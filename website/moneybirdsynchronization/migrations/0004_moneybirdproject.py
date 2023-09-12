@@ -69,4 +69,5 @@ class Migration(migrations.Migration):
                 "verbose_name_plural": "moneybird projects",
             },
         ),
+        migrations.RunPython(create_moneybird_projects, migrations.RunPython.noop),
     ]
