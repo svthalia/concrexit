@@ -16,9 +16,13 @@ def create_moneybird_projects(apps, schema_editor):
 
     # Get all projects from the API.
     projects = []
+    page_index = 1
     while True:
-        page = moneybird._administration.get("projects", params={"per_page": 100})
+        page = moneybird._administration.get(
+            "projects", params={"per_page": 100, "page": page_index}
+        )
         projects.extend(page)
+        page_index += 1
         if len(page) < 100:
             break
 
