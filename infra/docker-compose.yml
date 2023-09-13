@@ -49,7 +49,7 @@ services:
     image: redis:7.2-alpine
     restart: always
     healthcheck:
-      test: ["cmd-shell", "redis-cli ping | grep pong"]
+      test: ["CMD-SHELL", "redis-cli ping | grep pong"]
       interval: 2s
       timeout: 2s
       retries: 10
@@ -68,6 +68,12 @@ services:
         condition: service_healthy
       concrexit:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "celery", "--app", "thaliawebsite", "status"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+
 
 volumes:
   concrexit-media:
