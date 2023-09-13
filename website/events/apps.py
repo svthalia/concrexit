@@ -11,6 +11,7 @@ class EventsConfig(AppConfig):
     verbose_name = _("Events")
 
     def ready(self):
+        from . import signals  # noqa: F401
         from .payables import register
 
         register()
