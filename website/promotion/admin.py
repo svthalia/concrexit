@@ -58,4 +58,4 @@ class PromotionRequestAdmin(admin.ModelAdmin):
 
 @admin.register(PromotionChannel)
 class PromotionChannelAdmin(ModelAdmin):
-    pass
+    list_display = ("name", "publisher_reminder_email")

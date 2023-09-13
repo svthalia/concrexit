@@ -11,6 +11,11 @@ from thaliawebsite.settings import PROMO_PUBLISH_DATE_TIMEDELTA
 
 class PromotionChannel(models.Model):
     name = models.CharField(verbose_name=_("Channel name"), max_length=100)
+    publisher_reminder_email = models.EmailField(
+        verbose_name="Publisher Reminder Email",
+        blank=True,
+        null=True,
+    )
 
     def __str__(self):
         return str(self.name)
