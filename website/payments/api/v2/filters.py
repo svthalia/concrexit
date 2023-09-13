@@ -1,4 +1,4 @@
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ValidationError
 
 from rest_framework import filters
 
@@ -78,8 +78,8 @@ class PaymentSettledFilter(filters.BaseFilterBackend):
         try:
             if strtobool(settled):
                 return queryset.filter(batch__processed=True)
-        except ObjectDoesNotExist:
-            raise Exception("Queryset could not be filtered.")
+        except ValueError as e:
+            raise ValidationError("Invalid filter value.") from e
 
         return queryset.exclude(batch__processed=True)
 

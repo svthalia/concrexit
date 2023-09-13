@@ -1,4 +1,4 @@
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ValidationError
 
 from rest_framework import filters
 
@@ -14,8 +14,8 @@ class ShiftActiveFilter(filters.BaseFilterBackend):
         if active is not None:
             try:
                 queryset = queryset.filter(active=strtobool(active))
-            except ObjectDoesNotExist:
-                raise Exception("Queryset could not be filtered.")
+            except ValueError as e:
+                raise ValidationError("Invalid filter value.") from e
 
         return queryset
 
@@ -42,8 +42,8 @@ class ShiftLockedFilter(filters.BaseFilterBackend):
         if locked is not None:
             try:
                 queryset = queryset.filter(locked=strtobool(locked))
-            except ObjectDoesNotExist:
-                raise Exception("Queryset could not be filtered.")
+            except ValueError as e:
+                raise ValidationError("Invalid filter value.") from e
 
         return queryset
 

@@ -1,4 +1,4 @@
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ValidationError
 
 from rest_framework import filters
 
@@ -14,8 +14,8 @@ class PublishedFilter(filters.BaseFilterBackend):
         if published is not None:
             try:
                 queryset = queryset.filter(published=strtobool(published))
-            except ObjectDoesNotExist:
-                raise Exception("Queryset could not be filtered.")
+            except ValueError as e:
+                raise ValidationError("Invalid filter value.") from e
 
         return queryset
 
@@ -45,8 +45,8 @@ class EventRegistrationCancelledFilter(filters.BaseFilterBackend):
         try:
             if strtobool(cancelled):
                 return queryset.exclude(date_cancelled=None)
-        except ObjectDoesNotExist:
-            raise Exception("Queryset could not be filtered.")
+        except ValueError as e:
+            raise ValidationError("Invalid filter value.") from e
 
         return queryset.filter(date_cancelled=None)
 
@@ -76,8 +76,8 @@ class EventRegistrationQueuedFilter(filters.BaseFilterBackend):
         try:
             if strtobool(queued):
                 return queryset.exclude(queue_position=None)
-        except ObjectDoesNotExist:
-            raise Exception("Queryset could not be filtered.")
+        except ValueError as e:
+            raise ValidationError("Invalid filter value.") from e
 
         return queryset.filter(queue_position=None)
 
