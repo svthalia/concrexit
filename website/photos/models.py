@@ -50,8 +50,6 @@ class Photo(models.Model):
         help_text=_("This does not modify the original image file."),
     )
 
-    hidden = models.BooleanField(_("hidden"), default=False)
-
     _digest = models.CharField(
         "digest",
         max_length=40,

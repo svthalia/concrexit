@@ -47,7 +47,7 @@ class YourPhotosView(LoginRequiredMixin, PagedView):
             photos = photos.filter(album__date__lte=member.latest_membership.until)
 
         # Actually match the reference faces.
-        photos = photos.filter(album__hidden=False, hidden=False).filter(
+        photos = photos.filter(album__hidden=False).filter(
             facedetectionphoto__encodings__matches__reference__in=reference_faces,
         )
 
