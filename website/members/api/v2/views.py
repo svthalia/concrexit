@@ -67,7 +67,9 @@ class MemberDetailView(RetrieveAPIView):
     """Returns details of a member."""
 
     serializer_class = MemberSerializer
-    queryset = Member.objects.all()
+    queryset = Member.objects.all().prefetch_related(
+        "membergroupmembership_set", "mentorship_set"
+    )
     permission_classes = [
         IsAuthenticatedOrTokenHasScope,
     ]
@@ -89,4 +91,4 @@ class MemberCurrentView(MemberDetailView, UpdateAPIView):
     }
 
     def get_object(self):
-        return get_object_or_404(Member, pk=self.request.user.pk)
+        return get_object_or_404(MemberDetailView.queryset, pk=self.request.user.pk)
