@@ -13,6 +13,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_healthy
 
   nginx:
     image: ghcr.io/svthalia/concrexit-nginx:${TAG}
@@ -42,6 +44,30 @@ services:
       interval: 2s
       timeout: 2s
       retries: 30
+
+  redis:
+    image: redis:7.2-alpine
+    restart: always
+    healthcheck:
+      test: ["cmd-shell", "redis-cli ping | grep pong"]
+      interval: 2s
+      timeout: 2s
+      retries: 10
+
+  worker:
+    image: ghcr.io/svthalia/concrexit:${TAG}
+    command: /app/worker-entrypoint.sh
+    env_file:
+      - env.public
+      - env.secret
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      concrexit:
+        condition: service_healthy
 
 volumes:
   concrexit-media:

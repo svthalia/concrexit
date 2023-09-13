@@ -60,8 +60,11 @@ RUN apt-get update && \
 COPY infra/concrexit/cronjobs /cronjobs
 RUN crontab /cronjobs && rm /cronjobs
 
-COPY infra/concrexit/docker-entrypoint.sh /app/docker-entrypoint.sh
-CMD [ "/app/docker-entrypoint.sh" ]
+COPY infra/concrexit/server-entrypoint.sh /app/server-entrypoint.sh
+COPY infra/concrexit/worker-entrypoint.sh /app/worker-entrypoint.sh
+
+# CMD can be set to /app/worker-entrypoint.sh for a celery worker container.
+CMD [ "/app/server-entrypoint.sh" ]
 
 COPY --from=build-venv /venv /venv
 COPY --from=build-scss /app/website /app/website
