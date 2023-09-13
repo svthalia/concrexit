@@ -1,3 +1,5 @@
+from django.core.exceptions import ObjectDoesNotExist
+
 from rest_framework import filters
 
 from utils.snippets import strtobool
@@ -10,7 +12,10 @@ class PublishedFilter(filters.BaseFilterBackend):
         published = request.query_params.get("published", None)
 
         if published is not None:
-            queryset = queryset.filter(published=strtobool(published))
+            try:
+                queryset = queryset.filter(published=strtobool(published))
+            except ObjectDoesNotExist:
+                raise Exception("Queryset could not be filtered.")
 
         return queryset
 
@@ -37,8 +42,11 @@ class EventRegistrationCancelledFilter(filters.BaseFilterBackend):
         if cancelled is None:
             return queryset
 
-        if strtobool(cancelled):
-            return queryset.exclude(date_cancelled=None)
+        try:
+            if strtobool(cancelled):
+                return queryset.exclude(date_cancelled=None)
+        except ObjectDoesNotExist:
+            raise Exception("Queryset could not be filtered.")
 
         return queryset.filter(date_cancelled=None)
 
@@ -65,8 +73,11 @@ class EventRegistrationQueuedFilter(filters.BaseFilterBackend):
         if queued is None:
             return queryset
 
-        if strtobool(queued):
-            return queryset.exclude(queue_position=None)
+        try:
+            if strtobool(queued):
+                return queryset.exclude(queue_position=None)
+        except ObjectDoesNotExist:
+            raise Exception("Queryset could not be filtered.")
 
         return queryset.filter(queue_position=None)
 

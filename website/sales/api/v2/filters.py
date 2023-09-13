@@ -1,3 +1,5 @@
+from django.core.exceptions import ObjectDoesNotExist
+
 from rest_framework import filters
 
 from utils.snippets import extract_date_range, strtobool
@@ -10,7 +12,10 @@ class ShiftActiveFilter(filters.BaseFilterBackend):
         active = request.query_params.get("active", None)
 
         if active is not None:
-            queryset = queryset.filter(active=strtobool(active))
+            try:
+                queryset = queryset.filter(active=strtobool(active))
+            except ObjectDoesNotExist:
+                raise Exception("Queryset could not be filtered.")
 
         return queryset
 
@@ -35,7 +40,10 @@ class ShiftLockedFilter(filters.BaseFilterBackend):
         locked = request.query_params.get("locked", None)
 
         if locked is not None:
-            queryset = queryset.filter(locked=strtobool(locked))
+            try:
+                queryset = queryset.filter(locked=strtobool(locked))
+            except ObjectDoesNotExist:
+                raise Exception("Queryset could not be filtered.")
 
         return queryset
 

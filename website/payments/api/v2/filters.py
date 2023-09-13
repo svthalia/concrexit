@@ -1,3 +1,5 @@
+from django.core.exceptions import ObjectDoesNotExist
+
 from rest_framework import filters
 
 from utils.snippets import extract_date_range, strtobool
@@ -73,8 +75,11 @@ class PaymentSettledFilter(filters.BaseFilterBackend):
         if settled is None:
             return queryset
 
-        if strtobool(settled):
-            return queryset.filter(batch__processed=True)
+        try:
+            if strtobool(settled):
+                return queryset.filter(batch__processed=True)
+        except ObjectDoesNotExist:
+            raise Exception("Queryset could not be filtered.")
 
         return queryset.exclude(batch__processed=True)
 
