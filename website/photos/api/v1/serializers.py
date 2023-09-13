@@ -21,7 +21,7 @@ class PhotoRetrieveSerializer(CleanedModelSerializer):
         """Meta class for PhotoRetrieveSerializer."""
 
         model = Photo
-        fields = ("pk", "rotation", "hidden", "album", "file")
+        fields = ("pk", "rotation", "album", "file")
 
 
 class PhotoCreateSerializer(CleanedModelSerializer):
@@ -31,7 +31,7 @@ class PhotoCreateSerializer(CleanedModelSerializer):
         """Met class for PhotoCreateSerializer."""
 
         model = Photo
-        fields = ("pk", "rotation", "hidden", "album", "file")
+        fields = ("pk", "rotation", "album", "file")
 
 
 class AlbumSerializer(CleanedModelSerializer):
