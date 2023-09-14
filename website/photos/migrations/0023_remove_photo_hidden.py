@@ -4,7 +4,7 @@ from django.db import migrations
 
 
 def delete_hidden(apps, schema_editor):
-    Photo = apps.get_model = apps.get_model("photos", "Photo")
+    Photo = apps.get_model("photos", "Photo")
     for hidden in Photo.objects.filter(hidden=True):
         hidden.delete()
 
@@ -16,8 +16,4 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunPython(delete_hidden, migrations.RunPython.noop),
-        migrations.RemoveField(
-            model_name="photo",
-            name="hidden",
-        ),
     ]
