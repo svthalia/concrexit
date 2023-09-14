@@ -1,4 +1,5 @@
 from rest_framework import filters
+from rest_framework.exceptions import ValidationError
 
 from utils.snippets import extract_date_range, strtobool
 
@@ -10,7 +11,10 @@ class ShiftActiveFilter(filters.BaseFilterBackend):
         active = request.query_params.get("active", None)
 
         if active is not None:
-            queryset = queryset.filter(active=strtobool(active))
+            try:
+                queryset = queryset.filter(active=strtobool(active))
+            except ValueError as e:
+                raise ValidationError({"active": "Invalid filter value."}) from e
 
         return queryset
 
@@ -35,7 +39,10 @@ class ShiftLockedFilter(filters.BaseFilterBackend):
         locked = request.query_params.get("locked", None)
 
         if locked is not None:
-            queryset = queryset.filter(locked=strtobool(locked))
+            try:
+                queryset = queryset.filter(locked=strtobool(locked))
+            except ValueError as e:
+                raise ValidationError({"locked": "Invalid filter value."}) from e
 
         return queryset
 

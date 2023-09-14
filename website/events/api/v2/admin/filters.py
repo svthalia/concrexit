@@ -1,4 +1,5 @@
 from rest_framework import filters
+from rest_framework.exceptions import ValidationError
 
 from utils.snippets import strtobool
 
@@ -10,7 +11,10 @@ class PublishedFilter(filters.BaseFilterBackend):
         published = request.query_params.get("published", None)
 
         if published is not None:
-            queryset = queryset.filter(published=strtobool(published))
+            try:
+                queryset = queryset.filter(published=strtobool(published))
+            except ValueError as e:
+                raise ValidationError({"published": "Invalid filter value."}) from e
 
         return queryset
 
@@ -37,8 +41,11 @@ class EventRegistrationCancelledFilter(filters.BaseFilterBackend):
         if cancelled is None:
             return queryset
 
-        if strtobool(cancelled):
-            return queryset.exclude(date_cancelled=None)
+        try:
+            if strtobool(cancelled):
+                return queryset.exclude(date_cancelled=None)
+        except ValueError as e:
+            raise ValidationError({"cancelled": "Invalid filter value."}) from e
 
         return queryset.filter(date_cancelled=None)
 
@@ -65,8 +72,11 @@ class EventRegistrationQueuedFilter(filters.BaseFilterBackend):
         if queued is None:
             return queryset
 
-        if strtobool(queued):
-            return queryset.exclude(queue_position=None)
+        try:
+            if strtobool(queued):
+                return queryset.exclude(queue_position=None)
+        except ValueError as e:
+            raise ValidationError({"queued": "Invalid filter value."}) from e
 
         return queryset.filter(queue_position=None)
 
