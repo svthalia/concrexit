@@ -17,7 +17,7 @@ class MoneybirdAPIService:
 
     def get_contact_by_customer_id(self, member):
         try:
-            self._administration.get(f"contacts/customer_id/C-{self.member.pk}")
+            self._administration.get(f"contacts/customer_id/C-{member.pk}")
         except Administration.NotFound:
             return None
 
