@@ -1,6 +1,5 @@
-from django.core.exceptions import ValidationError
-
 from rest_framework import filters
+from rest_framework.exceptions import ValidationError
 
 from utils.snippets import strtobool
 
@@ -15,7 +14,7 @@ class PublishedFilter(filters.BaseFilterBackend):
             try:
                 queryset = queryset.filter(published=strtobool(published))
             except ValueError as e:
-                raise ValidationError("Invalid filter value.") from e
+                raise ValidationError({"published": "Invalid filter value."}) from e
 
         return queryset
 
@@ -46,7 +45,7 @@ class EventRegistrationCancelledFilter(filters.BaseFilterBackend):
             if strtobool(cancelled):
                 return queryset.exclude(date_cancelled=None)
         except ValueError as e:
-            raise ValidationError("Invalid filter value.") from e
+            raise ValidationError({"cancelled": "Invalid filter value."}) from e
 
         return queryset.filter(date_cancelled=None)
 
@@ -77,7 +76,7 @@ class EventRegistrationQueuedFilter(filters.BaseFilterBackend):
             if strtobool(queued):
                 return queryset.exclude(queue_position=None)
         except ValueError as e:
-            raise ValidationError("Invalid filter value.") from e
+            raise ValidationError({"queued": "Invalid filter value."}) from e
 
         return queryset.filter(queue_position=None)
 

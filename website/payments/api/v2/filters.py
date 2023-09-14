@@ -1,6 +1,5 @@
-from django.core.exceptions import ValidationError
-
 from rest_framework import filters
+from rest_framework.exceptions import ValidationError
 
 from utils.snippets import extract_date_range, strtobool
 
@@ -79,7 +78,7 @@ class PaymentSettledFilter(filters.BaseFilterBackend):
             if strtobool(settled):
                 return queryset.filter(batch__processed=True)
         except ValueError as e:
-            raise ValidationError("Invalid filter value.") from e
+            raise ValidationError({"settled": "Invalid filter value."}) from e
 
         return queryset.exclude(batch__processed=True)
 
