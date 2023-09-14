@@ -225,11 +225,10 @@ class MoneybirdExternalInvoice(models.Model):
                 member=self.payable.payment_payer
             )
             if moneybird_contact.moneybird_id is None:
-                response = moneybird.create_contact(moneybird_contact.to_moneybird())
-                moneybird_contact.moneybird_id = response["id"]
-                moneybird_contact.save()
+                # I know this is ugly, but I don't want to totally refactor the app.
+                from moneybirdsynchronization.services import create_or_update_contact
 
-            contact_id = moneybird_contact.moneybird_id
+                moneybird_contact = create_or_update_contact(moneybird_contact.member)
 
         invoice_date = date_for_payable_model(self.payable_object).strftime("%Y-%m-%d")
 
