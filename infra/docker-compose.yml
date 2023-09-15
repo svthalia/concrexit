@@ -31,7 +31,7 @@ services:
         condition: service_started
 
   postgres:
-    image: postgres:15.4-alpine
+    image: postgres:16.0-alpine
     env_file:
       - env.public
     volumes:
