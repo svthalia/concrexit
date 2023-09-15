@@ -20,9 +20,9 @@ from events.api.v2.serializers.event import EventListSerializer, EventSerializer
 from events.api.v2.serializers.event_registration import EventRegistrationSerializer
 from events.api.v2.serializers.external_event import ExternalEventSerializer
 from events.exceptions import RegistrationError
-from events.models import Event, EventRegistration
-from events.models.external_event import ExternalEvent
+from events.models import Event, EventRegistration, ExternalEvent
 from events.services import is_user_registered
+from members.models import Membership
 from thaliawebsite.api.v2.permissions import IsAuthenticatedOrTokenHasScopeForMethod
 from thaliawebsite.api.v2.serializers import EmptySerializer
 from utils.media.services import fetch_thumbnails_db
@@ -120,9 +120,17 @@ class EventRegistrationsView(ListAPIView):
 
     def get_queryset(self):
         if self.event:
-            return EventRegistration.objects.filter(
-                event=self.event, date_cancelled=None
-            ).select_related("member__profile")[: self.event.max_participants]
+            return (
+                EventRegistration.objects.filter(event=self.event, date_cancelled=None)
+                .select_related("member__profile")
+                .prefetch_related(
+                    Prefetch(
+                        "member__membership_set",
+                        queryset=Membership.objects.order_by("-since")[:1],
+                        to_attr="_latest_membership",
+                    ),
+                )[: self.event.max_participants]
+            )
         return EventRegistration.objects.none()
 
     def get_serializer(self, *args, **kwargs):
