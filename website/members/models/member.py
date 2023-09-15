@@ -7,6 +7,7 @@ from django.contrib.auth.models import User, UserManager
 from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 
 from activemembers.models import MemberGroup, MemberGroupMembership
@@ -96,9 +97,11 @@ class Member(User):
     def __str__(self):
         return f"{self.get_full_name()} ({self.username})"
 
-    @property
+    @cached_property
     def current_membership(self):
         """Return the currently active membership of the user, one if not active.
+
+        Warning: this property is cached.
 
         :return: the currently active membership or None
         :rtype: Membership or None
@@ -108,9 +111,12 @@ class Member(User):
             return None
         return membership
 
-    @property
+    @cached_property
     def latest_membership(self):
-        """Get the most recent membership of this user."""
+        """Get the most recent membership of this user.
+
+        Warning: this property is cached.
+        """
         if hasattr(self, "_latest_membership"):
             return self._latest_membership[0]
 
