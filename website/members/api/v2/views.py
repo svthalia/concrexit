@@ -91,4 +91,4 @@ class MemberCurrentView(MemberDetailView, UpdateAPIView):
     }
 
     def get_object(self):
-        return get_object_or_404(MemberDetailView.queryset, pk=self.request.user.pk)
+        return get_object_or_404(self.get_queryset(), pk=self.request.user.pk)
