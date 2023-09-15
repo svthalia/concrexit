@@ -97,14 +97,21 @@ class Member(User):
     def __str__(self):
         return f"{self.get_full_name()} ({self.username})"
 
-    @cached_property
+    def refresh_from_db(self, **kwargs):
+        # Clear the cached latest_membership
+        if hasattr(self, "_latest_membership"):
+            del self._latest_membership
+        if hasattr(self, "latest_membership"):
+            del self.latest_membership
+
+        return super().refresh_from_db(**kwargs)
+
+    @property
     def current_membership(self):
-        """Return the currently active membership of the user, one if not active.
+        """Return the currently active membership of the user, None if not active.
 
-        Warning: this property is cached.
-
-        :return: the currently active membership or None
-        :rtype: Membership or None
+        Warning: this property uses the *cached* `latest_membership`.
+        You can use `refresh_from_db` to clear it.
         """
         membership = self.latest_membership
         if membership and not membership.is_active():
@@ -116,7 +123,9 @@ class Member(User):
         """Get the most recent membership of this user.
 
         Warning: this property is cached.
+        You can use `refresh_from_db` to clear it.
         """
+        # Use membership from a Prefetch object if available.
         if hasattr(self, "_latest_membership"):
             return self._latest_membership[0]
 
