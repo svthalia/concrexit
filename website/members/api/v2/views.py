@@ -1,5 +1,6 @@
 """API views of the activemembers app."""
 
+from django.db.models import Prefetch
 from django.shortcuts import get_object_or_404
 
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
@@ -12,7 +13,7 @@ from members.api.v2.serializers.member import (
     MemberListSerializer,
     MemberSerializer,
 )
-from members.models import Member
+from members.models import Member, Membership
 from thaliawebsite.api.openapi import OAuthAutoSchema
 from thaliawebsite.api.v2.permissions import IsAuthenticatedOrTokenHasScopeForMethod
 from utils.media.services import fetch_thumbnails_db
@@ -25,7 +26,14 @@ class MemberListView(ListAPIView):
     queryset = (
         Member.objects.all()
         .select_related("profile")
-        .prefetch_related("membership_set")
+        .prefetch_related(
+            "membership_set",
+            Prefetch(
+                "membership_set",
+                queryset=Membership.objects.order_by("-since")[:1],
+                to_attr="_latest_membership",
+            ),
+        )
     )
 
     def get_serializer(self, *args, **kwargs):
@@ -59,7 +67,9 @@ class MemberDetailView(RetrieveAPIView):
     """Returns details of a member."""
 
     serializer_class = MemberSerializer
-    queryset = Member.objects.all()
+    queryset = Member.objects.all().prefetch_related(
+        "membergroupmembership_set", "mentorship_set"
+    )
     permission_classes = [
         IsAuthenticatedOrTokenHasScope,
     ]
@@ -81,4 +91,4 @@ class MemberCurrentView(MemberDetailView, UpdateAPIView):
     }
 
     def get_object(self):
-        return get_object_or_404(Member, pk=self.request.user.pk)
+        return get_object_or_404(self.get_queryset(), pk=self.request.user.pk)
