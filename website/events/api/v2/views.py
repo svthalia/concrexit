@@ -56,6 +56,7 @@ class EventListView(ListAPIView):
                 "organisers__board",
                 "organisers__committee",
                 "organisers__society",
+                "organisers__contact_mailinglist",
             )
         )
         if self.request.member:
