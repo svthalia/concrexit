@@ -502,8 +502,9 @@ class Renewal(Entry):
                 _("You already have a renewal request queued for review.")
             )
 
-        # Invalid form for study and honorary members
+        self.member.refresh_from_db()
         current_membership = self.member.current_membership
+        # Invalid form for study and honorary members
         if current_membership is not None and current_membership.until is None:
             errors.update(
                 {
