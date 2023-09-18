@@ -54,6 +54,15 @@ class MemberGroup(models.Model):
         Permission,
         verbose_name=_("permissions"),
         blank=True,
+        related_name="permissions_groups",
+    )
+
+    chair_permissions = models.ManyToManyField(
+        Permission,
+        verbose_name=_("chair permissions"),
+        blank=True,
+        help_text="Permissions only for certain members of a committee",
+        related_name="chair_permissions_groups",
     )
 
     since = models.DateField(
@@ -261,6 +270,12 @@ class MemberGroupMembership(models.Model):
     chair = models.BooleanField(
         verbose_name=_("Chair of the group"),
         help_text=_("There can only be one chair at a time!"),
+        default=False,
+    )
+
+    has_chair_permissions = models.BooleanField(
+        verbose_name=_("Person with chair permissions"),
+        help_text=_("Give this member chair permission"),
         default=False,
     )
 
