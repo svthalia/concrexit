@@ -329,6 +329,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 # https://docs.celeryq.dev/en/stable/userguide/configuration.html#configuration
 CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", "redis://127.0.0.1:6379")
 
+# See https://docs.celeryq.dev/en/stable/getting-started/backends-and-brokers/redis.html#caveats
+CELERY_BROKER_TRANSPORT_OPTIONS = {"visibility_timeout": 18000}
+
 
 ###############################################################################
 # Email settings
