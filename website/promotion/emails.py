@@ -27,18 +27,18 @@ def send_weekly_overview():
 
 
 def send_daily_overview():
-    for channel in PromotionChannel.objects.filter(
-        publisher_reminder_email__isnull=False
-    ):
+    for email in PromotionChannel.objects.values_list(
+        "publisher_reminder_email", flat=True
+    ).distinct():
         daily_promotion = PromotionRequest.objects.filter(
-            channel=channel,
+            channel__publisher_reminder_email=email,
             status=PromotionRequest.FINISHED,
             publish_date=timezone.now(),
-        )
+        ).order_by("channel__name")
 
         if daily_promotion.exists():
             send_email(
-                to=[channel.publisher_reminder_email],
+                to=[email],
                 subject="[PROMO] Daily overview",
                 txt_template="promotion/email/daily_overview.txt",
                 context={
