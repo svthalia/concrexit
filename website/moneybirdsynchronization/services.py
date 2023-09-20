@@ -18,17 +18,25 @@ def create_or_update_contact(member):
     moneybird = get_moneybird_api_service()
 
     if moneybird_contact.moneybird_id is None:
-        # Push the contact to Moneybird
-        response = moneybird.create_contact(moneybird_contact.to_moneybird())
-        moneybird_contact.moneybird_id = response["id"]
-        moneybird_contact.save()
+        # Check if the contact already exists in Moneybird somehow.
+        response = moneybird.get_contact_by_customer_id(member)
+        if response is None:
+            # Push the contact to Moneybird.
+            response = moneybird.create_contact(moneybird_contact.to_moneybird())
+            moneybird_contact.moneybird_id = response["id"]
+        else:
+            # Link the existing moneybird contact. Then update the data.
+            moneybird_contact.moneybird_id = response["id"]
+            response = moneybird.update_contact(
+                moneybird_contact.moneybird_id, moneybird_contact.to_moneybird()
+            )
     else:
         # Update the contact data (right now we always do this, but we could use the version to check if it's needed)
         response = moneybird.update_contact(
             moneybird_contact.moneybird_id, moneybird_contact.to_moneybird()
         )
-        moneybird_contact.save()
 
+    moneybird_contact.save()
     return moneybird_contact
 
 

@@ -101,11 +101,10 @@ class PhotoAdmin(admin.ModelAdmin):
     list_display = (
         "__str__",
         "album",
-        "hidden",
         "num_likes",
     )
     search_fields = ("file",)
-    list_filter = ("album", "hidden")
+    list_filter = ("album",)
     exclude = ("_digest",)
 
     inlines = [

@@ -1,4 +1,5 @@
 from rest_framework import filters
+from rest_framework.exceptions import ValidationError
 
 from utils.snippets import extract_date_range, strtobool
 
@@ -73,8 +74,11 @@ class PaymentSettledFilter(filters.BaseFilterBackend):
         if settled is None:
             return queryset
 
-        if strtobool(settled):
-            return queryset.filter(batch__processed=True)
+        try:
+            if strtobool(settled):
+                return queryset.filter(batch__processed=True)
+        except ValueError as e:
+            raise ValidationError({"settled": "Invalid filter value."}) from e
 
         return queryset.exclude(batch__processed=True)
 
