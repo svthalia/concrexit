@@ -1,0 +1,15 @@
+{% load i18n bleach_tags %}
+Hi,
+
+You should publish this promotion today:
+
+{% for promotion in daily_promotion %}{% if promotion.event %}Event: {{ promotion.event.title }}{% endif %}
+Promotion channel: {{ promotion.channel }}
+{% if promotion.drive_folder %}Drive folder: {{ promotion.drive_folder }}{% endif %}
+Remarks: {{ promotion.remarks|striptags }}
+
+{% endfor %}
+
+Kisses,
+
+The website
