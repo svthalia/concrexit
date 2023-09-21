@@ -444,21 +444,23 @@ def update_registration_by_organiser(registration, member, data):
     if not is_organiser(member, registration.event):
         raise RegistrationError(_("You are not allowed to update this registration."))
 
+    if "present" in data:
+        registration.present = data["present"]
+
+    registration.save()
+
     if "payment" in data:
         if data["payment"]["type"] == PaymentTypeField.NO_PAYMENT:
             if registration.payment is not None:
                 delete_payment(registration, member)
         else:
-            registration.payment = create_payment(
+            create_payment(
                 model_payable=registration,
                 processed_by=member,
                 pay_type=data["payment"]["type"],
             )
 
-    if "present" in data:
-        registration.present = data["present"]
-
-    registration.save()
+    registration.refresh_from_db(fields=["payment"])
 
 
 def generate_category_statistics() -> dict:
