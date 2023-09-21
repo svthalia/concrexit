@@ -4,6 +4,7 @@ import uuid
 from decimal import Decimal
 
 from django.conf import settings
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -20,6 +21,7 @@ from queryable_properties.managers import QueryablePropertiesManager
 from queryable_properties.properties import AggregateProperty, queryable_property
 
 from members.models import Member
+from payments.payables import NotRegistered, payables
 
 
 def validate_not_zero(value):
@@ -180,6 +182,45 @@ class Payment(models.Model):
     notes = models.TextField(verbose_name=_("notes"), blank=True, null=True)
     topic = models.CharField(verbose_name=_("topic"), max_length=255, default="Unknown")
 
+    payable_model = models.ForeignKey(
+        ContentType, on_delete=models.SET_NULL, blank=True, null=True
+    )
+    payable_object_id = models.CharField(max_length=200, blank=True, null=True)
+    payable_obj = GenericForeignKey("payable_model", "payable_object_id")
+
+    # Currently, we also have a direct ForeignKey from a model to a payment, which we save manually.
+    # One could also define the following on a model to directly access the payment via its GenericForeignKey.
+    # > from django.contrib.contenttypes.fields import GenericRelation
+    # >
+    # > from payments.models import Payment
+    # >
+    # > class MyPayableModel(models.Model):
+    # >   ...
+    # >   _payments = GenericRelation(
+    # >       Payment, content_type_field="payable_model", object_id_field="payable_object_id"
+    # >   )
+    # >
+    # >   @property
+    # >   def _payment(self):
+    # >       return self._payments.first()
+    # >
+    # >   @_payment.setter
+    # >   def _payment(self, value):
+    # >       if value is None:
+    # >           self._payments.set([])
+    # >       else:
+    # >           self._payments.set([value])
+    # Right now, this is not used, but it might be useful in the future.
+
+    @property
+    def payable(self):
+        if not self.payable_obj:
+            return None
+        try:
+            return payables.get_payable(self.payable_obj)
+        except NotRegistered:
+            return None
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -223,7 +264,39 @@ class Payment(models.Model):
     def save(self, **kwargs):
         self.clean()
         self._batch_id = self.batch.id if self.batch else None
+
+        if self.payable_model:
+            if self.payable_obj:
+                if not self.topic or self.topic == "Unknown":
+                    self.topic = self.payable.payment_topic
+                if not self.notes:
+                    self.notes = self.payable.payment_notes
+            else:
+                # The payable does not exist anymore, so delete the values
+                self.payable_object_id = None
+                self.payable_model = None
+
+        if (
+            self.payable_obj
+            and self.payable.model
+            and self.payable_obj != self.payable.model
+        ):
+            raise ValidationError(
+                {
+                    "payable_obj": _(
+                        "This payment is already linked to a different payable object"
+                    )
+                }
+            )
+
         super().save(**kwargs)
+
+        if self.payable_obj and not self.payable.payment:
+            self.payable.payment = self
+            try:
+                self.payable.model.save()
+            except Exception:
+                pass
 
     def clean(self):
         if self.amount == 0:
@@ -248,6 +321,55 @@ class Payment(models.Model):
             raise ValidationError(
                 {"paid_by": _("This user does not have Thalia Pay enabled")}
             )
+
+        if self.payable_model and not self.payable_object_id:
+            raise ValidationError(
+                {
+                    "payable_object_id": _(
+                        "This field is required if payable model is set."
+                    )
+                }
+            )
+        if not self.payable_model and self.payable_object_id:
+            raise ValidationError(
+                {
+                    "payable_model": _(
+                        "This field is required if payable object id is set."
+                    )
+                }
+            )
+        if self.payable_model:
+            if self.payable_obj is None:
+                # The payable does not exist (anymore?)
+                if not self.pk:
+                    # This is only a problem when creating a new payment, in other cases, we accept that the payable has been removed
+                    raise ValidationError(
+                        {
+                            "payable_object_id": _(
+                                "This payable object does not exist (anymore?)."
+                            )
+                        }
+                    )
+            if not self.payable:
+                raise ValidationError(
+                    {
+                        "payable_model": _("Cannot find this payable"),
+                        "payable_object_id": _("Cannot find this payable"),
+                    }
+                )
+            if not self.amount == self.payable.payment_amount:
+                raise ValidationError(
+                    {"amount": _("Payment amount does not match payable")}
+                )
+            if (
+                not self.paid_by == self.payable.payment_payer
+                and self.payable.payment_payer is not None
+            ):
+                raise ValidationError({"paid_by": _("Payer does not match payable")})
+            if self.payable.payment and self.payable.payment != self:
+                raise ValidationError(
+                    {"payable_object_id": _("This payable object is already paid.")}
+                )
 
     def get_admin_url(self):
         content_type = ContentType.objects.get_for_model(self.__class__)

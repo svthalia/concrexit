@@ -3,6 +3,8 @@ import datetime
 from typing import Union
 
 from django.conf import settings
+from django.contrib.admin.models import ADDITION, CHANGE, LogEntry
+from django.contrib.contenttypes.models import ContentType
 from django.core import mail
 from django.db.models import Model, Q, QuerySet, Sum
 from django.urls import reverse
@@ -14,7 +16,7 @@ from utils.snippets import send_email
 
 from .exceptions import PaymentError
 from .models import BankAccount, Payment, PaymentUser
-from .payables import Payable, payables
+from .payables import NotRegistered, Payable, payables
 from .signals import processed_batch
 
 
@@ -61,6 +63,14 @@ def create_payment(
     if not payable.paying_allowed:
         raise PaymentError(_("Payment restricted"))
 
+    try:
+        payable_model = ContentType.objects.get_for_model(payable.model)
+        payable_object_id = payable.model.pk
+    except AttributeError:
+        # In case we're testing with Mock models
+        payable_model = None
+        payable_object_id = None
+
     if payable.payment is not None:
         payable.payment.amount = payable.payment_amount
         payable.payment.notes = payable.payment_notes
@@ -68,7 +78,16 @@ def create_payment(
         payable.payment.paid_by = payer
         payable.payment.processed_by = processed_by
         payable.payment.type = pay_type
+        payable.payment.payable_model = payable_model
+        payable.payment.payable_object_id = payable_object_id
         payable.payment.save()
+        LogEntry.objects.log_action(
+            user_id=processed_by.id,
+            content_type_id=ContentType.objects.get_for_model(Payment).pk,
+            object_id=payable.payment.id,
+            object_repr=str(payable.payment),
+            action_flag=CHANGE,
+        )
     else:
         payable.payment = Payment.objects.create(
             processed_by=processed_by,
@@ -77,7 +96,17 @@ def create_payment(
             topic=payable.payment_topic,
             paid_by=payer,
             type=pay_type,
+            payable_model=payable_model,
+            payable_object_id=payable_object_id,
         )
+        LogEntry.objects.log_action(
+            user_id=processed_by.id,
+            content_type_id=ContentType.objects.get_for_model(Payment).pk,
+            object_id=payable.payment.id,
+            object_repr=str(payable.payment),
+            action_flag=ADDITION,
+        )
+
     return payable.payment
 
 
@@ -247,3 +276,15 @@ def execute_data_minimisation(dry_run=False):
         queryset_payments.update(paid_by=None, processed_by=None)
         queryset_bankaccounts.delete()
     return queryset_payments
+
+
+def get_payable_content_types():
+    results = []
+    for content_type in ContentType.objects.all():
+        try:
+            payables.get_payable(content_type.model_class())
+        except NotRegistered:
+            pass
+        else:
+            results.append(content_type.id)
+    return ContentType.objects.filter(id__in=results)
