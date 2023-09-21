@@ -6,6 +6,7 @@ from typing import Union
 from django.contrib.admin.models import CHANGE, LogEntry
 from django.contrib.admin.options import get_content_type_for_model
 from django.contrib.auth import get_user_model
+from django.db import transaction
 from django.db.models import Q, QuerySet
 from django.utils import timezone
 
@@ -143,45 +144,51 @@ def accept_entries(user_id: int, queryset: QuerySet) -> int:
             # User is not unique, do not proceed
             continue
 
-        entry.status = Entry.STATUS_ACCEPTED
-        entry.updated_at = timezone.now()
+        with transaction.atomic():
+            entry.status = Entry.STATUS_ACCEPTED
+            entry.updated_at = timezone.now()
 
-        log_obj = None
+            log_obj = None
 
-        try:
-            if entry.registration.username is None:
-                entry.registration.username = _generate_username(entry.registration)
-                entry.registration.save()
-
-            if entry.registration.direct_debit:
-                member = _create_member_from_registration(entry.registration)
-                membership = _create_membership_from_entry(entry.registration, member)
-                entry.membership = membership
-                entry.status = Entry.STATUS_COMPLETED
-                entry.payment = create_payment(entry, member, Payment.TPAY)
-            else:
-                emails.send_registration_accepted_message(entry.registration)
-
-            log_obj = entry.registration
-
-        except Registration.DoesNotExist:
             try:
-                emails.send_renewal_accepted_message(entry.renewal)
-                log_obj = entry.renewal
-            except Renewal.DoesNotExist:
-                pass
+                if entry.registration.username is None:
+                    entry.registration.username = _generate_username(entry.registration)
+                    entry.registration.save()
 
-        if log_obj:
-            LogEntry.objects.log_action(
-                user_id=user_id,
-                content_type_id=get_content_type_for_model(log_obj).pk,
-                object_id=log_obj.pk,
-                object_repr=str(log_obj),
-                action_flag=CHANGE,
-                change_message="Change status to approved",
-            )
+                if entry.registration.direct_debit:
+                    member = _create_member_from_registration(entry.registration)
+                    membership = _create_membership_from_entry(
+                        entry.registration, member
+                    )
+                    entry.membership = membership
+                    entry.status = Entry.STATUS_COMPLETED
+                    entry.save()
+                    create_payment(entry, member, Payment.TPAY)
+                    entry.refresh_from_db()
+                else:
+                    emails.send_registration_accepted_message(entry.registration)
 
-        entry.save()
+                log_obj = entry.registration
+
+            except Registration.DoesNotExist:
+                try:
+                    emails.send_renewal_accepted_message(entry.renewal)
+                    log_obj = entry.renewal
+                except Renewal.DoesNotExist:
+                    pass
+
+            if log_obj:
+                LogEntry.objects.log_action(
+                    user_id=user_id,
+                    content_type_id=get_content_type_for_model(log_obj).pk,
+                    object_id=log_obj.pk,
+                    object_repr=str(log_obj),
+                    action_flag=CHANGE,
+                    change_message="Change status to approved",
+                )
+
+            entry.save()
+
         updated_entries.append(entry.pk)
 
     return len(updated_entries)

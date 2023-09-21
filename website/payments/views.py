@@ -273,7 +273,6 @@ class PaymentProcessView(SuccessMessageMixin, FormView):
                 PaymentUser.objects.get(pk=self.request.member.pk),
                 Payment.TPAY,
             )
-            self.payable.model.save()
         except PaymentError as e:
             messages.error(self.request, str(e))
         return super().form_valid(form)
