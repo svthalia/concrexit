@@ -10,7 +10,7 @@ from queryable_properties.managers import QueryablePropertiesManager
 from queryable_properties.properties import AnnotationProperty
 
 from events import emails
-from payments.models import Payment, PaymentAmountField
+from payments.models import PaymentAmountField
 
 from .event import Event
 
@@ -84,7 +84,7 @@ class EventRegistration(models.Model):
     remarks = models.TextField(_("remarks"), null=True, blank=True)
 
     payment = models.OneToOneField(
-        Payment,
+        "payments.Payment",
         related_name="events_registration",
         on_delete=models.SET_NULL,
         blank=True,
@@ -247,4 +247,3 @@ class EventRegistration(models.Model):
         verbose_name_plural = _("Registrations")
         ordering = ("date",)
         unique_together = (("member", "event"),)
-        get_latest_by = "pk"

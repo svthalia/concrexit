@@ -21,7 +21,7 @@ from queryable_properties.managers import QueryablePropertiesManager
 from queryable_properties.properties import AggregateProperty, queryable_property
 
 from members.models import Member
-from payments import NotRegistered, payables
+from payments.payables import NotRegistered, payables
 
 
 def validate_not_zero(value):
@@ -295,7 +295,7 @@ class Payment(models.Model):
             self.payable.payment = self
             try:
                 self.payable.model.save()
-            except Exception:  # noqa pylint: disable=broad-except
+            except Exception:
                 pass
 
     def clean(self):

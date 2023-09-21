@@ -15,7 +15,7 @@ from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
 from localflavor.generic.models import BICField, IBANField
 
 from members.models import Membership, Profile
-from payments.models import Payment, PaymentAmountField
+from payments.models import PaymentAmountField
 from utils import countries
 
 
@@ -100,7 +100,7 @@ class Entry(models.Model):
     )
 
     payment = models.OneToOneField(
-        Payment,
+        "payments.Payment",
         related_name="registrations_entry",
         on_delete=models.SET_NULL,
         blank=True,
