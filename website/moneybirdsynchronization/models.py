@@ -230,6 +230,8 @@ class MoneybirdExternalInvoice(models.Model):
 
                 moneybird_contact = create_or_update_contact(moneybird_contact.member)
 
+            contact_id = moneybird_contact.moneybird_id
+
         invoice_date = date_for_payable_model(self.payable_object).strftime("%Y-%m-%d")
 
         project_name = project_name_for_payable_model(self.payable_object)
