@@ -1,11 +1,20 @@
 from rest_framework.fields import HiddenField
 
 from payments.api.v2.serializers.payment_user import PaymentUserSerializer
-from payments.models import Payment
+from payments.models import Payment, PaymentUser
 from thaliawebsite.api.v2.fields import CurrentMemberDefault
 from thaliawebsite.api.v2.serializers.cleaned_model_serializer import (
     CleanedModelSerializer,
 )
+
+
+class MemberAsPaymentUserSerializer(PaymentUserSerializer):
+    """Serializer that renders a Member as if it is a PaymentUser."""
+
+    def to_representation(self, instance):
+        if isinstance(instance, PaymentUser):
+            return super().to_representation(instance)
+        return super().to_representation(PaymentUser.objects.get(id=instance.id))
 
 
 class PaymentCreateSerializer(CleanedModelSerializer):
@@ -50,5 +59,5 @@ class PaymentAdminSerializer(CleanedModelSerializer):
             "notes",
         )
 
-    paid_by = PaymentUserSerializer(read_only=False)
-    processed_by = PaymentUserSerializer(read_only=False)
+    paid_by = MemberAsPaymentUserSerializer(read_only=False)
+    processed_by = MemberAsPaymentUserSerializer(read_only=False)
