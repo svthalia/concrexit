@@ -27,9 +27,11 @@ def send_weekly_overview():
 
 
 def send_daily_overview():
-    for email in PromotionChannel.objects.values_list(
-        "publisher_reminder_email", flat=True
-    ).distinct():
+    for email in (
+        PromotionChannel.objects.filter(publisher_reminder_email__isnull=False)
+        .values_list("publisher_reminder_email", flat=True)
+        .distinct()
+    ):
         daily_promotion = PromotionRequest.objects.filter(
             channel__publisher_reminder_email=email,
             status=PromotionRequest.FINISHED,
