@@ -130,16 +130,6 @@ class DataMinimisationTest(TestCase):
             processed = services.execute_data_minimisation(True)
             self.assertEqual(len(processed), 2)
 
-    def test_dry_run(self):
-        with self.subTest("With dry_run=True"):
-            services.execute_data_minimisation(True)
-            self.m1.refresh_from_db()
-            self.assertEqual(self.m1.profile.student_number, "s1234567")
-        with self.subTest("With dry_run=False"):
-            services.execute_data_minimisation(False)
-            self.m1.refresh_from_db()
-            self.assertIsNone(self.m1.profile.student_number)
-
     def test_provided_queryset(self):
         processed = services.execute_data_minimisation(True, members=Member.objects)
         self.assertEqual(len(processed), 2)

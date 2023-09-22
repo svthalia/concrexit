@@ -16,6 +16,8 @@ from django.core.management.commands import makemessages
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from celery.schedules import crontab
+
 logger = logging.getLogger(__name__)
 
 # Sentinel objects that are distinct from None
@@ -327,11 +329,74 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 ###############################################################################
 # Celery settings
 # https://docs.celeryq.dev/en/stable/userguide/configuration.html#configuration
+# https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html
 CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", "redis://127.0.0.1:6379")
 
 # See https://docs.celeryq.dev/en/stable/getting-started/backends-and-brokers/redis.html#caveats
 CELERY_BROKER_TRANSPORT_OPTIONS = {"visibility_timeout": 18000}
 
+CELERY_BEAT_SCHEDULE = {
+    "sendpromooverview": {
+        "task": "promotion.tasks.promo_update_weekly",
+        "schedule": crontab(minute=0, hour=8, day_of_week=1),
+    },
+    "syncmailinglist": {
+        "task": "mailinglists.tasks.sync_mail",
+        "schedule": crontab(minute=30),
+    },
+    "facedetectlambda": {
+        "task": "facedetection.tasks.trigger_facedetect_lambda",
+        "schedule": crontab(minute=0, hour=1),
+    },
+    "revokeoldmandates": {
+        "task": "payments.tasks.revoke_mandates",
+        "schedule": crontab(minute=30, hour=3),
+    },
+    "membershipannouncement": {
+        "task": "member.tasks.memberhsip_announcement",
+        "schedule": crontab(minute=0, hour=6, day_of_month=31, month_of_year=8),
+    },
+    "inforequest": {
+        "task": "member.tasks.info_request",
+        "schedule": crontab(minute=0, hour=6, day_of_month=15, month_of_year=10),
+    },
+    "expirationannouncement": {
+        "task": "member.tasks.expiration_announcement",
+        "schedule": crontab(minute=0, hour=6, day_of_month=8, month_of_year=8),
+    },
+    "minimiseregistration": {
+        "task": "registration.tasks.minimise_registration",
+        "schedule": crontab(minute=0, hour=3, day_of_month=1),
+    },
+    "sendscheduledmessages": {
+        "task": "pushnotifications.tasks.send_scheduled_messages",
+        "schedule": crontab(minute="*/2"),
+    },
+    "revokestaff": {
+        "task": "activemembers.tasks.revoke_staff",
+        "schedule": crontab(minute=30, hour=3),
+    },
+    "deletegsuiteusers": {
+        "task": "activemembers.tasks.delete_gsuite_users",
+        "schedule": crontab(minute=30, hour=3, day_of_week=1),
+    },
+    "sendplannednewsletters": {
+        "task": "newsletters.tasks.send_planned_newsletters",
+        "schedule": crontab(minute="*/5"),
+    },
+    "dataminimisation": {
+        "task": "thaliawebsite.tasks.data_minimisation",
+        "schedule": crontab(minute=0, hour=3),
+    },
+    "cleanup": {
+        "task": "thaliawebsite.tasks.clean_up",
+        "schedule": crontab(minute=0, hour=23),
+    },
+    "cleartokens": {
+        "task": "thaliawebsite.tasks.clear_tokens",
+        "schedule": crontab(minute=30, hour=3),
+    },
+}
 
 ###############################################################################
 # Email settings
