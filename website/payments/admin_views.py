@@ -54,8 +54,6 @@ class PaymentAdminView(View):
                 self.request.member,
                 request.POST["type"],
             )
-            payable_obj.model.payment = result
-            payable_obj.model.save()
         except Exception as e:
             capture_exception(e)
             messages.error(

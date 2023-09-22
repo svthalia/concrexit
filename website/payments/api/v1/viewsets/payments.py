@@ -60,10 +60,10 @@ class PaymentViewset(ListModelMixin, RetrieveModelMixin, GenericViewSet):
                 PaymentUser.objects.get(pk=request.user.pk),
                 Payment.TPAY,
             )
-            payable.model.save()
         except PaymentError as e:
             raise ValidationError(detail=str(e)) from e
 
+        payable.model.refresh_from_db()
         headers = {
             "Location": reverse(
                 "api:v1:payment-detail", kwargs={"pk": payable.payment.pk}
