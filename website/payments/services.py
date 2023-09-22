@@ -129,9 +129,10 @@ def delete_payment(model: Model, member: Member = None, ignore_change_window=Fal
             _("This payment has already been processed and hence cannot be deleted.")
         )
 
-    payable.payment = None
-    payable.model.save()
-    payment.delete()
+    with transaction.atomic():
+        payable.payment = None
+        payment.delete()
+        payable.model.save()
 
 
 def update_last_used(queryset: QuerySet, date: datetime.date = None) -> int:
