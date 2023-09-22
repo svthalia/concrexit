@@ -92,7 +92,9 @@ class EventRetrieveSerializer(CleanedModelSerializer):
         return instance.has_food_event
 
     def _google_maps_url(self, instance):
-        return create_google_maps_url(instance.map_location, zoom=13, size="450x250")
+        return self.context["request"].build_absolute_uri(
+            create_google_maps_url(instance.map_location, zoom=13, size="450x250")
+        )
 
     def _is_admin(self, instance):
         member = self.context["request"].member

@@ -37,12 +37,13 @@ def annual_document_card(doc_type, document):
         if t == doc_type:
             name = n
     url = f"#{doc_type}"
-    image_url = static("documents/images/placeholder.png")
+
     if document:
         url = document.get_absolute_url()
         image_url = static("documents/images/thumb.png")
     else:
         class_name += " empty"
+        image_url = static("documents/images/placeholder.png")
 
     return grid_item(
         title=name,

@@ -62,10 +62,15 @@ def datetime_to_lectureyear(date):
 
 
 def create_google_maps_url(location, zoom, size):
+    """Return a Google Maps URL for a given location.
+
+    The URL can be relative if it's a static file, so you may need to use
+    request.build_absolute_uri() to get the full URL suitable for an API.
+    """
     if location.lower().strip() == "online":
-        return settings.BASE_URL + static("img/locations/online.png")
+        return static("img/locations/online.png")
     if location.lower().strip() == "discord":
-        return settings.BASE_URL + static("img/locations/discord.png")
+        return static("img/locations/discord.png")
 
     maps_url = (
         f"/maps/api/staticmap?"

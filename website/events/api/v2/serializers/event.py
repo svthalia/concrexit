@@ -122,7 +122,9 @@ class EventSerializer(CleanedModelSerializer):
         )
 
     def _maps_url(self, instance):
-        return create_google_maps_url(instance.map_location, zoom=13, size="450x250")
+        return self.context["request"].build_absolute_uri(
+            create_google_maps_url(instance.map_location, zoom=13, size="450x250")
+        )
 
 
 class EventListSerializer(EventSerializer):
