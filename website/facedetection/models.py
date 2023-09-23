@@ -5,7 +5,6 @@ from django.db import models
 from django.db.models import Count, IntegerField, Value
 from django.db.models.functions import Coalesce
 
-from PIL import Image
 from queryable_properties.managers import QueryablePropertiesManager
 from queryable_properties.properties import AnnotationProperty
 from thumbnails.fields import ImageField
@@ -100,14 +99,6 @@ class ReferenceFace(BaseFaceEncodingSource):
 
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     marked_for_deletion_at = models.DateTimeField(null=True, blank=True)
-
-    def save(self, **kwargs):
-        # Try to open the image to make sure it's valid.
-        if not self.file._committed:
-            image = Image.open(self.file)
-            image.load()
-
-        super().save(**kwargs)
 
     def delete(self, **kwargs):
         if self.file.name:

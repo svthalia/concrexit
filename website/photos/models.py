@@ -12,7 +12,6 @@ from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 
-from PIL import Image
 from queryable_properties.managers import QueryablePropertiesManager
 from queryable_properties.properties import AnnotationProperty
 from thumbnails.fields import ImageField
@@ -82,10 +81,6 @@ class Photo(models.Model):
 
     def save(self, **kwargs):
         if not self.file._committed:
-            image = Image.open(self.file)
-            image.load()
-
-            self.file.seek(0)
             hash_sha1 = hashlib.sha1()
             for chunk in iter(lambda: self.file.read(4096), b""):
                 hash_sha1.update(chunk)
