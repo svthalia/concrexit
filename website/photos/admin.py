@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from django_filepond_widget.fields import FilePondFile
 
 from .forms import AlbumForm
-from .models import Album, DuplicatePhotoException, Like, Photo
+from .models import Album, Like, Photo
 from .services import extract_archive
 
 album_uploaded = Signal()
@@ -115,14 +115,3 @@ class PhotoAdmin(admin.ModelAdmin):
         ) = super().get_deleted_objects(objs, request)
 
         return deleted_objects, model_count, set(), protected
-
-    def save_model(self, request, obj, form, change):
-        """Save new Photo."""
-        try:
-            super().save_model(request, obj, form, change)
-        except DuplicatePhotoException:
-            self.message_user(
-                request,
-                "This photo already exists in the album.",
-                messages.ERROR,
-            )

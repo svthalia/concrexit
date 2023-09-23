@@ -6,12 +6,11 @@ from zipfile import ZipFile, is_zipfile
 from django.contrib import messages
 from django.core.files import File
 from django.db.models import BooleanField, Case, ExpressionWrapper, Q, Value, When
+from django.forms import ValidationError
 from django.http import Http404
 from django.utils.translation import gettext_lazy as _
 
-from PIL import UnidentifiedImageError
-
-from photos.models import DuplicatePhotoException, Photo
+from photos.models import Photo
 
 logger = logging.getLogger(__name__)
 
@@ -103,8 +102,21 @@ def _try_save_photo(request, album, file, filename):
     instance = Photo(album=album)
     instance.file = File(file, filename)
     try:
-        instance.save()
-    except DuplicatePhotoException:
-        messages.add_message(request, messages.WARNING, f"{filename} is duplicate.")
-    except UnidentifiedImageError:
-        messages.add_message(request, messages.WARNING, f"Ignoring {filename}")
+        instance.full_clean()
+    except ValidationError as e:
+        errors = e.message_dict
+        if "This photo already exists in this album." in errors.get("file", []):
+            messages.add_message(
+                request,
+                messages.WARNING,
+                f"{filename} is duplicate.",
+            )
+        else:
+            messages.add_message(
+                request,
+                messages.WARNING,
+                f"{filename} cannot be opened.",
+            )
+        return
+
+    instance.save()

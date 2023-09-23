@@ -61,6 +61,8 @@ class Photo(models.Model):
     _digest = models.CharField(
         "digest",
         max_length=40,
+        blank=True,
+        editable=False,
     )
 
     num_likes = AnnotationProperty(
@@ -79,7 +81,7 @@ class Photo(models.Model):
         """Return the filename of a Photo object."""
         return os.path.basename(self.file.name)
 
-    def save(self, **kwargs):
+    def clean(self):
         if not self.file._committed:
             hash_sha1 = hashlib.sha1()
             for chunk in iter(lambda: self.file.read(4096), b""):
@@ -92,9 +94,11 @@ class Photo(models.Model):
                 .exclude(pk=self.pk)
                 .exists()
             ):
-                raise DuplicatePhotoException()
+                raise ValidationError(
+                    {"file": "This photo already exists in this album."}
+                )
 
-        return super().save(**kwargs)
+        return super().clean()
 
     def delete(self, using=None, keep_parents=False):
         removed = super().delete(using, keep_parents)
