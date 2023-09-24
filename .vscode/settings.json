@@ -1,0 +1,28 @@
+{
+    "ruff.organizeImports": false,
+    "python.analysis.autoImportCompletions": true,
+    "python.analysis.addImport.exactMatchOnly": true,
+    "python.analysis.extraPaths": [
+        "website"
+    ],
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+        },
+        "editor.formatOnType": true,
+    },
+    "git.branchProtection": [
+        "master"
+    ],
+    "black-formatter.importStrategy": "fromEnvironment",
+    "isort.args": [
+        "--profile",
+        "black"
+    ],
+    "ruff.args": [
+        "--extend-ignore",
+        ".pyenv"
+    ],
+}
