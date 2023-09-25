@@ -52,7 +52,7 @@ def thumbnail(image: DaVinciImage, **kwargs):
     pil_image = image.get_pil_image()
 
     size = kwargs["size"]
-    if not kwargs["cover"]:
+    if not kwargs.get("cover", False):
         ratio = min(a / b for a, b in zip(size, pil_image.size))
         size = tuple(int(ratio * x) for x in pil_image.size)
 
