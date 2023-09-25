@@ -235,13 +235,16 @@ class MoneybirdExternalInvoice(models.Model):
         invoice_date = date_for_payable_model(self.payable_object).strftime("%Y-%m-%d")
 
         project_name = project_name_for_payable_model(self.payable_object)
-        project, __ = MoneybirdProject.objects.get_or_create(name=project_name)
-        if project.moneybird_id is None:
-            response = moneybird.create_project(project.to_moneybird())
-            project.moneybird_id = response["id"]
-            project.save()
 
-        project_id = project.moneybird_id
+        project_id = None
+        if project_name is not None:
+            project, __ = MoneybirdProject.objects.get_or_create(name=project_name)
+            if project.moneybird_id is None:
+                response = moneybird.create_project(project.to_moneybird())
+                project.moneybird_id = response["id"]
+                project.save()
+
+            project_id = project.moneybird_id
 
         ledger_id = ledger_id_for_payable_model(self.payable_object)
 
