@@ -129,6 +129,12 @@ class EventAdmin(DoNextModelAdmin):
             title=obj.title,
         )
 
+    def has_delete_permission(self, request, obj=None):
+        """Only allow deleting an event if the user is an organiser."""
+        if obj is not None and not services.is_organiser(request.member, obj):
+            return False
+        return super().has_delete_permission(request, obj)
+
     def has_change_permission(self, request, obj=None):
         """Only allow access to the change form if the user is an organiser."""
         if obj is not None and not services.is_organiser(request.member, obj):
