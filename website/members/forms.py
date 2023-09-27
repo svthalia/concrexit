@@ -84,6 +84,11 @@ class ProfileForm(forms.ModelForm):
             self.cleaned_data["phone_number"] = self.cleaned_data[
                 "phone_number"
             ].replace(" ", "")
+
+        if "emergency_contact_phone_number" in self.cleaned_data:
+            self.cleaned_data["emergency_contact_phone_number"] = self.cleaned_data[
+                "emergency_contact_phone_number"
+            ].replace(" ", "")
         super().clean()
 
 
