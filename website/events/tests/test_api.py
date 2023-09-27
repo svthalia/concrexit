@@ -288,9 +288,9 @@ class RegistrationApiTest(TestCase):
         response = self.client.post(
             "/api/v2/events/1/registrations/",
             {
-                "fields[info_field_1]": False,
-                "fields[info_field_2": 42,
-                "fields[info_field_3]": "text",
+                "info_field_1": False,
+                "info_field_2": 42,
+                "info_field_3": "text",
                 "csrf": "random",
             },
             follow=True,
@@ -306,17 +306,16 @@ class RegistrationApiTest(TestCase):
         self.assertEqual(field3.get_value_for(registration), None)
 
         response = self.client.patch(
-            f"/api/v2/events/1/registrations/{registration.pk}/",
+            f"/api/v2/events/1/registrations/{registration.pk}/fields",
             {
-                "fields[info_field_1]": True,
-                "fields[info_field_2]": 1337,
-                "fields[info_field_3]": "no text",
+                "info_field_1": True,
+                "info_field_2": 1337,
+                "info_field_3": "no text",
                 "csrf": "random",
             },
             follow=True,
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["member"], self.member.pk)
 
         self.assertEqual(self.event.participants.count(), 1)
         registration = self.event.eventregistration_set.first()
