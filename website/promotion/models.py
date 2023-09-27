@@ -1,5 +1,6 @@
 """Models for the promotion requests database tables."""
 from django.db import models
+from django.dispatch import Signal
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
@@ -7,6 +8,8 @@ from tinymce.models import HTMLField
 
 from events.models import Event
 from thaliawebsite.settings import PROMO_PUBLISH_DATE_TIMEDELTA
+
+updated_status = Signal()
 
 
 class PromotionChannel(models.Model):
@@ -106,7 +109,10 @@ class PromotionRequest(models.Model):
     def save(self, **kwargs):
         if not self.publish_date and self.event:
             self.publish_date = self.event.start.date()
-        return super().save(kwargs)
+        oldstatus = PromotionRequest.objects.get(pk=self.pk).status
+        super().save(kwargs)
+        if oldstatus != self.status:
+            updated_status.send(sender=None, updated_request=self)
 
     class Meta:
         verbose_name = _("Promotion request")

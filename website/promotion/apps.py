@@ -9,3 +9,7 @@ class PromotionConfig(AppConfig):
 
     name = "promotion"
     verbose_name = _("Promotion")
+
+    def ready(self):
+        """Import the signals when the app is ready."""
+        from . import signals  # noqa: F401
