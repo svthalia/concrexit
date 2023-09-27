@@ -37,7 +37,6 @@ class ProfileInline(admin.StackedInline):
         "receive_optin",
         "receive_registration_confirmation",
         "receive_newsletter",
-        "receive_magazine",
         "receive_oldmembers",
         "birthday",
         "show_birthday",
@@ -74,11 +73,9 @@ class MembershipTypeListFilter(admin.SimpleListFilter):
             return queryset
         if self.value() == "none":
             return queryset.exclude(
-                ~Q(membership=None)
-                & (
-                    Q(membership__until__isnull=True)
-                    | Q(membership__until__gt=timezone.now().date())
-                )
+                Q(membership__until__isnull=True)
+                | Q(membership__until__gt=timezone.now().date()),
+                membership__isnull=False,
             )
 
         return queryset.exclude(membership=None).filter(
@@ -160,7 +157,6 @@ class UserAdmin(ExportMixin, BaseUserAdmin):
         "profile__event_permissions",
         "profile__receive_optin",
         "profile__receive_newsletter",
-        "profile__receive_magazine",
         "profile__receive_oldmembers",
         "profile__starting_year",
     )
