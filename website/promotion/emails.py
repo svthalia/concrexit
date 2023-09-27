@@ -47,3 +47,26 @@ def send_daily_overview():
                     "daily_promotion": daily_promotion,
                 },
             )
+
+
+def send_status_update(updated_request):
+    organisers = updated_request.event.organisers.all()
+
+    for organiser in organisers:
+        email = (
+            organiser.contact_email
+            if organiser.contact_email
+            else "{organiser.contact_mailinglist}@thalia.nu"
+        )
+
+        if email:
+            send_email(
+                to=[email],
+                subject="[PROMO] Status update",
+                txt_template="promotion/email/status_update.txt",
+                context={
+                    "updated_request": updated_request,
+                },
+            )
+        else:
+            print("No email for organiser")

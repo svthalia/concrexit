@@ -1,0 +1,10 @@
+{% load i18n bleach_tags %}
+Hi there,
+
+There has been an update to the status of your request for {{ updated_request.channel }}, for the {{ updated_request.event.title }} event.
+ (TD: Form details toevoegen)
+The status has been updated to {{ updated_request.get_status_display }}.
+
+Kisses,
+
+The Website
