@@ -242,7 +242,7 @@ class Registration(Entry):
         verbose_name=_("phone number"),
         validators=[
             validators.RegexValidator(
-                regex=r"^\+?\s*\d+$",
+                regex=r"^\+?\d+$",
                 message=_("please enter a valid phone number"),
             )
         ],
