@@ -324,6 +324,7 @@ class ServicesTest(TestCase):
         self.e1.iban = "NL91ABNA0417164300"
         self.e1.initials = "J"
         self.e1.signature = "base64,png"
+        self.e1.save()
 
         member = services._create_member_from_registration(self.e1)
         bankaccount = BankAccount.objects.get(owner=member)
@@ -380,6 +381,7 @@ class ServicesTest(TestCase):
         with freeze_time("2017-01-12"):
             # Renewal to new 'study' membership starting today
             self.e3.length = Entry.MEMBERSHIP_STUDY
+            self.e3.save()
             membership3 = services._create_membership_from_entry(self.e3)
 
             self.assertEqual(membership3.since, timezone.now().date())
@@ -391,6 +393,7 @@ class ServicesTest(TestCase):
 
             # Renewal to new 'year' membership starting today
             self.e3.length = Entry.MEMBERSHIP_YEAR
+            self.e3.save()
             membership3 = services._create_membership_from_entry(self.e3)
 
             self.assertEqual(membership3.since, timezone.now().date())
@@ -403,6 +406,7 @@ class ServicesTest(TestCase):
             membership3.delete()
 
             self.e3.length = Entry.MEMBERSHIP_YEAR
+            self.e3.save()
             existing_membership = Membership.objects.create(
                 type=Membership.MEMBER,
                 since=timezone.datetime(year=2016, month=9, day=1).date(),
@@ -413,6 +417,7 @@ class ServicesTest(TestCase):
             # Renewal to new 'year' membership starting 1 day after
             # end of the previous membership
             self.e3.length = Entry.MEMBERSHIP_YEAR
+            self.e3.save()
             membership3 = services._create_membership_from_entry(self.e3)
             self.assertEqual(membership3.since, existing_membership.until)
             self.assertEqual(
@@ -423,6 +428,7 @@ class ServicesTest(TestCase):
 
             membership3.delete()
             self.e3.length = Entry.MEMBERSHIP_STUDY
+            self.e3.save()
 
             # Renewal (aka upgrade) existing membership to 'study' membership
             # It doesn't work when the entry was made after the renewal
@@ -453,6 +459,7 @@ class ServicesTest(TestCase):
 
             # Fail 'year' renewal of existing 'study' membership
             self.e3.length = Entry.MEMBERSHIP_YEAR
+            self.e3.save()
             existing_membership.until = None
             existing_membership.save()
             with self.assertRaises(ValueError):

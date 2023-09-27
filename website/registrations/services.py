@@ -317,6 +317,14 @@ def _create_membership_from_entry(
     :return: The created or updated membership
     :rtype: Membership
     """
+    # Ensure all data is up to date.
+    entry.refresh_from_db()
+    if hasattr(entry, "renewal"):
+        entry.renewal.refresh_from_db()
+        entry.renewal.member.refresh_from_db()
+    if member is not None:
+        member.refresh_from_db()
+
     lecture_year = datetime_to_lectureyear(timezone.now())
     since = calculate_membership_since()
     until = None

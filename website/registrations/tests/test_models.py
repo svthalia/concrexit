@@ -395,7 +395,7 @@ class RenewalTest(TestCase):
         self.renewal.length = Entry.MEMBERSHIP_STUDY
         self.renewal.membership_type = Membership.BENEFACTOR
         membership = self.member.latest_membership
-        membership.until = timezone.now()
+        membership.until = timezone.now().date()
         membership.save()
 
         with self.assertRaises(ValidationError):
