@@ -1,21 +1,23 @@
 """Registers admin interfaces for the activemembers module."""
-import csv
 import datetime
 
 from django import forms
 from django.contrib import admin, messages
 from django.db.models import Q
-from django.http import HttpResponse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+
+from import_export.admin import ExportActionMixin
 
 from activemembers import models
 from activemembers.forms import MemberGroupForm, MemberGroupMembershipForm
 from utils.snippets import datetime_to_lectureyear
 
+from .resources import MemberGroupMembershipResource
+
 
 class MemberGroupMembershipInlineFormSet(forms.BaseInlineFormSet):
-    """Here for performance reasons, and to filter out old memberships.
+    """Solely here for performance reasons.
 
     Needed because the `__str__()` of `MemberGroupMembership` (which is
     displayed above each inline form) uses the username, name of the member
@@ -25,14 +27,9 @@ class MemberGroupMembershipInlineFormSet(forms.BaseInlineFormSet):
     def __init__(self, *args, **kwargs):
         """Initialize and set queryset."""
         super().__init__(*args, **kwargs)
-        now = timezone.now()
-        self.queryset = self.queryset.select_related("member", "group")
-
-        # Show only memberships that are active now.
-        if not isinstance(self.instance, models.Board):
-            self.queryset = self.queryset.filter(
-                Q(until=None) | (Q(since__lte=now, until__gte=now))
-            )
+        self.queryset = self.queryset.select_related("member", "group").filter(
+            until=None
+        )
 
 
 class MemberGroupMembershipInline(admin.StackedInline):
@@ -177,9 +174,10 @@ class ActiveMembershipsFilter(admin.SimpleListFilter):
 
 
 @admin.register(models.MemberGroupMembership)
-class MemberGroupMembershipAdmin(admin.ModelAdmin):
+class MemberGroupMembershipAdmin(ExportActionMixin, admin.ModelAdmin):
     """Manage the group memberships."""
 
+    resource_classes = (MemberGroupMembershipResource,)
     form = MemberGroupMembershipForm
     list_display = ("member", "group", "since", "until", "chair", "role")
     list_filter = ("group", TypeFilter, LectureYearFilter, ActiveMembershipsFilter)
@@ -189,7 +187,6 @@ class MemberGroupMembershipAdmin(admin.ModelAdmin):
     )
     search_fields = ("member__first_name", "member__last_name", "member__email")
     date_hierarchy = "since"
-    actions = ("export",)
 
     def changelist_view(self, request, extra_context=None):
         self.message_user(
@@ -202,41 +199,6 @@ class MemberGroupMembershipAdmin(admin.ModelAdmin):
             messages.WARNING,
         )
         return super().changelist_view(request, extra_context)
-
-    def export(self, request, queryset):
-        response = HttpResponse(content_type="text/csv")
-        response["Content-Disposition"] = 'attachment; filename="group_memberships.csv"'
-        writer = csv.writer(response)
-        writer.writerow(
-            [
-                _("First name"),
-                _("Last name"),
-                _("Email"),
-                _("Group"),
-                _("Member since"),
-                _("Member until"),
-                _("Chair of the group"),
-                _("Role"),
-            ]
-        )
-
-        for membership in queryset:
-            writer.writerow(
-                [
-                    membership.member.first_name,
-                    membership.member.last_name,
-                    membership.member.email,
-                    membership.group,
-                    membership.since,
-                    membership.until,
-                    membership.chair,
-                    membership.role,
-                ]
-            )
-
-        return response
-
-    export.short_description = _("Export selected memberships")
 
 
 @admin.register(models.Mentorship)

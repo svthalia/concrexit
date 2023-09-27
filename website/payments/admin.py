@@ -1,5 +1,4 @@
 """Registers admin interfaces for the payments module."""
-import csv
 from collections import OrderedDict
 from typing import Optional
 
@@ -12,13 +11,15 @@ from django.http import HttpRequest, HttpResponse
 from django.urls import path, reverse
 from django.utils import timezone
 from django.utils.html import format_html
-from django.utils.text import capfirst
 from django.utils.translation import gettext_lazy as _
+
+from import_export.admin import ExportActionMixin
 
 from payments import admin_views, services
 from payments.forms import BankAccountAdminForm, BatchPaymentInlineAdminForm
 
 from .models import BankAccount, Batch, Payment, PaymentUser
+from .resources import BankAccountResource, PaymentResource
 
 
 def _show_message(
@@ -35,9 +36,10 @@ def _show_message(
 
 
 @admin.register(Payment)
-class PaymentAdmin(admin.ModelAdmin):
+class PaymentAdmin(ExportActionMixin, admin.ModelAdmin):
     """Manage the payments."""
 
+    resource_classes = (PaymentResource,)
     list_display = (
         "created_at",
         "amount",
@@ -86,7 +88,6 @@ class PaymentAdmin(admin.ModelAdmin):
     actions = [
         "add_to_new_batch",
         "add_to_last_batch",
-        "export_csv",
     ]
 
     @staticmethod
@@ -235,43 +236,6 @@ class PaymentAdmin(admin.ModelAdmin):
             ),
         ]
         return custom_urls + urls
-
-    def export_csv(self, request: HttpRequest, queryset: QuerySet) -> HttpResponse:
-        """Export a CSV of payments.
-
-        :param request: Request
-        :param queryset: Items to be exported
-        """
-        response = HttpResponse(content_type="text/csv")
-        response["Content-Disposition"] = 'attachment;filename="payments.csv"'
-        writer = csv.writer(response)
-        headers = [
-            _("created"),
-            _("amount"),
-            _("type"),
-            _("processor"),
-            _("payer id"),
-            _("payer name"),
-            _("notes"),
-        ]
-        writer.writerow([capfirst(x) for x in headers])
-        for payment in queryset:
-            writer.writerow(
-                [
-                    payment.created_at,
-                    payment.amount,
-                    payment.get_type_display(),
-                    payment.processed_by.get_full_name()
-                    if payment.processed_by
-                    else "-",
-                    payment.paid_by.pk if payment.paid_by else "-",
-                    payment.paid_by.get_full_name() if payment.paid_by else "-",
-                    payment.notes,
-                ]
-            )
-        return response
-
-    export_csv.short_description = _("Export")
 
 
 class ValidAccountFilter(admin.SimpleListFilter):
@@ -453,9 +417,10 @@ class BatchAdmin(admin.ModelAdmin):
 
 
 @admin.register(BankAccount)
-class BankAccountAdmin(admin.ModelAdmin):
+class BankAccountAdmin(ExportActionMixin, admin.ModelAdmin):
     """Manage bank accounts."""
 
+    resource_classes = (BankAccountResource,)
     list_display = ("iban", "owner_link", "last_used", "valid_from", "valid_until")
     fields = (
         "created_at",
@@ -510,38 +475,6 @@ class BankAccountAdmin(admin.ModelAdmin):
             )
 
     set_last_used.short_description = _("Update the last used date")
-
-    def export_csv(self, request: HttpRequest, queryset: QuerySet) -> HttpResponse:
-        response = HttpResponse(content_type="text/csv")
-        response["Content-Disposition"] = 'attachment;filename="accounts.csv"'
-        writer = csv.writer(response)
-        headers = [
-            _("created"),
-            _("name"),
-            _("reference"),
-            _("IBAN"),
-            _("BIC"),
-            _("valid from"),
-            _("valid until"),
-            _("signature"),
-        ]
-        writer.writerow([capfirst(x) for x in headers])
-        for account in queryset:
-            writer.writerow(
-                [
-                    account.created_at,
-                    account.name,
-                    account.mandate_no,
-                    account.iban,
-                    account.bic or "",
-                    account.valid_from or "",
-                    account.valid_until or "",
-                    account.signature or "",
-                ]
-            )
-        return response
-
-    export_csv.short_description = _("Export")
 
 
 class BankAccountInline(admin.TabularInline):
@@ -730,7 +663,8 @@ class PaymentUserAdmin(admin.ModelAdmin):
             changed = x.disallow_tpay()
             count += 1 if changed else 0
         messages.success(
-            request, f"Succesfully disallowed Thalia Pay for {count} users."
+            request,
+            _("Successfully disallowed Thalia Pay for %s users.") % count,
         )
 
     disallow_thalia_pay.short_description = _("Disallow Thalia Pay for selected users")
@@ -740,7 +674,10 @@ class PaymentUserAdmin(admin.ModelAdmin):
         for x in queryset:
             changed = x.allow_tpay()
             count += 1 if changed else 0
-        messages.success(request, f"Succesfully allowed Thalia Pay for {count} users.")
+        messages.success(
+            request,
+            _("Successfully allowed Thalia Pay for %s users.") % count,
+        )
 
     allow_thalia_pay.short_description = _("Allow Thalia Pay for selected users")
 
