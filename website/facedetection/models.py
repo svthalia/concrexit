@@ -281,13 +281,13 @@ class BaseFaceEncoding(models.Model):
         if hasattr(self, "_encoding"):
             return self._encoding
 
-        self._encoding = [getattr(self, f"_field{i}") for i in range(0, 128)]
+        self._encoding = [getattr(self, f"_field{i}") for i in range(128)]
         return self._encoding
 
     @encoding.setter
     def encoding(self, value):
         self._encoding = value
-        for i in range(0, 128):
+        for i in range(128):
             setattr(self, f"_field{i}", value[i])
 
     def encoding_match_function(self) -> str:
@@ -297,7 +297,7 @@ class BaseFaceEncoding(models.Model):
         and checks whether it's less than a threshold of 0.49.
         """
         sum_of_squares = " + ".join(
-            f"power(_field{i} - {self.encoding[i]}, 2)" for i in range(0, 128)
+            f"power(_field{i} - {self.encoding[i]}, 2)" for i in range(128)
         )
         euclidean_distance = f"sqrt({sum_of_squares})"
 
