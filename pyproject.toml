@@ -181,6 +181,7 @@ ignore = [
     "N818",  # exception class should have Error suffix
     "PLW2901",  # loop variable overwritten
     "RUF005",  # use spread operator instead of concatenation
+    "RUF012",
 ]
 
 [tool.ruff.per-file-ignores]
