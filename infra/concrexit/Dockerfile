@@ -18,7 +18,7 @@ RUN pip install "poetry==1.3.1" && pip install --upgrade setuptools
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        build-essential libpq-dev libjpeg-dev zlib1g-dev libwebp-dev libmagic1
+    build-essential libpq-dev libjpeg-dev zlib1g-dev libwebp-dev libmagic1
 
 RUN  python -m venv /venv
 ENV PATH=/venv/bin:$PATH \
@@ -54,11 +54,9 @@ ENV PATH=/venv/bin:$PATH \
 # Install runtime dependencies.
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        cron postgresql-client libjpeg-dev zlib1g-dev libwebp-dev libmagic1 && \
+    postgresql-client libjpeg-dev zlib1g-dev libwebp-dev libmagic1 && \
     rm -rf /var/lib/apt/lists/*
 
-COPY infra/concrexit/cronjobs /cronjobs
-RUN crontab /cronjobs && rm /cronjobs
 
 COPY infra/concrexit/server-entrypoint.sh /app/server-entrypoint.sh
 COPY infra/concrexit/worker-entrypoint.sh /app/worker-entrypoint.sh

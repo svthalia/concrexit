@@ -12,4 +12,6 @@ done
 
 exec runuser -u appuser -- celery --app thaliawebsite worker \
     --loglevel INFO \
-    --concurrency 4
+    --concurrency 4 \
+    --beat \
+    --schedule /volumes/worker/celery-beat-schedule
