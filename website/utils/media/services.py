@@ -1,4 +1,5 @@
 import io
+from typing import Optional
 
 from django.conf import settings
 from django.core.files.base import ContentFile
@@ -32,7 +33,7 @@ def get_media_url(
     file,
     attachment=False,
     absolute_url: bool = False,
-    expire_seconds: int = None,
+    expire_seconds: Optional[int] = None,
 ):
     """Get the url of the provided media file to serve in a browser.
 
@@ -63,7 +64,7 @@ def get_thumbnail_url(
     file,
     size: str,
     absolute_url: bool = False,
-    expire_seconds: int = None,
+    expire_seconds: Optional[int] = None,
 ):
     name = file
     if isinstance(file, (ImageFieldFile, FieldFile)):

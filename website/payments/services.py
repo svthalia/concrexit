@@ -1,6 +1,6 @@
 """The services defined by the payments package."""
 import datetime
-from typing import Union
+from typing import Optional, Union
 
 from django.conf import settings
 from django.core import mail
@@ -135,7 +135,7 @@ def delete_payment(model: Model, member: Member = None, ignore_change_window=Fal
         payable.model.save()
 
 
-def update_last_used(queryset: QuerySet, date: datetime.date = None) -> int:
+def update_last_used(queryset: QuerySet, date: Optional[datetime.date] = None) -> int:
     """Update the last used field of a BankAccount queryset.
 
     :param queryset: Queryset of BankAccounts
