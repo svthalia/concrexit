@@ -12,6 +12,11 @@ updates:
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
+      # These are also set in .pre-commit-config.yaml
+      # They shouldn't go out of sync, so we only change them manually.
+      - dependency-name: "black"
+      - dependency-name: "isort"
+      - dependency-name: "ruff"
     labels:
       - "dependency-update"
 
