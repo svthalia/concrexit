@@ -144,7 +144,7 @@ class Administration(ABC):
 class HttpsAdministration(Administration):
     """The HTTPS implementation of the MoneyBird Administration interface."""
 
-    def __init__(self, key, administration_id: int):
+    def __init__(self, key: str, administration_id: int):
         """Create a new MoneyBird administration connection."""
         super().__init__(administration_id)
         self.key = key

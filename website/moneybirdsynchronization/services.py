@@ -101,13 +101,15 @@ def create_or_update_external_invoice(obj):
             if not any(
                 x["invoice_type"] == "ExternalSalesInvoice"
                 and x["invoice_id"] == external_invoice.moneybird_invoice_id
-                for x in mutation_info[0]["payments"]
+                for x in mutation_info["payments"]
             ):
                 # If the payment itself also already exists in a financial mutation
                 # and is not yet linked to the booking, link it
                 moneybird.link_mutation_to_booking(
-                    mutation_id=external_invoice.payable.payment.moneybird_payment.moneybird_financial_mutation_id,
-                    booking_id=external_invoice.moneybird_invoice_id,
+                    mutation_id=int(
+                        external_invoice.payable.payment.moneybird_payment.moneybird_financial_mutation_id
+                    ),
+                    booking_id=int(external_invoice.moneybird_invoice_id),
                     price_base=str(external_invoice.payable.payment_amount),
                 )
         else:
@@ -259,10 +261,10 @@ def delete_moneybird_payment(moneybird_payment):
     mutation_info = moneybird.get_financial_mutation_info(
         moneybird_payment.moneybird_financial_mutation_id
     )
-    for linked_payment in mutation_info[0]["payments"]:
+    for linked_payment in mutation_info["payments"]:
         moneybird.unlink_mutation_from_booking(
-            mutation_id=moneybird_payment.moneybird_financial_mutation_id,
-            booking_id=linked_payment["id"],
+            mutation_id=int(moneybird_payment.moneybird_financial_mutation_id),
+            booking_id=int(linked_payment["id"]),
             booking_type="Payment",
         )
 
