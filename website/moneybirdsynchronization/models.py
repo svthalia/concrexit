@@ -1,3 +1,6 @@
+import datetime
+from typing import Optional, Union
+
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
@@ -15,7 +18,7 @@ from sales.models.order import Order
 from thaliawebsite import settings
 
 
-def financial_account_id_for_payment_type(payment_type):
+def financial_account_id_for_payment_type(payment_type) -> Optional[int]:
     if payment_type == Payment.CARD:
         return settings.MONEYBIRD_CARD_FINANCIAL_ACCOUNT_ID
     if payment_type == Payment.CASH:
@@ -25,7 +28,7 @@ def financial_account_id_for_payment_type(payment_type):
     return None
 
 
-def project_name_for_payable_model(obj):
+def project_name_for_payable_model(obj) -> Optional[str]:
     if isinstance(obj, EventRegistration):
         start_date = obj.event.start.strftime("%Y-%m-%d")
         return f"{obj.event.title} [{start_date}]"
@@ -41,7 +44,7 @@ def project_name_for_payable_model(obj):
     raise ValueError(f"Unknown payable model {obj}")
 
 
-def date_for_payable_model(obj):
+def date_for_payable_model(obj) -> Union[datetime.datetime, datetime.date]:
     if isinstance(obj, EventRegistration):
         return obj.event.start
     if isinstance(obj, FoodOrder):
@@ -54,7 +57,7 @@ def date_for_payable_model(obj):
     raise ValueError(f"Unknown payable model {obj}")
 
 
-def ledger_id_for_payable_model(obj):
+def ledger_id_for_payable_model(obj) -> Optional[int]:
     if isinstance(obj, (Registration, Renewal)):
         return settings.MONEYBIRD_CONTRIBUTION_LEDGER_ID
     return None
@@ -255,7 +258,7 @@ class MoneybirdExternalInvoice(models.Model):
 
         data = {
             "external_sales_invoice": {
-                "contact_id": contact_id,
+                "contact_id": int(contact_id),
                 "reference": f"{self.payable.payment_topic} [{self.payable.model.pk}]",
                 "source": f"Concrexit ({settings.SITE_DOMAIN})",
                 "date": invoice_date,
@@ -273,21 +276,18 @@ class MoneybirdExternalInvoice(models.Model):
         if source_url is not None:
             data["external_sales_invoice"]["source_url"] = source_url
         if project_id is not None:
-            data["external_sales_invoice"]["details_attributes"][0][
-                "project_id"
-            ] = project_id
+            data["external_sales_invoice"]["details_attributes"][0]["project_id"] = int(
+                project_id
+            )
         if ledger_id is not None:
-            data["external_sales_invoice"]["details_attributes"][0][
-                "ledger_id"
-            ] = ledger_id
+            data["external_sales_invoice"]["details_attributes"][0]["ledger_id"] = int(
+                ledger_id
+            )
 
         if self.moneybird_details_attribute_id is not None:
-            data["external_sales_invoice"]["details_attributes"][0][
-                "id"
-            ] = self.moneybird_details_attribute_id
-
-        if self.moneybird_invoice_id is not None:
-            data["id"] = self.moneybird_invoice_id
+            data["external_sales_invoice"]["details_attributes"][0]["id"] = int(
+                self.moneybird_details_attribute_id
+            )
 
         return data
 
@@ -332,7 +332,7 @@ class MoneybirdPayment(models.Model):
             "amount": str(self.payment.amount),
         }
         if self.moneybird_financial_mutation_id is not None:
-            data["financial_mutation_id"] = self.moneybird_financial_mutation_id
+            data["financial_mutation_id"] = int(self.moneybird_financial_mutation_id)
             data["financial_account_id"] = financial_account_id_for_payment_type(
                 self.payment.type
             )
