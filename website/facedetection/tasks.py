@@ -11,7 +11,7 @@ from facedetection.services import (
 logger = logging.getLogger(__name__)
 
 
-@shared_task()
+@shared_task
 def trigger_facedetect_lambda():
     references = resubmit_reference_faces()
     logger.info(f"Resubmitted {len(references)} reference faces.")
