@@ -1,7 +1,7 @@
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Count, F, Q
+from django.db.models import Case, Count, F, Q, When
 from django.db.models.functions import Greatest, NullIf
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -115,23 +115,30 @@ class EventRegistration(models.Model):
         return self.date_cancelled is None
 
     queue_position = AnnotationProperty(
-        # Get queue position by counting amount of registrations with lower date and in case of same date lower id
-        # Subsequently cast to None if this is 0 or lower, in which case it isn't in the queue
-        NullIf(
-            Greatest(
-                Count(
-                    "event__eventregistration",
-                    filter=Q(event__eventregistration__date_cancelled=None)
-                    & (
-                        Q(event__eventregistration__date__lt=F("date"))
-                        | Q(event__eventregistration__id__lte=F("id"))
-                        & Q(event__eventregistration__date__exact=F("date"))
+        Case(
+            # Get queue position by counting amount of registrations with lower date and in case of same date lower id
+            # Subsequently cast to None if this is 0 or lower, in which case it isn't in the queue
+            # If the current registration is cancelled, also force it to None.
+            When(
+                date_cancelled=None,
+                then=NullIf(
+                    Greatest(
+                        Count(
+                            "event__eventregistration",
+                            filter=Q(event__eventregistration__date_cancelled=None)
+                            & (
+                                Q(event__eventregistration__date__lt=F("date"))
+                                | Q(event__eventregistration__id__lte=F("id"))
+                                & Q(event__eventregistration__date__exact=F("date"))
+                            ),
+                        )
+                        - F("event__max_participants"),
+                        0,
                     ),
-                )
-                - F("event__max_participants"),
-                0,
+                    0,
+                ),
             ),
-            0,
+            default=None,
         )
     )
 
