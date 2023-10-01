@@ -239,8 +239,10 @@ class RegistrationTest(TestCase):
         cls.event.organisers.add(Committee.objects.get(pk=1))
         cls.member1 = Member.objects.first()
         cls.member2 = Member.objects.all()[1]
+        cls.member3 = Member.objects.all()[2]
         cls.r1 = EventRegistration.objects.create(event=cls.event, member=cls.member1)
         cls.r2 = EventRegistration.objects.create(event=cls.event, member=cls.member2)
+        cls.r3 = EventRegistration.objects.create(event=cls.event, member=cls.member3)
 
     def setUp(self):
         self.r1.refresh_from_db()
@@ -272,6 +274,17 @@ class RegistrationTest(TestCase):
         self.r2.event = self.r1.event
         self.assertEqual(self.r1.queue_position, None)
         self.assertEqual(self.r2.queue_position, 1)
+
+    def test_queue_cancel(self):
+        self.r1.event.max_participants = 0
+        self.r1.event.save()
+
+        self.r2.date_cancelled = timezone.now()
+        self.r2.save()
+
+        self.assertEqual(self.r1.queue_position, 1)
+        self.assertEqual(self.r2.queue_position, None)
+        self.assertEqual(self.r3.queue_position, 2)
 
     def test_registration_either_name_or_member(self):
         self.r2.delete()
