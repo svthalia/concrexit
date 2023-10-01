@@ -1,3 +1,23 @@
+// This file contains some good default settings for using VSCode with concrexit.
+// If you install the recommended extensions (from .vscode/extensions.json), these
+// settings will enable among other things:
+// - Python linting with the correct settings.
+// - Python formatting with black whenever you save a file.
+// - Python imports sorting with isort whenever you save a file.
+//
+// As this file is checked in, git will track any changes you make to it, that you
+// probably wouldn't want to actually commit. If you would like to customize VSCode
+// for yourself, you can probably just do so in you *User* settings. But if you want to
+// edit your own workspace settings (this file) without git tracking it, you can use:
+//
+// $ git update-index --skip-worktree .vscode/settings.json
+//
+// This will tell git to ignore any changes you make to this file. If remote changes are
+// pulled, you may get a merge conflict. If you want to undo this, you can do:
+//
+// $ git update-index --no-skip-worktree .vscode/settings.json
+//
+// The same goes for the launch.json file.
 {
     "ruff.organizeImports": false,
     "python.analysis.autoImportCompletions": true,
