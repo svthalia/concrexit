@@ -79,14 +79,3 @@ Apart from that, we don't have any strict rules about test coverage, but we do e
 Most of our tests are unit tests. We also have some integration tests, but not enough (we definitely need more of those).
 
 You can run all the tests with `make test`, afterwards you can check the coverage with `make coverage`.
-
-
-## For admins
-It's possible for admins to push to the `master` branch, but this must only be
-done with care. As such, a pre-push git hook is available which asks for confirmation
-whenever a push to `master` is done. All admins should have this hook installed!
-
-To install the git hook:
-```bash
-mv scripts/pre-push-hook ./git/hooks/pre-push
-```

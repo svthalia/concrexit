@@ -133,7 +133,7 @@ known_first_party = [
 ]
 
 [tool.ruff]
-exclude = ["migrations", "docs/conf.py"]
+exclude = ["migrations", "docs/conf.py", ".venv", ".vscode", ".pyenv"]
 
 select = [
     "F",

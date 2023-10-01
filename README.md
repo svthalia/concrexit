@@ -10,16 +10,15 @@ The latest Thalia Website built on Django.
 
 ## Getting started
 
-0. Get at least Python 3.9 and install [poetry](https://python-poetry.org/docs/#installation), the Pillow requirements and Thabloid dependencies as per below.
+0. Get at least Python 3.9 and install [poetry](https://python-poetry.org/docs/#installation) and the [Pillow dependencies](#pillow-dependencies) as per below.
 1. Clone this repository
 2. `make member` to create the first member while in the cloned folder. This will also install all dependencies (in a separate virtual environment)
 3. `make fixtures` to generate a bunch of test data
 4. `make run` to run a testing server. Now you are able to visit your local concrexit at http://127.0.0.1:8000
-5. Open the code in your favorite Python IDE (VSCode or Pycharm both work great)
+5. Open the code in your favorite Python IDE (we have some helpful default settings provided for VSCode).
 
 Optional, but recommended: follow the tutorial! It can be found by going to the Wiki (top of the GitHub page) and then clicking on "Your first contribution" or by clicking [here](https://github.com/svthalia/concrexit/wiki/your-first-contribution).
 
-The Thabloid dependencies are less important. If you don't intall them, the only thing that doesn't work is creating Thabloid cover images.
 
 ### Useful git commands
 
@@ -35,18 +34,15 @@ The Thabloid dependencies are less important. If you don't intall them, the only
 
 ### Pillow dependencies
 
-
 Pillow dependencies are used for the thumbnail generation. The website will give lots of errors and work weirdly if you don't install these native dependencies.
 
 For Ubuntu, use:
 
 ```bash
-apt-get install python3-dev gettext gcc build-essential libtiff5-dev libjpeg-turbo8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev
+apt-get install python3-dev build-essential libjpeg-dev zlib1g-dev libwebp-dev
 ```
 
-For other operating systems, see the [Pillow Documentation][pillow-install].
-
-[pillow-install]: https://pillow.readthedocs.io/en/latest/installation.html
+For other operating systems, see the [Pillow Documentation](https://pillow.readthedocs.io/en/latest/installation.html).
 
 On macOS you will also need to install `libmagic`, using the brew package manager by running `brew install libmagic`.
 
