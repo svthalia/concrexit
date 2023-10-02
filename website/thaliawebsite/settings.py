@@ -371,6 +371,7 @@ CELERY_BEAT_SCHEDULE = {
     "sendscheduledmessages": {
         "task": "pushnotifications.tasks.send_scheduled_messages",
         "schedule": crontab(minute="*/2"),
+        "args": (120),
     },
     "revokestaff": {
         "task": "activemembers.tasks.revoke_staff",

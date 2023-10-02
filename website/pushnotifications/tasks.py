@@ -11,9 +11,9 @@ logger = logging.getLogger(__name__)
 
 
 @shared_task()
-def send_scheduled_messages():
+def send_scheduled_messages(interval_time):
     """Send a scheduled push notifications."""
-    interval = int(120)
+    interval = int(interval_time)
     now = timezone.now()
 
     logger.info("Start sending scheduled notifications")
