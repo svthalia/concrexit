@@ -68,6 +68,7 @@ Those apps have generally the same structure, which is explained below.
 - `admin_views.py`: is used if an app has very special, non-default, admin views that would make the `admin.py` file too big.
 - `tests.py`: contains the tests for the app. This is where the tests are defined.
 - `emails.py`: used for sending emails. This is where the emails are defined. Make sure to use the `send_email` function from the utils app to send emails.
+- `tasks.py`: contains [Celery](https://docs.celeryq.dev/en/stable/getting-started/index.html) tasks for the app. Celery tasks are functions that can be run in the background, without blocking the request-response cycle. This is useful for periodic tasks, and anything that's somewhat slow, such as sending emails.
 - `apps.py`: contains the app configuration for the app. This is where the app is named and the app is configured. Any interaction with other apps should be done here (like defining the site's menu). Generally, you don't have to touch this file.
 - `decorators.py`: if you define decorators for the app, they should be placed here.
 - `exceptions.py`: if you define specific exceptions for the app, they should be placed here.

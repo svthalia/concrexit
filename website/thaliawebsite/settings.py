@@ -330,12 +330,19 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 ###############################################################################
 # Celery settings
 # https://docs.celeryq.dev/en/stable/userguide/configuration.html#configuration
-# https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html
-CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", "redis://127.0.0.1:6379")
+
+# Set CELERY_BROKER_URL="redis://127.0.0.1:6379" to use a local redis server in development.
+CELERY_BROKER_URL = from_env("CELERY_BROKER_URL")
+
+# Always execute tasks synchronously when no broker is configured in development and testing.
+# See https://docs.celeryq.dev/en/stable/userguide/configuration.html#std-setting-task_always_eager
+CELERY_TASK_ALWAYS_EAGER = CELERY_BROKER_URL is None
+
 
 # See https://docs.celeryq.dev/en/stable/getting-started/backends-and-brokers/redis.html#caveats
 CELERY_BROKER_TRANSPORT_OPTIONS = {"visibility_timeout": 18000}
 
+# https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html
 CELERY_BEAT_SCHEDULE = {
     "sendpromooverviewweekly": {
         "task": "promotion.tasks.promo_update_weekly",
