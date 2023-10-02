@@ -188,6 +188,14 @@
                                         {% trans "Site administration" %}
                                     </a>
                                 </li>
+                                {% if perms.thaliawebsite.email_sender %}
+                                    <li>
+                                        <a class="dropdown-item"
+                                           href="{% url 'email-sender' %}">
+                                            {% trans "Email sender" %}
+                                        </a>
+                                    </li>
+                                {% endif %}
                             {% endif %}
                             <li>
                                 <a class="dropdown-item"
