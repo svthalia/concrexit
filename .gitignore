@@ -12,6 +12,7 @@ dumb.rdb
 celerybeat-schedule.*
 db.sqlite3
 *.egg-info
+.ruff_cache/
 
 website/media/
 website/filepond-temp-uploads/
