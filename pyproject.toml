@@ -39,6 +39,7 @@ gunicorn = "21.1.0"
 qrcode = {version = "^7.4.2", extras = ["pil"]}
 freezegun = "1.2.2"
 PyYAML = "6.0.1"
+celery = {version = "^5.3.1", extras = ["redis"]}
 
 [tool.poetry.group.scss.dependencies]
 # These dependencies are only needed to compile SASS, which can be done
