@@ -1,0 +1,12 @@
+{% extends "email/html_email.html" %}
+
+{% block content %}
+    {{ message|safe }}
+{% endblock %}
+{% block regards %}
+  With kind regards,
+  <br><br>
+  Study Association Thalia
+  <br>
+{% endblock %}
+{% block disclaimer %}{% endblock %}

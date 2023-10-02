@@ -1,15 +1,20 @@
 """General views for the website."""
-
+from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.views import LoginView, PasswordResetView
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import redirect
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import ListView, TemplateView
+from django.utils.translation import gettext_lazy as _
+from django.views.generic import FormView, ListView, TemplateView
 from django.views.generic.base import View
 
 from django_ratelimit.decorators import ratelimit
+
+from thaliawebsite.forms import EmailSenderForm
 
 
 class IndexView(TemplateView):
@@ -85,3 +90,19 @@ def admin_unauthorized_view(request):
         raise PermissionDenied("You are not allowed to access the administration page.")
     else:
         return redirect(request.GET.get("next", "/"))
+
+
+@method_decorator(staff_member_required, name="dispatch")
+@method_decorator(
+    permission_required("thaliawebsite.email_sender"),
+    name="dispatch",
+)
+class EmailSenderView(FormView):
+    template_name = "email_sender.html"
+    form_class = EmailSenderForm
+    success_url = reverse_lazy("send-email")
+
+    def form_valid(self, form):
+        form.send()
+        messages.success(self.request, _("Email sent successfully."))
+        return super().form_valid(form)

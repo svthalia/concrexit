@@ -211,6 +211,8 @@ def send_email(
     context: dict,
     html_template: Optional[str] = None,
     bcc: Optional[list[str]] = None,
+    cc: Optional[list[str]] = None,
+    reply_to: Optional[list[str]] = None,
     from_email: Optional[str] = None,
     connection=None,
 ) -> None:
@@ -221,6 +223,8 @@ def send_email(
         body=txt_message,
         to=to,
         bcc=bcc,
+        cc=cc,
+        reply_to=reply_to,
         from_email=from_email,
         connection=connection,
     )
