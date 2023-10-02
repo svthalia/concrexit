@@ -26,9 +26,13 @@ class MemberGroupBackend:
         except Member.DoesNotExist:
             return set()
 
+        now = timezone.now()
         groups = member.membergroup_set.filter(
             Q(membergroupmembership__until=None)
-            | Q(membergroupmembership__until__gte=timezone.now())
+            | Q(
+                membergroupmembership__since__lte=now,
+                membergroupmembership__until__gte=now,
+            )
         )
 
         perm_cache_name = "_membergroup_perm_cache"

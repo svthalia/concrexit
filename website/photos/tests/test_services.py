@@ -45,6 +45,8 @@ class IsAlbumAccesibleTest(TestCase):
             type=Membership.MEMBER,
             since=datetime(year=2016, month=1, day=1),
         )
+        self.member.refresh_from_db()  # Clear the cached membership
+
         with self.subTest(
             membership_since=membership.since, membership_until=membership.until
         ):
@@ -52,6 +54,8 @@ class IsAlbumAccesibleTest(TestCase):
 
         membership.until = datetime(year=2016, month=1, day=1)
         membership.save()
+        self.member.refresh_from_db()  # Clear the cached membership
+
         with self.subTest(
             membership_since=membership.since, membership_until=membership.until
         ):
@@ -59,6 +63,8 @@ class IsAlbumAccesibleTest(TestCase):
 
         membership.until = datetime(year=2017, month=1, day=1)
         membership.save()
+        self.member.refresh_from_db()  # Clear the cached membership
+
         with self.subTest(
             membership_since=membership.since, membership_until=membership.until
         ):
@@ -105,6 +111,8 @@ class GetAnnotatedAccessibleAlbumsTest(TestCase):
             type=Membership.MEMBER,
             since=datetime(year=2016, month=1, day=1),
         )
+        self.member.refresh_from_db()  # Clear the cached membership
+
         with self.subTest(
             membership_since=membership.since, membership_until=membership.until
         ):
@@ -115,6 +123,8 @@ class GetAnnotatedAccessibleAlbumsTest(TestCase):
 
         membership.until = datetime(year=2016, month=1, day=1)
         membership.save()
+        self.member.refresh_from_db()  # Clear the cached membership
+
         with self.subTest(
             membership_since=membership.since, membership_until=membership.until
         ):
@@ -125,6 +135,8 @@ class GetAnnotatedAccessibleAlbumsTest(TestCase):
 
         membership.until = datetime(year=2017, month=1, day=1)
         membership.save()
+        self.member.refresh_from_db()  # Clear the cached membership
+
         with self.subTest(
             membership_since=membership.since, membership_until=membership.until
         ):

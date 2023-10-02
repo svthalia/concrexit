@@ -46,10 +46,14 @@ class AdminTest(TestCase):
         cls.permission_change_event = Permission.objects.get(
             content_type__model="event", codename="change_event"
         )
+        cls.permission_delete_event = Permission.objects.get(
+            content_type__model="event", codename="delete_event"
+        )
         cls.permission_override_orga = Permission.objects.get(
             content_type__model="event", codename="override_organiser"
         )
         cls.member.user_permissions.add(cls.permission_change_event)
+        cls.member.user_permissions.add(cls.permission_delete_event)
         cls.member.is_superuser = False
         cls.member.save()
 
@@ -58,6 +62,7 @@ class AdminTest(TestCase):
 
     def _remove_event_permission(self):
         self.member.user_permissions.remove(self.permission_change_event)
+        self.member.user_permissions.remove(self.permission_delete_event)
 
     def _add_override_organiser_permission(self):
         self.member.user_permissions.add(self.permission_override_orga)
@@ -120,10 +125,15 @@ class AdminTest(TestCase):
         self.assertIn("Change event", str(response.content))
 
     def test_modeladmin_change_organiser_denied(self):
-        """If I'm not an organiser I should not be allowed access."""
+        """If I'm not an organiser I should not be allowed edit access."""
         response = self.client.get("/admin/events/event/1/change/")
         self.assertEqual(200, response.status_code)
         self.assertIn("View event", str(response.content))
+
+    def test_modeladmin_delete_organiser_denied(self):
+        """If I'm not an organiser I should not be allowed delete access."""
+        response = self.client.get("/admin/events/event/1/delete/")
+        self.assertEqual(403, response.status_code)
 
     def test_mark_present_qr_organiser_denied(self):
         response = self.client.get("/admin/events/event/1/mark-present-qr/")

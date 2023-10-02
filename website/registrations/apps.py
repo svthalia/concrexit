@@ -29,3 +29,16 @@ class RegistrationsConfig(AppConfig):
                 },
             ],
         }
+
+    def user_menu_items(self):
+        return {
+            "sections": [{"name": "membership", "key": 2}],
+            "items": [
+                {
+                    "section": "membership",
+                    "title": "Manage membership",
+                    "url": reverse("registrations:renew"),
+                    "key": 1,
+                },
+            ],
+        }

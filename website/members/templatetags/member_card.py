@@ -13,9 +13,10 @@ def member_card(member, meta_text=None, ribbon=None):
     if meta_text is None and member.profile.starting_year:
         meta_text = f'<p class="px-1">Cohort: {member.profile.starting_year}</p>'
 
-    image_url = static("members/images/default-avatar.jpg")
     if member.profile.photo:
         image_url = get_media_url(member.profile.photo.thumbnails.small)
+    else:
+        image_url = static("members/images/default-avatar.jpg")
 
     return grid_item(
         title=member.profile.display_name(),

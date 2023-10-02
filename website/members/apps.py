@@ -35,6 +35,25 @@ class MembersConfig(AppConfig):
             ],
         }
 
+    def user_menu_items(self):
+        return {
+            "sections": [{"name": "profile", "key": 1}],
+            "items": [
+                {
+                    "section": "profile",
+                    "title": "Show public profile",
+                    "url": reverse("members:profile"),
+                    "key": 1,
+                },
+                {
+                    "section": "profile",
+                    "title": "Edit profile",
+                    "url": reverse("members:edit-profile"),
+                    "key": 2,
+                },
+            ],
+        }
+
     def announcements(self, request) -> list[dict]:
         # Skip announcements for anonymous users to prevent evaluating
         # request.member too early for API requests, because DRF only sets

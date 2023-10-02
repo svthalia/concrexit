@@ -80,12 +80,10 @@ class ServicesTest(TestCase):
             "registrations.services.process_entry_save"
         ) as process_entry_save:
             process_entry_save.side_effect = [Exception("An exception occurred"), None]
-            self.registration.payment = create_payment(
-                self.registration, self.user, Payment.CASH
-            )
             with self.assertRaises(Exception):
-                self.registration.save()
+                payment = create_payment(self.registration, self.user, Payment.CASH)
+
             self.registration.refresh_from_db()
-            self.assertEqual(Entry.STATUS_REVIEW, self.registration.status)
+            self.assertEqual(Entry.STATUS_ACCEPTED, self.registration.status)
             self.assertIsNone(self.registration.payment)
             self.assertQuerysetEqual(Payment.objects.all(), Payment.objects.none())

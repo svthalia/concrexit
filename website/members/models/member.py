@@ -7,6 +7,7 @@ from django.contrib.auth.models import User, UserManager
 from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 
 from activemembers.models import MemberGroup, MemberGroupMembership
@@ -96,21 +97,38 @@ class Member(User):
     def __str__(self):
         return f"{self.get_full_name()} ({self.username})"
 
+    def refresh_from_db(self, **kwargs):
+        # Clear the cached latest_membership
+        if hasattr(self, "_latest_membership"):
+            del self._latest_membership
+        if hasattr(self, "latest_membership"):
+            del self.latest_membership
+
+        return super().refresh_from_db(**kwargs)
+
     @property
     def current_membership(self):
-        """Return the currently active membership of the user, one if not active.
+        """Return the currently active membership of the user, None if not active.
 
-        :return: the currently active membership or None
-        :rtype: Membership or None
+        Warning: this property uses the *cached* `latest_membership`.
+        You can use `refresh_from_db` to clear it.
         """
         membership = self.latest_membership
         if membership and not membership.is_active():
             return None
         return membership
 
-    @property
+    @cached_property
     def latest_membership(self):
-        """Get the most recent membership of this user."""
+        """Get the most recent membership of this user.
+
+        Warning: this property is cached.
+        You can use `refresh_from_db` to clear it.
+        """
+        # Use membership from a Prefetch object if available.
+        if hasattr(self, "_latest_membership"):
+            return self._latest_membership[0]
+
         if not self.membership_set.exists():
             return None
         return self.membership_set.latest("since")
@@ -175,13 +193,16 @@ class Member(User):
 
     def get_member_groups(self):
         """Get the groups this user is a member of."""
+        now = timezone.now()
         return MemberGroup.objects.filter(
-            Q(membergroupmembership__member=self)
-            & (
-                Q(membergroupmembership__until=None)
-                | Q(membergroupmembership__until__gt=timezone.now())
-            )
-        ).exclude(active=False)
+            Q(membergroupmembership__member=self),
+            Q(membergroupmembership__until=None)
+            | Q(
+                membergroupmembership__since__lte=now,
+                membergroupmembership__until__gte=now,
+            ),
+            active=True,
+        )
 
     def get_absolute_url(self):
         return reverse("members:profile", args=[str(self.pk)])

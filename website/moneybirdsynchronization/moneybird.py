@@ -1,4 +1,4 @@
-from moneybirdsynchronization.administration import HttpsAdministration
+from moneybirdsynchronization.administration import Administration, HttpsAdministration
 from thaliawebsite import settings
 
 
@@ -15,15 +15,14 @@ class MoneybirdAPIService:
     def delete_contact(self, contact_id):
         self._administration.delete(f"contacts/{contact_id}")
 
-    def get_or_create_project(self, name):
-        if name is None:
+    def get_contact_by_customer_id(self, member):
+        try:
+            return self._administration.get(f"contacts/customer_id/C-{member.pk}")
+        except Administration.NotFound:
             return None
 
-        for project in self._administration.get("projects"):
-            if project["name"] == name:
-                return project["id"]
-
-        return self._administration.post("projects", {"project": {"name": name}})["id"]
+    def create_project(self, project_data):
+        return self._administration.post("projects", project_data)
 
     def create_external_sales_invoice(self, invoice_data):
         return self._administration.post("external_sales_invoices", invoice_data)

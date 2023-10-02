@@ -132,7 +132,7 @@ chown -R deploy:deploy /var/lib/concrexit
 # Set up users.
 step "Creating users..."
 create_user dirk "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIgMsOXBM1i1/GHoZIJpXQIm+dU5SRMat7HtZSKVrl5T"
-create_user job "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJylC3OVDYt+JqJv1LStZpogMv04lr2XRW4yfddAT5JR MacBook-Pro-van-Job"
 create_user quinten "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII8GLsrAXmnzd7ps5BI12KG/sN4apUPGksVZq6n6jtY2 quinten@epsilon"
+create_user ties "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIYxMh74Ocgn0l7I0rrWiQ4uTcWgYo6UX3WgNZWPpUXF tiesdirksen@gmail.com"
 
 step "Done :)"

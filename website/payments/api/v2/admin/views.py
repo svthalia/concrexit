@@ -156,12 +156,12 @@ class PayableDetailView(APIView):
                 PaymentUser.objects.get(pk=request.user.pk),
                 serializer.data["payment_type"],
             )
-            payable.model.save()
         except PaymentError as e:
             raise ValidationError(
                 detail={api_settings.NON_FIELD_ERRORS_KEY: [str(e)]}
             ) from e
 
+        payable.model.refresh_from_db()
         return Response(
             PayableAdminSerializer(payable, context=self.get_serializer_context()).data,
             status=status.HTTP_201_CREATED,

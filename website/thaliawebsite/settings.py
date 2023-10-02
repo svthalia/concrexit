@@ -285,7 +285,7 @@ if AWS_STORAGE_BUCKET_NAME is not None:
     AWS_S3_CUSTOM_DOMAIN = os.environ.get("AWS_CLOUDFRONT_DOMAIN", None)
 
     STATICFILES_STORAGE = "thaliawebsite.storage.backend.StaticS3Storage"
-    STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/"
+    STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/static/"
 
     DEFAULT_FILE_STORAGE = "thaliawebsite.storage.backend.PrivateS3Storage"
 
@@ -336,9 +336,13 @@ CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", "redis://127.0.0.1:6379"
 CELERY_BROKER_TRANSPORT_OPTIONS = {"visibility_timeout": 18000}
 
 CELERY_BEAT_SCHEDULE = {
-    "sendpromooverview": {
+    "sendpromooverviewweekly": {
         "task": "promotion.tasks.promo_update_weekly",
         "schedule": crontab(minute=0, hour=8, day_of_week=1),
+    },
+    "sendpromoooverviewdaily": {
+        "task": "promotion.tasks.send_update_daily",
+        "schedule": crontab(minute=0, hour=8),
     },
     "syncmailinglist": {
         "task": "mailinglists.tasks.sync_mail",
@@ -510,12 +514,6 @@ EMAIL_DOMAIN_BLACKLIST = [GSUITE_MEMBERS_DOMAIN]
 GOOGLE_MAPS_API_KEY = os.environ.get("GOOGLE_MAPS_API_KEY", "")
 GOOGLE_MAPS_API_SECRET = os.environ.get("GOOGLE_MAPS_API_SECRET", "")
 GOOGLE_PLACES_API_KEY = os.environ.get("GOOGLE_PLACES_API_KEY", "")
-
-###############################################################################
-# Conscribo settings
-CONSCRIBO_ACCOUNT = os.environ.get("CONSCRIBO_ACCOUNT", "")
-CONSCRIBO_USER = os.environ.get("CONSCRIBO_USER", "")
-CONSCRIBO_PASSWORD = os.environ.get("CONSCRIBO_PASSWORD", "")
 
 ###############################################################################
 # Sentry setup

@@ -4,6 +4,7 @@ from typing import Union
 
 from django.conf import settings
 from django.core import mail
+from django.db import transaction
 from django.db.models import Model, Q, QuerySet, Sum
 from django.urls import reverse
 from django.utils import timezone
@@ -33,51 +34,71 @@ def create_payment(
     if pay_type not in (Payment.CASH, Payment.CARD, Payment.WIRE, Payment.TPAY):
         raise PaymentError("Invalid payment type")
 
-    if isinstance(model_payable, Payable):
-        payable = model_payable
-    else:
+    with transaction.atomic():
+        if isinstance(model_payable, Payable):
+            model_payable = model_payable.model
+
+        try:
+            # Fully refresh and lock the payable object until we've created the payment.
+            # This ensures we have fresh data, and that the payable can't be paid twice
+            # at the same time.
+            model_payable = (
+                model_payable._meta.model.objects.filter(pk=model_payable.pk)
+                .select_for_update(of=("self",))
+                .get()
+            )
+        except AttributeError:
+            # In case we're testing with Mock models.
+            model_payable = (
+                model_payable.model
+                if isinstance(model_payable, Payable)
+                else model_payable
+            )
+
         payable = payables.get_payable(model_payable)
 
-    payer = (
-        PaymentUser.objects.get(pk=payable.payment_payer.pk)
-        if payable.payment_payer
-        else None
-    )
-
-    if not (
-        (payer and payer == processed_by and pay_type == Payment.TPAY)
-        or (payable.can_manage_payment(processed_by) and pay_type != Payment.TPAY)
-    ):
-        raise PaymentError(
-            _("User processing payment does not have the right permissions")
+        payer = (
+            PaymentUser.objects.get(pk=payable.payment_payer.pk)
+            if payable.payment_payer
+            else None
         )
 
-    if payable.payment_amount == 0:
-        raise PaymentError(_("Payment amount 0 is not accepted"))
+        if not (
+            (payer and payer == processed_by and pay_type == Payment.TPAY)
+            or (payable.can_manage_payment(processed_by) and pay_type != Payment.TPAY)
+        ):
+            raise PaymentError(
+                _("User processing payment does not have the right permissions")
+            )
 
-    if pay_type == Payment.TPAY and not payer.tpay_enabled:
-        raise PaymentError(_("This user does not have Thalia Pay enabled"))
+        if payable.payment_amount == 0:
+            raise PaymentError(_("Payment amount 0 is not accepted"))
 
-    if not payable.paying_allowed:
-        raise PaymentError(_("Payment restricted"))
+        if pay_type == Payment.TPAY and not payer.tpay_enabled:
+            raise PaymentError(_("This user does not have Thalia Pay enabled"))
 
-    if payable.payment is not None:
-        payable.payment.amount = payable.payment_amount
-        payable.payment.notes = payable.payment_notes
-        payable.payment.topic = payable.payment_topic
-        payable.payment.paid_by = payer
-        payable.payment.processed_by = processed_by
-        payable.payment.type = pay_type
-        payable.payment.save()
-    else:
-        payable.payment = Payment.objects.create(
-            processed_by=processed_by,
-            amount=payable.payment_amount,
-            notes=payable.payment_notes,
-            topic=payable.payment_topic,
-            paid_by=payer,
-            type=pay_type,
-        )
+        if not payable.paying_allowed:
+            raise PaymentError(_("Payment restricted"))
+
+        if payable.payment is not None:
+            payable.payment.amount = payable.payment_amount
+            payable.payment.notes = payable.payment_notes
+            payable.payment.topic = payable.payment_topic
+            payable.payment.paid_by = payer
+            payable.payment.processed_by = processed_by
+            payable.payment.type = pay_type
+            payable.payment.save()
+        else:
+            payable.payment = Payment.objects.create(
+                processed_by=processed_by,
+                amount=payable.payment_amount,
+                notes=payable.payment_notes,
+                topic=payable.payment_topic,
+                paid_by=payer,
+                type=pay_type,
+            )
+
+        payable.model.save()
     return payable.payment
 
 
@@ -108,9 +129,10 @@ def delete_payment(model: Model, member: Member = None, ignore_change_window=Fal
             _("This payment has already been processed and hence cannot be deleted.")
         )
 
-    payable.payment = None
-    payable.model.save()
-    payment.delete()
+    with transaction.atomic():
+        payable.payment = None
+        payment.delete()
+        payable.model.save()
 
 
 def update_last_used(queryset: QuerySet, date: datetime.date = None) -> int:
@@ -120,12 +142,12 @@ def update_last_used(queryset: QuerySet, date: datetime.date = None) -> int:
     :param date: date to set last_used to
     :return: number of affected rows
     """
+    now = timezone.now()
     if not date:
-        date = timezone.now().date()
+        date = now.date()
 
     result = queryset.filter(
-        (Q(valid_from__gte=timezone.now()) & Q(valid_until__lt=timezone.now()))
-        | Q(valid_until=None)
+        Q(valid_from__gte=now, valid_until__lt=now) | Q(valid_until=None)
     ).update(last_used=date)
     return result
 

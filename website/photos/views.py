@@ -58,7 +58,7 @@ class _BaseAlbumView(TemplateView):
         album = self.get_album(**kwargs)
 
         context["album"] = album
-        photos = album.photo_set.filter(hidden=False).select_properties("num_likes")
+        photos = album.photo_set.select_properties("num_likes")
 
         # Fix select_properties dropping the default ordering.
         photos = photos.order_by("pk")
