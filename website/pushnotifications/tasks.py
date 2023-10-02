@@ -10,7 +10,7 @@ from pushnotifications.models import ScheduledMessage
 logger = logging.getLogger(__name__)
 
 
-@shared_task()
+@shared_task
 def send_scheduled_messages(interval_time):
     """Send a scheduled push notifications."""
     interval = int(interval_time)
