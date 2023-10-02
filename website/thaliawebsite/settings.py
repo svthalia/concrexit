@@ -534,7 +534,9 @@ if "SENTRY_DSN" in os.environ:
         dsn=os.environ.get("SENTRY_DSN"),
         integrations=[
             DjangoIntegration(),
-            CeleryIntegration(),
+            CeleryIntegration(
+                monitor_beat_tasks=True,
+            ),
         ],
         release=SOURCE_COMMIT,
         send_default_pii=True,
