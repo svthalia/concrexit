@@ -9,7 +9,7 @@
 .vscode/
 .tox/
 dumb.rdb
-celerybeat-schedule
+celerybeat-schedule.*
 db.sqlite3
 *.egg-info
 

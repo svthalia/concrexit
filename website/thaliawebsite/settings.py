@@ -357,19 +357,19 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": crontab(minute=30, hour=3),
     },
     "membershipannouncement": {
-        "task": "member.tasks.memberhsip_announcement",
+        "task": "members.tasks.membership_announcement",
         "schedule": crontab(minute=0, hour=6, day_of_month=31, month_of_year=8),
     },
     "inforequest": {
-        "task": "member.tasks.info_request",
+        "task": "members.tasks.info_request",
         "schedule": crontab(minute=0, hour=6, day_of_month=15, month_of_year=10),
     },
     "expirationannouncement": {
-        "task": "member.tasks.expiration_announcement",
+        "task": "members.tasks.expiration_announcement",
         "schedule": crontab(minute=0, hour=6, day_of_month=8, month_of_year=8),
     },
     "minimiseregistration": {
-        "task": "registration.tasks.minimise_registration",
+        "task": "registrations.tasks.minimise_registrations",
         "schedule": crontab(minute=0, hour=3, day_of_month=1),
     },
     "sendscheduledmessages": {
