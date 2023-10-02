@@ -341,7 +341,7 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": crontab(minute=0, hour=8, day_of_week=1),
     },
     "sendpromoooverviewdaily": {
-        "task": "promotion.tasks.send_update_daily",
+        "task": "promotion.tasks.promo_update_daily",
         "schedule": crontab(minute=0, hour=8),
     },
     "syncmailinglist": {
