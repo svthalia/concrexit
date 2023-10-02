@@ -2,6 +2,7 @@
 
 chown -R appuser /volumes/static
 chown -R appuser /volumes/media
+chown -R appuser /volumes/worker
 
 # Wait for the main container to finish migrating.
 until MANAGE_PY=1 runuser -u appuser -- ./manage.py migrate --check --no-input

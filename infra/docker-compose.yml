@@ -52,7 +52,7 @@ services:
       - redis-snapshot:/data/:rw
     restart: always
     healthcheck:
-      test: [ "CMD-SHELL", "redis-cli ping | grep pong" ]
+      test: [ "CMD-SHELL", "redis-cli ping | grep PONG" ]
       interval: 2s
       timeout: 2s
       retries: 10
@@ -72,7 +72,7 @@ services:
       redis:
         condition: service_healthy
       concrexit:
-        condition: service_healthy
+        condition: service_started
     healthcheck:
       test: [ "CMD", "celery", "--app", "thaliawebsite", "status" ]
       interval: 10s
