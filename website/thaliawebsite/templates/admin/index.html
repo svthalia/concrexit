@@ -1,0 +1,9 @@
+{% extends "admin/index.html" %}
+{% load i18n %}
+
+{% block sidebar %}
+    {{ block.super }}
+    {% if perms.thaliawebsite.email_sender %}
+    <a href="{% url 'email-sender' %}" class="button">{% translate 'Email sender' %}</a>
+    {% endif %}
+{% endblock %}

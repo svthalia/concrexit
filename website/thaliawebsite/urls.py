@@ -53,6 +53,7 @@ from singlepages.sitemaps import sitemap as singlepages_sitemap
 from thabloid.sitemaps import sitemap as thabloid_sitemap
 from thaliawebsite.forms import AuthenticationForm
 from thaliawebsite.views import (
+    EmailSenderView,
     IndexView,
     RateLimitedLoginView,
     RateLimitedPasswordResetView,
@@ -160,6 +161,7 @@ urlpatterns = [
             ]
         ),
     ),
+    path("send-email/", EmailSenderView.as_view(), name="email-sender"),
     # Apps
     path("", include("singlepages.urls")),
     path("", include("merchandise.urls")),

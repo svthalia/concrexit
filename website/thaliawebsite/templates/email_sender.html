@@ -1,0 +1,17 @@
+{% extends "small_page.html" %}
+{% load i18n static django_bootstrap5 alert %}
+
+{% block title %}{% trans "Send email" %} — {{ block.super }}{% endblock %}
+{% block opengraph_title %}{% trans "Send email" %} — {{ block.super }}{% endblock %}
+
+{% block page_title %}{% trans "Send email" %}{% endblock %}
+
+{% block page_content %}
+    <form method="post" class="col-12">
+        {% csrf_token %}
+        {% for field in form %}
+            {% bootstrap_field field %}
+        {% endfor %}
+        <input type="submit" value="{% trans 'Send email' %}" class="btn btn-primary float-end"/>
+    </form>
+{% endblock %}

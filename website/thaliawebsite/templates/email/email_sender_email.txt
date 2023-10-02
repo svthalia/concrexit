@@ -1,0 +1,4 @@
+{{ message|striptags }}
+
+With kind regards,
+Study Association Thalia
