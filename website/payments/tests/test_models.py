@@ -86,7 +86,7 @@ class PaymentTest(TestCase):
         with self.assertRaises(ValidationError):
             self.payment.save()
 
-    def test_user_paid_cannot_be_deleted(self):
+    def test_delete_payer_raises_protectederror(self):
         with self.assertRaises(ProtectedError):
             self.member.delete()
 
