@@ -16,6 +16,7 @@ from localflavor.generic.models import BICField, IBANField
 
 from members.models import Membership, Profile
 from payments.models import PaymentAmountField
+from registrations.services import generate_default_username
 from utils import countries
 
 
@@ -371,6 +372,20 @@ class Registration(Entry):
     def get_full_name(self):
         full_name = f"{self.first_name} {self.last_name}"
         return full_name.strip()
+
+    def get_username(self):
+        """Get the automatic or overridden username."""
+        return self.username or generate_default_username(self)
+
+    def check_user_is_unique(self):
+        """Check that the username and email are unique."""
+        return (
+            get_user_model()
+            .objects.filter(
+                models.Q(email=self.email) | models.Q(username=self.get_username())
+            )
+            .exists()
+        )
 
     def clean(self):
         super().clean()

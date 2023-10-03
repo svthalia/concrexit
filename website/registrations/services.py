@@ -1,16 +1,15 @@
 """The services defined by the registrations package."""
 import string
 import unicodedata
-from typing import Union
 
 from django.contrib.admin.models import CHANGE, LogEntry
 from django.contrib.admin.options import get_content_type_for_model
 from django.contrib.auth import get_user_model
 from django.db import transaction
-from django.db.models import Q, QuerySet, Value
+from django.db.models import Q, Value
 from django.utils import timezone
 
-import members
+from members.emails import send_welcome_message
 from members.models import Member, Membership, Profile
 from payments.models import BankAccount, Payment, PaymentUser
 from payments.services import create_payment
@@ -19,14 +18,8 @@ from registrations.models import Entry, Registration, Renewal
 from utils.snippets import datetime_to_lectureyear
 
 
-def _generate_username(registration: Registration) -> str:
-    """Create username from first and lastname.
-
-    :param registration: Model containing first and last name
-    :type registration: Registration
-    :return: Created username
-    :rtype: str
-    """
+def generate_default_username(registration: Registration) -> str:
+    """Create default username from first and lastname."""
     username = (registration.first_name[0] + registration.last_name).lower()
     username = "".join(c for c in username if c.isalpha())
     username = "".join(
@@ -40,224 +33,307 @@ def _generate_username(registration: Registration) -> str:
     return username.lower()
 
 
-def check_unique_user(entry: Entry) -> bool:
-    """Check that the username and email address of the entry are unique.
+def confirm_registration(registration: Registration) -> None:
+    """Confirm a registration.
 
-    :param entry: Registration entry
-    :type entry: Entry
-    :return: True if unique, False if not unique
-    :rtype: boolean
+    This happens when the user has verified their email address.
     """
-    try:
-        registration = entry.registration
-        username = _generate_username(registration)
-        if (
-            get_user_model().objects.filter(username=username).exists()
-            and registration.username is not None
-        ):
-            username = registration.username
+    registration.refresh_from_db()
+    if registration.status != registration.STATUS_CONFIRM:
+        raise ValueError("Registration is already confirmed.")
 
-        return not (
-            get_user_model()
-            .objects.filter(Q(email=registration.email) | Q(username=username))
-            .exists()
-        ) and not (
-            Registration.objects.filter(username=username).exclude(pk=entry.pk).exists()
+    registration.status = registration.STATUS_REVIEW
+    registration.save()
+
+    if (
+        registration.membership_type == Membership.BENEFACTOR
+        and not registration.no_references
+    ):
+        emails.send_references_information_message(registration)
+
+    emails.send_new_registration_board_message(registration)
+
+
+def reject_registration(registration: Registration, actor: Member) -> None:
+    """Reject a registration."""
+    registration.refresh_from_db()
+    if registration.status != registration.STATUS_REVIEW:
+        raise ValueError("Registration is not in review.")
+
+    registration.status = registration.STATUS_REJECTED
+    registration.save()
+
+    # Log that the `actor` changed the status.
+    LogEntry.objects.log_action(
+        user_id=actor.id,
+        content_type_id=get_content_type_for_model(registration).pk,
+        object_id=registration.pk,
+        object_repr=str(registration),
+        action_flag=CHANGE,
+        change_message="Changed status to rejected",
+    )
+
+    emails.send_registration_rejected_message(registration)
+
+
+def revert_registration(registration: Registration, actor: Member) -> None:
+    """Undo the review of a registration."""
+    registration.refresh_from_db()
+    if registration.status not in (
+        registration.STATUS_ACCEPTED,
+        registration.STATUS_REJECTED,
+    ):
+        raise ValueError("Registration is not accepted or rejected.")
+
+    if registration.payment:
+        registration.payment.delete()
+
+    registration.status = registration.STATUS_REVIEW
+    registration.save()
+
+    # Log that the `actor` changed the status.
+    LogEntry.objects.log_action(
+        user_id=actor.id,
+        content_type_id=get_content_type_for_model(registration).pk,
+        object_id=registration.pk,
+        object_repr=str(registration),
+        action_flag=CHANGE,
+        change_message="Reverted status to review",
+    )
+
+
+def accept_registration(registration: Registration, actor: Member) -> None:
+    """Accept a registration.
+
+    If the registration wants to pay with direct debit, this will also
+    complete the registration, and then pay for it with Thalia Pay.
+
+    Otherwise, an email will be sent informing the user that they need to pay.
+    """
+    registration.refresh_from_db()
+    if registration.status != registration.STATUS_REVIEW:
+        raise ValueError("Registration is not in review.")
+
+    with transaction.atomic():
+        if not registration.check_user_is_unique():
+            raise ValueError("Username or email is not unique")
+
+        registration.status = registration.STATUS_ACCEPTED
+        registration.save()
+
+        # Log that the `actor` changed the status.
+        LogEntry.objects.log_action(
+            user_id=actor.id,
+            content_type_id=get_content_type_for_model(registration).pk,
+            object_id=registration.pk,
+            object_repr=str(registration),
+            action_flag=CHANGE,
+            change_message="Changed status to approved",
         )
-    except Registration.DoesNotExist:
-        pass
-    return True
+
+        # Complete and pay the registration with Thalia Pay if possible.
+        if registration.direct_debit:
+            # If this raises, propagate the exception and roll back the transaction.
+            # The 'accepting' of the registration will be rolled back as well.
+            complete_registration(registration)
+
+    if not registration.direct_debit:
+        # Inform the user that they need to pay.
+        emails.send_registration_accepted_message(registration)
 
 
-def confirm_entry(queryset: QuerySet) -> int:
-    """Confirm all entries in the queryset.
+def revert_renewal(renewal: Renewal, actor: Member) -> None:
+    """Undo the review of a registration."""
+    renewal.refresh_from_db()
+    if renewal.status not in (
+        renewal.STATUS_ACCEPTED,
+        renewal.STATUS_REJECTED,
+    ):
+        raise ValueError("Registration is not accepted or rejected.")
 
-    :param queryset: queryset of entries
-    :type queryset: Queryset[Entry]
-    :return: number of updated rows
-    :rtype: integer
-    """
-    queryset = queryset.filter(status=Entry.STATUS_CONFIRM)
-    rows_updated = queryset.update(
-        status=Entry.STATUS_REVIEW, updated_at=timezone.now()
+    if renewal.payment:
+        renewal.payment.delete()
+
+    renewal.status = renewal.STATUS_REVIEW
+    renewal.save()
+
+    # Log that the `actor` changed the status.
+    LogEntry.objects.log_action(
+        user_id=actor.id,
+        content_type_id=get_content_type_for_model(renewal).pk,
+        object_id=renewal.pk,
+        object_repr=str(renewal),
+        action_flag=CHANGE,
+        change_message="Reverted status to review",
     )
-    return rows_updated
 
 
-def reject_entries(user_id: int, queryset: QuerySet) -> int:
-    """Reject all entries in the queryset.
+def complete_registration(registration: Registration) -> None:
+    """Complete a registration, creating a Member, Profile and Membership.
 
-    :param user_id: Id of the user executing this action
-    :param queryset: queryset of entries
-    :type queryset: Queryset[Entry]
-    :return: number of updated rows
-    :rtype: integer
+    This will create a Thalia Pay payment after completing the registration, if
+    the registration is not yet paid and direct debit is enabled.
+
+    If anything goes wrong, database changes will be rolled back.
+
+    If direct debit is not enabled, the registration must already be paid for.
     """
-    queryset = queryset.filter(status=Entry.STATUS_REVIEW)
-    entries = list(queryset.all())
-    rows_updated = queryset.update(
-        status=Entry.STATUS_REJECTED, updated_at=timezone.now()
+    registration.refresh_from_db()
+    if registration.status != registration.STATUS_ACCEPTED:
+        raise ValueError("Registration is not accepted.")
+    elif registration.payment is None and not registration.direct_debit:
+        raise ValueError("Registration has not been paid for.")
+
+    # If anything goes wrong, the changes to the database will be rolled back.
+    # Specifically, if an exception is raised when creating a Thalia Pay payment,
+    # the registration will not be completed, so it can be handled properly.
+    with transaction.atomic():
+        member = _create_member(registration)
+        membership = _create_membership_from_registration(registration, member)
+        registration.membership = membership
+        registration.status = registration.STATUS_COMPLETED
+        registration.save()
+
+        if not registration.payment:
+            # Create a Thalia Pay payment.
+            create_payment(registration, member, Payment.TPAY)
+            registration.refresh_from_db()
+
+
+def reject_renewal(renewal: Renewal, actor: Member):
+    """Reject a renewal."""
+    renewal.refresh_from_db()
+    if renewal.status != renewal.STATUS_REVIEW:
+        raise ValueError("Renewal is not in review.")
+
+    renewal.status = renewal.STATUS_REJECTED
+    renewal.save()
+
+    # Log that the `actor` changed the status.
+    LogEntry.objects.log_action(
+        user_id=actor.id,
+        content_type_id=get_content_type_for_model(renewal).pk,
+        object_id=renewal.pk,
+        object_repr=str(renewal),
+        action_flag=CHANGE,
+        change_message="Changed status to rejected",
     )
 
-    for entry in entries:
-        log_obj = None
+    emails.send_renewal_rejected_message(renewal)
 
-        try:
-            emails.send_registration_rejected_message(entry.registration)
-            log_obj = entry.registration
-        except Registration.DoesNotExist:
-            try:
-                emails.send_renewal_rejected_message(entry.renewal)
-                log_obj = entry.renewal
-            except Renewal.DoesNotExist:
-                pass
 
-        if log_obj:
-            LogEntry.objects.log_action(
-                user_id=user_id,
-                content_type_id=get_content_type_for_model(log_obj).pk,
-                object_id=log_obj.pk,
-                object_repr=str(log_obj),
-                action_flag=CHANGE,
-                change_message="Changed status to rejected",
+def accept_renewal(renewal: Renewal, actor: Member):
+    renewal.refresh_from_db()
+    if renewal.status != renewal.STATUS_REVIEW:
+        raise ValueError("Renewal is not in review.")
+
+    renewal.status = renewal.STATUS_ACCEPTED
+    renewal.save()
+
+    # Log that the `actor` changed the status.
+    LogEntry.objects.log_action(
+        user_id=actor.id,
+        content_type_id=get_content_type_for_model(renewal).pk,
+        object_id=renewal.pk,
+        object_repr=str(renewal),
+        action_flag=CHANGE,
+        change_message="Changed status to approved",
+    )
+
+    emails.send_renewal_accepted_message(renewal)
+
+
+def complete_renewal(renewal: Renewal):
+    """Complete a renewal, prolonging a Membership or creating a new one."""
+    renewal.refresh_from_db()
+    if renewal.status != renewal.STATUS_ACCEPTED:
+        raise ValueError("Renewal is not accepted.")
+    elif renewal.payment is None:
+        raise ValueError("Registration has not been paid for.")
+
+    member: Member = renewal.member
+    member.refresh_from_db()
+
+    since = calculate_membership_since()
+    lecture_year = datetime_to_lectureyear(since)
+
+    latest_membership = member.latest_membership
+    # TODO: current_membership can be a future membership if just renewed before september.
+    # That doesn't matter here, but it is incorrect.
+    current_membership = member.current_membership
+
+    with transaction.atomic():
+        if renewal.length == Entry.MEMBERSHIP_STUDY:
+            # Handle the 'membership upgrade' case.
+            if latest_membership is not None:
+                if latest_membership.until is None:
+                    raise ValueError(
+                        "This member already has a never ending membership"
+                    )
+
+                if renewal.created_at.date() < latest_membership.until:
+                    # If a membership exists that was still valid when the renewal was created, the
+                    # original membership can be upgraded. This is defined in the Huishoudelijk
+                    # Reglement (article 2.8 in the version of 2022-07-22).
+                    latest_membership.until = None
+                    latest_membership.save()
+                    renewal.membership = latest_membership
+
+            # Handle the 'normal' non-(discounted)-upgrade case.
+            if renewal.membership is None:
+                renewal.membership = Membership.objects.create(
+                    type=renewal.membership_type, user=member, since=since, until=None
+                )
+        else:
+            if current_membership is not None:
+                if current_membership.until is None:
+                    raise ValueError(
+                        "This member already has a never ending membership"
+                    )
+                since = current_membership.until
+
+            until = timezone.datetime(year=lecture_year + 1, month=9, day=1).date()
+            renewal.membership = Membership.objects.create(
+                type=renewal.membership_type, user=member, since=since, until=until
             )
 
-    return rows_updated
+        renewal.status = renewal.STATUS_COMPLETED
+        renewal.save()
+
+    emails.send_renewal_complete_message(renewal)
 
 
-def accept_entries(user_id: int, queryset: QuerySet) -> int:
-    """Accept all entries in the queryset.
+def calculate_membership_since() -> timezone.datetime:
+    """Calculate the start date of a membership.
 
-    :param user_id: Id of the user executing this action
-    :param queryset: queryset of entries
-    :type queryset: Queryset[Entry]
-    :return: number of updated rows
-    :rtype: integer
+    If it's August we act as if it's the next lecture year
+    already and we start new memberships in September.
     """
-    queryset = queryset.filter(status=Entry.STATUS_REVIEW)
-    entries = queryset.all()
-    updated_entries = []
-
-    for entry in entries:
-        # Check if the user is unique
-        if not check_unique_user(entry):
-            # User is not unique, do not proceed
-            continue
-
-        with transaction.atomic():
-            entry.status = Entry.STATUS_ACCEPTED
-            entry.updated_at = timezone.now()
-
-            log_obj = None
-
-            try:
-                if entry.registration.username is None:
-                    entry.registration.username = _generate_username(entry.registration)
-                    entry.registration.save()
-
-                if entry.registration.direct_debit:
-                    member = _create_member_from_registration(entry.registration)
-                    membership = _create_membership_from_entry(
-                        entry.registration, member
-                    )
-                    entry.membership = membership
-                    entry.status = Entry.STATUS_COMPLETED
-                    entry.save()
-                    create_payment(entry, member, Payment.TPAY)
-                    entry.refresh_from_db()
-                else:
-                    emails.send_registration_accepted_message(entry.registration)
-
-                log_obj = entry.registration
-
-            except Registration.DoesNotExist:
-                try:
-                    emails.send_renewal_accepted_message(entry.renewal)
-                    log_obj = entry.renewal
-                except Renewal.DoesNotExist:
-                    pass
-
-            if log_obj:
-                LogEntry.objects.log_action(
-                    user_id=user_id,
-                    content_type_id=get_content_type_for_model(log_obj).pk,
-                    object_id=log_obj.pk,
-                    object_repr=str(log_obj),
-                    action_flag=CHANGE,
-                    change_message="Change status to approved",
-                )
-
-            entry.save()
-
-        updated_entries.append(entry.pk)
-
-    return len(updated_entries)
+    since = timezone.now().date()
+    if timezone.now().month == 8:
+        since = since.replace(month=9, day=1)
+    return since
 
 
-def revert_entry(user_id: int or None, entry: Entry) -> None:
-    """Revert status of entry to review so that it can be corrected.
-
-    :param user_id: Id of the user executing this action
-    :param entry: Entry that should be reverted
-    """
-    if entry.status not in [Entry.STATUS_ACCEPTED, Entry.STATUS_REJECTED]:
-        return
-
-    payment = entry.payment
-    entry.status = Entry.STATUS_REVIEW
-    entry.updated_at = timezone.now()
-    entry.save()
-    if payment is not None:
-        payment.delete()
-
-    log_obj = None
-
-    try:
-        log_obj = entry.registration
-    except Registration.DoesNotExist:
-        try:
-            log_obj = entry.renewal
-        except Renewal.DoesNotExist:
-            pass
-
-    if log_obj and user_id is not None:
-        LogEntry.objects.log_action(
-            user_id=user_id,
-            content_type_id=get_content_type_for_model(log_obj).pk,
-            object_id=log_obj.pk,
-            object_repr=str(log_obj),
-            action_flag=CHANGE,
-            change_message="Revert status to review",
-        )
-
-
-def _create_member_from_registration(registration: Registration) -> Member:
-    """Create User and Member model from Registration.
-
-    :param registration: Registration model
-    :type registration: Registration
-    :return: Created member object
-    :rtype: Member
-    """
-    # Generate random password for user that we can send to the new user
+def _create_member(registration: Registration) -> Member:
+    """Create a member and profile from a Registration."""
+    # Generate random password for user that we can send to the new user.
     password = get_user_model().objects.make_random_password(length=15)
 
     # Make sure the username and email are unique
-    if not check_unique_user(registration):
+    if not registration.check_user_is_unique():
         raise ValueError("Username or email address of the registration are not unique")
 
-    # Create user
+    # Create user.
     user = get_user_model().objects.create_user(
-        username=_generate_username(registration)
-        if registration.username is None
-        else registration.username.lower(),
+        username=registration.get_username(),
         email=registration.email,
         password=password,
         first_name=registration.first_name,
         last_name=registration.last_name,
     )
 
-    # Add profile to created user
+    # Add profile to created user.
     Profile.objects.create(
         user=user,
         programme=registration.programme,
@@ -275,6 +351,7 @@ def _create_member_from_registration(registration: Registration) -> Member:
     )
 
     if registration.direct_debit:
+        # Add a bank account.
         payment_user = PaymentUser.objects.get(pk=user.pk)
         payment_user.allow_tpay()
         BankAccount.objects.create(
@@ -289,123 +366,28 @@ def _create_member_from_registration(registration: Registration) -> Member:
         )
 
     # Send welcome message to new member
-    members.emails.send_welcome_message(user, password)
+    send_welcome_message(user, password)
 
     return Member.objects.get(pk=user.pk)
 
 
-def calculate_membership_since() -> timezone.datetime:
-    """Calculate the start date of a membership.
-
-    If it's August we act as if it's the next
-    lecture year already and we start new memberships in September
-    :return:
-    """
-    since = timezone.now().date()
-    if timezone.now().month == 8:
-        since = since.replace(month=9, day=1)
-    return since
-
-
-def _create_membership_from_entry(
-    entry: Entry, member: Member = None
-) -> Union[Membership, None]:
-    """Create or update Membership model based on Entry model information.
-
-    :param entry: Entry model
-    :type entry: Entry
-    :return: The created or updated membership
-    :rtype: Membership
-    """
-    # Ensure all data is up to date.
-    entry.refresh_from_db()
-    if hasattr(entry, "renewal"):
-        entry.renewal.refresh_from_db()
-        entry.renewal.member.refresh_from_db()
-    if member is not None:
-        member.refresh_from_db()
-
-    lecture_year = datetime_to_lectureyear(timezone.now())
+def _create_membership_from_registration(
+    registration: Registration, member: Member
+) -> Membership:
+    """Create a membership from a Registration."""
     since = calculate_membership_since()
-    until = None
-    if timezone.now().month == 8:
-        lecture_year += 1
+    lecture_year = datetime_to_lectureyear(since)
 
-    if entry.length == Entry.MEMBERSHIP_STUDY:
-        try:
-            renewal = entry.renewal
-            member = renewal.member
-            membership = member.latest_membership
-            # Having a latest membership which has an until date implies that
-            # this membership last(s/ed) till the end of the lecture year
-            # This means it's possible to renew the 'year' membership
-            # to a 'study' membership thus the until date should now be None
-            # and no new membership is needed.
-            # The rules for this behaviour are taken from the HR
-            if membership is not None:
-                if membership.until is None:
-                    raise ValueError(
-                        "This member already has a never ending membership"
-                    )
-                if entry.created_at.date() < membership.until:
-                    membership.until = None
-                    membership.save()
-                    return membership
-        except Renewal.DoesNotExist:
-            pass
-    else:
-        # If entry is Renewal set since to current membership until + 1 day
-        # Unless there is no current membership
-        try:
-            member = entry.renewal.member
-            membership = member.current_membership
-            if membership is not None:
-                if membership.until is None:
-                    raise ValueError(
-                        "This member already has a never ending membership"
-                    )
-                since = membership.until
-        except Renewal.DoesNotExist:
-            pass
+    if registration.membership_type == Membership.BENEFACTOR:
         until = timezone.datetime(year=lecture_year + 1, month=9, day=1).date()
+    elif registration.length == Registration.MEMBERSHIP_YEAR:
+        until = timezone.datetime(year=lecture_year + 1, month=9, day=1).date()
+    else:
+        until = None
 
     return Membership.objects.create(
-        user=member, since=since, until=until, type=entry.membership_type
+        user=member, since=since, until=until, type=registration.membership_type
     )
-
-
-def process_entry_save(entry: Entry) -> None:
-    """Once an entry is saved, process the entry if it is paid.
-
-    :param entry: The entry that should be processed
-    :type entry: Entry
-    """
-    if not entry or not entry.payment:
-        return
-
-    if entry.status != Entry.STATUS_ACCEPTED:
-        return
-
-    try:
-        registration = entry.registration
-        # Create user and member
-        member = _create_member_from_registration(registration)
-    except Registration.DoesNotExist:
-        # Get member from renewal
-        renewal = entry.renewal
-        member = renewal.member
-        # Send email of payment confirmation for renewal,
-        # not needed for registration since a new member already
-        # gets the welcome email
-        emails.send_renewal_complete_message(entry.renewal)
-
-    entry.payment.paid_by = member  # This should actually be a PaymentUser, but as PaymentUser is a proxy model of Member, this doesn't break
-    entry.payment.save()
-
-    membership = _create_membership_from_entry(entry, member)
-    entry.membership = membership
-    entry.status = Entry.STATUS_COMPLETED
-    entry.save()
 
 
 def execute_data_minimisation(dry_run=False):
