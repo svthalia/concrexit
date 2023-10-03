@@ -156,7 +156,7 @@ class Payment(models.Model):
         models.CASCADE,
         verbose_name=_("paid by"),
         related_name="paid_payment_set",
-        blank=False,
+        blank=True,
         null=True,
     )
 
