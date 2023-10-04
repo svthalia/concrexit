@@ -213,6 +213,7 @@ class EventAdminTest(TestCase):
     @override_settings(LANGUAGE_CODE="en")
     def test_num_participants(self):
         request = self.rf.get("/admin/events/event/")
+        request.user = self.member
         qs = self.admin.get_queryset(request)
         event = qs.get(id=self.event.id)
 
@@ -231,6 +232,7 @@ class EventAdminTest(TestCase):
         EventRegistration.objects.create(event=self.event, name="test")
 
         request = self.rf.get("/admin/events/event/")
+        request.user = self.member
         qs = self.admin.get_queryset(request)
         event = qs.get(id=self.event.id)
 
