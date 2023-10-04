@@ -1,6 +1,7 @@
 """The services defined by the registrations package."""
 import string
 import unicodedata
+from typing import Optional
 
 from django.contrib.admin.models import CHANGE, LogEntry
 from django.contrib.admin.options import get_content_type_for_model
@@ -76,7 +77,9 @@ def reject_registration(registration: Registration, actor: Member) -> None:
     emails.send_registration_rejected_message(registration)
 
 
-def revert_registration(registration: Registration, actor: Member) -> None:
+def revert_registration(
+    registration: Registration, actor: Optional[Member] = None
+) -> None:
     """Undo the review of a registration."""
     registration.refresh_from_db()
     if registration.status not in (
@@ -85,11 +88,13 @@ def revert_registration(registration: Registration, actor: Member) -> None:
     ):
         raise ValueError("Registration is not accepted or rejected.")
 
-    if registration.payment:
-        registration.payment.delete()
+    with transaction.atomic():
+        if registration.payment:
+            registration.payment.delete()
 
-    registration.status = registration.STATUS_REVIEW
-    registration.save()
+        registration.payment = None
+        registration.status = registration.STATUS_REVIEW
+        registration.save()
 
     # Log that the `actor` changed the status.
     LogEntry.objects.log_action(
