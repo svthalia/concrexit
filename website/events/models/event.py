@@ -636,4 +636,7 @@ class Event(models.Model):
 
     class Meta:
         ordering = ("-start",)
-        permissions = (("override_organiser", "Can access events as if organizing"),)
+        permissions = (
+            ("override_organiser", "Can access events as if organizing"),
+            ("view_unpublished", "Can see any unpublished event"),
+        )
