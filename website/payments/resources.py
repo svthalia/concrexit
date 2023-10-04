@@ -1,7 +1,7 @@
 from import_export import resources
 from import_export.fields import Field
 
-from .models import BankAccount, Payment
+from payments.models import BankAccount, Payment
 
 
 class PaymentResource(resources.ModelResource):
@@ -41,7 +41,7 @@ class PaymentResource(resources.ModelResource):
             return payment.paid_by.get_full_name()
         return "-"
 
-    def dehydrate_type(self, payment):
+    def dehydrate_payment_type(self, payment):
         return payment.get_type_display()
 
 

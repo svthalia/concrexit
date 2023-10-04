@@ -1,7 +1,7 @@
 from import_export import resources
 from import_export.fields import Field
 
-from .models import MemberGroupMembership
+from activemembers.models import MemberGroupMembership
 
 
 class MemberGroupMembershipResource(resources.ModelResource):

@@ -27,6 +27,7 @@ from payments import admin
 from payments.admin import BankAccountInline, PaymentInline, ValidAccountFilter
 from payments.forms import BatchPaymentInlineAdminForm
 from payments.models import BankAccount, Batch, Payment, PaymentUser
+from payments.resources import BankAccountResource, PaymentResource
 
 
 class GlobalAdminTest(SimpleTestCase):
@@ -416,6 +417,28 @@ class PaymentAdminTest(TestCase):
         urls = self.admin.get_urls()
         self.assertEqual(urls[0].name, "payments_payment_create")
 
+    @freeze_time("2019-01-01")
+    def test_export_csv(self) -> None:
+        """Test that the CSV export of payments is correct."""
+        Payment.objects.create(
+            amount=7.5, processed_by=self.user, paid_by=self.user, type=Payment.CARD
+        ).save()
+        Payment.objects.create(amount=7.5, type=Payment.CARD).save()
+        Payment.objects.create(
+            amount=17.5, processed_by=self.user, paid_by=self.user, type=Payment.CASH
+        ).save()
+        dataset = PaymentResource().export()
+
+        self.assertEqual(
+            f"Created,Amount,Type,Processor,Payer id,Payer name,"
+            f"Notes\r\n2019-01-01 00:00:00+00:00,"
+            f"7.50,Card payment,Sébastiaan Versteeg,{self.user.pk},Sébastiaan Versteeg,\r\n"
+            f"2019-01-01 00:00:00+00:00,7.50,Card payment,-,-,-,"
+            f"\r\n2019-01-01 00:00:00+00:00,17.50,"
+            f"Cash payment,Sébastiaan Versteeg,{self.user.pk},Sébastiaan Versteeg,\r\n",
+            dataset.csv,
+        )
+
     def test_get_field_queryset(self) -> None:
         b1 = Batch.objects.create(id=1)
         Batch.objects.create(id=2, processed=True)
@@ -705,6 +728,8 @@ class BatchAdminTest(TestCase):
 @freeze_time("2019-01-01")
 @override_settings(SUSPEND_SIGNALS=True)
 class BankAccountAdminTest(TestCase):
+    TestCase.maxDiff = None
+
     @classmethod
     def setUpTestData(cls) -> None:
         cls.user = Member.objects.create(
@@ -756,6 +781,49 @@ class BankAccountAdminTest(TestCase):
             self.assertFalse(
                 self.admin.can_be_revoked(bank_account1),
             )
+
+    def test_export_csv(self) -> None:
+        """Test that the CSV export of accounts is correct."""
+        BankAccount.objects.create(
+            owner=self.user, initials="J", last_name="Test", iban="NL91ABNA0417164300"
+        )
+        BankAccount.objects.create(
+            owner=self.user, initials="J2", last_name="Test", iban="NL91ABNA0417164300"
+        )
+        BankAccount.objects.create(
+            owner=self.user,
+            initials="J3",
+            last_name="Test",
+            iban="NL91ABNA0417164300",
+            mandate_no="12-1",
+            valid_from=timezone.now().date() - timezone.timedelta(days=5),
+            valid_until=timezone.now().date(),
+            signature="sig",
+        )
+        BankAccount.objects.create(
+            owner=self.user,
+            initials="J4",
+            last_name="Test",
+            iban="DE12500105170648489890",
+            bic="NBBEBEBB",
+            mandate_no="11-1",
+            valid_from=timezone.now().date(),
+            valid_until=timezone.now().date() + timezone.timedelta(days=5),
+            signature="sig",
+        )
+
+        dataset = BankAccountResource().export()
+
+        self.assertEqual(
+            "Created,Name,Reference,IBAN,BIC,Valid from,Valid until,"
+            "Signature\r\n2019-01-01 00:00:00+00:00,J Test,,"
+            "NL91ABNA0417164300,,,,\r\n2019-01-01 00:00:00+00:00,J2 Test,,"
+            "NL91ABNA0417164300,,,,\r\n2019-01-01 00:00:00+00:00,J3 Test,"
+            "12-1,NL91ABNA0417164300,,2018-12-27,2019-01-01,"
+            "sig\r\n2019-01-01 00:00:00+00:00,J4 Test,11-1,"
+            "DE12500105170648489890,NBBEBEBB,2019-01-01,2019-01-06,sig\r\n",
+            dataset.csv,
+        )
 
     @mock.patch("django.contrib.admin.ModelAdmin.message_user")
     @mock.patch("payments.services.update_last_used")

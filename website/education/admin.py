@@ -5,9 +5,10 @@ from django.utils.translation import gettext_lazy as _
 
 from import_export.admin import ExportActionMixin
 
+from education.resources import ExamResource, SummaryResource
+
 from . import models
 from .forms import SummaryAdminForm
-from .resources import ExamResource, SummaryResource
 
 admin.site.register(models.Category)
 

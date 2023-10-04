@@ -11,9 +11,8 @@ from import_export.admin import ExportActionMixin
 
 from activemembers import models
 from activemembers.forms import MemberGroupForm, MemberGroupMembershipForm
+from activemembers.resources import MemberGroupMembershipResource
 from utils.snippets import datetime_to_lectureyear
-
-from .resources import MemberGroupMembershipResource
 
 
 class MemberGroupMembershipInlineFormSet(forms.BaseInlineFormSet):

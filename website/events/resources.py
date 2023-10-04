@@ -1,7 +1,7 @@
 from import_export import resources
 from import_export.fields import Field
 
-from .models import Event
+from events.models import Event
 
 
 class EventResource(resources.ModelResource):
