@@ -14,10 +14,6 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import CreateView, DetailView, UpdateView
 from django.views.generic.base import TemplateResponseMixin, TemplateView, View
 
-from rest_framework.authtoken.models import Token
-from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.response import Response
-
 import activemembers.services as activemembers_services
 import events.services as event_services
 import pizzas.services
@@ -31,28 +27,6 @@ from utils.snippets import datetime_to_lectureyear
 from . import models
 from .forms import ProfileForm
 from .services import member_achievements, member_societies
-
-
-class ObtainThaliaAuthToken(ObtainAuthToken):
-    """Custom override of the AuthToken view to force lowercase the username."""
-
-    def post(self, request, *args, **kwargs) -> HttpResponse:
-        serializer = self.serializer_class(
-            data={
-                "username": request.data.get("username").lower()
-                if "username" in request.data
-                else None,
-                "password": request.data.get("password"),
-            },
-            context={"request": request},
-        )
-
-        if not serializer.is_valid():
-            return Response({"error": "Unauthorized"}, status=401)
-
-        user = serializer.validated_data["user"]
-        token, _ = Token.objects.get_or_create(user=user)
-        return Response({"token": token.key})
 
 
 @method_decorator(login_required, "dispatch")
