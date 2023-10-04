@@ -46,10 +46,26 @@ class ReferenceFaceAdmin(admin.ModelAdmin):
     list_filter = ["status", "marked_for_deletion_at"]
     inlines = [ReferenceFaceEncodingInline]
 
+    actions = ["resubmit_face_detection_photos"]
+
     def get_readonly_fields(self, request, obj=None):
         if obj is None:
             return ["created_at", "submitted_at", "status"]
         return ["file", "user", "created_at", "submitted_at", "status"]
+
+    @admin.action(description="Resubmits face detection photos to the server.")
+    def resubmit_face_detection_photos(
+        self, request, queryset
+    ) -> list[FaceDetectionPhoto]:
+        querylist = list(
+            queryset.filter(
+                status=FaceDetectionPhoto.Status.PROCESSING,
+            )
+        )
+        if querylist:
+            trigger_facedetection_lambda(querylist)
+            messages.success(request, "Resubmit successful.")
+        return querylist
 
 
 class PhotoFaceEncodingInline(admin.TabularInline):
