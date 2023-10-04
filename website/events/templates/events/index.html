@@ -48,7 +48,7 @@
             {% endif %}
         {% endspaceless %}"
          data-authenticated="{{ request.user.is_authenticated|yesno:'true,false' }}"
-         data-show-unpublished="{{ perms.events.change_event|yesno:'true,false' }}"
+         data-show-unpublished="{{ perms.events.view_event|yesno:'true,false' }}"
          data-language="{{ LANGUAGE_CODE }}"
     ></div>
 {% endblock %}

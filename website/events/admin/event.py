@@ -110,12 +110,25 @@ class EventAdmin(DoNextModelAdmin):
     )
 
     def get_queryset(self, request):
-        return (
+        queryset = (
             super()
             .get_queryset(request)
             .select_properties("participant_count")
             .prefetch_related("organisers")
         )
+        if not (
+            request.user.has_perm("events.override_organiser")
+            or request.user.has_perm("events.view_unpublished")
+        ):
+            queryset_published = queryset.filter(published=True)
+            queryset_unpublished = queryset.filter(
+                published=False,
+                organisers__in=list(
+                    request.member.get_member_groups().values_list("id", flat=True)
+                ),
+            )
+            queryset = queryset_published | queryset_unpublished
+        return queryset
 
     def get_form(self, request, obj=None, change=False, **kwargs):
         form = super().get_form(request, obj, change, **kwargs)
