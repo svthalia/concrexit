@@ -44,7 +44,7 @@ class BaseRegistrationForm(forms.ModelForm):
         self.fields["birthday"].widget.input_type = "date"
 
     def clean(self):
-        if "phone_number" in self.cleaned_data:
+        if "phone_number" in self.cleaned_data:  # pragma: no cover
             self.cleaned_data["phone_number"] = self.cleaned_data[
                 "phone_number"
             ].replace(" ", "")

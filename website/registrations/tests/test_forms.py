@@ -22,7 +22,7 @@ class MemberRegistrationFormTest(TestCase):
             "address_postal_code": "6525AJ",
             "address_city": "Nijmegen",
             "address_country": "NL",
-            "phone_number": "06123456789",
+            "phone_number": "06 12345678",
             "birthday": timezone.now().replace(year=1990, day=1),
             "language": "en",
             "length": Entry.MEMBERSHIP_YEAR,
@@ -34,6 +34,7 @@ class MemberRegistrationFormTest(TestCase):
         with self.subTest("Form is valid"):
             form = forms.MemberRegistrationForm(self.data)
             self.assertTrue(form.is_valid(), msg=dict(form.errors))
+            self.assertEqual(form.cleaned_data["phone_number"], "0612345678")
         with self.subTest("Form is not valid"):
             self.data["privacy_policy"] = 0
             form = forms.MemberRegistrationForm(self.data)
