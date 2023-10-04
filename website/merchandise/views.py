@@ -13,3 +13,20 @@ def index(request):
     items = MerchandiseItem.objects.all()
 
     return render(request, "merchandise/index.html", {"items": items})
+
+
+def select_product(items, id):
+    for item in items:
+        if item.id == id:
+            return item
+    return None
+
+
+def product_page(request, id):
+    items = MerchandiseItem.objects.all()
+    product = select_product(items, id)
+    if product is None:
+        return render(request, "merchandise/index.html", {"items": items})
+    return render(
+        request, "merchandise/product_page.html", {"items": items, "product": product}
+    )

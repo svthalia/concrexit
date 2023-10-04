@@ -15,5 +15,13 @@ urlpatterns = [
                 path("", views.index, name="index"),
             ]
         ),
-    )
+    ),
+    path(
+        "association/merchandise/<int:id>/",
+        include(
+            [
+                path("", views.product_page, name="product"),
+            ]
+        ),
+    ),
 ]
