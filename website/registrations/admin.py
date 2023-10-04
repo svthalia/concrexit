@@ -1,14 +1,12 @@
 """Registers admin interfaces for the registrations module."""
 from functools import partial
 
-from django.contrib import admin, messages
-from django.contrib.admin.utils import model_ngettext
+from django.contrib import admin
 from django.forms import Field
 from django.utils.translation import gettext_lazy as _
 
 from payments.widgets import PaymentWidget
 
-from . import services
 from .forms import RegistrationAdminForm
 from .models import Entry, Reference, Registration, Renewal
 
@@ -16,18 +14,6 @@ from .models import Entry, Reference, Registration, Renewal
 class ReferenceInline(admin.StackedInline):
     model = Reference
     extra = 0
-
-
-def _show_message(model_admin, request, n, message, error):
-    """Show a message in the Django Admin."""
-    if n == 0:
-        model_admin.message_user(request, error, messages.ERROR)
-    else:
-        model_admin.message_user(
-            request,
-            message % {"count": n, "items": model_ngettext(model_admin.opts, n)},
-            messages.SUCCESS,
-        )
 
 
 @admin.register(Registration)
@@ -128,7 +114,9 @@ class RegistrationAdmin(admin.ModelAdmin):
             },
         ),
     )
-    actions = ["accept_selected", "reject_selected"]
+
+    # actions = ["accept_selected", "reject_selected"]
+
     form = RegistrationAdminForm
 
     def reference_count(self, obj):
@@ -202,35 +190,35 @@ class RegistrationAdmin(admin.ModelAdmin):
     def name(obj):
         return obj.get_full_name()
 
-    def reject_selected(self, request, queryset):
-        """Reject the selected entries."""
-        if request.user.has_perm("registrations.review_entries"):
-            rows_updated = services.reject_entries(request.user.pk, queryset)
-            _show_message(
-                self,
-                request,
-                rows_updated,
-                message=_("Successfully rejected %(count)d %(items)s."),
-                error=_("The selected registration(s) could not be rejected."),
-            )
+    # def reject_selected(self, request, queryset):
+    #     """Reject the selected entries."""
+    #     if request.user.has_perm("registrations.review_entries"):
+    #         rows_updated = services.reject_entries(request.user.pk, queryset)
+    #         _show_message(
+    #             self,
+    #             request,
+    #             rows_updated,
+    #             message=_("Successfully rejected %(count)d %(items)s."),
+    #             error=_("The selected registration(s) could not be rejected."),
+    #         )
 
-    reject_selected.short_description = _("Reject selected registrations")
-    reject_selected.allowed_permissions = ("review",)
+    # reject_selected.short_description = _("Reject selected registrations")
+    # reject_selected.allowed_permissions = ("review",)
 
-    def accept_selected(self, request, queryset):
-        """Accept the selected entries."""
-        if request.user.has_perm("registrations.review_entries"):
-            rows_updated = services.accept_entries(request.user.pk, queryset)
-            _show_message(
-                self,
-                request,
-                rows_updated,
-                message=_("Successfully accepted %(count)d %(items)s."),
-                error=_("The selected registration(s) could not be accepted."),
-            )
+    # def accept_selected(self, request, queryset):
+    #     """Accept the selected entries."""
+    #     if request.user.has_perm("registrations.review_entries"):
+    #         rows_updated = services.accept_entries(request.user.pk, queryset)
+    #         _show_message(
+    #             self,
+    #             request,
+    #             rows_updated,
+    #             message=_("Successfully accepted %(count)d %(items)s."),
+    #             error=_("The selected registration(s) could not be accepted."),
+    #         )
 
-    accept_selected.short_description = _("Accept selected registrations")
-    accept_selected.allowed_permissions = ("review",)
+    # accept_selected.short_description = _("Accept selected registrations")
+    # accept_selected.allowed_permissions = ("review",)
 
     def has_review_permission(self, request):
         """Check if the user has the review permission."""
@@ -301,7 +289,7 @@ class RenewalAdmin(RegistrationAdmin):
             },
         ),
     )
-    actions = RegistrationAdmin.actions
+    # actions = RegistrationAdmin.actions
 
     def get_readonly_fields(self, request, obj=None):
         """Make all fields read-only and add member if needed."""
