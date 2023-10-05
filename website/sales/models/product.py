@@ -48,6 +48,7 @@ class ProductListItem(models.Model):
     class Meta:
         verbose_name = _("product")
         verbose_name_plural = _("products")
+        ordering = ("-priority",)
 
     product = models.ForeignKey(
         Product,
@@ -68,6 +69,11 @@ class ProductListItem(models.Model):
         verbose_name=_("price"),
         allow_zero=True,
         validators=[MinValueValidator(0)],
+    )
+    priority = models.IntegerField(
+        verbose_name=_("priority"),
+        help_text="Determines the order of the products in the list, highest first.",
+        default=1,
     )
 
     def __str__(self):
