@@ -1,180 +1,222 @@
 [
-{
-    "model": "auth.user",
-    "pk": 1,
-    "fields": {
-        "password": "md5$wdVCeynupRVW$de1e35e14409c561c1b30a8d64d423d3",
-        "last_login": "2016-07-07T11:37:43Z",
-        "is_superuser": true,
-        "username": "thom",
-        "first_name": "Thom",
-        "last_name": "Wiggers",
-        "email": "",
-        "is_staff": true,
-        "is_active": true,
-        "date_joined": "2016-07-07T11:37:38Z",
-        "groups": [],
-        "user_permissions": []
+    {
+        "model": "auth.user",
+        "pk": 1,
+        "fields": {
+            "password": "md5$wdVCeynupRVW$de1e35e14409c561c1b30a8d64d423d3",
+            "last_login": "2016-07-07T11:37:43Z",
+            "is_superuser": true,
+            "username": "thom",
+            "first_name": "Thom",
+            "last_name": "Wiggers",
+            "email": "",
+            "is_staff": true,
+            "is_active": true,
+            "date_joined": "2016-07-07T11:37:38Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "pk": 2,
+        "fields": {
+            "password": "md5$wdVCeynupRVW$de1e35e14409c561c1b30a8d64d423d3",
+            "last_login": "2016-07-07T12:01:02.638Z",
+            "is_superuser": false,
+            "username": "testuser",
+            "first_name": "Sébastiaan",
+            "last_name": "Versteeg",
+            "email": "testuser@example.com",
+            "is_staff": true,
+            "is_active": true,
+            "date_joined": "2016-07-07T12:00:21Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "pk": 3,
+        "fields": {
+            "password": "",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "testuser2",
+            "first_name": "",
+            "last_name": "",
+            "email": "",
+            "is_staff": true,
+            "is_active": true,
+            "date_joined": "2016-07-07T14:50:26Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "pk": 4,
+        "fields": {
+            "password": "",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "testuser3",
+            "first_name": "",
+            "last_name": "",
+            "email": "",
+            "is_staff": true,
+            "is_active": true,
+            "date_joined": "2016-07-07T14:50:26Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "pk": 5,
+        "fields": {
+            "password": "",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "testuser4",
+            "first_name": "",
+            "last_name": "",
+            "email": "",
+            "is_staff": true,
+            "is_active": true,
+            "date_joined": "2016-07-07T14:50:26Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "members.profile",
+        "pk": 1,
+        "fields": {
+            "user": 1,
+            "programme": null,
+            "student_number": null,
+            "address_street": "Heyendaalseweg 135",
+            "address_street2": "",
+            "address_postal_code": "1245 TG",
+            "address_city": "Nijmegen",
+            "address_country": "NL",
+            "phone_number": "",
+            "emergency_contact": "",
+            "emergency_contact_phone_number": "",
+            "birthday": "1993-03-02",
+            "show_birthday": true,
+            "website": "",
+            "profile_description": "",
+            "nickname": "",
+            "display_name_preference": "full",
+            "receive_optin": true
+        }
+    },
+    {
+        "model": "members.profile",
+        "pk": 2,
+        "fields": {
+            "user": 2,
+            "programme": null,
+            "student_number": null,
+            "address_street": "testuserv 2",
+            "address_street2": "",
+            "address_postal_code": "2545 TG",
+            "address_city": "Nijmegen",
+            "address_country": "NL",
+            "phone_number": "",
+            "emergency_contact": "",
+            "emergency_contact_phone_number": "",
+            "birthday": "2016-07-07",
+            "show_birthday": true,
+            "website": "",
+            "profile_description": "",
+            "nickname": "",
+            "display_name_preference": "full",
+            "receive_optin": true
+        }
+    },
+    {
+        "model": "members.profile",
+        "pk": 3,
+        "fields": {
+            "user": 3,
+            "programme": null,
+            "student_number": null,
+            "address_street": "testuser 2",
+            "address_street2": "",
+            "address_postal_code": "6525 TE",
+            "address_city": "Nijmegen",
+            "address_country": "NL",
+            "phone_number": "",
+            "emergency_contact": "",
+            "emergency_contact_phone_number": "",
+            "birthday": "2016-07-07",
+            "show_birthday": true,
+            "website": "",
+            "profile_description": "",
+            "nickname": "",
+            "display_name_preference": "full",
+            "receive_optin": true
+        }
+    },
+    {
+        "model": "members.profile",
+        "pk": 4,
+        "fields": {
+            "user": 4,
+            "programme": null,
+            "student_number": null,
+            "address_street": "testuser 3",
+            "address_street2": "",
+            "address_postal_code": "6525 TE",
+            "address_city": "Nijmegen",
+            "address_country": "NL",
+            "phone_number": "",
+            "emergency_contact": "",
+            "emergency_contact_phone_number": "",
+            "birthday": "2016-07-07",
+            "show_birthday": true,
+            "website": "",
+            "profile_description": "",
+            "nickname": "",
+            "display_name_preference": "full",
+            "receive_optin": true
+        }
+    },
+    {
+        "model": "members.profile",
+        "pk": 5,
+        "fields": {
+            "user": 5,
+            "programme": null,
+            "student_number": null,
+            "address_street": "testuser 4",
+            "address_street2": "",
+            "address_postal_code": "6525 TE",
+            "address_city": "Nijmegen",
+            "address_country": "NL",
+            "phone_number": "",
+            "emergency_contact": "",
+            "emergency_contact_phone_number": "",
+            "birthday": "2016-07-07",
+            "show_birthday": true,
+            "website": "",
+            "profile_description": "",
+            "nickname": "",
+            "display_name_preference": "full",
+            "receive_optin": true
+        }
+    },
+    {
+        "model": "members.membership",
+        "pk": 1,
+        "fields": {
+            "type": "member",
+            "user": 1,
+            "since": "1980-01-01",
+            "until": null
+        }
     }
-},
-{
-    "model": "auth.user",
-    "pk": 2,
-    "fields": {
-        "password": "md5$wdVCeynupRVW$de1e35e14409c561c1b30a8d64d423d3",
-        "last_login": "2016-07-07T12:01:02.638Z",
-        "is_superuser": false,
-        "username": "testuser",
-        "first_name": "Sébastiaan",
-        "last_name": "Versteeg",
-        "email": "testuser@example.com",
-        "is_staff": true,
-        "is_active": true,
-        "date_joined": "2016-07-07T12:00:21Z",
-        "groups": [],
-        "user_permissions": []
-    }
-},
-{
-    "model": "auth.user",
-    "pk": 3,
-    "fields": {
-        "password": "",
-        "last_login": null,
-        "is_superuser": false,
-        "username": "testuser2",
-        "first_name": "",
-        "last_name": "",
-        "email": "",
-        "is_staff": true,
-        "is_active": true,
-        "date_joined": "2016-07-07T14:50:26Z",
-        "groups": [],
-        "user_permissions": []
-    }
-},
-{
-    "model": "auth.user",
-    "pk": 4,
-    "fields": {
-        "password": "",
-        "last_login": null,
-        "is_superuser": false,
-        "username": "testuser3",
-        "first_name": "",
-        "last_name": "",
-        "email": "",
-        "is_staff": true,
-        "is_active": true,
-        "date_joined": "2016-07-07T14:50:26Z",
-        "groups": [],
-        "user_permissions": []
-    }
-},
-{
-    "model": "members.profile",
-    "pk": 1,
-    "fields": {
-        "user": 1,
-        "programme": null,
-        "student_number": null,
-        "address_street": "Heyendaalseweg 135",
-        "address_street2": "",
-        "address_postal_code": "1245 TG",
-        "address_city": "Nijmegen",
-        "address_country": "NL",
-        "phone_number": "",
-        "emergency_contact": "",
-        "emergency_contact_phone_number": "",
-        "birthday": "1993-03-02",
-        "show_birthday": true,
-        "website": "",
-        "profile_description": "",
-        "nickname": "",
-        "display_name_preference": "full",
-        "receive_optin": true
-    }
-},
-{
-    "model": "members.profile",
-    "pk": 2,
-    "fields": {
-        "user": 2,
-        "programme": null,
-        "student_number": null,
-        "address_street": "testuserv 2",
-        "address_street2": "",
-        "address_postal_code": "2545 TG",
-        "address_city": "Nijmegen",
-        "address_country": "NL",
-        "phone_number": "",
-        "emergency_contact": "",
-        "emergency_contact_phone_number": "",
-        "birthday": "2016-07-07",
-        "show_birthday": true,
-        "website": "",
-        "profile_description": "",
-        "nickname": "",
-        "display_name_preference": "full",
-        "receive_optin": true
-    }
-},
-{
-    "model": "members.profile",
-    "pk": 3,
-    "fields": {
-        "user": 3,
-        "programme": null,
-        "student_number": null,
-        "address_street": "testuser 2",
-        "address_street2": "",
-        "address_postal_code": "6525 TE",
-        "address_city": "Nijmegen",
-        "address_country": "NL",
-        "phone_number": "",
-        "emergency_contact": "",
-        "emergency_contact_phone_number": "",
-        "birthday": "2016-07-07",
-        "show_birthday": true,
-        "website": "",
-        "profile_description": "",
-        "nickname": "",
-        "display_name_preference": "full",
-        "receive_optin": true
-    }
-},
-{
-    "model": "members.profile",
-    "pk": 4,
-    "fields": {
-        "user": 4,
-        "programme": null,
-        "student_number": null,
-        "address_street": "testuser 3",
-        "address_street2": "",
-        "address_postal_code": "6525 TE",
-        "address_city": "Nijmegen",
-        "address_country": "NL",
-        "phone_number": "",
-        "emergency_contact": "",
-        "emergency_contact_phone_number": "",
-        "birthday": "2016-07-07",
-        "show_birthday": true,
-        "website": "",
-        "profile_description": "",
-        "nickname": "",
-        "display_name_preference": "full",
-        "receive_optin": true
-    }
-},
-{
-    "model": "members.membership",
-    "pk": 1,
-    "fields": {
-        "type": "member",
-        "user": 1,
-        "since": "1980-01-01",
-        "until": null
-    }
-}
 ]

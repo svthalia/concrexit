@@ -57,13 +57,14 @@ class MemberGroupAdmin(admin.ModelAdmin):
         "active",
     )
     search_fields = ("name", "description")
-    filter_horizontal = ("permissions",)
+    filter_horizontal = ("permissions", "chair_permissions")
 
     fields = (
         "name",
         "description",
         "photo",
         "permissions",
+        "chair_permissions",
         "since",
         "until",
         "contact_mailinglist",
@@ -181,7 +182,15 @@ class MemberGroupMembershipAdmin(admin.ModelAdmin):
     """Manage the group memberships."""
 
     form = MemberGroupMembershipForm
-    list_display = ("member", "group", "since", "until", "chair", "role")
+    list_display = (
+        "member",
+        "group",
+        "since",
+        "until",
+        "chair",
+        "has_chair_permissions",
+        "role",
+    )
     list_filter = ("group", TypeFilter, LectureYearFilter, ActiveMembershipsFilter)
     list_select_related = (
         "member",
