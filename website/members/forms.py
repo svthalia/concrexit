@@ -80,12 +80,12 @@ class ProfileForm(forms.ModelForm):
         return instance
 
     def clean(self):
-        if "phone_number" in self.cleaned_data:
+        if self.cleaned_data.get("phone_number") is not None:
             self.cleaned_data["phone_number"] = self.cleaned_data[
                 "phone_number"
             ].replace(" ", "")
 
-        if "emergency_contact_phone_number" in self.cleaned_data:
+        if self.cleaned_data.get("emergency_contact_phone_number") is not None:
             self.cleaned_data["emergency_contact_phone_number"] = self.cleaned_data[
                 "emergency_contact_phone_number"
             ].replace(" ", "")
