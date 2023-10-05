@@ -25,7 +25,7 @@ from events.services import is_user_registered
 from members.models import Membership
 from thaliawebsite.api.v2.permissions import IsAuthenticatedOrTokenHasScopeForMethod
 from thaliawebsite.api.v2.serializers import EmptySerializer
-from utils.media.services import fetch_thumbnails_db
+from utils.media.services import fetch_thumbnails
 
 
 class EventListView(ListAPIView):
@@ -137,7 +137,7 @@ class EventRegistrationsView(ListAPIView):
     def get_serializer(self, *args, **kwargs):
         if len(args) > 0:
             registrations = args[0]
-            fetch_thumbnails_db(
+            fetch_thumbnails(
                 [r.member.profile.photo for r in registrations if r.member]
             )
         return super().get_serializer(*args, **kwargs)

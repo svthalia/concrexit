@@ -7,7 +7,7 @@ from partners.api.v2.serializers import VacancyCategorySerializer
 from partners.api.v2.serializers.partner import PartnerSerializer
 from partners.api.v2.serializers.vacancy import VacancySerializer
 from partners.models import Partner, Vacancy, VacancyCategory
-from utils.media.services import fetch_thumbnails_db
+from utils.media.services import fetch_thumbnails
 
 
 class PartnerListView(ListAPIView):
@@ -23,7 +23,7 @@ class PartnerListView(ListAPIView):
     def get_serializer(self, *args, **kwargs):
         if len(args) > 0:
             partners = args[0]
-            fetch_thumbnails_db([partner.logo for partner in partners])
+            fetch_thumbnails([partner.logo for partner in partners])
         return super().get_serializer(*args, **kwargs)
 
     ordering_fields = ("name", "pk")
