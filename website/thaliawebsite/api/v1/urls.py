@@ -3,13 +3,11 @@ from django.urls import include, path
 
 from rest_framework.schemas import get_schema_view
 
-from members.views import ObtainThaliaAuthToken
 from thaliawebsite.api.openapi import OAuthSchemaGenerator
 
 app_name = "thaliawebsite"
 
 urlpatterns = [
-    path("token-auth/", ObtainThaliaAuthToken.as_view()),
     path("", include("activemembers.api.v1.urls")),
     path("", include("announcements.api.v1.urls")),
     path("", include("events.api.v1.urls")),
