@@ -72,6 +72,7 @@ class ProductListItem(models.Model):
     )
     priority = models.IntegerField(
         verbose_name=_("priority"),
+        help_text="Determines the order of the products in the list, highest first.",
         default=1,
     )
 

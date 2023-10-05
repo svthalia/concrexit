@@ -20,6 +20,10 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="productlistitem",
             name="priority",
-            field=models.IntegerField(default=1, verbose_name="priority"),
+            field=models.IntegerField(
+                default=1,
+                verbose_name="priority",
+                help_text="Determines the order of the products in the list, highest first.",
+            ),
         ),
     ]
