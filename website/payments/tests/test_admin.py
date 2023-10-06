@@ -27,6 +27,7 @@ from payments import admin
 from payments.admin import BankAccountInline, PaymentInline, ValidAccountFilter
 from payments.forms import BatchPaymentInlineAdminForm
 from payments.models import BankAccount, Batch, Payment, PaymentUser
+from payments.resources import BankAccountResource, PaymentResource
 
 
 class GlobalAdminTest(SimpleTestCase):
@@ -373,7 +374,7 @@ class PaymentAdminTest(TestCase):
         response = self.client.get(reverse("admin:payments_payment_changelist"))
 
         actions = self.admin.get_actions(response.wsgi_request)
-        self.assertCountEqual(actions, ["delete_selected", "export_csv"])
+        self.assertCountEqual(actions, ["delete_selected", "export_admin_action"])
 
         self._give_user_permissions()
         response = self.client.get(reverse("admin:payments_payment_changelist"))
@@ -385,7 +386,7 @@ class PaymentAdminTest(TestCase):
                 "delete_selected",
                 "add_to_new_batch",
                 "add_to_last_batch",
-                "export_csv",
+                "export_admin_action",
             ],
         )
 
@@ -422,20 +423,20 @@ class PaymentAdminTest(TestCase):
         Payment.objects.create(
             amount=7.5, processed_by=self.user, paid_by=self.user, type=Payment.CARD
         ).save()
+        Payment.objects.create(amount=7.5, type=Payment.CARD).save()
         Payment.objects.create(
             amount=17.5, processed_by=self.user, paid_by=self.user, type=Payment.CASH
         ).save()
-
-        response = self.admin.export_csv(HttpRequest(), Payment.objects.all())
+        dataset = PaymentResource().export()
 
         self.assertEqual(
             f"Created,Amount,Type,Processor,Payer id,Payer name,"
             f"Notes\r\n2019-01-01 00:00:00+00:00,"
-            f"7.50,Card payment,Sébastiaan Versteeg,{self.user.pk},Sébastiaan Versteeg,"
+            f"7.50,Card payment,Sébastiaan Versteeg,{self.user.pk},Sébastiaan Versteeg,\r\n"
+            f"2019-01-01 00:00:00+00:00,7.50,Card payment,-,-,-,"
             f"\r\n2019-01-01 00:00:00+00:00,17.50,"
-            f"Cash payment,Sébastiaan Versteeg,{self.user.pk},Sébastiaan Versteeg,"
-            f"\r\n",
-            response.content.decode("utf-8"),
+            f"Cash payment,Sébastiaan Versteeg,{self.user.pk},Sébastiaan Versteeg,\r\n",
+            dataset.csv,
         )
 
     def test_get_field_queryset(self) -> None:
@@ -727,6 +728,8 @@ class BatchAdminTest(TestCase):
 @freeze_time("2019-01-01")
 @override_settings(SUSPEND_SIGNALS=True)
 class BankAccountAdminTest(TestCase):
+    TestCase.maxDiff = None
+
     @classmethod
     def setUpTestData(cls) -> None:
         cls.user = Member.objects.create(
@@ -809,17 +812,17 @@ class BankAccountAdminTest(TestCase):
             signature="sig",
         )
 
-        response = self.admin.export_csv(HttpRequest(), BankAccount.objects.all())
+        dataset = BankAccountResource().export()
 
         self.assertEqual(
-            b"Created,Name,Reference,IBAN,BIC,Valid from,Valid until,"
-            b"Signature\r\n2019-01-01 00:00:00+00:00,J Test,,"
-            b"NL91ABNA0417164300,,,,\r\n2019-01-01 00:00:00+00:00,J2 Test,,"
-            b"NL91ABNA0417164300,,,,\r\n2019-01-01 00:00:00+00:00,J3 Test,"
-            b"12-1,NL91ABNA0417164300,,2018-12-27,2019-01-01,"
-            b"sig\r\n2019-01-01 00:00:00+00:00,J4 Test,11-1,"
-            b"DE12500105170648489890,NBBEBEBB,2019-01-01,2019-01-06,sig\r\n",
-            response.content,
+            "Created,Name,Reference,IBAN,BIC,Valid from,Valid until,"
+            "Signature\r\n2019-01-01 00:00:00+00:00,J Test,,"
+            "NL91ABNA0417164300,,,,\r\n2019-01-01 00:00:00+00:00,J2 Test,,"
+            "NL91ABNA0417164300,,,,\r\n2019-01-01 00:00:00+00:00,J3 Test,"
+            "12-1,NL91ABNA0417164300,,2018-12-27,2019-01-01,"
+            "sig\r\n2019-01-01 00:00:00+00:00,J4 Test,11-1,"
+            "DE12500105170648489890,NBBEBEBB,2019-01-01,2019-01-06,sig\r\n",
+            dataset.csv,
         )
 
     @mock.patch("django.contrib.admin.ModelAdmin.message_user")

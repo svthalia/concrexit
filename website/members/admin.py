@@ -1,19 +1,20 @@
 """Register admin pages for the models."""
-import csv
 import datetime
 
 from django.contrib import admin, messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.db.models import Count, Q
-from django.http import HttpResponse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+
+from import_export.admin import ExportMixin
 
 from members import services
 from members.models import EmailChange, Member
 
 from . import forms, models
+from .resources import MemberEmailListResource, MemberListResource
 
 
 class MembershipInline(admin.StackedInline):
@@ -100,14 +101,14 @@ class AgeListFilter(admin.SimpleListFilter):
             return queryset
 
         today = datetime.date.today()
-        eightteen_years_ago = today.replace(year=today.year - 18)
+        eighteen_years_ago = today.replace(year=today.year - 18)
 
         if self.value() == "unknown":
             return queryset.filter(profile__birthday__isnull=True)
         if self.value() == "18+":
-            return queryset.filter(profile__birthday__lte=eightteen_years_ago)
+            return queryset.filter(profile__birthday__lte=eighteen_years_ago)
         if self.value() == "18-":
-            return queryset.filter(profile__birthday__gt=eightteen_years_ago)
+            return queryset.filter(profile__birthday__gt=eighteen_years_ago)
 
         return queryset
 
@@ -134,14 +135,12 @@ class HasPermissionsFilter(admin.SimpleListFilter):
         return queryset.filter(permission_count=0)
 
 
-class UserAdmin(BaseUserAdmin):
+class UserAdmin(ExportMixin, BaseUserAdmin):
+    resource_classes = (MemberEmailListResource, MemberListResource)
     form = forms.UserChangeForm
     add_form = forms.UserCreationForm
 
     actions = [
-        "address_csv_export",
-        "student_number_csv_export",
-        "email_csv_export",
         "minimise_data",
     ]
 
@@ -182,74 +181,6 @@ class UserAdmin(BaseUserAdmin):
                 "classes": ("collapse",),
             },
         ),
-    )
-
-    def email_csv_export(self, request, queryset):
-        response = HttpResponse(content_type="text/csv")
-        response["Content-Disposition"] = 'attachment;filename="email.csv"'
-        writer = csv.writer(response)
-        writer.writerow([_("First name"), _("Last name"), _("Email")])
-        for user in queryset:
-            writer.writerow(
-                [
-                    user.first_name,
-                    user.last_name,
-                    user.email,
-                ]
-            )
-        return response
-
-    email_csv_export.short_description = _(
-        "Download email addresses for selected users"
-    )
-
-    def address_csv_export(self, request, queryset):
-        response = HttpResponse(content_type="text/csv")
-        response[
-            "Content-Disposition"
-        ] = 'attachment;\
-                                           filename="addresses.csv"'
-        writer = csv.writer(response)
-        writer.writerow(
-            [
-                _("First name"),
-                _("Last name"),
-                _("Address"),
-                _("Address line 2"),
-                _("Postal code"),
-                _("City"),
-                _("Country"),
-            ]
-        )
-        for user in queryset.exclude(profile=None):
-            writer.writerow(
-                [
-                    user.first_name,
-                    user.last_name,
-                    user.profile.address_street,
-                    user.profile.address_street2,
-                    user.profile.address_postal_code,
-                    user.profile.address_city,
-                    user.profile.get_address_country_display(),
-                ]
-            )
-        return response
-
-    address_csv_export.short_description = _("Download addresses for selected users")
-
-    def student_number_csv_export(self, request, queryset):
-        response = HttpResponse(content_type="text/csv")
-        response["Content-Disposition"] = 'attachment;filename="student_numbers.csv"'
-        writer = csv.writer(response)
-        writer.writerow([_("First name"), _("Last name"), _("Student number")])
-        for user in queryset.exclude(profile=None):
-            writer.writerow(
-                [user.first_name, user.last_name, user.profile.student_number]
-            )
-        return response
-
-    student_number_csv_export.short_description = _(
-        "Download student number export for selected users"
     )
 
     def minimise_data(self, request, queryset):

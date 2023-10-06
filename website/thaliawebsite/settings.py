@@ -564,6 +564,7 @@ INSTALLED_APPS = [
     "debug_toolbar",
     "sass_processor",
     "admin_auto_filters",
+    "import_export",
     "django_drf_filepond",
     "django_filepond_widget",
     "thumbnails",

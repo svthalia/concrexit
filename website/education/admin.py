@@ -1,10 +1,11 @@
 """This module registers admin pages for the models."""
-import csv
-
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
-from django.http import HttpResponse
 from django.utils.translation import gettext_lazy as _
+
+from import_export.admin import ExportActionMixin
+
+from education.resources import ExamResource, SummaryResource
 
 from . import models
 from .forms import SummaryAdminForm
@@ -27,27 +28,9 @@ class CourseAdmin(ModelAdmin):
     search_fields = ("name", "course_code")
 
 
-class WithDownloadCsv:
-    def download_csv(self, request, queryset):
-        opts = queryset.model._meta
-        response = HttpResponse(content_type="text/csv")
-        # force download.
-        response["Content-Disposition"] = "attachment;filename=export.csv"
-        # the csv writer
-        writer = csv.writer(response)
-        field_names = [field.name for field in opts.fields]
-        # Write a first row with header information
-        writer.writerow(field_names)
-        # Write data rows
-        for obj in queryset:
-            writer.writerow([getattr(obj, field) for field in field_names])
-        return response
-
-    download_csv.short_description = _("Download marked as csv")
-
-
 @admin.register(models.Exam)
-class ExamAdmin(ModelAdmin, WithDownloadCsv):
+class ExamAdmin(ExportActionMixin, ModelAdmin):
+    resource_classes = (ExamResource,)
     list_display = (
         "type",
         "course",
@@ -65,7 +48,7 @@ class ExamAdmin(ModelAdmin, WithDownloadCsv):
         "uploader__last_name",
         "course__name",
     )
-    actions = ["accept", "reject", "reset_download_count", "download_csv"]
+    actions = ["accept", "reject", "reset_download_count"]
 
     def accept(self, request, queryset):
         queryset.update(accepted=True)
@@ -84,7 +67,8 @@ class ExamAdmin(ModelAdmin, WithDownloadCsv):
 
 
 @admin.register(models.Summary)
-class SummaryAdmin(ModelAdmin, WithDownloadCsv):
+class SummaryAdmin(ExportActionMixin, ModelAdmin):
+    resource_classes = (SummaryResource,)
     list_display = (
         "name",
         "course",
