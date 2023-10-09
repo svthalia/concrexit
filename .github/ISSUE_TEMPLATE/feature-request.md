@@ -5,17 +5,11 @@ labels: 'feature, priority: low'
 
 ---
 
-### Is your feature request related to a problem? Please describe.
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+### What?
+<!-- A clear and concise high-level description of what you want to happen. -->
 
-### Describe the solution you'd like
-A clear and concise high-level description of what you want to happen.
+### Why?
+<!-- A clear and concise motivation why we should consider implementing this. -->
 
-### Motivation
-A clear and concise motivation why we should consider implementing this.
-
-### Describe alternatives you've considered
-A clear and concise description of any alternative solutions or features you've considered.
-
-### Additional context
-Add any other context or screenshots about the feature request here.
+### How?
+<!-- Optionally some guidance, ideas, context. -->
