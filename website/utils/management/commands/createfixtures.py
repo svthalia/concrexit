@@ -673,7 +673,7 @@ class Command(BaseCommand):
         igen = IconGenerator(5, 5)  # 5x5 blocks
         icon = igen.generate(
             name,
-            480,
+            random.randint(240, 1000),
             480,
             padding=(10, 10, 10, 10),
             output_format="jpeg",
