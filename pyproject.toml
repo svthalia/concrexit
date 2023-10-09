@@ -25,7 +25,7 @@ django-filepond-widget = "0.9.0"
 django-thumbnails = "0.7.0"
 django-ratelimit = "4.1.0"
 django-sass-processor = "1.2.2"
-bleach = {extras = ["css"], version = "6.0.0"}
+bleach = {extras = ["css"], version = "6.1.0"}
 Pillow = "9.5.0"
 python-magic = "0.4.27"
 bcrypt = "4.0.1"
