@@ -1,6 +1,4 @@
 feature: 'feature/*'
 bug: ['fix/*', 'bug/*']
-chore: 'chore/*'
-refactor: 'refactor/*'
-docs: 'docs/*'
+chore: ['chore/*', 'refactor/*', 'docs/*']
 dependency-update: ['renovate/*', 'dependency/*']
