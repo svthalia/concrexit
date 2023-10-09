@@ -220,6 +220,7 @@ class Profile(models.Model):
 
     photo = ImageField(
         verbose_name=_("Photo"),
+        resize_source_to="source",
         upload_to=_profile_image_path,
         storage=get_public_storage,
         null=True,

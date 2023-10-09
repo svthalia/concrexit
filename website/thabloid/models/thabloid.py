@@ -6,6 +6,8 @@ from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
 
+from thumbnails.fields import ImageField
+
 
 def thabloid_filename(instance, filename):
     """Return path of thabloid."""
@@ -40,7 +42,7 @@ class Thabloid(models.Model):
         validators=[FileExtensionValidator(["pdf"])],
     )
 
-    cover = models.ImageField(upload_to=thabloid_cover_filename)
+    cover = ImageField(upload_to=thabloid_cover_filename, resize_source_to="source")
 
     class Meta:
         """Meta class for Thabloid model."""

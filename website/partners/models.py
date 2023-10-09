@@ -25,11 +25,13 @@ class Partner(models.Model):
 
     logo = ImageField(
         upload_to="partners/logos/",
+        resize_source_to="source_png",
         storage=get_public_storage,
     )
 
     alternate_logo = ImageField(
         upload_to="partners/logos/",
+        resize_source_to="source_png",
         storage=get_public_storage,
         blank=True,
         null=True,
@@ -40,6 +42,7 @@ class Partner(models.Model):
 
     site_header = ImageField(
         upload_to="partners/headers/",
+        resize_source_to="source_png",
         storage=get_public_storage,
         null=True,
         blank=True,
@@ -139,6 +142,7 @@ class PartnerImage(models.Model):
     )
     image = ImageField(
         upload_to="partners/images/",
+        resize_source_to="source_png",
         storage=get_public_storage,
     )
 
@@ -212,6 +216,7 @@ class Vacancy(models.Model):
     company_logo = ImageField(
         _("company logo"),
         upload_to="partners/vacancy-logos/",
+        resize_source_to="source_png",
         storage=get_public_storage,
         null=True,
         blank=True,

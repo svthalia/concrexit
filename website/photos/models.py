@@ -32,6 +32,10 @@ def photo_uploadto(instance, filename):
     return os.path.join(Album.photosdir, instance.album.dirname, new_filename)
 
 
+class DuplicatePhotoException(Exception):
+    """Raised when a photo with the same digest already exists in a given album."""
+
+
 class Photo(models.Model):
     """Model for a Photo object."""
 
@@ -41,7 +45,11 @@ class Photo(models.Model):
         "Album", on_delete=models.CASCADE, verbose_name=_("album")
     )
 
-    file = ImageField(_("file"), upload_to=photo_uploadto)
+    file = ImageField(
+        _("file"),
+        upload_to=photo_uploadto,
+        resize_source_to="source",
+    )
 
     rotation = models.IntegerField(
         verbose_name=_("rotation"),
@@ -53,6 +61,8 @@ class Photo(models.Model):
     _digest = models.CharField(
         "digest",
         max_length=40,
+        blank=True,
+        editable=False,
     )
 
     num_likes = AnnotationProperty(
@@ -70,6 +80,25 @@ class Photo(models.Model):
     def __str__(self):
         """Return the filename of a Photo object."""
         return os.path.basename(self.file.name)
+
+    def clean(self):
+        if not self.file._committed:
+            hash_sha1 = hashlib.sha1()
+            for chunk in iter(lambda: self.file.read(4096), b""):
+                hash_sha1.update(chunk)
+            digest = hash_sha1.hexdigest()
+            self._digest = digest
+
+            if (
+                Photo.objects.filter(album=self.album, _digest=digest)
+                .exclude(pk=self.pk)
+                .exists()
+            ):
+                raise ValidationError(
+                    {"file": "This photo already exists in this album."}
+                )
+
+        return super().clean()
 
     def delete(self, using=None, keep_parents=False):
         removed = super().delete(using, keep_parents)
