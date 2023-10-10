@@ -6,7 +6,7 @@ import uuid
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core import validators
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
 from django.template.defaultfilters import floatformat
@@ -116,38 +116,11 @@ class Entry(models.Model):
         null=True,
     )
 
-    @property
-    def membership_upgrade_discount_applies(self):
-        if isinstance(self, Renewal):
-            member = self.member
-        else:
-            try:
-                member = self.renewal.member
-            except ObjectDoesNotExist:
-                return False
-
-        return (
-            self.length == Entry.MEMBERSHIP_STUDY
-            and member.current_membership is not None
-            and member.current_membership.until is not None
-            and member.current_membership.type == Membership.MEMBER
-        )
-
     def save(
         self, force_insert=False, force_update=False, using=None, update_fields=None
     ):
         if self.status not in (self.STATUS_ACCEPTED, self.STATUS_REJECTED):
             self.updated_at = timezone.now()
-
-        if self.membership_type == Membership.BENEFACTOR:
-            self.length = self.MEMBERSHIP_YEAR
-        elif self.membership_upgrade_discount_applies:
-            self.contribution = (
-                settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_STUDY]
-                - settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_YEAR]
-            )
-        else:
-            self.contribution = settings.MEMBERSHIP_PRICES[self.length]
 
         super().save(force_insert, force_update, using, update_fields)
 
@@ -155,10 +128,15 @@ class Entry(models.Model):
         super().clean()
         errors = {}
 
-        if self.contribution is None and self.membership_type == Membership.BENEFACTOR:
-            errors.update(
-                {"contribution": _("This field is required for benefactors.")}
-            )
+        if self.membership_type == Membership.BENEFACTOR:
+            if self.contribution is None:
+                errors.update(
+                    {"contribution": "This field is required for benefactors."}
+                )
+            if self.length != Entry.MEMBERSHIP_YEAR:
+                errors.update(
+                    {"length": "Benefactors can only have a one-year memberships."}
+                )
 
         if errors:
             raise ValidationError(errors)

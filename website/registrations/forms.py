@@ -1,5 +1,5 @@
-"""The forms defined by the registrations package."""
 from django import forms
+from django.conf import settings
 from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
 from django.forms import TypedChoiceField
 from django.urls import reverse_lazy
@@ -16,7 +16,10 @@ from .models import Reference, Registration, Renewal
 
 
 class BaseRegistrationForm(forms.ModelForm):
-    """Base form for membership registrations."""
+    """Base form for membership registrations.
+
+    Subclasses must implement setting the right contribution.
+    """
 
     birthday = forms.DateField(
         label=capfirst(_("birthday")),
@@ -108,6 +111,14 @@ class MemberRegistrationForm(BaseRegistrationForm):
             "signature",
         )
 
+    def clean(self):
+        super().clean()
+        self.cleaned_data["contribution"] = settings.MEMBERSHIP_PRICES[
+            self.cleaned_data["length"]
+        ]
+
+        return self.cleaned_data
+
 
 class BenefactorRegistrationForm(BaseRegistrationForm):
     """Form for benefactor registrations."""
@@ -170,9 +181,9 @@ class RenewalForm(forms.ModelForm):
                 reverse_lazy("singlepages:privacy-policy")
             )
         )
-        self.fields["length"].help_text = _(
-            "A discount of €7,50 will be applied if you upgrade your year membership to"
-            " a membership until graduation. You will only have to pay €22,50 in that case."
+        self.fields["length"].help_text = (
+            "A discount of €7,50 will be applied if you upgrade your (active) year membership "
+            "to a membership until graduation. You will only have to pay €22,50 in that case."
         )
 
     class Meta:
@@ -185,6 +196,34 @@ class RenewalForm(forms.ModelForm):
             "no_references",
             "remarks",
         )
+
+    def clean(self):
+        super().clean()
+
+        if self.cleaned_data["length"] == Renewal.MEMBERSHIP_STUDY:
+            now = timezone.now()
+            if Membership.objects.filter(
+                user=self.cleaned_data["member"],
+                type=Membership.MEMBER,
+                until__gte=now,
+                since__lte=now,
+            ).exists():
+                # The membership upgrade discount applies if, at the time a Renewal is
+                # created, the user has an active 'member' type membership for a year.
+                self.cleaned_data["contribution"] = (
+                    settings.MEMBERSHIP_PRICES[Renewal.MEMBERSHIP_STUDY]
+                    - settings.MEMBERSHIP_PRICES[Renewal.MEMBERSHIP_YEAR]
+                )
+            else:
+                self.cleaned_data["contribution"] = settings.MEMBERSHIP_PRICES[
+                    Renewal.MEMBERSHIP_STUDY
+                ]
+        elif self.cleaned_data["membership_type"] == Membership.MEMBER:
+            self.cleaned_data["contribution"] = settings.MEMBERSHIP_PRICES[
+                self.cleaned_data["length"]
+            ]
+
+        return self.cleaned_data
 
 
 class ReferenceForm(forms.ModelForm):
@@ -201,11 +240,8 @@ class ReferenceForm(forms.ModelForm):
             and membership.until < services.calculate_membership_since()
         ):
             raise ValidationError(
-                _(
-                    "It's not possible to give references for "
-                    "memberships that start after your own "
-                    "membership's end."
-                )
+                "It's not possible to give references for memberships "
+                "that start after your own membership's end."
             )
 
     class Meta:
