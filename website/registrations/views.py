@@ -55,10 +55,10 @@ class EntryAdminView(View):
 
         if action == "accept":
             if registration is not None:
-                if not registration.username_is_unique():
+                if not registration.check_user_is_unique():
                     messages.error(
                         request,
-                        f"Could not accept {registration}. Username is not unique.",
+                        f"Could not accept {registration}. Username or email is not unique.",
                     )
                 else:
                     services.accept_registration(registration, actor=request.user)

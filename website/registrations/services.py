@@ -1,6 +1,4 @@
 """The services defined by the registrations package."""
-import string
-import unicodedata
 from typing import Optional
 
 from django.contrib.admin.models import CHANGE, LogEntry
@@ -17,21 +15,6 @@ from payments.services import create_payment
 from registrations import emails
 from registrations.models import Entry, Registration, Renewal
 from utils.snippets import datetime_to_lectureyear
-
-
-def generate_default_username(registration: Registration) -> str:
-    """Create default username from first and lastname."""
-    username = (registration.first_name[0] + registration.last_name).lower()
-    username = "".join(c for c in username if c.isalpha())
-    username = "".join(
-        c for c in unicodedata.normalize("NFKD", username) if c in string.ascii_letters
-    ).lower()
-
-    # Limit length to 150 characters since Django doesn't support longer
-    if len(username) > 150:
-        username = username[:150]
-
-    return username.lower()
 
 
 def confirm_registration(registration: Registration) -> None:
@@ -96,15 +79,16 @@ def revert_registration(
         registration.status = registration.STATUS_REVIEW
         registration.save()
 
-    # Log that the `actor` changed the status.
-    LogEntry.objects.log_action(
-        user_id=actor.id,
-        content_type_id=get_content_type_for_model(registration).pk,
-        object_id=registration.pk,
-        object_repr=str(registration),
-        action_flag=CHANGE,
-        change_message="Reverted status to review",
-    )
+    if actor is not None:
+        # Log that the `actor` changed the status.
+        LogEntry.objects.log_action(
+            user_id=actor.id,
+            content_type_id=get_content_type_for_model(registration).pk,
+            object_id=registration.pk,
+            object_repr=str(registration),
+            action_flag=CHANGE,
+            change_message="Reverted status to review",
+        )
 
 
 def accept_registration(registration: Registration, actor: Member) -> None:
@@ -147,7 +131,7 @@ def accept_registration(registration: Registration, actor: Member) -> None:
         emails.send_registration_accepted_message(registration)
 
 
-def revert_renewal(renewal: Renewal, actor: Member) -> None:
+def revert_renewal(renewal: Renewal, actor: Optional[Member] = None) -> None:
     """Undo the review of a registration."""
     renewal.refresh_from_db()
     if renewal.status not in (
@@ -162,15 +146,16 @@ def revert_renewal(renewal: Renewal, actor: Member) -> None:
     renewal.status = renewal.STATUS_REVIEW
     renewal.save()
 
-    # Log that the `actor` changed the status.
-    LogEntry.objects.log_action(
-        user_id=actor.id,
-        content_type_id=get_content_type_for_model(renewal).pk,
-        object_id=renewal.pk,
-        object_repr=str(renewal),
-        action_flag=CHANGE,
-        change_message="Reverted status to review",
-    )
+    if actor is not None:
+        # Log that the `actor` changed the status.
+        LogEntry.objects.log_action(
+            user_id=actor.id,
+            content_type_id=get_content_type_for_model(renewal).pk,
+            object_id=renewal.pk,
+            object_repr=str(renewal),
+            action_flag=CHANGE,
+            change_message="Reverted status to review",
+        )
 
 
 def complete_registration(registration: Registration) -> None:
@@ -327,7 +312,7 @@ def _create_member(registration: Registration) -> Member:
 
     # Make sure the username and email are unique
     if not registration.check_user_is_unique():
-        raise ValueError("Username or email address of the registration are not unique")
+        raise ValueError("Username or email is not unique.")
 
     # Create user.
     user = get_user_model().objects.create_user(

@@ -1,4 +1,6 @@
 """The models defined by the registrations package."""
+import string
+import unicodedata
 import uuid
 
 from django.conf import settings
@@ -16,7 +18,6 @@ from localflavor.generic.models import BICField, IBANField
 
 from members.models import Membership, Profile
 from payments.models import PaymentAmountField
-from registrations.services import generate_default_username
 from utils import countries
 
 
@@ -373,13 +374,29 @@ class Registration(Entry):
         full_name = f"{self.first_name} {self.last_name}"
         return full_name.strip()
 
+    def _generate_default_username(self) -> str:
+        """Create default username from first and lastname."""
+        username = (self.first_name[0] + self.last_name).lower()
+        username = "".join(c for c in username if c.isalpha())
+        username = "".join(
+            c
+            for c in unicodedata.normalize("NFKD", username)
+            if c in string.ascii_letters
+        ).lower()
+
+        # Limit length to 150 characters since Django doesn't support longer
+        if len(username) > 150:
+            username = username[:150]
+
+        return username.lower()
+
     def get_username(self):
         """Get the automatic or overridden username."""
-        return self.username or generate_default_username(self)
+        return self.username or self._generate_default_username()
 
     def check_user_is_unique(self):
         """Check that the username and email are unique."""
-        return (
+        return not (
             get_user_model()
             .objects.filter(
                 models.Q(email=self.email) | models.Q(username=self.get_username())
