@@ -13,7 +13,7 @@ from photos.services import (
     is_album_accessible,
 )
 from thaliawebsite.views import PagedView
-from utils.media.services import fetch_thumbnails_db, get_media_url
+from utils.media.services import fetch_thumbnails, get_media_url
 
 COVER_FILENAME = "cover.jpg"
 
@@ -41,7 +41,7 @@ class IndexView(LoginRequiredMixin, PagedView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["keywords"] = self.keywords
-        fetch_thumbnails_db([x.cover.file for x in context["object_list"] if x.cover])
+        fetch_thumbnails([x.cover.file for x in context["object_list"] if x.cover])
 
         return context
 
@@ -64,7 +64,7 @@ class _BaseAlbumView(TemplateView):
         photos = photos.order_by("pk")
 
         # Prefetch thumbnails for efficiency
-        fetch_thumbnails_db([p.file for p in photos])
+        fetch_thumbnails([p.file for p in photos])
 
         context["photos"] = photos
         return context
@@ -149,6 +149,6 @@ class LikedPhotoView(LoginRequiredMixin, PagedView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        fetch_thumbnails_db([p.file for p in context["photos"]])
+        fetch_thumbnails([p.file for p in context["photos"]])
 
         return context

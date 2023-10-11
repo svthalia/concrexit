@@ -5,6 +5,7 @@ from django.core.files.storage import DefaultStorage
 from django.db.models.fields.files import FieldFile, ImageFieldFile
 
 from thumbnails.backends.metadata import ImageMeta
+from thumbnails.fields import fetch_thumbnails as fetch_thumbnails_redis
 from thumbnails.files import ThumbnailedImageFile
 from thumbnails.images import Thumbnail
 from thumbnails.models import ThumbnailMeta
@@ -62,8 +63,8 @@ def get_thumbnail_url(
     return get_media_url(file, absolute_url=absolute_url)
 
 
-def fetch_thumbnails_db(images, sizes=None):
-    """Prefetches thumbnails from the database in one query.
+def fetch_thumbnails(images, sizes=None):
+    """Prefetches thumbnails from the database or redis efficiently.
 
     :param images: A list of images to prefetch thumbnails for.
     :param sizes: A list of sizes to prefetch. If None, all sizes will be prefetched.
@@ -71,6 +72,12 @@ def fetch_thumbnails_db(images, sizes=None):
     """
     if not images:
         return
+
+    if (
+        settings.THUMBNAILS["METADATA"]["BACKEND"]
+        != "thumbnails.backends.metadata.DatabaseBackend"
+    ):
+        return fetch_thumbnails_redis(images, sizes)
 
     image_dict = {image.thumbnails.source_image.name: image for image in images}
     thumbnails = ThumbnailMeta.objects.select_related("source").filter(

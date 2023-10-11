@@ -714,8 +714,21 @@ LOGGING = {
     },
 }
 
+REDIS_CACHE_PORT = int(
+    from_env("REDIS_CACHE_PORT", development="6379", production="6379")
+)
+REDIS_CACHE_HOST = from_env("REDIS_CACHE_HOST")
+REDIS_CACHE_URL = (
+    f"redis://{REDIS_CACHE_HOST}:{REDIS_CACHE_PORT}" if REDIS_CACHE_HOST else None
+)
+
 CACHES = {
     "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": REDIS_CACHE_URL,
+    }
+    if REDIS_CACHE_URL is not None
+    else {
         "BACKEND": "django.core.cache.backends.db.DatabaseCache",
         "LOCATION": "django_default_db_cache",
     },
@@ -864,10 +877,20 @@ SASS_PROCESSOR_INCLUDE_FILE_PATTERN = r"^.+\.scss$"
 # See utils/model/signals.py for explanation
 SUSPEND_SIGNALS = False
 
-THUMBNAILS = {
-    "METADATA": {
+THUMBNAILS_METADATA = (
+    {
+        "BACKEND": "thumbnails.backends.metadata.RedisBackend",
+        "host": REDIS_CACHE_HOST,
+        "port": REDIS_CACHE_PORT,
+    }
+    if REDIS_CACHE_HOST
+    else {
         "BACKEND": "thumbnails.backends.metadata.DatabaseBackend",
-    },
+    }
+)
+
+THUMBNAILS = {
+    "METADATA": THUMBNAILS_METADATA,
     "STORAGE": {
         "BACKEND": DEFAULT_FILE_STORAGE,
     },

@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.views.generic import DetailView, ListView
 
-from utils.media.services import fetch_thumbnails_db
+from utils.media.services import fetch_thumbnails
 from utils.snippets import datetime_to_lectureyear
 
 from .models import Board, Committee, MemberGroupMembership, Society
@@ -47,7 +47,7 @@ class _MemberGroupDetailView(DetailView):
         members.sort(key=lambda x: x["since"])
 
         context.update({"members": members})
-        fetch_thumbnails_db([m["member"].profile.photo for m in members])
+        fetch_thumbnails([m["member"].profile.photo for m in members])
         return context
 
 
@@ -59,7 +59,7 @@ class CommitteeIndexView(ListView):
 
     def get_queryset(self) -> QuerySet:
         committees = Committee.active_objects.all()
-        fetch_thumbnails_db([c.photo for c in committees])
+        fetch_thumbnails([c.photo for c in committees])
         return committees
 
     def get_ordering(self) -> str:
@@ -81,7 +81,7 @@ class SocietyIndexView(ListView):
 
     def get_queryset(self) -> QuerySet:
         societies = Society.active_objects.all()
-        fetch_thumbnails_db([s.photo for s in societies])
+        fetch_thumbnails([s.photo for s in societies])
         return societies
 
     def get_ordering(self) -> str:
@@ -107,7 +107,7 @@ class BoardIndexView(ListView):
             boards = Board.objects.exclude(pk=self.current_board.pk)
         else:
             boards = Board.objects.all()
-        fetch_thumbnails_db([b.photo for b in boards])
+        fetch_thumbnails([b.photo for b in boards])
         return boards
 
     def get_context_data(self, **kwargs) -> dict:

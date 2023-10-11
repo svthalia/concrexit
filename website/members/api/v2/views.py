@@ -16,7 +16,7 @@ from members.api.v2.serializers.member import (
 from members.models import Member, Membership
 from thaliawebsite.api.openapi import OAuthAutoSchema
 from thaliawebsite.api.v2.permissions import IsAuthenticatedOrTokenHasScopeForMethod
-from utils.media.services import fetch_thumbnails_db
+from utils.media.services import fetch_thumbnails
 
 
 class MemberListView(ListAPIView):
@@ -39,7 +39,7 @@ class MemberListView(ListAPIView):
     def get_serializer(self, *args, **kwargs):
         if len(args) > 0:
             members = args[0]
-            fetch_thumbnails_db([member.profile.photo for member in members])
+            fetch_thumbnails([member.profile.photo for member in members])
         return super().get_serializer(*args, **kwargs)
 
     permission_classes = [

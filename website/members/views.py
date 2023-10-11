@@ -21,7 +21,7 @@ from members import emails, services
 from members.decorators import membership_required
 from members.models import EmailChange, Member, Membership, Profile
 from thaliawebsite.views import PagedView
-from utils.media.services import fetch_thumbnails_db
+from utils.media.services import fetch_thumbnails
 from utils.snippets import datetime_to_lectureyear
 
 from . import models
@@ -116,7 +116,7 @@ class MembersIndex(PagedView):
             }
         )
 
-        fetch_thumbnails_db(
+        fetch_thumbnails(
             [x.profile.photo for x in context["object_list"] if x.profile.photo]
         )
 
