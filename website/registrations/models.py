@@ -535,19 +535,6 @@ class Renewal(Entry):
                 {"length": _("You cannot renew your membership at this moment.")}
             )
 
-        if (
-            self.membership_type == Membership.BENEFACTOR
-            and self.length == Entry.MEMBERSHIP_STUDY
-        ):
-            errors.update(
-                {
-                    "length": _(
-                        "Benefactors cannot have a membership "
-                        "that lasts their entire study duration."
-                    )
-                }
-            )
-
         if errors:
             raise ValidationError(errors)
 

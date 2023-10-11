@@ -1,8 +1,7 @@
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.test import TestCase, override_settings
-from django.utils import timezone, translation
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from freezegun import freeze_time
@@ -94,33 +93,11 @@ class EntryTest(TestCase):
 
         entry.membership_type = Membership.BENEFACTOR
 
-        with self.subTest("Type `Benefactor` should set length to year"):
-            entry.save()
-            self.assertEqual(entry.length, Entry.MEMBERSHIP_YEAR)
-
-        entry.contribution = 9
-
-        with self.subTest("Type `Benefactor` keeps contribution value"):
-            entry.save()
-            self.assertEqual(entry.contribution, 9)
-
-        entry.membership_type = Membership.MEMBER
-
-        with self.subTest("Type `Member` should set contribution by length"):
-            entry.save()
-            self.assertEqual(
-                entry.contribution, settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_YEAR]
-            )
-
     def test_clean(self):
         entry = Entry(registration=self.registration)
 
-        entry.membership_type = Membership.MEMBER
         entry.contribution = None
-
-        with self.subTest("Type `Member` should not require contribution"):
-            entry.clean()
-
+        entry.length = Entry.MEMBERSHIP_YEAR
         entry.membership_type = Membership.BENEFACTOR
 
         with self.subTest("Type `Benefactor` should require contribution"):
@@ -128,6 +105,11 @@ class EntryTest(TestCase):
                 entry.clean()
             entry.contribution = 7.5
             entry.clean()
+
+        with self.subTest("Type `Benefactor` should require year length"):
+            entry.length = Entry.MEMBERSHIP_STUDY
+            with self.assertRaises(ValidationError):
+                entry.clean()
 
 
 @override_settings(SUSPEND_SIGNALS=True)
@@ -158,7 +140,6 @@ class RegistrationTest(TestCase):
         )
 
     def setUp(self):
-        translation.activate("en")
         self.registration.refresh_from_db()
 
     def test_str(self):
@@ -300,6 +281,107 @@ class RegistrationTest(TestCase):
 
         self.registration.clean()
 
+    def test_generate_default_username(self):
+        registration = Registration(first_name="John", last_name="Doe")
+
+        self.assertEqual(registration._generate_default_username(), "jdoe")
+
+        registration.last_name = (
+            "famgtjbblvpcxpebclsjfamgtjbblvpcxpebcl"
+            "sjfamgtjbblvpcxpebclsjfamgtjbblvpcxpeb"
+            "clsjfamgtjbblvpcxpebclsjfamgtjbblvpcxp"
+            "ebclsjfamgtjbblvpcxpebclsjfamgtjbblvpc"
+            "xpebclsj"
+        )
+
+        self.assertEqual(
+            registration._generate_default_username(),
+            "jfamgtjbblvpcxpebclsjfamgtjbblvpcxpebclsjf"
+            "amgtjbblvpcxpebclsjfamgtjbblvpcxpebclsjfam"
+            "gtjbblvpcxpebclsjfamgtjbblvpcxpebclsjfamgt"
+            "jbblvpcxpebclsjfamgtjbbl",
+        )
+
+        possibilities = [
+            ("Bram", "in 't Zandt", "bintzandt"),
+            ("Astrid", "van der Jagt", "avanderjagt"),
+            ("Bart", "van den Boom", "bvandenboom"),
+            ("Richard", "van Ginkel", "rvanginkel"),
+            ("Edwin", "de Koning", "edekoning"),
+            ("Martijn", "de la Cosine", "mdelacosine"),
+            ("Robert", "Hissink Muller", "rhissinkmuller"),
+            ("Robert", "Al-Malak", "ralmalak"),
+            ("Arthur", "Domelé", "adomele"),
+            ("Ben", "Brücker", "bbrucker"),
+        ]
+
+        for first_name, last_name, username in possibilities:
+            registration._generate_default_username(),
+            self.assertEqual(
+                Registration(
+                    first_name=first_name, last_name=last_name
+                )._generate_default_username(),
+                username,
+            )
+
+    def test_get_username(self):
+        self.assertEqual(
+            Registration(first_name="John", last_name="Doe").get_username(),
+            "jdoe",
+        )
+        self.assertEqual(
+            Registration(
+                first_name="John", last_name="Doe", username="johnny"
+            ).get_username(),
+            "johnny",
+        )
+
+    def test_check_user_is_unique(self):
+        user = get_user_model().objects.create_user(
+            "johnnydoe", "johnnydoe@example.com"
+        )
+
+        registration = Registration.objects.create(
+            first_name="John",
+            last_name="Doe",
+            email="johndoe@example.com",
+            programme="computingscience",
+            student_number="s1234567",
+            starting_year=2014,
+            address_street="Heyendaalseweg 135",
+            address_street2="",
+            address_postal_code="6525AJ",
+            address_city="Nijmegen",
+            address_country="NL",
+            phone_number="06123456789",
+            birthday=timezone.now().replace(year=1990, day=1).date(),
+            length=Entry.MEMBERSHIP_YEAR,
+            contribution=7.5,
+            membership_type=Membership.MEMBER,
+            status=Entry.STATUS_CONFIRM,
+        )
+
+        self.assertEqual(registration.check_user_is_unique(), True)
+
+        user.username = "jdoe"
+        user.save()
+
+        self.assertEqual(registration.check_user_is_unique(), False)
+
+        user.username = "johnnydoe"
+        user.email = "johndoe@example.com"
+        user.save()
+
+        self.assertEqual(registration.check_user_is_unique(), False)
+
+        user.username = "jdoe"
+        user.email = "unique@example.com"
+        user.save()
+
+        registration.username = "unique_username"
+
+        self.assertEqual(registration.check_user_is_unique(), True)
+
 
 @override_settings(SUSPEND_SIGNALS=True)
 @freeze_time("2019-01-01")
@@ -422,20 +504,6 @@ class RenewalTest(TestCase):
                     "membership_type": "You currently have an active membership.",
                 },
             )
-
-    def test_discount_membership_upgrade(self):
-        membership = self.member.current_membership
-        membership.until = timezone.now().date() + timezone.timedelta(days=3)
-        membership.save()
-
-        self.renewal.save()
-        self.renewal.refresh_from_db()
-
-        self.assertEqual(
-            self.renewal.contribution,
-            settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_STUDY]
-            - settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_YEAR],
-        )
 
 
 @override_settings(SUSPEND_SIGNALS=True)
