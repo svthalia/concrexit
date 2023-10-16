@@ -1,7 +1,12 @@
 from django.contrib import admin
 from django.contrib.admin import RelatedOnlyFieldListFilter
 
-from .models import MoneybirdContact, MoneybirdExternalInvoice, MoneybirdPayment
+from .models import (
+    MoneybirdContact,
+    MoneybirdExternalInvoice,
+    MoneybirdMerchandiseSaleJournal,
+    MoneybirdPayment,
+)
 
 
 @admin.register(MoneybirdContact)
@@ -100,3 +105,13 @@ class MoneybirdPaymentAdmin(admin.ModelAdmin):
         if not obj:
             return ()
         return ("payment",)
+
+
+@admin.register(MoneybirdMerchandiseSaleJournal)
+class MoneybirdMerchandiseSaleJournalAdmin(admin.ModelAdmin):
+    list_display = ("merchandise_sale", "moneybird_general_journal_document_id")
+
+    readonly_fields = (
+        "merchandise_sale",
+        "moneybird_general_journal_document_id",
+    )
