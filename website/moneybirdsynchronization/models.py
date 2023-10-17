@@ -5,6 +5,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from events.models import EventRegistration
@@ -111,6 +112,14 @@ class MoneybirdContact(models.Model):
         null=True,
     )
 
+    moneybird_sepa_mandate_id = models.CharField(
+        _("Moneybird SEPA mandate ID"),
+        max_length=255,
+        blank=True,
+        null=True,
+        unique=True,
+    )
+
     def to_moneybird(self):
         if self.member.profile is None:
             return None
@@ -128,7 +137,7 @@ class MoneybirdContact(models.Model):
             }
         }
         bank_account = BankAccount.objects.filter(owner=self.member).last()
-        if bank_account:
+        if bank_account and bank_account.valid_from < timezone.now().date():
             data["contact"]["sepa_iban"] = bank_account.iban
             data["contact"]["sepa_bic"] = bank_account.bic or ""
             data["contact"][
