@@ -29,6 +29,12 @@ class MerchandiseItem(models.Model):
         decimal_places=2,
     )
 
+    #: Purchase price of the merchandise item
+    purchase_price = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+    )
+
     #: Description of the merchandise item
     description = models.TextField()
 
@@ -125,11 +131,16 @@ class MerchandiseSale(models.Model):
         allow_zero=True, verbose_name=_("total amount"), null=True
     )
 
+    total_purchase_amount = PaymentAmountField(
+        allow_zero=True, verbose_name=_("total purchase amount"), null=True
+    )
+
+
     notes = models.TextField(verbose_name=_("notes"), blank=True, null=True)
 
     @property
     def sale_description(self):
-        return "Merch:" + ", ".join(
+        return "Merchandise sale:" + ", ".join(
             [str(item.amount) + "x " + str(item.item) for item in self.sale_items.all()]
         )
 
@@ -181,6 +192,14 @@ class MerchandiseSaleItem(models.Model):
         null=True,
     )
 
+    purchase_total = PaymentAmountField(
+        verbose_name=_("purchase total"),
+        allow_zero=False,
+        blank=False,
+        null=True,
+    )
+
+
     def save(
         self, force_insert=False, force_update=False, using=None, update_fields=None
     ):
@@ -191,12 +210,13 @@ class MerchandiseSaleItem(models.Model):
                 return
 
         self.total = self.item.price * self.amount
+        self.purchase_total = self.item.purchase_price * self.amount
 
         super().save(force_insert, force_update, using, update_fields)
         self.sale.save()
 
     def __str__(self):
-        return _("Sale: {sale}").format(sale=self.sale)
+        return str(self.sale)
 
     class Meta:
         verbose_name = _("sale item")

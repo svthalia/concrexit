@@ -22,18 +22,19 @@ class MerchandiseSaleInline(admin.TabularInline):
     model = MerchandiseSaleItem
     extra = 0
 
-    fields = ("item", "amount", "total")
+    fields = ("item", "amount", "total", "purchase_total",)
     autocomplete_fields = ("item",)
-    readonly_fields = ("total",)
+    readonly_fields = ("total","purchase_total",)
 
     def get_readonly_fields(self, request: HttpRequest, obj: MerchandiseSale = None):
         if not obj:
-            return ("total",)
+            return ("total","purchase_total",)
         if obj.payment:
             return (
                 "item",
                 "amount",
                 "total",
+                "purchase_total",
             )
         return super().get_readonly_fields(request, obj)
 
@@ -60,6 +61,7 @@ class MerchandiseItemAdmin(ModelAdmin):
     fields = (
         "name",
         "price",
+        "purchase_price",
         "description",
         "image",
     )
@@ -75,6 +77,7 @@ class MerchandiseSaleAdmin(admin.ModelAdmin):
         "created_at",
         "paid_by_link",
         "total_amount",
+        "total_purchase_amount",
         "type",
         "payment_link",
     )
@@ -86,12 +89,14 @@ class MerchandiseSaleAdmin(admin.ModelAdmin):
         "type",
         "payment",
         "total_amount",
+        "total_purchase_amount",
         "notes",
     )
     readonly_fields = (
         "created_at",
         "paid_by",
         "total_amount",
+        "total_purchase_amount",
         "type",
         "payment",
         "notes",
@@ -103,6 +108,7 @@ class MerchandiseSaleAdmin(admin.ModelAdmin):
         "paid_by__last_name",
         "notes",
         "total_amount",
+        "total_purchase_amount",
     )
     ordering = ("-created_at",)
     autocomplete_fields = ("paid_by",)
@@ -159,12 +165,13 @@ class MerchandiseSaleAdmin(admin.ModelAdmin):
 
     def get_readonly_fields(self, request: HttpRequest, obj: MerchandiseSale = None):
         if not obj:
-            return "created_at", "total_amount", "payment"
+            return "created_at", "total_amount", "total_purchase_amount", "payment"
         if obj.payment:
             return (
                 "created_at",
                 "paid_by",
                 "total_amount",
+                "total_purchase_amount",
                 "type",
                 "payment",
                 "notes",
@@ -177,6 +184,8 @@ class MerchandiseSaleAdmin(admin.ModelAdmin):
             formset.save()
             total_amount = sum([item.total for item in obj.sale_items.all()])
             obj.total_amount = total_amount
+            total_purchase_amount = sum([item.purchase_total for item in obj.sale_items.all()])
+            obj.total_purchase_amount = total_purchase_amount
             obj.save()
 
             obj.payment = payment_services.create_payment(
@@ -201,6 +210,7 @@ class MerchandiseSaleAdmin(admin.ModelAdmin):
             _("payer id"),
             _("payer name"),
             _("total_amount"),
+            _("total_purchase_amount"),
             _("type"),
             _("notes"),
         ]
@@ -212,6 +222,7 @@ class MerchandiseSaleAdmin(admin.ModelAdmin):
                     sale.paid_by.pk if sale.paid_by else "-",
                     sale.paid_by.get_full_name() if sale.paid_by else "-",
                     sale.total_amount,
+                    sale.total_purchase_amount
                     sale.get_type_display(),
                     sale.notes,
                 ]

@@ -11,7 +11,7 @@ class MerchandiseSalePayable(Payable):
 
     @property
     def payment_topic(self):
-        return f"{self.model.sale_description}"
+        return str(self.model)
 
     @property
     def payment_notes(self):
@@ -44,9 +44,10 @@ class MerchandiseSalePayable(Payable):
                 "items",
                 "sale_description",
                 "total_amount",
+                "total_purchase_amount",
                 "paid_by",
             ],
-            MerchandiseSaleItem: ["item", "sale", "total", "amount"],
+            MerchandiseSaleItem: ["item", "sale", "total", "purchase_total" "amount"],
         }
 
     def can_manage_payment(self, member):

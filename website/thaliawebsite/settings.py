@@ -1100,6 +1100,23 @@ MONEYBIRD_CONTRIBUTION_LEDGER_ID: Optional[int] = (
     else None
 )
 
+MONEYBIRD_MERCHANDISE_STOCK_LEDGER_ID: Optional[int] = (
+    int(os.environ.get("MONEYBIRD_MERCHANDISE_STOCK_LEDGER_ID"))
+    if os.environ.get("MONEYBIRD_MERCHANDISE_STOCK_LEDGER_ID")
+    else None
+)
+MONEYBIRD_MERCHANDISE_COSTS_LEDGER_ID: Optional[int] = (
+    int(os.environ.get("MONEYBIRD_MERCHANDISE_COSTS_LEDGER_ID"))
+    if os.environ.get("MONEYBIRD_MERCHANDISE_COSTS_LEDGER_ID")
+    else None
+)
+MONEYBIRD_MERCHANDISE_SALES_LEDGER_ID: Optional[int] = (
+    int(os.environ.get("MONEYBIRD_MERCHANDISE_SALES_LEDGER_ID"))
+    if os.environ.get("MONEYBIRD_MERCHANDISE_SALES_LEDGER_ID")
+    else None
+)
+
+
 MONEYBIRD_TPAY_FINANCIAL_ACCOUNT_ID: Optional[int] = (
     int(os.environ.get("MONEYBIRD_TPAY_FINANCIAL_ACCOUNT_ID"))
     if os.environ.get("MONEYBIRD_TPAY_FINANCIAL_ACCOUNT_ID")

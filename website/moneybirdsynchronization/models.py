@@ -66,18 +66,8 @@ def date_for_payable_model(obj) -> Union[datetime.datetime, datetime.date]:
 def ledger_id_for_payable_model(obj) -> Optional[int]:
     if isinstance(obj, (Registration, Renewal)):
         return settings.MONEYBIRD_CONTRIBUTION_LEDGER_ID
-    return None
-
-
-def ledger_id_for_merchandise_stock(obj) -> Optional[int]:
     if isinstance(obj, MerchandiseSale):
-        return settings.MONEYBIRD_MERCHANDISE_STOCK_LEDGER_ID
-    return None
-
-
-def ledger_id_for_merchandise_sale(obj) -> Optional[int]:
-    if isinstance(obj, MerchandiseSale):
-        return settings.MONEYBIRD_MERCHANDISE_LEDGER_ID
+        return settings.MONEYBIRD_MERCHANDISE_SALES_LEDGER_ID
     return None
 
 
@@ -417,25 +407,25 @@ class MoneybirdMerchandiseSaleJournal(models.Model):
         return f"Moneybird journal for {self.merchandise_sale}"
 
     def to_moneybird(self):
-        merchandise_stock_ledger_id = ledger_id_for_merchandise_stock(
-            self.merchandise_sale
-        )
-        merchandise_ledger_id = ledger_id_for_merchandise_sale(self.merchandise_sale)
+        merchandise_stock_ledger_id = settings.MONEYBIRD_MERCHANDISE_STOCK_LEDGER_ID
+        merchandise_costs_ledger_id = settings.MONEYBIRD_MERCHANDISE_COSTS_LEDGER_ID
         data = {
             "general_journal_document": {
                 "date": self.merchandise_sale.payment.created_at.strftime("%Y-%m-%d"),
                 "reference": f"{self.external_invoice.payable.payment_topic} [{self.external_invoice.payable.model.pk}]",
                 "general_journal_document_entries_attributes": {
                     "0": {
-                        "ledger_account_id": merchandise_ledger_id,
-                        "debit": str(self.merchandise_sale.total_amount),
+                        "ledger_account_id": merchandise_costs_ledger_id,
+                        "debit": str(self.merchandise_sale.total_purchase_amount),
                         "credit": "0",
+                        "description": self.merchandise_sale.sale_description,
                         "contact_id": self.external_invoice.payable.payment_payer.moneybird_contact.moneybird_id,
                     },
                     "1": {
                         "ledger_account_id": merchandise_stock_ledger_id,
                         "debit": "0",
-                        "credit": str(self.merchandise_sale.total_amount),
+                        "credit": str(self.merchandise_sale.total_purchase_amount),
+                        "description": self.merchandise_sale.sale_description,
                         "contact_id": self.external_invoice.payable.payment_payer.moneybird_contact.moneybird_id,
                     },
                 },
