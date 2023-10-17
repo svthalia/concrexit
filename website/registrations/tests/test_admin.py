@@ -1,13 +1,9 @@
 from unittest import mock
-from unittest.mock import Mock
 
-from django.contrib import messages
 from django.contrib.admin import AdminSite
-from django.contrib.admin.utils import model_ngettext
 from django.http import HttpRequest
-from django.test import SimpleTestCase, TestCase, override_settings
+from django.test import TestCase, override_settings
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
 
 from members.models import Member
 from payments.widgets import PaymentWidget
@@ -28,23 +24,6 @@ def _get_mock_request(perms=None):
     mock_request.user.has_perm = lambda x: x in perms
     mock_request._messages = mock.Mock()
     return mock_request
-
-
-class GlobalAdminTest(SimpleTestCase):
-    @mock.patch("registrations.admin.RegistrationAdmin")
-    def test_show_message(self, admin_mock):
-        admin_mock.return_value = admin_mock
-        request = Mock(spec=HttpRequest)
-
-        admin._show_message(admin_mock, request, 0, "message", "error")
-        admin_mock.message_user.assert_called_once_with(
-            request, "error", messages.ERROR
-        )
-        admin_mock.message_user.reset_mock()
-        admin._show_message(admin_mock, request, 1, "message", "error")
-        admin_mock.message_user.assert_called_once_with(
-            request, "message", messages.SUCCESS
-        )
 
 
 @override_settings(SUSPEND_SIGNALS=True)
@@ -187,51 +166,6 @@ class RegistrationAdminTest(TestCase):
             },
         )
 
-    @mock.patch("registrations.services.accept_entries")
-    def test_accept(self, accept_entries):
-        accept_entries.return_value = 1
-
-        queryset = []
-
-        request = _get_mock_request([])
-
-        self.admin.accept_selected(request, queryset)
-        accept_entries.assert_not_called()
-
-        request = _get_mock_request(["registrations.review_entries"])
-        self.admin.accept_selected(request, queryset)
-
-        accept_entries.assert_called_once_with(1, queryset)
-
-        request._messages.add.assert_called_once_with(
-            messages.SUCCESS,
-            _("Successfully accepted %(count)d %(items)s.")
-            % {"count": 1, "items": model_ngettext(Registration(), 1)},
-            "",
-        )
-
-    @mock.patch("registrations.services.reject_entries")
-    def test_reject(self, reject_entries):
-        reject_entries.return_value = 1
-
-        queryset = []
-
-        request = _get_mock_request([])
-
-        self.admin.reject_selected(request, queryset)
-        reject_entries.assert_not_called()
-
-        request = _get_mock_request(["registrations.review_entries"])
-        self.admin.reject_selected(request, queryset)
-        reject_entries.assert_called_once_with(1, queryset)
-
-        request._messages.add.assert_called_once_with(
-            messages.SUCCESS,
-            _("Successfully rejected %(count)d %(items)s.")
-            % {"count": 1, "items": model_ngettext(Registration(), 1)},
-            "",
-        )
-
     def test_get_readonly_fields(self):
         request = _get_mock_request([])
 
@@ -364,21 +298,6 @@ class RegistrationAdminTest(TestCase):
             ],
         )
 
-    def test_get_actions(self):
-        actions = self.admin.get_actions(
-            _get_mock_request(["registrations.delete_registration"])
-        )
-        self.assertCountEqual(actions, ["delete_selected"])
-
-        actions = self.admin.get_actions(
-            _get_mock_request(
-                ["registrations.review_entries", "registrations.delete_registration"]
-            )
-        )
-        self.assertCountEqual(
-            actions, ["delete_selected", "accept_selected", "reject_selected"]
-        )
-
     def test_name(self):
         reg = Registration(
             first_name="John",
@@ -447,51 +366,6 @@ class RenewalAdminTest(TestCase):
         self.site = AdminSite()
         self.admin = admin.RenewalAdmin(Renewal, admin_site=self.site)
 
-    @mock.patch("registrations.services.accept_entries")
-    def test_accept(self, accept_entries):
-        accept_entries.return_value = 1
-
-        queryset = []
-
-        request = _get_mock_request([])
-
-        self.admin.accept_selected(request, queryset)
-        accept_entries.assert_not_called()
-
-        request = _get_mock_request(["registrations.review_entries"])
-        self.admin.accept_selected(request, queryset)
-
-        accept_entries.assert_called_once_with(1, queryset)
-
-        request._messages.add.assert_called_once_with(
-            messages.SUCCESS,
-            _("Successfully accepted %(count)d %(items)s.")
-            % {"count": 1, "items": model_ngettext(Renewal(), 1)},
-            "",
-        )
-
-    @mock.patch("registrations.services.reject_entries")
-    def test_reject(self, reject_entries):
-        reject_entries.return_value = 1
-
-        queryset = []
-
-        request = _get_mock_request([])
-
-        self.admin.reject_selected(request, queryset)
-        reject_entries.assert_not_called()
-
-        request = _get_mock_request(["registrations.review_entries"])
-        self.admin.reject_selected(request, queryset)
-        reject_entries.assert_called_once_with(1, queryset)
-
-        request._messages.add.assert_called_once_with(
-            messages.SUCCESS,
-            _("Successfully rejected %(count)d %(items)s.")
-            % {"count": 1, "items": model_ngettext(Renewal(), 1)},
-            "",
-        )
-
     def test_get_readonly_fields(self):
         request = _get_mock_request([])
 
@@ -541,21 +415,6 @@ class RenewalAdminTest(TestCase):
                 "membership",
                 "contribution",
             ],
-        )
-
-    def test_get_actions(self):
-        actions = self.admin.get_actions(
-            _get_mock_request(["registrations.delete_renewal"])
-        )
-        self.assertCountEqual(actions, ["delete_selected"])
-
-        actions = self.admin.get_actions(
-            _get_mock_request(
-                ["registrations.delete_renewal", "registrations.review_entries"]
-            )
-        )
-        self.assertCountEqual(
-            actions, ["delete_selected", "accept_selected", "reject_selected"]
         )
 
     def test_name(self):
