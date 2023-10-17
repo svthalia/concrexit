@@ -45,7 +45,16 @@ def create_or_update_contact(member):
     return moneybird_contact
 
 
-def send_mandates_late():
+def sync_contacts_with_outdated_mandates():
+    """Update contacts with outdated mandates.
+
+    This is mainly a workaround that allows creating contacts on moneybird for members
+    that have a mandate valid from today, without pushing that mandate to Moneybird,
+    as Moneybird only allows mandates valid from the past (and not from today).
+
+    These contacts can be updated the next day using this function, wich syncs every
+    contact where Moneybird doesn't have the correct mandate yet.
+    """
     mandates_to_send = MoneybirdContact.objects.annotate(
         sepa_mandate_id=Subquery(
             BankAccount.objects.filter(owner=OuterRef("member"))
