@@ -1,4 +1,5 @@
 from django.contrib import admin, messages
+from django.db import transaction
 from django.db.models import Count
 from django.dispatch import Signal
 from django.utils.translation import gettext_lazy as _
@@ -56,7 +57,10 @@ class AlbumAdmin(admin.ModelAdmin):
         archive = form.cleaned_data.get("album_archive", None)
         if archive is not None:
             try:
-                extract_archive(request, obj, archive)
+                with transaction.atomic():
+                    # We make the upload atomic separately, so we can keep using the db if it fails.
+                    # See https://docs.djangoproject.com/en/4.2/topics/db/transactions/#handling-exceptions-within-postgresql-transactions.
+                    extract_archive(request, obj, archive)
                 album_uploaded.send(sender=None, album=obj)
             except Exception:
                 raise

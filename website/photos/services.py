@@ -10,6 +10,8 @@ from django.forms import ValidationError
 from django.http import Http404
 from django.utils.translation import gettext_lazy as _
 
+from PIL import UnidentifiedImageError
+
 from photos.models import Photo
 
 logger = logging.getLogger(__name__)
@@ -103,6 +105,7 @@ def _try_save_photo(request, album, file, filename):
     instance.file = File(file, filename)
     try:
         instance.full_clean()
+        instance.save()
     except ValidationError as e:
         errors = e.message_dict
         if "This photo already exists in this album." in errors.get("file", []):
@@ -117,6 +120,9 @@ def _try_save_photo(request, album, file, filename):
                 messages.WARNING,
                 f"{filename} cannot be opened.",
             )
-        return
-
-    instance.save()
+    except UnidentifiedImageError:
+        messages.add_message(
+            request,
+            messages.WARNING,
+            f"{filename} cannot be opened.",
+        )
