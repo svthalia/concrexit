@@ -364,6 +364,10 @@ CELERY_BEAT_SCHEDULE = {
         "task": "payments.tasks.revoke_mandates",
         "schedule": crontab(minute=30, hour=3),
     },
+    "sendmandatesdaylate": {
+        "task": "moneybirdsynchronization.tasks.send_mandates_day_late",
+        "schedule": crontab(minute=0, hour=1),
+    },
     "membershipannouncement": {
         "task": "members.tasks.membership_announcement",
         "schedule": crontab(minute=0, hour=6, day_of_month=31, month_of_year=8),

@@ -1,3 +1,5 @@
+from django.db.models import F, OuterRef, Subquery
+
 from moneybirdsynchronization.models import (
     MoneybirdContact,
     MoneybirdExternalInvoice,
@@ -5,6 +7,7 @@ from moneybirdsynchronization.models import (
     financial_account_id_for_payment_type,
 )
 from moneybirdsynchronization.moneybird import get_moneybird_api_service
+from payments.models import BankAccount
 from thaliawebsite import settings
 
 
@@ -24,6 +27,8 @@ def create_or_update_contact(member):
             # Push the contact to Moneybird.
             response = moneybird.create_contact(moneybird_contact.to_moneybird())
             moneybird_contact.moneybird_id = response["id"]
+            moneybird_contact.moneybird_sepa_mandate_id = response["sepa_mandate_id"]
+
         else:
             # Link the existing moneybird contact. Then update the data.
             moneybird_contact.moneybird_id = response["id"]
@@ -38,6 +43,19 @@ def create_or_update_contact(member):
 
     moneybird_contact.save()
     return moneybird_contact
+
+
+def send_mandates_late():
+    mandates_to_send = MoneybirdContact.objects.annotate(
+        sepa_mandate_id=Subquery(
+            BankAccount.objects.filter(owner=OuterRef("member"))
+            .order_by("-created_at")
+            .values("mandate_no")[:1]
+        )
+    ).exclude(moneybird_sepa_mandate_id=F("sepa_mandate_id"))
+
+    for mandates in mandates_to_send:
+        create_or_update_contact(mandates)
 
 
 def delete_contact(member):
