@@ -4,5 +4,5 @@ from moneybirdsynchronization import services
 
 
 @shared_task
-def send_mandates_day_late():
-    services.send_mandates_late()
+def sync_contacts_with_outdated_mandates():
+    services.sync_contacts_with_outdated_mandates()
