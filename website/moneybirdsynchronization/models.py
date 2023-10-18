@@ -133,7 +133,6 @@ class MoneybirdContact(models.Model):
                 "city": self.member.profile.address_city,
                 "country": self.member.profile.address_country,
                 "send_invoices_to_email": self.member.email,
-                "customer_id": f"C-{self.member.pk}",
             }
         }
         bank_account = BankAccount.objects.filter(owner=self.member).last()
