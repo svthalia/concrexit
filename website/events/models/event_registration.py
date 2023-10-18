@@ -7,7 +7,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from queryable_properties.managers import QueryablePropertiesManager
-from queryable_properties.properties import AnnotationProperty
+from queryable_properties.properties import AnnotationProperty, queryable_property
 
 from payments.models import PaymentAmountField
 
@@ -176,9 +176,17 @@ class EventRegistration(models.Model):
     def is_paid(self):
         return self.payment
 
-    @property
+    @queryable_property
     def payment_amount(self):
         return self.event.price if not self.special_price else self.special_price
+
+    @payment_amount.annotater
+    @classmethod
+    def payment_amount(cls):
+        return Case(
+            When(Q(special_price__isnull=False), then=F("special_price")),
+            default=F("event__price"),
+        )
 
     def would_cancel_after_deadline(self):
         now = timezone.now()
