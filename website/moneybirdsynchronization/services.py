@@ -1,4 +1,7 @@
+import logging
+
 from django.db.models import F, OuterRef, Subquery
+from django.utils import timezone
 
 from moneybirdsynchronization.models import (
     MoneybirdContact,
@@ -7,8 +10,10 @@ from moneybirdsynchronization.models import (
     financial_account_id_for_payment_type,
 )
 from moneybirdsynchronization.moneybird import get_moneybird_api_service
-from payments.models import BankAccount
+from payments.models import BankAccount, Payment
 from thaliawebsite import settings
+
+logger = logging.getLogger(__name__)
 
 
 def create_or_update_contact(member):
@@ -178,90 +183,55 @@ def delete_external_invoice(obj):
     external_invoice.delete()
 
 
-def _create_statement_and_add_payment(moneybird_payment, financial_account_id):
-    """Create a new financial statement and attach this moneybird payment to it."""
+def sync_moneybird_payments():
+    """Create financial statements with all payments that haven't been synced yet.
+
+    This creates one statement per payment type for which there are new payments.
+    """
+    if not settings.MONEYBIRD_SYNC_ENABLED:
+        return
+
     moneybird = get_moneybird_api_service()
 
-    reference = f"{moneybird_payment.payment.type} payments for {moneybird_payment.payment.created_at:'%Y-%m-%d'}"
+    for payment_type in [Payment.TPAY, Payment.CARD, Payment.CASH]:
+        payments = Payment.objects.filter(
+            type=payment_type,
+            moneybird_payment__isnull=True,
+            created_at__date__gte=settings.MONEYBIRD_START_DATE,
+        )
 
-    response = moneybird.create_financial_statement(
-        {
+        if payments.count() == 0:
+            continue
+
+        logger.info(
+            "Pushing %d %s payments to Moneybird.", payments.count(), payment_type
+        )
+
+        financial_account_id = financial_account_id_for_payment_type(payment_type)
+        reference = f"{payment_type} payments at {timezone.now():'%Y-%m-%d %H:%M'}"
+
+        moneybird_payments = [MoneybirdPayment(payment=payment) for payment in payments]
+        statement = {
             "financial_statement": {
                 "financial_account_id": financial_account_id,
                 "reference": reference,
                 "financial_mutations_attributes": {
-                    "0": moneybird_payment.to_moneybird()
+                    str(i): payment.to_moneybird()
+                    for i, payment in enumerate(moneybird_payments.values())
                 },
             }
         }
-    )
-    moneybird_payment.moneybird_financial_statement_id = response["id"]
-    moneybird_payment.moneybird_financial_mutation_id = response["financial_mutations"][
-        0
-    ]["id"]
-    moneybird_payment.save()
-    return moneybird_payment
 
+        response = moneybird.create_financial_statement(statement)
 
-def _add_payment_to_statement(moneybird_payment, financial_statement_id):
-    """Add the moneybird payment to the financial statement."""
-    moneybird = get_moneybird_api_service()
+        # Store the returned mutation ids that we need to later link the mutations.s
+        for i, moneybird_payment in enumerate(moneybird_payments):
+            moneybird_payment.moneybird_financial_statement_id = response["id"]
+            moneybird_payment.moneybird_financial_mutation_id = response[
+                "financial_mutations"
+            ][i]["id"]
 
-    index_nr = MoneybirdPayment.objects.filter(
-        moneybird_financial_statement_id=financial_statement_id
-    ).count()
-
-    response = moneybird.update_financial_statement(
-        financial_statement_id,
-        {
-            "financial_statement": {
-                "financial_mutations_attributes": {
-                    str(index_nr): moneybird_payment.to_moneybird()
-                }
-            }
-        },
-    )
-    moneybird_payment.moneybird_financial_statement_id = financial_statement_id
-    moneybird_payment.moneybird_financial_mutation_id = response["financial_mutations"][
-        index_nr
-    ]["id"]
-    moneybird_payment.save()
-    return moneybird_payment
-
-
-def create_moneybird_payment(payment):
-    """Create a payment on Moneybird."""
-    if not settings.MONEYBIRD_SYNC_ENABLED:
-        return None
-
-    financial_account_id = financial_account_id_for_payment_type(payment.type)
-    if financial_account_id is None:
-        # Don't sync if there's no financial account connected
-        # for example, 'other' payments (like wire transfers), don't have concrexit as source for financial
-        # mutation statements. So we ignore those and leave it to Moneybird itself.
-        return None
-
-    moneybird_payment, _ = MoneybirdPayment.objects.get_or_create(payment=payment)
-
-    if moneybird_payment.moneybird_financial_mutation_id is None:
-        last_payment_in_same_statement = MoneybirdPayment.objects.filter(
-            payment__type=payment.type,
-            payment__created_at__date=payment.created_at.date(),
-            moneybird_financial_statement_id__isnull=False,
-        ).first()
-
-        if last_payment_in_same_statement is not None:
-            # There already exists a statement we can add this payment to
-            existing_statement_id = (
-                last_payment_in_same_statement.moneybird_financial_statement_id
-            )
-            _add_payment_to_statement(moneybird_payment, existing_statement_id)
-        else:
-            _create_statement_and_add_payment(moneybird_payment, financial_account_id)
-
-    # Note we don't need an else-branch because payments are immutable, so there's no need to update a payment ever
-
-    return moneybird_payment
+        MoneybirdPayment.objects.bulk_create(moneybird_payments)
 
 
 def delete_moneybird_payment(moneybird_payment):
