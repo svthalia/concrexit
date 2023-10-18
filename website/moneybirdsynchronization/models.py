@@ -336,8 +336,13 @@ class MoneybirdPayment(models.Model):
     def to_moneybird(self):
         data = {
             "date": self.payment.created_at.strftime("%Y-%m-%d"),
-            "message": f"{self.payment.pk}; {self.payment.type} by {self.payment.paid_by}; {self.payment.notes}; processed by {self.payment.processed_by or '?'} at {self.payment.created_at:%Y-%m-%d %H:%M:%S}.",
+            "message": f"{self.payment.paid_by}\n"
+            f"{Payment.PAYMENT_TYPE[self.payment.type][1]} {self.payment.pk}\n"
+            f"{self.payment.notes}\n"
+            f"Processed at {self.payment.created_at:%Y-%m-%d %H:%M:%S} by {self.payment.processed_by or '?'}",
             "amount": str(self.payment.amount),
+            "contra_account_name": self.payment.paid_by,
+            "contra_account_number": f"{self.payment.type} ({self.payment.pk})",
         }
         if self.moneybird_financial_mutation_id is not None:
             data["financial_mutation_id"] = int(self.moneybird_financial_mutation_id)
