@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.http import HttpRequest
 
 from .models import MoneybirdContact, MoneybirdExternalInvoice, MoneybirdPayment
 
@@ -22,6 +23,11 @@ class MoneybirdContactAdmin(admin.ModelAdmin):
     readonly_fields = ("member",)
 
     search_fields = ("member__first_name", "member__last_name", "moneybird_id")
+
+    def get_readonly_fields(self, request: HttpRequest, obj: MoneybirdContact = None):
+        if not obj:
+            return ()
+        return super().get_readonly_fields(request, obj)
 
 
 @admin.register(MoneybirdExternalInvoice)
@@ -48,6 +54,13 @@ class MoneybirdExternalInvoiceAdmin(admin.ModelAdmin):
         "moneybird_invoice_id",
     )
 
+    def get_readonly_fields(
+        self, request: HttpRequest, obj: MoneybirdExternalInvoice = None
+    ):
+        if not obj:
+            return ()
+        return super().get_readonly_fields(request, obj)
+
 
 @admin.register(MoneybirdPayment)
 class MoneybirdPaymentAdmin(admin.ModelAdmin):
@@ -72,3 +85,8 @@ class MoneybirdPaymentAdmin(admin.ModelAdmin):
         "moneybird_financial_mutation_id",
         "moneybird_financial_statement_id",
     )
+
+    def get_readonly_fields(self, request: HttpRequest, obj: MoneybirdPayment = None):
+        if not obj:
+            return ()
+        return super().get_readonly_fields(request, obj)
