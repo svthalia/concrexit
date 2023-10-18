@@ -344,6 +344,14 @@ CELERY_BROKER_TRANSPORT_OPTIONS = {"visibility_timeout": 18000}
 
 # https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html
 CELERY_BEAT_SCHEDULE = {
+    "synchronize_mailinglists": {
+        "task": "mailinglists.tasks.sync_mail",
+        "schedule": crontab(minute=30),
+    },
+    "synchronize_moneybird": {
+        "task": "moneybirdsynchronization.tasks.synchronize_moneybird",
+        "schedule": crontab(minute=30, hour=1),
+    },
     "sendpromooverviewweekly": {
         "task": "promotion.tasks.promo_update_weekly",
         "schedule": crontab(minute=0, hour=8, day_of_week=1),
@@ -352,20 +360,12 @@ CELERY_BEAT_SCHEDULE = {
         "task": "promotion.tasks.promo_update_daily",
         "schedule": crontab(minute=0, hour=8),
     },
-    "syncmailinglist": {
-        "task": "mailinglists.tasks.sync_mail",
-        "schedule": crontab(minute=30),
-    },
     "facedetectlambda": {
         "task": "facedetection.tasks.trigger_facedetect_lambda",
         "schedule": crontab(minute=0, hour=1),
     },
     "revokeoldmandates": {
         "task": "payments.tasks.revoke_mandates",
-        "schedule": crontab(minute=30, hour=3),
-    },
-    "sync_contacts_with_outdated_mandates": {
-        "task": "moneybirdsynchronization.tasks.sync_contacts_with_outdated_mandates",
         "schedule": crontab(minute=0, hour=1),
     },
     "membershipannouncement": {
@@ -1048,6 +1048,8 @@ GRAPH_MODELS = {
         "auth",
     ],
 }
+
+MONEYBIRD_START_DATE = os.environ.get("MONEYBIRD_START_DATE", "2023-09-01")
 
 MONEYBIRD_ADMINISTRATION_ID: Optional[int] = (
     int(os.environ.get("MONEYBIRD_ADMINISTRATION_ID"))
