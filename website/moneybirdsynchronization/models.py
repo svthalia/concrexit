@@ -336,13 +336,20 @@ class MoneybirdPayment(models.Model):
     def to_moneybird(self):
         data = {
             "date": self.payment.created_at.strftime("%Y-%m-%d"),
-            "message": f"{self.payment.paid_by}\n"
-            f"{Payment.PAYMENT_TYPE[self.payment.type][1]} {self.payment.pk}\n"
-            f"{self.payment.notes}\n"
-            f"Processed at {self.payment.created_at:%Y-%m-%d %H:%M:%S} by {self.payment.processed_by or '?'}",
+            "message": f"{self.payment.pk}; {self.payment.type} by {self.payment.paid_by}; {self.payment.notes}; processed by {self.payment.processed_by or '?'} at {self.payment.created_at:%Y-%m-%d %H:%M:%S}.",
+            "sepa_fields": {
+                "trtp": self.payment.type,
+                "name": self.payment.paid_by.get_full_name(),
+                "remi": f"{self.payment.created_at:%Y-%m-%d %H:%M:%S}: {self.payment.notes}",
+                "eref": str(self.payment.pk),
+                "pref": self.payment.topic,
+                "marf": f"Processed by {self.payment.processed_by.get_full_name()}"
+                if self.payment.processed_by
+                else "",
+            },
             "amount": str(self.payment.amount),
-            "contra_account_name": str(self.payment.paid_by),
-            "contra_account_number": f"{self.payment.type} ({self.payment.pk})",
+            "contra_account_name": self.payment.paid_by.get_full_name(),
+            "batch_reference": str(self.payment.pk),
         }
         if self.moneybird_financial_mutation_id is not None:
             data["financial_mutation_id"] = int(self.moneybird_financial_mutation_id)

@@ -378,7 +378,7 @@ def sync_moneybird_payments():
                 "reference": reference,
                 "financial_mutations_attributes": {
                     str(i): payment.to_moneybird()
-                    for i, payment in enumerate(moneybird_payments.values())
+                    for i, payment in enumerate(moneybird_payments)
                 },
             }
         }
