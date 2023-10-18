@@ -338,7 +338,7 @@ class MoneybirdPayment(models.Model):
             "date": self.payment.created_at.strftime("%Y-%m-%d"),
             "message": f"{self.payment.pk}; {self.payment.type} by {self.payment.paid_by}; {self.payment.notes}; processed by {self.payment.processed_by or '?'} at {self.payment.created_at:%Y-%m-%d %H:%M:%S}.",
             "sepa_fields": {
-                "trtp": self.payment.type,
+                "trtp": f"Concrexit - {dict(Payment.PAYMENT_TYPE).get(self.payment.type)}",
                 "name": self.payment.paid_by.get_full_name(),
                 "remi": f"{self.payment.created_at:%Y-%m-%d %H:%M:%S}: {self.payment.notes}",
                 "eref": str(self.payment.pk),
