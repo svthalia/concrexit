@@ -207,18 +207,6 @@ def post_renewal_delete(sender, instance, **kwargs):
         logging.exception("Moneybird synchronization error: %s", e)
 
 
-@suspendingreceiver(
-    post_save,
-    sender="payments.Payment",
-)
-def post_payment_save(sender, instance, **kwargs):
-    try:
-        services.create_moneybird_payment(instance)
-    except Administration.Error as e:
-        send_sync_error(e, instance)
-        logging.exception("Moneybird synchronization error: %s", e)
-
-
 @suspendingreceiver(post_delete, sender="moneybirdsynchronization.MoneybirdPayment")
 def post_payment_delete(sender, instance, **kwargs):
     try:
