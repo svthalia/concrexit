@@ -126,22 +126,7 @@ def post_bank_account_delete(sender, instance, **kwargs):
         logging.exception("Moneybird synchronization error: %s", e)
 
 
-# TODO: eventregistrations
-@suspendingreceiver(
-    post_save,
-    sender="events.EventRegistration",
-)
-def post_event_registration_save(sender, instance, **kwargs):
-    try:
-        if not instance.is_invited or instance.payment_amount == 0:
-            # Delete the invoice, because there should be no invoice for this registration
-            services.delete_external_invoice(instance)
-        else:
-            # Create or update the invoice
-            services.create_or_update_external_invoice(instance)
-    except Administration.Error as e:
-        send_sync_error(e, instance)
-        logging.exception("Moneybird synchronization error: %s", e)
+# TODO: delete eventregistration invoice when it becomes free, or not invited.ss
 
 
 # TODO: deleting and updating invoices.

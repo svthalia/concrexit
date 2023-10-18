@@ -4,6 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models import Exists, F, OuterRef, Subquery
 from django.utils import timezone
 
+from events.models import EventRegistration
 from moneybirdsynchronization.administration import Administration
 from moneybirdsynchronization.emails import send_sync_error
 from moneybirdsynchronization.models import (
@@ -73,7 +74,7 @@ def synchronize_moneybird():
     _sync_sales_orders()
     _sync_registrations()
     _sync_renewals()
-    # TODO: _sync_event_registrations()
+    _sync_event_registrations()
 
 
 def sync_contacts_with_outdated_mandates():
@@ -218,13 +219,14 @@ def delete_external_invoice(obj):
 def _sync_food_orders():
     """Create invoices for new food orders."""
     food_orders = FoodOrder.objects.filter(
-        ~Exists(
+        food_event__event__start__date__gte=settings.MONEYBIRD_START_DATE,
+    ).exclude(
+        Exists(
             MoneybirdExternalInvoice.objects.filter(
                 object_id=OuterRef("pk"),
                 payable_model=ContentType.objects.get_for_model(FoodOrder),
             )
         ),
-        food_event__event__start__date__gte=settings.MONEYBIRD_START_DATE,
     )
 
     if food_orders.exists():
@@ -240,14 +242,15 @@ def _sync_food_orders():
 def _sync_sales_orders():
     """Create invoices for new sales orders."""
     sales_orders = Order.objects.filter(
-        ~Exists(
+        shift__start__date__gte=settings.MONEYBIRD_START_DATE,
+        payment__isnull=False,
+    ).exclude(
+        Exists(
             MoneybirdExternalInvoice.objects.filter(
                 object_id=OuterRef("pk"),
                 payable_model=ContentType.objects.get_for_model(Order),
             )
-        ),
-        payment__isnull=False,
-        shift__start__date__gte=settings.MONEYBIRD_START_DATE,
+        )
     )
 
     if sales_orders.exists():
@@ -263,14 +266,15 @@ def _sync_sales_orders():
 def _sync_registrations():
     """Create invoices for new, paid registrations."""
     registrations = Registration.objects.filter(
-        ~Exists(
+        created_at__date__gte=settings.MONEYBIRD_START_DATE,
+        payment__isnull=False,
+    ).exclude(
+        Exists(
             MoneybirdExternalInvoice.objects.filter(
                 object_id=OuterRef("pk"),
                 payable_model=ContentType.objects.get_for_model(Registration),
             )
-        ),
-        created_at__date__gte=settings.MONEYBIRD_START_DATE,
-        payment__isnull=False,
+        )
     )
 
     if registrations.exists():
@@ -286,19 +290,53 @@ def _sync_registrations():
 def _sync_renewals():
     """Create invoices for new, paid renewals."""
     renewals = Renewal.objects.filter(
-        ~Exists(
+        created_at__date__gte=settings.MONEYBIRD_START_DATE,
+        payment__isnull=False,
+    ).exclude(
+        Exists(
             MoneybirdExternalInvoice.objects.filter(
                 object_id=OuterRef("pk"),
                 payable_model=ContentType.objects.get_for_model(Renewal),
             )
-        ),
-        created_at__date__gte=settings.MONEYBIRD_START_DATE,
-        payment__isnull=False,
+        )
     )
 
     if renewals.exists():
         logger.info("Pushing %d renewals to Moneybird.", renewals.count())
         for instance in renewals:
+            try:
+                create_or_update_external_invoice(instance)
+            except Administration.Error as e:
+                send_sync_error(e, instance)
+                logging.exception("Moneybird synchronization error: %s", e)
+
+
+def _sync_event_registrations():
+    """Create invoices for new event registrations."""
+    event_registrations = (
+        EventRegistration.objects.select_properties("queue_position", "payment_amount")
+        .filter(
+            event__start__date__gte=settings.MONEYBIRD_START_DATE,
+            date_cancelled__isnull=True,
+            queue_position__isnull=True,
+            payment_amount__isnull=False,
+        )
+        .exclude(
+            Exists(
+                MoneybirdExternalInvoice.objects.filter(
+                    object_id=OuterRef("pk"),
+                    payable_model=ContentType.objects.get_for_model(EventRegistration),
+                )
+            )
+        )
+    )
+
+    if event_registrations.exists():
+        logger.info(
+            "Pushing %d event registrations to Moneybird.", event_registrations.count()
+        )
+
+        for instance in event_registrations:
             try:
                 create_or_update_external_invoice(instance)
             except Administration.Error as e:
