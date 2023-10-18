@@ -341,7 +341,7 @@ class MoneybirdPayment(models.Model):
             f"{self.payment.notes}\n"
             f"Processed at {self.payment.created_at:%Y-%m-%d %H:%M:%S} by {self.payment.processed_by or '?'}",
             "amount": str(self.payment.amount),
-            "contra_account_name": self.payment.paid_by,
+            "contra_account_name": str(self.payment.paid_by),
             "contra_account_number": f"{self.payment.type} ({self.payment.pk})",
         }
         if self.moneybird_financial_mutation_id is not None:
