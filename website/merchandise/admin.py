@@ -193,12 +193,10 @@ class MerchandiseSaleAdmin(admin.ModelAdmin):
         obj = form.instance
         for formset in formsets:
             formset.save()
-            total_amount = sum([item.total for item in obj.sale_items.all()])
-            obj.total_amount = total_amount
-            total_purchase_amount = sum(
+            obj.total_amount = sum([item.total for item in obj.sale_items.all()])
+            obj.total_purchase_amount = sum(
                 [item.purchase_total for item in obj.sale_items.all()]
             )
-            obj.total_purchase_amount = total_purchase_amount
             obj.save()
 
             obj.payment = payment_services.create_payment(

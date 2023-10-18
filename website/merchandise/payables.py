@@ -27,7 +27,7 @@ class MerchandiseSalePayable(Payable):
 
     @property
     def tpay_allowed(self):
-        return True
+        return False
 
     @classproperty
     def immutable_after_payment(self):
