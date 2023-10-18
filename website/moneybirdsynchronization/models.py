@@ -342,8 +342,8 @@ class MoneybirdPayment(models.Model):
                 "name": self.payment.paid_by.get_full_name()
                 if self.payment.paid_by
                 else "",
-                "remi": f"{self.payment.created_at:%Y-%m-%d %H:%M:%S}: {self.payment.notes}",
-                "eref": str(self.payment.pk),
+                "remi": self.payment.notes,
+                "eref": f"{self.payment.created_at:%Y-%m-%d %H:%M:%S} {self.payment.pk}",
                 "pref": self.payment.topic,
                 "marf": f"Processed by {self.payment.processed_by.get_full_name()}"
                 if self.payment.processed_by
