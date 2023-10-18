@@ -22,13 +22,24 @@ class MerchandiseSaleInline(admin.TabularInline):
     model = MerchandiseSaleItem
     extra = 0
 
-    fields = ("item", "amount", "total", "purchase_total",)
+    fields = (
+        "item",
+        "amount",
+        "total",
+        "purchase_total",
+    )
     autocomplete_fields = ("item",)
-    readonly_fields = ("total","purchase_total",)
+    readonly_fields = (
+        "total",
+        "purchase_total",
+    )
 
     def get_readonly_fields(self, request: HttpRequest, obj: MerchandiseSale = None):
         if not obj:
-            return ("total","purchase_total",)
+            return (
+                "total",
+                "purchase_total",
+            )
         if obj.payment:
             return (
                 "item",
@@ -184,7 +195,9 @@ class MerchandiseSaleAdmin(admin.ModelAdmin):
             formset.save()
             total_amount = sum([item.total for item in obj.sale_items.all()])
             obj.total_amount = total_amount
-            total_purchase_amount = sum([item.purchase_total for item in obj.sale_items.all()])
+            total_purchase_amount = sum(
+                [item.purchase_total for item in obj.sale_items.all()]
+            )
             obj.total_purchase_amount = total_purchase_amount
             obj.save()
 
@@ -222,7 +235,7 @@ class MerchandiseSaleAdmin(admin.ModelAdmin):
                     sale.paid_by.pk if sale.paid_by else "-",
                     sale.paid_by.get_full_name() if sale.paid_by else "-",
                     sale.total_amount,
-                    sale.total_purchase_amount
+                    sale.total_purchase_amount,
                     sale.get_type_display(),
                     sale.notes,
                 ]

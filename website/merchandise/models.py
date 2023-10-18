@@ -33,6 +33,7 @@ class MerchandiseItem(models.Model):
     purchase_price = models.DecimalField(
         max_digits=8,
         decimal_places=2,
+        default=0,
     )
 
     #: Description of the merchandise item
@@ -135,7 +136,6 @@ class MerchandiseSale(models.Model):
         allow_zero=True, verbose_name=_("total purchase amount"), null=True
     )
 
-
     notes = models.TextField(verbose_name=_("notes"), blank=True, null=True)
 
     @property
@@ -198,7 +198,6 @@ class MerchandiseSaleItem(models.Model):
         blank=False,
         null=True,
     )
-
 
     def save(
         self, force_insert=False, force_update=False, using=None, update_fields=None

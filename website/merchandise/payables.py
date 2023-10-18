@@ -47,7 +47,7 @@ class MerchandiseSalePayable(Payable):
                 "total_purchase_amount",
                 "paid_by",
             ],
-            MerchandiseSaleItem: ["item", "sale", "total", "purchase_total" "amount"],
+            MerchandiseSaleItem: ["item", "sale", "total", "purchase_total", "amount"],
         }
 
     def can_manage_payment(self, member):

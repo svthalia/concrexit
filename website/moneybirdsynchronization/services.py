@@ -90,6 +90,7 @@ def create_or_update_external_invoice(obj):
         response = moneybird.create_external_sales_invoice(
             external_invoice.to_moneybird()
         )
+
         external_invoice.moneybird_invoice_id = response["id"]
         external_invoice.moneybird_details_attribute_id = response["details"][0]["id"]
 

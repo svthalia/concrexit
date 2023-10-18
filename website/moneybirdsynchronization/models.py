@@ -68,7 +68,8 @@ def ledger_id_for_payable_model(obj) -> Optional[int]:
         return settings.MONEYBIRD_CONTRIBUTION_LEDGER_ID
     if isinstance(obj, MerchandiseSale):
         return settings.MONEYBIRD_MERCHANDISE_SALES_LEDGER_ID
-    return None
+
+    raise ValueError(f"Unknown payable model {obj}")
 
 
 class MoneybirdProject(models.Model):
@@ -305,15 +306,14 @@ class MoneybirdExternalInvoice(models.Model):
                 project_id
             )
         if ledger_id is not None:
-            data["external_sales_invoice"]["details_attributes"][0]["ledger_id"] = int(
-                ledger_id
-            )
+            data["external_sales_invoice"]["details_attributes"][0][
+                "ledger_account_id"
+            ] = int(ledger_id)
 
         if self.moneybird_details_attribute_id is not None:
             data["external_sales_invoice"]["details_attributes"][0]["id"] = int(
                 self.moneybird_details_attribute_id
             )
-
         return data
 
     def __str__(self):
