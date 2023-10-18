@@ -1,8 +1,13 @@
+from django.conf import settings
+
 from celery import shared_task
 
 from moneybirdsynchronization import services
 
 
 @shared_task
-def sync_contacts_with_outdated_mandates():
-    services.sync_contacts_with_outdated_mandates()
+def synchronize_moneybird():
+    if not settings.MONEYBIRD_SYNC_ENABLED:
+        return
+
+    services.synchronize_moneybird()
