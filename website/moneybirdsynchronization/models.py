@@ -343,7 +343,7 @@ class MoneybirdPayment(models.Model):
                 if self.payment.paid_by
                 else "",
                 "remi": self.payment.notes,
-                "eref": f"{self.payment.created_at:%Y-%m-%d %H:%M:%S} {self.payment.pk}",
+                "eref": f"{self.payment.pk} {self.payment.created_at.astimezone():%Y-%m-%d %H:%M:%S}",
                 "pref": self.payment.topic,
                 "marf": f"Processed by {self.payment.processed_by.get_full_name()}"
                 if self.payment.processed_by
