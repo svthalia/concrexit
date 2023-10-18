@@ -336,10 +336,12 @@ class MoneybirdPayment(models.Model):
     def to_moneybird(self):
         data = {
             "date": self.payment.created_at.strftime("%Y-%m-%d"),
-            "message": f"{self.payment.pk}; {self.payment.type} by {self.payment.paid_by}; {self.payment.notes}; processed by {self.payment.processed_by or '?'} at {self.payment.created_at:%Y-%m-%d %H:%M:%S}.",
+            "message": f"{self.payment.pk}; {self.payment.type} by {self.payment.paid_by or '?'}; {self.payment.notes}; processed by {self.payment.processed_by or '?'} at {self.payment.created_at:%Y-%m-%d %H:%M:%S}.",
             "sepa_fields": {
                 "trtp": f"Concrexit - {dict(Payment.PAYMENT_TYPE).get(self.payment.type)}",
-                "name": self.payment.paid_by.get_full_name(),
+                "name": self.payment.paid_by.get_full_name()
+                if self.payment.paid_by
+                else "",
                 "remi": f"{self.payment.created_at:%Y-%m-%d %H:%M:%S}: {self.payment.notes}",
                 "eref": str(self.payment.pk),
                 "pref": self.payment.topic,
@@ -348,7 +350,9 @@ class MoneybirdPayment(models.Model):
                 else "",
             },
             "amount": str(self.payment.amount),
-            "contra_account_name": self.payment.paid_by.get_full_name(),
+            "contra_account_name": self.payment.paid_by.get_full_name()
+            if self.payment.paid_by
+            else "",
             "batch_reference": str(self.payment.pk),
         }
         if self.moneybird_financial_mutation_id is not None:
