@@ -1109,3 +1109,9 @@ MONEYBIRD_CARD_FINANCIAL_ACCOUNT_ID: Optional[int] = (
     if os.environ.get("MONEYBIRD_CARD_FINANCIAL_ACCOUNT_ID")
     else None
 )
+
+MONEYBIRD_ZERO_TAX_RATE_ID: Optional[int] = (
+    int(os.environ.get("MONEYBIRD_ZERO_TAX_RATE_ID"))
+    if os.environ.get("MONEYBIRD_ZERO_TAX_RATE_ID")
+    else None
+)

@@ -18,6 +18,17 @@ from sales.models.order import Order
 from thaliawebsite import settings
 
 
+def datetime_to_membership_period(date):
+    """Convert a :class:`~datetime.date` to a period that corresponds with the current membership period."""
+    start_date = date
+    if start_date.month == 8:
+        start_date = start_date.replace(month=9, day=1)
+    end_date = start_date.replace(month=8, day=31)
+    if start_date.month > 8:
+        end_date = end_date.replace(year=start_date.year + 1)
+    return f"{start_date.strftime('%Y%m%d')}..{end_date.strftime('%Y%m%d')}"
+
+
 def financial_account_id_for_payment_type(payment_type) -> Optional[int]:
     if payment_type == Payment.CARD:
         return settings.MONEYBIRD_CARD_FINANCIAL_ACCOUNT_ID
@@ -297,6 +308,142 @@ class MoneybirdExternalInvoice(models.Model):
     class Meta:
         verbose_name = _("moneybird external invoice")
         verbose_name_plural = _("moneybird external invoices")
+        unique_together = ("payable_model", "object_id")
+
+
+class MoneybirdSalesInvoice(models.Model):
+    payable_model = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.CharField(max_length=255)
+    payable_object = GenericForeignKey("payable_model", "object_id")
+
+    moneybird_invoice_id = models.CharField(
+        verbose_name=_("moneybird invoice id"),
+        max_length=255,
+        blank=True,
+        null=True,
+    )
+
+    moneybird_details_attribute_id = models.CharField(
+        verbose_name=_("moneybird details attribute id"),
+        max_length=255,
+        blank=True,
+        null=True,
+    )  # We need this id, so we can update the rows (otherwise, updates will create new rows without deleting).
+    # We only support one attribute for now, so this is the easiest way to store it
+
+    @property
+    def payable(self):
+        payable = payables.get_payable(self.payable_object)
+        if payable is None:
+            raise ValueError(f"Could not find payable for {self.payable_object}")
+        return payable
+
+    @classmethod
+    def create_for_object(cls, obj):
+        content_type = ContentType.objects.get_for_model(obj)
+        return cls.objects.create(
+            payable_model=content_type,
+            object_id=obj.pk,
+        )
+
+    @classmethod
+    def get_for_object(cls, obj):
+        content_type = ContentType.objects.get_for_model(obj)
+        try:
+            return cls.objects.get(
+                payable_model=content_type,
+                object_id=obj.pk,
+            )
+        except cls.DoesNotExist:
+            return None
+
+    def to_moneybird(self):
+        moneybird = get_moneybird_api_service()
+
+        if self.payable.payment_payer is None:
+            contact_id = settings.MONEYBIRD_UNKNOWN_PAYER_CONTACT_ID
+        else:
+            moneybird_contact, __ = MoneybirdContact.objects.get_or_create(
+                member=self.payable.payment_payer
+            )
+            if moneybird_contact.moneybird_id is None:
+                # I know this is ugly, but I don't want to totally refactor the app.
+                from moneybirdsynchronization.services import create_or_update_contact
+
+                moneybird_contact = create_or_update_contact(moneybird_contact.member)
+
+            contact_id = moneybird_contact.moneybird_id
+
+        invoice_date = date_for_payable_model(self.payable_object).strftime("%Y-%m-%d")
+
+        project_name = project_name_for_payable_model(self.payable_object)
+
+        project_id = None
+        if project_name is not None:
+            project, __ = MoneybirdProject.objects.get_or_create(name=project_name)
+            if project.moneybird_id is None:
+                response = moneybird.create_project(project.to_moneybird())
+                project.moneybird_id = response["id"]
+                project.save()
+
+            project_id = project.moneybird_id
+
+        ledger_id = ledger_id_for_payable_model(self.payable_object)
+
+        period = None
+        tax_rate_id = None
+        if isinstance(self.payable_object, (Registration, Renewal)):
+            period = datetime_to_membership_period(
+                self.payable_object.created_at.date()
+            )
+            tax_rate_id = settings.MONEYBIRD_ZERO_TAX_RATE_ID
+
+        data = {
+            "sales_invoice": {
+                "contact_id": int(contact_id),
+                "reference": f"{self.payable.payment_topic} [{self.payable.model.pk}]",
+                "invoice_date": invoice_date,
+                "currency": "EUR",
+                "prices_are_incl_tax": True,
+                "details_attributes": [
+                    {
+                        "description": self.payable.payment_notes,
+                        "price": str(self.payable.payment_amount),
+                    },
+                ],
+            }
+        }
+
+        if project_id is not None:
+            data["sales_invoice"]["details_attributes"][0]["project_id"] = int(
+                project_id
+            )
+        if ledger_id is not None:
+            data["sales_invoice"]["details_attributes"][0]["ledger_account_id"] = int(
+                ledger_id
+            )
+
+        if self.moneybird_details_attribute_id is not None:
+            data["sales_invoice"]["details_attributes"][0]["id"] = int(
+                self.moneybird_details_attribute_id
+            )
+
+        if period is not None:
+            data["sales_invoice"]["details_attributes"][0]["period"] = int(period)
+
+        if tax_rate_id is not None:
+            data["sales_invoice"]["details_attributes"][0]["tax_rate_id"] = int(
+                tax_rate_id
+            )
+
+        return data
+
+    def __str__(self):
+        return f"Moneybird sales invoice for {self.payable_object}"
+
+    class Meta:
+        verbose_name = _("moneybird sales invoice")
+        verbose_name_plural = _("moneybird sales invoices")
         unique_together = ("payable_model", "object_id")
 
 

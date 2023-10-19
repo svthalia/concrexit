@@ -48,6 +48,25 @@ class MoneybirdAPIService:
             f"external_sales_invoices/{invoice_id}/payments/{payment_id}"
         )
 
+    def create_sales_invoice(self, invoice_data):
+        return self._administration.post("sales_invoices", invoice_data)
+
+    def update_sales_invoice(self, invoice_id, invoice_data):
+        return self._administration.patch(f"sales_invoices/{invoice_id}", invoice_data)
+
+    def delete_invoice(self, invoice_id):
+        self._administration.delete(f"sales_invoices/{invoice_id}")
+
+    def register_invoice_payment(self, invoice_id, payment_data):
+        return self._administration.post(
+            f"sales_invoices/{invoice_id}/payments", payment_data
+        )
+
+    def delete_invoice_payment(self, invoice_id, payment_id):
+        self._administration.delete(
+            f"sales_invoices/{invoice_id}/payments/{payment_id}"
+        )
+
     def create_financial_statement(self, statement_data):
         return self._administration.post("financial_statements", statement_data)
 
@@ -85,6 +104,15 @@ class MoneybirdAPIService:
             f"financial_mutations/{mutation_id}/unlink_booking",
             {"booking_type": booking_type, "booking_id": booking_id},
         )
+
+    def send_invoice(self, invoice_id):
+        return self._administration.patch(
+            f"sales_invoices/{invoice_id}/send_invoice",
+            {"sales_invoice_sending": {"delivery_method": "Manual"}},
+        )
+
+    def get_invoice_info(self, invoice_id):
+        return self._administration.get(f"sales_invoices/{invoice_id}")
 
 
 def get_moneybird_api_service():

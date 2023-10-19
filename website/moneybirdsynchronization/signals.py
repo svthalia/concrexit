@@ -168,7 +168,7 @@ def post_registration_save(sender, instance, **kwargs):
         return  # We only create invoices for people who have paid for their registration
 
     try:
-        services.create_or_update_external_invoice(instance)
+        services.create_or_update_sales_invoice(instance)
     except Administration.Error as e:
         send_sync_error(e, instance)
         logging.exception("Moneybird synchronization error: %s", e)
