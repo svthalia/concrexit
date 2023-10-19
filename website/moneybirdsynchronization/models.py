@@ -429,7 +429,7 @@ class MoneybirdSalesInvoice(models.Model):
             )
 
         if period is not None:
-            data["sales_invoice"]["details_attributes"][0]["period"] = int(period)
+            data["sales_invoice"]["details_attributes"][0]["period"] = period
 
         if tax_rate_id is not None:
             data["sales_invoice"]["details_attributes"][0]["tax_rate_id"] = int(
