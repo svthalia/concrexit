@@ -1,7 +1,7 @@
 from decimal import Decimal
 from typing import Union
 
-from moneybirdsynchronization.administration import Administration, HttpsAdministration
+from moneybirdsynchronization.administration import HttpsAdministration
 from thaliawebsite import settings
 
 
@@ -17,12 +17,6 @@ class MoneybirdAPIService:
 
     def delete_contact(self, contact_id):
         self._administration.delete(f"contacts/{contact_id}")
-
-    def get_contact_by_customer_id(self, member):
-        try:
-            return self._administration.get(f"contacts/customer_id/C-{member.pk}")
-        except Administration.NotFound:
-            return None
 
     def create_project(self, project_data):
         return self._administration.post("projects", project_data)
