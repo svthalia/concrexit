@@ -412,7 +412,7 @@ class MoneybirdMerchandiseSaleJournal(models.Model):
         data = {
             "general_journal_document": {
                 "date": self.merchandise_sale.payment.created_at.strftime("%Y-%m-%d"),
-                "reference": f"{self.external_invoice.payable.payment_topic} [{self.external_invoice.payable.model.pk}]",
+                "reference": f"M {self.external_invoice.payable.model.pk}",
                 "general_journal_document_entries_attributes": {
                     "0": {
                         "ledger_account_id": merchandise_costs_ledger_id,

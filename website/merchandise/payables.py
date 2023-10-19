@@ -11,7 +11,7 @@ class MerchandiseSalePayable(Payable):
 
     @property
     def payment_topic(self):
-        return str(self.model)
+        return "Merchandise"
 
     @property
     def payment_notes(self):
