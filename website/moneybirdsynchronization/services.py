@@ -200,8 +200,8 @@ def _sync_outdated_invoices():
                 instance = invoice.payable_object
                 create_or_update_external_invoice(instance)
             except Administration.Error as e:
-                send_sync_error(e, instance)
                 logger.exception("Moneybird synchronization error: %s", e)
+                send_sync_error(e, instance)
             except ObjectDoesNotExist:
                 logger.exception("Payable object for outdated invoice does not exist.")
 
@@ -253,8 +253,8 @@ def _sync_food_orders():
             try:
                 create_or_update_external_invoice(instance)
             except Administration.Error as e:
-                send_sync_error(e, instance)
                 logger.exception("Moneybird synchronization error: %s", e)
+                send_sync_error(e, instance)
 
 
 def _sync_sales_orders():
@@ -277,8 +277,8 @@ def _sync_sales_orders():
             try:
                 create_or_update_external_invoice(instance)
             except Administration.Error as e:
-                send_sync_error(e, instance)
                 logger.exception("Moneybird synchronization error: %s", e)
+                send_sync_error(e, instance)
 
 
 def _sync_registrations():
@@ -301,8 +301,8 @@ def _sync_registrations():
             try:
                 create_or_update_external_invoice(instance)
             except Administration.Error as e:
-                send_sync_error(e, instance)
                 logger.exception("Moneybird synchronization error: %s", e)
+                send_sync_error(e, instance)
 
 
 def _sync_renewals():
@@ -325,8 +325,8 @@ def _sync_renewals():
             try:
                 create_or_update_external_invoice(instance)
             except Administration.Error as e:
-                send_sync_error(e, instance)
                 logger.exception("Moneybird synchronization error: %s", e)
+                send_sync_error(e, instance)
 
 
 def _sync_event_registrations():
@@ -364,8 +364,8 @@ def _sync_event_registrations():
             try:
                 create_or_update_external_invoice(instance)
             except Administration.Error as e:
-                send_sync_error(e, instance)
                 logger.exception("Moneybird synchronization error: %s", e)
+                send_sync_error(e, instance)
 
     to_remove = (
         EventRegistration.objects.select_properties("queue_position", "payment_amount")
@@ -395,8 +395,8 @@ def _sync_event_registrations():
             try:
                 delete_external_invoice(instance)
             except Administration.Error as e:
-                send_sync_error(e, instance)
                 logger.exception("Moneybird synchronization error: %s", e)
+                send_sync_error(e, instance)
 
 
 def _sync_moneybird_payments():
