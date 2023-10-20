@@ -3,11 +3,18 @@
 from django.db import migrations, models
 
 
+def set_needs_synchronization_false(apps, schema_editor):
+    MoneybirdExternalInvoice = apps.get_model(
+        "moneybirdsynchronization", "MoneybirdExternalInvoice"
+    )
+    MoneybirdExternalInvoice.objects.all().update(needs_synchronization=False)
+
+
 class Migration(migrations.Migration):
     dependencies = [
         (
             "moneybirdsynchronization",
-            "0006_remove_moneybirdcontact_moneybird_has_mandate_and_more",
+            "0005_moneybirdcontact_moneybird_sepa_mandate_id",
         ),
     ]
 
@@ -16,8 +23,12 @@ class Migration(migrations.Migration):
             model_name="moneybirdexternalinvoice",
             name="needs_synchronization",
             field=models.BooleanField(
-                default=False,
+                default=True,
                 help_text="Indicates that the invoice has to be synchronized (again).",
             ),
+        ),
+        migrations.RunPython(
+            set_needs_synchronization_false,
+            reverse_code=migrations.RunPython.noop,
         ),
     ]
