@@ -164,6 +164,9 @@ def delete_external_invoice(obj):
 
 def synchronize_moneybird():
     """Perform all synchronization to moneybird."""
+    if not settings.MONEYBIRD_SYNC_ENABLED:
+        return
+
     logger.info("Starting moneybird synchronization.")
 
     # First make sure all moneybird contacts' SEPA mandates are up to date.
@@ -173,6 +176,9 @@ def synchronize_moneybird():
     # as creating/updating invoices will link the payments to the invoices if they
     # already exist on moneybird.
     _sync_moneybird_payments()
+
+    # Delete invoices that have been marked for deletion.
+    _delete_invoices()
 
     # Resynchronize outdated invoices.
     _sync_outdated_invoices()
@@ -187,10 +193,30 @@ def synchronize_moneybird():
     logger.info("Finished moneybird synchronization.")
 
 
+def _delete_invoices():
+    """Delete the invoices that have been marked for deletion from moneybird."""
+    invoices = MoneybirdExternalInvoice.objects.filter(needs_deletion=True)
+
+    if not invoices.exists():
+        return
+
+    logger.info("Deleting %d invoices.", invoices.count())
+    moneybird = get_moneybird_api_service()
+
+    for invoice in invoices:
+        try:
+            if invoice.moneybird_invoice_id is not None:
+                moneybird.delete_external_invoice(invoice.moneybird_invoice_id)
+            invoice.delete()
+        except Administration.Error as e:
+            logger.exception("Moneybird synchronization error: %s", e)
+            send_sync_error(e, invoice)
+
+
 def _sync_outdated_invoices():
     """Resynchronize all invoices that have been marked as outdated."""
     invoices = MoneybirdExternalInvoice.objects.filter(
-        needs_synchronization=True
+        needs_synchronization=True, needs_deletion=False
     ).order_by("payable_model", "object_id")
 
     if invoices.exists():
