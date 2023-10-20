@@ -1,6 +1,7 @@
 import logging
 
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Exists, F, OuterRef, Q, Subquery
 from django.utils import timezone
 
@@ -87,7 +88,6 @@ def create_or_update_external_invoice(obj):
         )
         external_invoice.moneybird_invoice_id = response["id"]
         external_invoice.moneybird_details_attribute_id = response["details"][0]["id"]
-        external_invoice.save()
 
     if external_invoice.payable.payment is not None:
         # Mark the invoice as paid if the payable is paid as well
@@ -137,6 +137,10 @@ def create_or_update_external_invoice(obj):
                 },
             )
 
+    # Mark the invoice as not outdated anymore only after everything has succeeded.
+    external_invoice.needs_synchronization = False
+    external_invoice.save()
+
     return external_invoice
 
 
@@ -170,12 +174,36 @@ def synchronize_moneybird():
     # already exist on moneybird.
     _sync_moneybird_payments()
 
+    # Resynchronize outdated invoices.
+    _sync_outdated_invoices()
+
     # Push all invoices to moneybird.
     _sync_food_orders()
     _sync_sales_orders()
     _sync_registrations()
     _sync_renewals()
     _sync_event_registrations()
+
+    logger.info("Finished moneybird synchronization.")
+
+
+def _sync_outdated_invoices():
+    """Resynchronize all invoices that have been marked as outdated."""
+    invoices = MoneybirdExternalInvoice.objects.filter(
+        needs_synchronization=True
+    ).order_by("payable_model", "object_id")
+
+    if invoices.exists():
+        logger.info("Resynchronizing %d invoices.", invoices.count())
+        for invoice in invoices:
+            try:
+                instance = invoice.payable_object
+                create_or_update_external_invoice(instance)
+            except Administration.Error as e:
+                send_sync_error(e, instance)
+                logger.exception("Moneybird synchronization error: %s", e)
+            except ObjectDoesNotExist:
+                logger.exception("Payable object for outdated invoice does not exist.")
 
 
 def _sync_contacts_with_outdated_mandates():

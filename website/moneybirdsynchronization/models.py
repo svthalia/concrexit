@@ -200,6 +200,11 @@ class MoneybirdExternalInvoice(models.Model):
     )  # We need this id, so we can update the rows (otherwise, updates will create new rows without deleting).
     # We only support one attribute for now, so this is the easiest way to store it
 
+    needs_synchronization = models.BooleanField(
+        default=True,  # The field is set False only when it has been successfully synchronized.
+        help_text="Indicates that the invoice has to be synchronized (again).",
+    )
+
     @property
     def payable(self):
         payable = payables.get_payable(self.payable_object)

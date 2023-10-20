@@ -8,6 +8,7 @@ from members.models import Member, Profile
 from moneybirdsynchronization import services
 from moneybirdsynchronization.administration import Administration
 from moneybirdsynchronization.emails import send_sync_error
+from moneybirdsynchronization.models import MoneybirdExternalInvoice
 from payments.models import BankAccount
 from payments.signals import processed_batch
 from utils.models.signals import suspendingreceiver
@@ -127,7 +128,36 @@ def post_bank_account_delete(sender, instance, **kwargs):
         logger.exception("Moneybird synchronization error: %s", e)
 
 
-# TODO: deleting and updating invoices.
+@suspendingreceiver(
+    post_save,
+    sender="registrations.Renewal",
+    dispatch_uid="mark_renewal_invoice_outdated",
+)
+@suspendingreceiver(
+    post_save,
+    sender="registrations.Registration",
+    dispatch_uid="mark_registration_invoice_outdated",
+)
+@suspendingreceiver(
+    post_save, sender="pizzas.FoodOrder", dispatch_uid="mark_foodorder_invoice_outdated"
+)
+@suspendingreceiver(
+    post_save, sender="sales.Order", dispatch_uid="mark_salesorder_invoice_outdated"
+)
+@suspendingreceiver(
+    post_save,
+    sender="events.EventRegistration",
+    dispatch_uid="mark_eventregistration_invoice_outdated",
+)
+def mark_invoice_outdated(sender, instance, **kwargs):
+    """Mark the invoice as outdated if it exists, so that it will be resynchronized."""
+    invoice = MoneybirdExternalInvoice.get_for_object(instance)
+    if invoice and not invoice.needs_synchronization:
+        invoice.needs_synchronization = True
+        invoice.save()
+
+
+# TODO: deleting invoices.
 @suspendingreceiver(post_delete, sender="registrations.Renewal")
 @suspendingreceiver(
     post_delete,
