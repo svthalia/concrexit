@@ -1,5 +1,6 @@
 import logging
 
+from django.contrib.admin.utils import model_ngettext
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Exists, F, OuterRef, Q, Subquery
@@ -260,6 +261,24 @@ def _sync_contacts_with_outdated_mandates():
         create_or_update_contact(mandates)
 
 
+def _try_create_or_update_external_invoices(queryset):
+    if not queryset.exists():
+        return
+
+    logger.info(
+        "Pushing %d %s to Moneybird.",
+        model_ngettext(queryset),
+        queryset.count(),
+    )
+
+    for instance in queryset:
+        try:
+            create_or_update_external_invoice(instance)
+        except Administration.Error as e:
+            logger.exception("Moneybird synchronization error: %s", e)
+            send_sync_error(e, instance)
+
+
 def _sync_food_orders():
     """Create invoices for new food orders."""
     food_orders = FoodOrder.objects.filter(
@@ -273,14 +292,7 @@ def _sync_food_orders():
         ),
     )
 
-    if food_orders.exists():
-        logger.info("Pushing %d food orders to Moneybird.", food_orders.count())
-        for instance in food_orders:
-            try:
-                create_or_update_external_invoice(instance)
-            except Administration.Error as e:
-                logger.exception("Moneybird synchronization error: %s", e)
-                send_sync_error(e, instance)
+    _try_create_or_update_external_invoices(food_orders)
 
 
 def _sync_sales_orders():
@@ -297,14 +309,7 @@ def _sync_sales_orders():
         )
     )
 
-    if sales_orders.exists():
-        logger.info("Pushing %d sales orders to Moneybird.", sales_orders.count())
-        for instance in sales_orders:
-            try:
-                create_or_update_external_invoice(instance)
-            except Administration.Error as e:
-                logger.exception("Moneybird synchronization error: %s", e)
-                send_sync_error(e, instance)
+    _try_create_or_update_external_invoices(sales_orders)
 
 
 def _sync_registrations():
@@ -321,14 +326,7 @@ def _sync_registrations():
         )
     )
 
-    if registrations.exists():
-        logger.info("Pushing %d registrations to Moneybird.", registrations.count())
-        for instance in registrations:
-            try:
-                create_or_update_external_invoice(instance)
-            except Administration.Error as e:
-                logger.exception("Moneybird synchronization error: %s", e)
-                send_sync_error(e, instance)
+    _try_create_or_update_external_invoices(registrations)
 
 
 def _sync_renewals():
@@ -345,14 +343,7 @@ def _sync_renewals():
         )
     )
 
-    if renewals.exists():
-        logger.info("Pushing %d renewals to Moneybird.", renewals.count())
-        for instance in renewals:
-            try:
-                create_or_update_external_invoice(instance)
-            except Administration.Error as e:
-                logger.exception("Moneybird synchronization error: %s", e)
-                send_sync_error(e, instance)
+    _try_create_or_update_external_invoices(renewals)
 
 
 def _sync_event_registrations():
@@ -381,17 +372,7 @@ def _sync_event_registrations():
         )
     )
 
-    if event_registrations.exists():
-        logger.info(
-            "Pushing %d event registrations to Moneybird.", event_registrations.count()
-        )
-
-        for instance in event_registrations:
-            try:
-                create_or_update_external_invoice(instance)
-            except Administration.Error as e:
-                logger.exception("Moneybird synchronization error: %s", e)
-                send_sync_error(e, instance)
+    _try_create_or_update_external_invoices(event_registrations)
 
     to_remove = (
         EventRegistration.objects.select_properties("queue_position", "payment_amount")
@@ -433,8 +414,6 @@ def _sync_moneybird_payments():
     if not settings.MONEYBIRD_SYNC_ENABLED:
         return
 
-    moneybird = get_moneybird_api_service()
-
     for payment_type in [Payment.TPAY, Payment.CARD, Payment.CASH]:
         payments = Payment.objects.filter(
             type=payment_type,
@@ -452,28 +431,37 @@ def _sync_moneybird_payments():
         financial_account_id = financial_account_id_for_payment_type(payment_type)
         reference = f"{payment_type} payments at {timezone.now():'%Y-%m-%d %H:%M'}"
 
-        moneybird_payments = [MoneybirdPayment(payment=payment) for payment in payments]
-        statement = {
-            "financial_statement": {
-                "financial_account_id": financial_account_id,
-                "reference": reference,
-                "financial_mutations_attributes": {
-                    str(i): payment.to_moneybird()
-                    for i, payment in enumerate(moneybird_payments)
-                },
-            }
+        try:
+            _create_payments_statement(payments, reference, financial_account_id)
+        except Administration.Error as e:
+            logger.exception("Moneybird synchronization error: %s", e)
+            send_sync_error(e, reference)
+
+
+def _create_payments_statement(payments, reference, financial_account_id):
+    moneybird = get_moneybird_api_service()
+    moneybird_payments = [MoneybirdPayment(payment=payment) for payment in payments]
+    statement = {
+        "financial_statement": {
+            "financial_account_id": financial_account_id,
+            "reference": reference,
+            "financial_mutations_attributes": {
+                str(i): payment.to_moneybird()
+                for i, payment in enumerate(moneybird_payments)
+            },
         }
+    }
 
-        response = moneybird.create_financial_statement(statement)
+    response = moneybird.create_financial_statement(statement)
 
-        # Store the returned mutation ids that we need to later link the mutations.s
-        for i, moneybird_payment in enumerate(moneybird_payments):
-            moneybird_payment.moneybird_financial_statement_id = response["id"]
-            moneybird_payment.moneybird_financial_mutation_id = response[
-                "financial_mutations"
-            ][i]["id"]
+    # Store the returned mutation ids that we need to later link the mutations.s
+    for i, moneybird_payment in enumerate(moneybird_payments):
+        moneybird_payment.moneybird_financial_statement_id = response["id"]
+        moneybird_payment.moneybird_financial_mutation_id = response[
+            "financial_mutations"
+        ][i]["id"]
 
-        MoneybirdPayment.objects.bulk_create(moneybird_payments)
+    MoneybirdPayment.objects.bulk_create(moneybird_payments)
 
 
 def delete_moneybird_payment(moneybird_payment):
