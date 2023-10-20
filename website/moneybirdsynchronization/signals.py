@@ -12,6 +12,7 @@ from payments.models import BankAccount
 from payments.signals import processed_batch
 from utils.models.signals import suspendingreceiver
 
+logger = logging.getLogger(__name__)
 User = get_user_model()
 
 
@@ -42,7 +43,7 @@ def post_profile_save(sender, instance, **kwargs):
             services.create_or_update_contact(instance.user)
     except Administration.Error as e:
         send_sync_error(e, instance.user)
-        logging.exception("Moneybird synchronization error: %s", e)
+        logger.exception("Moneybird synchronization error: %s", e)
 
 
 @suspendingreceiver(post_delete, sender="members.Profile")
@@ -52,7 +53,7 @@ def post_profile_delete(sender, instance, **kwargs):
         services.delete_contact(instance.user)
     except Administration.Error as e:
         send_sync_error(e, instance.user)
-        logging.exception("Moneybird synchronization error: %s", e)
+        logger.exception("Moneybird synchronization error: %s", e)
 
 
 @suspendingreceiver(
@@ -80,7 +81,7 @@ def post_user_save(sender, instance, **kwargs):
             services.create_or_update_contact(instance)
     except Administration.Error as e:
         send_sync_error(e, instance)
-        logging.exception("Moneybird synchronization error: %s", e)
+        logger.exception("Moneybird synchronization error: %s", e)
 
 
 @suspendingreceiver(post_delete, sender=User)
@@ -90,7 +91,7 @@ def post_user_delete(sender, instance, **kwargs):
         services.delete_contact(instance)
     except Administration.Error as e:
         send_sync_error(e, instance)
-        logging.exception("Moneybird synchronization error: %s", e)
+        logger.exception("Moneybird synchronization error: %s", e)
 
 
 @suspendingreceiver(post_save, sender=BankAccount)
@@ -112,7 +113,7 @@ def post_bank_account_save(sender, instance, **kwargs):
             services.create_or_update_contact(member)
     except Administration.Error as e:
         send_sync_error(e, instance)
-        logging.exception("Moneybird synchronization error: %s", e)
+        logger.exception("Moneybird synchronization error: %s", e)
 
 
 @suspendingreceiver(post_delete, sender=BankAccount)
@@ -123,7 +124,7 @@ def post_bank_account_delete(sender, instance, **kwargs):
         services.create_or_update_contact(member)
     except Administration.Error as e:
         send_sync_error(e, instance)
-        logging.exception("Moneybird synchronization error: %s", e)
+        logger.exception("Moneybird synchronization error: %s", e)
 
 
 # TODO: delete eventregistration invoice when it becomes free, or not invited.ss
@@ -148,7 +149,7 @@ def post_renewal_delete(sender, instance, **kwargs):
         services.delete_external_invoice(instance)
     except Administration.Error as e:
         send_sync_error(e, instance)
-        logging.exception("Moneybird synchronization error: %s", e)
+        logger.exception("Moneybird synchronization error: %s", e)
 
 
 @suspendingreceiver(post_delete, sender="moneybirdsynchronization.MoneybirdPayment")
@@ -157,7 +158,7 @@ def post_payment_delete(sender, instance, **kwargs):
         services.delete_moneybird_payment(instance)
     except Administration.Error as e:
         send_sync_error(e, instance)
-        logging.exception("Moneybird synchronization error: %s", e)
+        logger.exception("Moneybird synchronization error: %s", e)
 
 
 @suspendingreceiver(
@@ -168,4 +169,4 @@ def post_processed_batch(sender, instance, **kwargs):
         services.process_thalia_pay_batch(instance)
     except Administration.Error as e:
         send_sync_error(e, instance)
-        logging.exception("Moneybird synchronization error: %s", e)
+        logger.exception("Moneybird synchronization error: %s", e)

@@ -226,7 +226,7 @@ def _sync_food_orders():
                 create_or_update_external_invoice(instance)
             except Administration.Error as e:
                 send_sync_error(e, instance)
-                logging.exception("Moneybird synchronization error: %s", e)
+                logger.exception("Moneybird synchronization error: %s", e)
 
 
 def _sync_sales_orders():
@@ -250,7 +250,7 @@ def _sync_sales_orders():
                 create_or_update_external_invoice(instance)
             except Administration.Error as e:
                 send_sync_error(e, instance)
-                logging.exception("Moneybird synchronization error: %s", e)
+                logger.exception("Moneybird synchronization error: %s", e)
 
 
 def _sync_registrations():
@@ -274,7 +274,7 @@ def _sync_registrations():
                 create_or_update_external_invoice(instance)
             except Administration.Error as e:
                 send_sync_error(e, instance)
-                logging.exception("Moneybird synchronization error: %s", e)
+                logger.exception("Moneybird synchronization error: %s", e)
 
 
 def _sync_renewals():
@@ -298,7 +298,7 @@ def _sync_renewals():
                 create_or_update_external_invoice(instance)
             except Administration.Error as e:
                 send_sync_error(e, instance)
-                logging.exception("Moneybird synchronization error: %s", e)
+                logger.exception("Moneybird synchronization error: %s", e)
 
 
 def _sync_event_registrations():
@@ -309,7 +309,7 @@ def _sync_event_registrations():
             event__start__date__gte=settings.MONEYBIRD_START_DATE,
             date_cancelled__isnull=True,
             queue_position__isnull=True,
-            payment_amount__isnull=False,
+            payment_amount__gt=0,
         )
         .exclude(
             Exists(
@@ -331,7 +331,7 @@ def _sync_event_registrations():
                 create_or_update_external_invoice(instance)
             except Administration.Error as e:
                 send_sync_error(e, instance)
-                logging.exception("Moneybird synchronization error: %s", e)
+                logger.exception("Moneybird synchronization error: %s", e)
 
 
 def _sync_moneybird_payments():
