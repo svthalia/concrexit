@@ -47,54 +47,6 @@ def create_or_update_contact(member):
     return moneybird_contact
 
 
-def synchronize_moneybird():
-    """Perform all synchronization to moneybird."""
-    logger.info("Starting moneybird synchronization.")
-
-    # First make sure all moneybird contacts' SEPA mandates are up to date.
-    sync_contacts_with_outdated_mandates()
-
-    # Push all payments to moneybird. This needs to be done before the invoices,
-    # as creating/updating invoices will link the payments to the invoices if they
-    # already exist on moneybird.
-    sync_moneybird_payments()
-
-    # Push all invoices to moneybird.
-    _sync_food_orders()
-    _sync_sales_orders()
-    _sync_registrations()
-    _sync_renewals()
-    _sync_event_registrations()
-
-
-def sync_contacts_with_outdated_mandates():
-    """Update contacts with outdated mandates.
-
-    This is mainly a workaround that allows creating contacts on moneybird for members
-    that have a mandate valid from today, without pushing that mandate to Moneybird,
-    as Moneybird only allows mandates valid from the past (and not from today).
-
-    These contacts can be updated the next day using this function, wich syncs every
-    contact where Moneybird doesn't have the correct mandate yet.
-    """
-    mandates_to_push = MoneybirdContact.objects.annotate(
-        sepa_mandate_id=Subquery(
-            BankAccount.objects.filter(owner=OuterRef("member"))
-            .order_by("-created_at")
-            .values("mandate_no")[:1]
-        )
-    ).exclude(moneybird_sepa_mandate_id=F("sepa_mandate_id"))
-
-    if mandates_to_push.exists():
-        logger.info(
-            "Pushing %d contacts with outdated mandates to Moneybird.",
-            mandates_to_push.count(),
-        )
-
-    for mandates in mandates_to_push:
-        create_or_update_contact(mandates)
-
-
 def delete_contact(member):
     """Delete a Django user/member from Moneybird."""
     if not settings.MONEYBIRD_SYNC_ENABLED:
@@ -204,6 +156,54 @@ def delete_external_invoice(obj):
     moneybird = get_moneybird_api_service()
     moneybird.delete_external_invoice(external_invoice.moneybird_invoice_id)
     external_invoice.delete()
+
+
+def synchronize_moneybird():
+    """Perform all synchronization to moneybird."""
+    logger.info("Starting moneybird synchronization.")
+
+    # First make sure all moneybird contacts' SEPA mandates are up to date.
+    _sync_contacts_with_outdated_mandates()
+
+    # Push all payments to moneybird. This needs to be done before the invoices,
+    # as creating/updating invoices will link the payments to the invoices if they
+    # already exist on moneybird.
+    _sync_moneybird_payments()
+
+    # Push all invoices to moneybird.
+    _sync_food_orders()
+    _sync_sales_orders()
+    _sync_registrations()
+    _sync_renewals()
+    _sync_event_registrations()
+
+
+def _sync_contacts_with_outdated_mandates():
+    """Update contacts with outdated mandates.
+
+    This is mainly a workaround that allows creating contacts on moneybird for members
+    that have a mandate valid from today, without pushing that mandate to Moneybird,
+    as Moneybird only allows mandates valid from the past (and not from today).
+
+    These contacts can be updated the next day using this function, wich syncs every
+    contact where Moneybird doesn't have the correct mandate yet.
+    """
+    mandates_to_push = MoneybirdContact.objects.annotate(
+        sepa_mandate_id=Subquery(
+            BankAccount.objects.filter(owner=OuterRef("member"))
+            .order_by("-created_at")
+            .values("mandate_no")[:1]
+        )
+    ).exclude(moneybird_sepa_mandate_id=F("sepa_mandate_id"))
+
+    if mandates_to_push.exists():
+        logger.info(
+            "Pushing %d contacts with outdated mandates to Moneybird.",
+            mandates_to_push.count(),
+        )
+
+    for mandates in mandates_to_push:
+        create_or_update_contact(mandates)
 
 
 def _sync_food_orders():
@@ -334,7 +334,7 @@ def _sync_event_registrations():
                 logging.exception("Moneybird synchronization error: %s", e)
 
 
-def sync_moneybird_payments():
+def _sync_moneybird_payments():
     """Create financial statements with all payments that haven't been synced yet.
 
     This creates one statement per payment type for which there are new payments.
