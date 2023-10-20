@@ -52,7 +52,7 @@ class ServicesTest(TestCase):
     def test_sync_contacts_with_outdated_mandates(self, mock_create_or_update_contact):
         # TODO: setup at least a contact with an outdated mandate, one with a correct mandate, and one with no mandate at all. Perhaps also one where moneybird has a mandate, but the user has invalidated it (so it is in fact outdated, and should be removed from moneybird).
 
-        services.sync_contacts_with_outdated_mandates()
+        services._sync_contacts_with_outdated_mandates()
 
         # TODO: check that mock_create_or_update_contact was called with the right contacts.
 
