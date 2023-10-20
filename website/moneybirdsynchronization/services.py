@@ -1,7 +1,7 @@
 import logging
 
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Exists, F, OuterRef, Subquery
+from django.db.models import Exists, F, OuterRef, Q, Subquery
 from django.utils import timezone
 
 from events.models import EventRegistration
@@ -302,7 +302,13 @@ def _sync_renewals():
 
 
 def _sync_event_registrations():
-    """Create invoices for new event registrations."""
+    """Create invoices for new event registrations, and delete invoices that shouldn't exist.
+
+    Existing invoices are deleted when the event registration is cancelled, not invited, or free.
+    In most cases, this will be done already because the event registration has been saved.
+    However, some changes to the event or registrations for  the same event might not trigger saving
+    the event registration, but still change its queue position or payment amount.
+    """
     event_registrations = (
         EventRegistration.objects.select_properties("queue_position", "payment_amount")
         .filter(
@@ -329,6 +335,37 @@ def _sync_event_registrations():
         for instance in event_registrations:
             try:
                 create_or_update_external_invoice(instance)
+            except Administration.Error as e:
+                send_sync_error(e, instance)
+                logger.exception("Moneybird synchronization error: %s", e)
+
+    to_remove = (
+        EventRegistration.objects.select_properties("queue_position", "payment_amount")
+        .filter(
+            Q(date_cancelled__isnull=False)
+            | Q(queue_position__isnull=False)
+            | ~Q(payment_amount__gt=0),
+            event__start__date__gte=settings.MONEYBIRD_START_DATE,
+        )
+        .filter(
+            Exists(
+                MoneybirdExternalInvoice.objects.filter(
+                    object_id=OuterRef("pk"),
+                    payable_model=ContentType.objects.get_for_model(EventRegistration),
+                )
+            )
+        )
+    )
+
+    if to_remove.exists():
+        logger.info(
+            "Removing invoices for %d event registrations from Moneybird.",
+            to_remove.count(),
+        )
+
+        for instance in to_remove:
+            try:
+                delete_external_invoice(instance)
             except Administration.Error as e:
                 send_sync_error(e, instance)
                 logger.exception("Moneybird synchronization error: %s", e)

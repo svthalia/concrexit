@@ -127,9 +127,6 @@ def post_bank_account_delete(sender, instance, **kwargs):
         logger.exception("Moneybird synchronization error: %s", e)
 
 
-# TODO: delete eventregistration invoice when it becomes free, or not invited.ss
-
-
 # TODO: deleting and updating invoices.
 @suspendingreceiver(post_delete, sender="registrations.Renewal")
 @suspendingreceiver(
