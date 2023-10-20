@@ -27,6 +27,14 @@ class Migration(migrations.Migration):
                 help_text="Indicates that the invoice has to be synchronized (again).",
             ),
         ),
+        migrations.AddField(
+            model_name="moneybirdexternalinvoice",
+            name="needs_deletion",
+            field=models.BooleanField(
+                default=False,
+                help_text="Indicates that the invoice has to be deleted from moneybird.",
+            ),
+        ),
         migrations.RunPython(
             set_needs_synchronization_false,
             reverse_code=migrations.RunPython.noop,

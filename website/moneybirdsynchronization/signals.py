@@ -157,7 +157,6 @@ def mark_invoice_outdated(sender, instance, **kwargs):
         invoice.save()
 
 
-# TODO: deleting invoices.
 @suspendingreceiver(post_delete, sender="registrations.Renewal")
 @suspendingreceiver(
     post_delete,
@@ -172,11 +171,11 @@ def mark_invoice_outdated(sender, instance, **kwargs):
     sender="events.EventRegistration",
 )
 def post_renewal_delete(sender, instance, **kwargs):
-    try:
-        services.delete_external_invoice(instance)
-    except Administration.Error as e:
-        logger.exception("Moneybird synchronization error: %s", e)
-        send_sync_error(e, instance)
+    """Mark the invoice for deletion if it exists, so that it will be deleted later."""
+    invoice = MoneybirdExternalInvoice.get_for_object(instance)
+    if invoice:
+        invoice.needs_deletion = True
+        invoice.save()
 
 
 @suspendingreceiver(post_delete, sender="moneybirdsynchronization.MoneybirdPayment")

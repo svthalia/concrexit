@@ -205,6 +205,11 @@ class MoneybirdExternalInvoice(models.Model):
         help_text="Indicates that the invoice has to be synchronized (again).",
     )
 
+    needs_deletion = models.BooleanField(
+        default=False,
+        help_text="Indicates that the invoice has to be deleted from moneybird.",
+    )
+
     @property
     def payable(self):
         payable = payables.get_payable(self.payable_object)
