@@ -1,5 +1,6 @@
 import datetime
 
+from django.conf import settings
 from django.contrib.auth.models import Permission
 from django.core import mail
 from django.test import Client, TestCase, override_settings
@@ -17,7 +18,6 @@ from events.models import (
 )
 from mailinglists.models import MailingList
 from members.models import Member
-from thaliawebsite import settings
 
 
 @override_settings(SUSPEND_SIGNALS=True)
