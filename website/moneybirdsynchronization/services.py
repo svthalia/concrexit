@@ -414,12 +414,12 @@ def _sync_moneybird_payments():
     if not settings.MONEYBIRD_SYNC_ENABLED:
         return
 
-    for payment_type in [Payment.TPAY, Payment.CARD, Payment.CASH]:
+    for payment_type in [Payment.CASH, Payment.CARD, Payment.TPAY]:
         payments = Payment.objects.filter(
             type=payment_type,
             moneybird_payment__isnull=True,
             created_at__date__gte=settings.MONEYBIRD_START_DATE,
-        )
+        ).order_by("pk")
 
         if payments.count() == 0:
             continue
