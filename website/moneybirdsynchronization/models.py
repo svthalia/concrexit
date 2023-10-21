@@ -1,6 +1,7 @@
 import datetime
 from typing import Optional, Union
 
+from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
@@ -16,7 +17,6 @@ from payments.payables import payables
 from pizzas.models import FoodOrder
 from registrations.models import Registration, Renewal
 from sales.models.order import Order
-from thaliawebsite import settings
 
 
 def financial_account_id_for_payment_type(payment_type) -> Optional[int]:

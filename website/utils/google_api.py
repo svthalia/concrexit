@@ -1,7 +1,7 @@
+from django.conf import settings
+
 from googleapiclient.discovery import build
 from googleapiclient.discovery_cache.base import Cache
-
-from thaliawebsite import settings
 
 
 class MemoryCache(Cache):

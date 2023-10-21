@@ -1,8 +1,9 @@
 from decimal import Decimal
 from typing import Union
 
+from django.conf import settings
+
 from moneybirdsynchronization.administration import HttpsAdministration
-from thaliawebsite import settings
 
 
 class MoneybirdAPIService:

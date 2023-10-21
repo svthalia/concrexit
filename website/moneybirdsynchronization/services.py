@@ -1,5 +1,6 @@
 import logging
 
+from django.conf import settings
 from django.contrib.admin.utils import model_ngettext
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
@@ -20,7 +21,6 @@ from payments.models import BankAccount, Payment
 from pizzas.models import FoodOrder
 from registrations.models import Registration, Renewal
 from sales.models.order import Order
-from thaliawebsite import settings
 
 logger = logging.getLogger(__name__)
 
