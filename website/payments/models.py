@@ -162,7 +162,7 @@ class Payment(models.Model):
 
     processed_by = models.ForeignKey(
         "members.Member",
-        models.CASCADE,
+        models.PROTECT,
         verbose_name=_("processed by"),
         related_name="processed_payment_set",
         blank=False,
@@ -238,7 +238,9 @@ class Payment(models.Model):
             )
         if self.batch and self.batch.processed:
             raise ValidationError(_("Cannot add a payment to a processed batch"))
-        if (
+        if self.paid_by is None and self.type == Payment.TPAY:
+            raise ValidationError("Thalia Pay payments must have a payer.")
+        elif (
             (self._state.adding or self._type != Payment.TPAY)
             and self.type == Payment.TPAY
             and not PaymentUser.objects.select_properties("tpay_enabled")
