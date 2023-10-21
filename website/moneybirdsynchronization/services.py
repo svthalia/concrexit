@@ -468,9 +468,6 @@ def delete_moneybird_payment(moneybird_payment):
     if not settings.MONEYBIRD_SYNC_ENABLED:
         return
 
-    if moneybird_payment.moneybird_financial_statement_id is None:
-        return
-
     index_nr = MoneybirdPayment.objects.filter(
         moneybird_financial_statement_id=moneybird_payment.moneybird_financial_statement_id
     ).count()  # Note that this is done post_save, so the payment itself isn't in the database anymore
