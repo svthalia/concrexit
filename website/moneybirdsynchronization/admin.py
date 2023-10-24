@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.http import HttpRequest
+from django.contrib.admin import RelatedOnlyFieldListFilter
 
 from .models import (
     MoneybirdContact,
@@ -25,14 +25,20 @@ class MoneybirdContactAdmin(admin.ModelAdmin):
         "moneybird_sepa_mandate_id",
     )
 
-    readonly_fields = ("member",)
+    raw_id_fields = ("member",)
 
-    search_fields = ("member__first_name", "member__last_name", "moneybird_id")
+    search_fields = (
+        "member__first_name",
+        "member__last_name",
+        "member__username",
+        "member__email",
+        "moneybird_id",
+    )
 
-    def get_readonly_fields(self, request: HttpRequest, obj: MoneybirdContact = None):
+    def get_readonly_fields(self, request, obj=None):
         if not obj:
             return ()
-        return super().get_readonly_fields(request, obj)
+        return ("member",)
 
 
 @admin.register(MoneybirdExternalInvoice)
@@ -43,15 +49,20 @@ class MoneybirdExternalInvoiceAdmin(admin.ModelAdmin):
         "payable_object",
         "payable_model",
         "moneybird_invoice_id",
+        "needs_synchronization",
+        "needs_deletion",
     )
 
     fields = (
         "payable_object",
         "payable_model",
+        "object_id",
         "moneybird_invoice_id",
+        "needs_synchronization",
+        "needs_deletion",
     )
 
-    readonly_fields = ("payable_object",)
+    readonly_fields = ("payable_object", "needs_synchronization", "needs_deletion")
 
     search_fields = (
         "payable_model__app_label",
@@ -59,12 +70,11 @@ class MoneybirdExternalInvoiceAdmin(admin.ModelAdmin):
         "moneybird_invoice_id",
     )
 
-    def get_readonly_fields(
-        self, request: HttpRequest, obj: MoneybirdExternalInvoice = None
-    ):
-        if not obj:
-            return ()
-        return super().get_readonly_fields(request, obj)
+    list_filter = (
+        "needs_synchronization",
+        "needs_deletion",
+        ("payable_model", RelatedOnlyFieldListFilter),
+    )
 
 
 @admin.register(MoneybirdSalesInvoice)
@@ -88,7 +98,7 @@ class MoneybirdPaymentAdmin(admin.ModelAdmin):
         "moneybird_financial_mutation_id",
     )
 
-    readonly_fields = ("payment",)
+    raw_id_fields = ("payment",)
 
     search_fields = (
         "payment__amount",
@@ -96,7 +106,7 @@ class MoneybirdPaymentAdmin(admin.ModelAdmin):
         "moneybird_financial_statement_id",
     )
 
-    def get_readonly_fields(self, request: HttpRequest, obj: MoneybirdPayment = None):
+    def get_readonly_fields(self, request, obj=None):
         if not obj:
             return ()
-        return super().get_readonly_fields(request, obj)
+        return ("payment",)

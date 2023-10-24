@@ -117,7 +117,7 @@ class Administration(ABC):
         code_is_known: bool = code in good_codes | bad_codes.keys()
 
         if not code_is_known:
-            logging.warning(f"Unknown response code {code}")
+            logger.warning(f"Unknown response code {code}")
             raise Administration.Error(
                 code, "API response contained unknown status code"
             )
@@ -139,7 +139,7 @@ class Administration(ABC):
 
                 e = error(code, error_description)
 
-            logging.warning(f"API error {code}: {e}")
+            logger.warning(f"API error {code}: {e}")
 
             raise e
 
@@ -197,7 +197,7 @@ class HttpsAdministration(Administration):
     def get(self, resource_path: str, params: Optional[dict] = None):
         """Do a GET on the Moneybird administration."""
         url = self._build_url(resource_path)
-        logging.debug(f"GET {url} {params}")
+        logger.debug(f"GET {url} {params}")
         response = self.session.get(url, params=params)
         return self._process_response(response)
 
@@ -206,7 +206,7 @@ class HttpsAdministration(Administration):
         """Do a POST request on the Moneybird administration."""
         url = self._build_url(resource_path)
         data = json.dumps(data)
-        logging.debug(f"POST {url} with {data}")
+        logger.debug(f"POST {url} with {data}")
         response = self.session.post(url, data=data)
         return self._process_response(response)
 
@@ -215,7 +215,7 @@ class HttpsAdministration(Administration):
         """Do a PATCH request on the Moneybird administration."""
         url = self._build_url(resource_path)
         data = json.dumps(data)
-        logging.debug(f"PATCH {url} with {data}")
+        logger.debug(f"PATCH {url} with {data}")
         response = self.session.patch(url, data=data)
         return self._process_response(response)
 
@@ -223,7 +223,7 @@ class HttpsAdministration(Administration):
     def delete(self, resource_path: str, data: Optional[dict] = None):
         """Do a DELETE on the Moneybird administration."""
         url = self._build_url(resource_path)
-        logging.debug(f"DELETE {url}")
+        logger.debug(f"DELETE {url}")
         response = self.session.delete(url, data=data)
         return self._process_response(response)
 

@@ -1,7 +1,10 @@
 import logging
 
+from django.conf import settings
+from django.contrib.admin.utils import model_ngettext
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Exists, F, OuterRef, Subquery
+from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Exists, F, OuterRef, Q, Subquery
 from django.utils import timezone
 
 from events.models import EventRegistration
@@ -19,7 +22,6 @@ from payments.models import BankAccount, Payment
 from pizzas.models import FoodOrder
 from registrations.models import Registration, Renewal
 from sales.models.order import Order
-from thaliawebsite import settings
 
 logger = logging.getLogger(__name__)
 
@@ -46,54 +48,6 @@ def create_or_update_contact(member):
 
     moneybird_contact.save()
     return moneybird_contact
-
-
-def synchronize_moneybird():
-    """Perform all synchronization to moneybird."""
-    logger.info("Starting moneybird synchronization.")
-
-    # First make sure all moneybird contacts' SEPA mandates are up to date.
-    sync_contacts_with_outdated_mandates()
-
-    # Push all payments to moneybird. This needs to be done before the invoices,
-    # as creating/updating invoices will link the payments to the invoices if they
-    # already exist on moneybird.
-    sync_moneybird_payments()
-
-    # Push all invoices to moneybird.
-    _sync_food_orders()
-    _sync_sales_orders()
-    _sync_registrations()
-    _sync_renewals()
-    _sync_event_registrations()
-
-
-def sync_contacts_with_outdated_mandates():
-    """Update contacts with outdated mandates.
-
-    This is mainly a workaround that allows creating contacts on moneybird for members
-    that have a mandate valid from today, without pushing that mandate to Moneybird,
-    as Moneybird only allows mandates valid from the past (and not from today).
-
-    These contacts can be updated the next day using this function, wich syncs every
-    contact where Moneybird doesn't have the correct mandate yet.
-    """
-    mandates_to_push = MoneybirdContact.objects.annotate(
-        sepa_mandate_id=Subquery(
-            BankAccount.objects.filter(owner=OuterRef("member"))
-            .order_by("-created_at")
-            .values("mandate_no")[:1]
-        )
-    ).exclude(moneybird_sepa_mandate_id=F("sepa_mandate_id"))
-
-    if mandates_to_push.exists():
-        logger.info(
-            "Pushing %d contacts with outdated mandates to Moneybird.",
-            mandates_to_push.count(),
-        )
-
-    for mandates in mandates_to_push:
-        create_or_update_contact(mandates)
 
 
 def delete_contact(member):
@@ -211,7 +165,6 @@ def create_or_update_external_invoice(obj):
         )
         external_invoice.moneybird_invoice_id = response["id"]
         external_invoice.moneybird_details_attribute_id = response["details"][0]["id"]
-        external_invoice.save()
 
     if external_invoice.payable.payment is not None:
         # Mark the invoice as paid if the payable is paid as well
@@ -261,6 +214,10 @@ def create_or_update_external_invoice(obj):
                 },
             )
 
+    # Mark the invoice as not outdated anymore only after everything has succeeded.
+    external_invoice.needs_synchronization = False
+    external_invoice.save()
+
     return external_invoice
 
 
@@ -282,6 +239,122 @@ def delete_external_invoice(obj):
     external_invoice.delete()
 
 
+def synchronize_moneybird():
+    """Perform all synchronization to moneybird."""
+    if not settings.MONEYBIRD_SYNC_ENABLED:
+        return
+
+    logger.info("Starting moneybird synchronization.")
+
+    # First make sure all moneybird contacts' SEPA mandates are up to date.
+    _sync_contacts_with_outdated_mandates()
+
+    # Push all payments to moneybird. This needs to be done before the invoices,
+    # as creating/updating invoices will link the payments to the invoices if they
+    # already exist on moneybird.
+    _sync_moneybird_payments()
+
+    # Delete invoices that have been marked for deletion.
+    _delete_invoices()
+
+    # Resynchronize outdated invoices.
+    _sync_outdated_invoices()
+
+    # Push all invoices to moneybird.
+    _sync_food_orders()
+    _sync_sales_orders()
+    _sync_registrations()
+    _sync_renewals()
+    _sync_event_registrations()
+
+    logger.info("Finished moneybird synchronization.")
+
+
+def _delete_invoices():
+    """Delete the invoices that have been marked for deletion from moneybird."""
+    invoices = MoneybirdExternalInvoice.objects.filter(needs_deletion=True)
+
+    if not invoices.exists():
+        return
+
+    logger.info("Deleting %d invoices.", invoices.count())
+    moneybird = get_moneybird_api_service()
+
+    for invoice in invoices:
+        try:
+            if invoice.moneybird_invoice_id is not None:
+                moneybird.delete_external_invoice(invoice.moneybird_invoice_id)
+            invoice.delete()
+        except Administration.Error as e:
+            logger.exception("Moneybird synchronization error: %s", e)
+            send_sync_error(e, invoice)
+
+
+def _sync_outdated_invoices():
+    """Resynchronize all invoices that have been marked as outdated."""
+    invoices = MoneybirdExternalInvoice.objects.filter(
+        needs_synchronization=True, needs_deletion=False
+    ).order_by("payable_model", "object_id")
+
+    if invoices.exists():
+        logger.info("Resynchronizing %d invoices.", invoices.count())
+        for invoice in invoices:
+            try:
+                instance = invoice.payable_object
+                create_or_update_external_invoice(instance)
+            except Administration.Error as e:
+                logger.exception("Moneybird synchronization error: %s", e)
+                send_sync_error(e, instance)
+            except ObjectDoesNotExist:
+                logger.exception("Payable object for outdated invoice does not exist.")
+
+
+def _sync_contacts_with_outdated_mandates():
+    """Update contacts with outdated mandates.
+
+    This is mainly a workaround that allows creating contacts on moneybird for members
+    that have a mandate valid from today, without pushing that mandate to Moneybird,
+    as Moneybird only allows mandates valid from the past (and not from today).
+
+    These contacts can be updated the next day using this function, wich syncs every
+    contact where Moneybird doesn't have the correct mandate yet.
+    """
+    mandates_to_push = MoneybirdContact.objects.annotate(
+        sepa_mandate_id=Subquery(
+            BankAccount.objects.filter(owner=OuterRef("member"))
+            .order_by("-created_at")
+            .values("mandate_no")[:1]
+        )
+    ).exclude(moneybird_sepa_mandate_id=F("sepa_mandate_id"))
+
+    if mandates_to_push.exists():
+        logger.info(
+            "Pushing %d contacts with outdated mandates to Moneybird.",
+            mandates_to_push.count(),
+        )
+
+    for mandates in mandates_to_push:
+        create_or_update_contact(mandates)
+
+
+def _try_create_or_update_external_invoices(queryset):
+    if not queryset.exists():
+        return
+
+    logger.info(
+        "Pushing %d %s to Moneybird.",
+        model_ngettext(queryset),
+        queryset.count(),
+    )
+
+    for instance in queryset:
+        try:
+            create_or_update_external_invoice(instance)
+        except Administration.Error as e:
+            logger.exception("Moneybird synchronization error: %s", e)
+            send_sync_error(e, instance)
+
+
 def _sync_food_orders():
     """Create invoices for new food orders."""
     food_orders = FoodOrder.objects.filter(
@@ -295,14 +368,7 @@ def _sync_food_orders():
         ),
     )
 
-    if food_orders.exists():
-        logger.info("Pushing %d food orders to Moneybird.", food_orders.count())
-        for instance in food_orders:
-            try:
-                create_or_update_external_invoice(instance)
-            except Administration.Error as e:
-                send_sync_error(e, instance)
-                logging.exception("Moneybird synchronization error: %s", e)
+    _try_create_or_update_external_invoices(food_orders)
 
 
 def _sync_sales_orders():
@@ -319,14 +385,7 @@ def _sync_sales_orders():
         )
     )
 
-    if sales_orders.exists():
-        logger.info("Pushing %d sales orders to Moneybird.", sales_orders.count())
-        for instance in sales_orders:
-            try:
-                create_or_update_external_invoice(instance)
-            except Administration.Error as e:
-                send_sync_error(e, instance)
-                logging.exception("Moneybird synchronization error: %s", e)
+    _try_create_or_update_external_invoices(sales_orders)
 
 
 def _sync_registrations():
@@ -343,14 +402,7 @@ def _sync_registrations():
         )
     )
 
-    if registrations.exists():
-        logger.info("Pushing %d registrations to Moneybird.", registrations.count())
-        for instance in registrations:
-            try:
-                create_or_update_external_invoice(instance)
-            except Administration.Error as e:
-                send_sync_error(e, instance)
-                logging.exception("Moneybird synchronization error: %s", e)
+    _try_create_or_update_external_invoices(registrations)
 
 
 def _sync_renewals():
@@ -367,25 +419,24 @@ def _sync_renewals():
         )
     )
 
-    if renewals.exists():
-        logger.info("Pushing %d renewals to Moneybird.", renewals.count())
-        for instance in renewals:
-            try:
-                create_or_update_external_invoice(instance)
-            except Administration.Error as e:
-                send_sync_error(e, instance)
-                logging.exception("Moneybird synchronization error: %s", e)
+    _try_create_or_update_external_invoices(renewals)
 
 
 def _sync_event_registrations():
-    """Create invoices for new event registrations."""
+    """Create invoices for new event registrations, and delete invoices that shouldn't exist.
+
+    Existing invoices are deleted when the event registration is cancelled, not invited, or free.
+    In most cases, this will be done already because the event registration has been saved.
+    However, some changes to the event or registrations for  the same event might not trigger saving
+    the event registration, but still change its queue position or payment amount.
+    """
     event_registrations = (
         EventRegistration.objects.select_properties("queue_position", "payment_amount")
         .filter(
             event__start__date__gte=settings.MONEYBIRD_START_DATE,
             date_cancelled__isnull=True,
             queue_position__isnull=True,
-            payment_amount__isnull=False,
+            payment_amount__gt=0,
         )
         .exclude(
             Exists(
@@ -397,20 +448,41 @@ def _sync_event_registrations():
         )
     )
 
-    if event_registrations.exists():
+    _try_create_or_update_external_invoices(event_registrations)
+
+    to_remove = (
+        EventRegistration.objects.select_properties("queue_position", "payment_amount")
+        .filter(
+            Q(date_cancelled__isnull=False)
+            | Q(queue_position__isnull=False)
+            | ~Q(payment_amount__gt=0),
+            event__start__date__gte=settings.MONEYBIRD_START_DATE,
+        )
+        .filter(
+            Exists(
+                MoneybirdExternalInvoice.objects.filter(
+                    object_id=OuterRef("pk"),
+                    payable_model=ContentType.objects.get_for_model(EventRegistration),
+                )
+            )
+        )
+    )
+
+    if to_remove.exists():
         logger.info(
-            "Pushing %d event registrations to Moneybird.", event_registrations.count()
+            "Removing invoices for %d event registrations from Moneybird.",
+            to_remove.count(),
         )
 
-        for instance in event_registrations:
+        for instance in to_remove:
             try:
-                create_or_update_external_invoice(instance)
+                delete_external_invoice(instance)
             except Administration.Error as e:
+                logger.exception("Moneybird synchronization error: %s", e)
                 send_sync_error(e, instance)
-                logging.exception("Moneybird synchronization error: %s", e)
 
 
-def sync_moneybird_payments():
+def _sync_moneybird_payments():
     """Create financial statements with all payments that haven't been synced yet.
 
     This creates one statement per payment type for which there are new payments.
@@ -418,14 +490,12 @@ def sync_moneybird_payments():
     if not settings.MONEYBIRD_SYNC_ENABLED:
         return
 
-    moneybird = get_moneybird_api_service()
-
-    for payment_type in [Payment.TPAY, Payment.CARD, Payment.CASH]:
+    for payment_type in [Payment.CASH, Payment.CARD, Payment.TPAY]:
         payments = Payment.objects.filter(
             type=payment_type,
             moneybird_payment__isnull=True,
             created_at__date__gte=settings.MONEYBIRD_START_DATE,
-        )
+        ).order_by("pk")
 
         if payments.count() == 0:
             continue
@@ -437,35 +507,41 @@ def sync_moneybird_payments():
         financial_account_id = financial_account_id_for_payment_type(payment_type)
         reference = f"{payment_type} payments at {timezone.now():'%Y-%m-%d %H:%M'}"
 
-        moneybird_payments = [MoneybirdPayment(payment=payment) for payment in payments]
-        statement = {
-            "financial_statement": {
-                "financial_account_id": financial_account_id,
-                "reference": reference,
-                "financial_mutations_attributes": {
-                    str(i): payment.to_moneybird()
-                    for i, payment in enumerate(moneybird_payments)
-                },
-            }
+        try:
+            _create_payments_statement(payments, reference, financial_account_id)
+        except Administration.Error as e:
+            logger.exception("Moneybird synchronization error: %s", e)
+            send_sync_error(e, reference)
+
+
+def _create_payments_statement(payments, reference, financial_account_id):
+    moneybird = get_moneybird_api_service()
+    moneybird_payments = [MoneybirdPayment(payment=payment) for payment in payments]
+    statement = {
+        "financial_statement": {
+            "financial_account_id": financial_account_id,
+            "reference": reference,
+            "financial_mutations_attributes": {
+                str(i): payment.to_moneybird()
+                for i, payment in enumerate(moneybird_payments)
+            },
         }
+    }
 
-        response = moneybird.create_financial_statement(statement)
+    response = moneybird.create_financial_statement(statement)
 
-        # Store the returned mutation ids that we need to later link the mutations.s
-        for i, moneybird_payment in enumerate(moneybird_payments):
-            moneybird_payment.moneybird_financial_statement_id = response["id"]
-            moneybird_payment.moneybird_financial_mutation_id = response[
-                "financial_mutations"
-            ][i]["id"]
+    # Store the returned mutation ids that we need to later link the mutations.s
+    for i, moneybird_payment in enumerate(moneybird_payments):
+        moneybird_payment.moneybird_financial_statement_id = response["id"]
+        moneybird_payment.moneybird_financial_mutation_id = response[
+            "financial_mutations"
+        ][i]["id"]
 
-        MoneybirdPayment.objects.bulk_create(moneybird_payments)
+    MoneybirdPayment.objects.bulk_create(moneybird_payments)
 
 
 def delete_moneybird_payment(moneybird_payment):
     if not settings.MONEYBIRD_SYNC_ENABLED:
-        return
-
-    if moneybird_payment.moneybird_financial_statement_id is None:
         return
 
     index_nr = MoneybirdPayment.objects.filter(
