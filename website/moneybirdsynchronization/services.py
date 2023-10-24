@@ -334,7 +334,7 @@ def _sync_contacts_with_outdated_mandates():
         )
 
     for mandates in mandates_to_push:
-        create_or_update_contact(mandates)
+        create_or_update_contact(mandates.member)
 
 
 def _try_create_or_update_external_invoices(queryset):
@@ -350,6 +350,24 @@ def _try_create_or_update_external_invoices(queryset):
     for instance in queryset:
         try:
             create_or_update_external_invoice(instance)
+        except Administration.Error as e:
+            logger.exception("Moneybird synchronization error: %s", e)
+            send_sync_error(e, instance)
+
+
+def _try_create_or_update_sales_invoices(queryset):
+    if not queryset.exists():
+        return
+
+    logger.info(
+        "Pushing %d %s to Moneybird.",
+        model_ngettext(queryset),
+        queryset.count(),
+    )
+
+    for instance in queryset:
+        try:
+            create_or_update_sales_invoice(instance)
         except Administration.Error as e:
             logger.exception("Moneybird synchronization error: %s", e)
             send_sync_error(e, instance)
@@ -395,14 +413,14 @@ def _sync_registrations():
         payment__isnull=False,
     ).exclude(
         Exists(
-            MoneybirdExternalInvoice.objects.filter(
+            MoneybirdSalesInvoice.objects.filter(
                 object_id=OuterRef("pk"),
                 payable_model=ContentType.objects.get_for_model(Registration),
             )
         )
     )
 
-    _try_create_or_update_external_invoices(registrations)
+    _try_create_or_update_sales_invoices(registrations)
 
 
 def _sync_renewals():
@@ -412,14 +430,14 @@ def _sync_renewals():
         payment__isnull=False,
     ).exclude(
         Exists(
-            MoneybirdExternalInvoice.objects.filter(
+            MoneybirdSalesInvoice.objects.filter(
                 object_id=OuterRef("pk"),
                 payable_model=ContentType.objects.get_for_model(Renewal),
             )
         )
     )
 
-    _try_create_or_update_external_invoices(renewals)
+    _try_create_or_update_sales_invoices(renewals)
 
 
 def _sync_event_registrations():
