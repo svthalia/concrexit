@@ -7,8 +7,10 @@ from freezegun import freeze_time
 
 from members.models import Member
 from moneybirdsynchronization import services
-from moneybirdsynchronization.models import MoneybirdPayment
+from moneybirdsynchronization.administration import Administration
+from moneybirdsynchronization.models import MoneybirdExternalInvoice, MoneybirdPayment
 from payments.models import Payment
+from registrations.models import Renewal
 
 
 # Each test method has a mock_api argument that is a MagicMock instance, replacing the
@@ -28,6 +30,7 @@ class ServicesTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.member = Member.objects.get(pk=1)
+        cls.member2 = Member.objects.get(pk=2)
         cls.bank_account = cls.member.bank_accounts.first()
 
     def test_create_or_update_contact_with_mandate(self, mock_api):
@@ -61,7 +64,7 @@ class ServicesTest(TestCase):
 
     @mock.patch("moneybirdsynchronization.services.create_or_update_contact")
     def test_sync_contacts_with_outdated_mandates(
-        self, mock_api, mock_create_or_update_contact
+        self, mock_create_or_update_contact, mock_api
     ):
         # TODO: setup at least a contact with an outdated mandate, one with a correct mandate, and one with no mandate at all. Perhaps also one where moneybird has a mandate, but the user has invalidated it (so it is in fact outdated, and should be removed from moneybird).
 
@@ -71,11 +74,99 @@ class ServicesTest(TestCase):
 
     def test_delete_invoices(self, mock_api):
         """Invoices marked for deletion are deleted."""
-        raise NotImplementedError
+        renewal1 = Renewal.objects.create(
+            member=self.member, length=Renewal.MEMBERSHIP_YEAR
+        )
+        renewal2 = Renewal.objects.create(
+            member=self.member2, length=Renewal.MEMBERSHIP_YEAR
+        )
+        invoice1 = MoneybirdExternalInvoice.objects.create(
+            payable_object=renewal1,
+            needs_synchronization=False,
+            moneybird_invoice_id="1",
+        )
+        invoice2 = MoneybirdExternalInvoice.objects.create(
+            payable_object=renewal2,
+            needs_synchronization=False,
+            moneybird_invoice_id="2",
+        )
 
-    def test_sync_outdated_invoices(self, mock_api):
+        # _delete_invoices calls the delete_external_invoice API directly.
+        mock_delete_invoice = mock_api.return_value.delete_external_invoice
+
+        with self.subTest("Invoices without needs_deletion are not deleted."):
+            services._delete_invoices()
+            self.assertEqual(mock_delete_invoice.call_count, 0)
+
+        invoice1.needs_deletion = True
+        invoice2.needs_deletion = True
+        invoice1.save()
+        invoice2.save()
+
+        mock_delete_invoice.reset_mock()
+        mock_delete_invoice.side_effect = Administration.InvalidData(400)
+
+        with self.subTest("All invoices are tried even after an exception"):
+            services._delete_invoices()
+            self.assertEqual(mock_delete_invoice.call_count, 2)
+
+            # Deletion failed so the objects are still in the database.
+            self.assertEqual(
+                MoneybirdExternalInvoice.objects.filter(needs_deletion=True).count(), 2
+            )
+
+        mock_delete_invoice.reset_mock()
+        mock_delete_invoice.side_effect = None
+
+        invoice1.moneybird_invoice_id = None
+        invoice1.needs_synchronization = True
+        invoice1.save()
+
+        with self.subTest("Invoices with needs_deletion are deleted."):
+            services._delete_invoices()
+
+            # Only one invoice has a moneybird_invoice_id, so only one call is made.
+            mock_delete_invoice.assert_called_once_with(invoice2.moneybird_invoice_id)
+
+            # The other has its object removed from the database without an API call.
+            self.assertEqual(
+                MoneybirdExternalInvoice.objects.filter(needs_deletion=True).count(), 0
+            )
+
+    @mock.patch("moneybirdsynchronization.services.create_or_update_external_invoice")
+    def test_sync_outdated_invoices(self, mock_update_invoice, mock_api):
         """Invoices marked with needs_synchronization are updated."""
-        raise NotImplementedError
+        renewal1 = Renewal.objects.create(
+            member=self.member, length=Renewal.MEMBERSHIP_YEAR
+        )
+        renewal2 = Renewal.objects.create(
+            member=self.member2, length=Renewal.MEMBERSHIP_YEAR
+        )
+        invoice1 = MoneybirdExternalInvoice.objects.create(payable_object=renewal1)
+        invoice2 = MoneybirdExternalInvoice.objects.create(payable_object=renewal2)
+
+        with self.subTest("Invoices with needs_synchronization are updated."):
+            services._sync_outdated_invoices()
+            self.assertEqual(mock_update_invoice.call_count, 2)
+
+        mock_update_invoice.reset_mock()
+        mock_update_invoice.side_effect = Administration.InvalidData(400)
+
+        with self.subTest("All invoices are tried even after an exception"):
+            services._sync_outdated_invoices()
+            self.assertEqual(mock_update_invoice.call_count, 2)
+
+        mock_update_invoice.reset_mock()
+        mock_update_invoice.side_effect = None
+
+        invoice1.needs_synchronization = False
+        invoice1.save()
+        invoice2.needs_synchronization = False
+        invoice2.save()
+
+        with self.subTest("Invoices without needs_synchronization are not updated."):
+            services._sync_outdated_invoices()
+            self.assertEqual(mock_update_invoice.call_count, 0)
 
     def test_sync_moneybird_payments(self, mock_api):
         """MoneybirdPayments are created for any new (non-wire) payments."""
