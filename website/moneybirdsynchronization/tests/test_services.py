@@ -2,14 +2,17 @@ from random import randint
 from unittest import mock
 
 from django.test import TestCase, override_settings
+from django.utils import timezone
 
 from freezegun import freeze_time
 
+from events.models.event import Event
 from members.models import Member
 from moneybirdsynchronization import services
 from moneybirdsynchronization.administration import Administration
 from moneybirdsynchronization.models import MoneybirdExternalInvoice, MoneybirdPayment
 from payments.models import Payment
+from pizzas.models import FoodEvent, FoodOrder, Product
 from registrations.models import Renewal
 
 
@@ -243,58 +246,48 @@ class ServicesTest(TestCase):
             MoneybirdPayment.objects.filter(payment__in=[p1, p2, p3, p4, p5]).count(), 4
         )
 
+    @mock.patch("moneybirdsynchronization.services.create_or_update_external_invoice")
+    def test_sync_food_orders(self, mock_create_invoice, mock_api):
+        """Invoices are made for food orders."""
+        event = Event.objects.create(
+            title="testevent",
+            description="desc",
+            start=timezone.now(),
+            end=(timezone.now() + timezone.timedelta(hours=1)),
+            location="test location",
+            map_location="test map location",
+            price=0.00,
+            fine=0.00,
+        )
+        food_event = FoodEvent.objects.create(
+            event=event,
+            start=timezone.now(),
+            end=(timezone.now() + timezone.timedelta(hours=1)),
+        )
+        product = Product.objects.create(name="foo", description="bar", price=1.00)
+        order1 = FoodOrder.objects.create(
+            member=Member.objects.get(pk=1),
+            food_event=food_event,
+            product=product,
+        )
+        order2 = FoodOrder.objects.create(
+            name="John Doe",
+            food_event=food_event,
+            product=product,
+        )
 
-@mock.patch("moneybirdsynchronization.moneybird.MoneybirdAPIService", autospec=True)
-@override_settings(
-    MONEYBIRD_START_DATE="2023-09-01",
-    MONEYBIRD_ADMINISTRATION_ID="123",
-    MONEYBIRD_API_KEY="foo",
-    MONEYBIRD_SYNC_ENABLED=True,
-    SUSPEND_SIGNALS=True,
-)
-class EventsSyncTest(TestCase):
-    """Test the synchronization related to the events app."""
+        services._sync_food_orders()
+        self.assertEqual(mock_create_invoice.call_count, 2)
 
-    # TODO
+    def test_sync_sales_orders(self, mock_api):
+        """Invoices are created for paid sales orders."""
+        raise NotImplementedError
 
+    def test_sync_renewals(self, mock_api):
+        raise NotImplementedError
 
-@mock.patch("moneybirdsynchronization.moneybird.MoneybirdAPIService", autospec=True)
-@override_settings(
-    MONEYBIRD_START_DATE="2023-09-01",
-    MONEYBIRD_ADMINISTRATION_ID="123",
-    MONEYBIRD_API_KEY="foo",
-    MONEYBIRD_SYNC_ENABLED=True,
-    SUSPEND_SIGNALS=True,
-)
-class PizzasSyncTest(TestCase):
-    """Test the synchronization related to the pizzas app."""
+    def test_sync_registrations(self, mock_api):
+        raise NotImplementedError
 
-    # TODO
-
-
-@mock.patch("moneybirdsynchronization.moneybird.MoneybirdAPIService", autospec=True)
-@override_settings(
-    MONEYBIRD_START_DATE="2023-09-01",
-    MONEYBIRD_ADMINISTRATION_ID="123",
-    MONEYBIRD_API_KEY="foo",
-    MONEYBIRD_SYNC_ENABLED=True,
-    SUSPEND_SIGNALS=True,
-)
-class SalesSyncTest(TestCase):
-    """Test the synchronization related to the sales app."""
-
-    # TODO
-
-
-@mock.patch("moneybirdsynchronization.moneybird.MoneybirdAPIService", autospec=True)
-@override_settings(
-    MONEYBIRD_START_DATE="2023-09-01",
-    MONEYBIRD_ADMINISTRATION_ID="123",
-    MONEYBIRD_API_KEY="foo",
-    MONEYBIRD_SYNC_ENABLED=True,
-    SUSPEND_SIGNALS=True,
-)
-class RegistrationsSyncTest(TestCase):
-    """Test the synchronization related to the registrations app."""
-
-    # TODO
+    def test_sync_event_registrations(self, mock_api):
+        raise NotImplementedError
