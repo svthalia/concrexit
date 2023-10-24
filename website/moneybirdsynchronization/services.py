@@ -8,6 +8,7 @@ from django.db.models import Exists, F, OuterRef, Q, Subquery
 from django.utils import timezone
 
 from events.models import EventRegistration
+from members.models import Member
 from moneybirdsynchronization.administration import Administration
 from moneybirdsynchronization.emails import send_sync_error
 from moneybirdsynchronization.models import (
@@ -25,7 +26,7 @@ from sales.models.order import Order
 logger = logging.getLogger(__name__)
 
 
-def create_or_update_contact(member):
+def create_or_update_contact(member: Member):
     """Push a Django user/member to Moneybird."""
     if not settings.MONEYBIRD_SYNC_ENABLED:
         return None
@@ -38,13 +39,13 @@ def create_or_update_contact(member):
         # Push the contact to Moneybird.
         response = moneybird.create_contact(moneybird_contact.to_moneybird())
         moneybird_contact.moneybird_id = response["id"]
-        moneybird_contact.moneybird_sepa_mandate_id = response["sepa_mandate_id"]
     else:
         # Update the contact data (right now we always do this, but we could use the version to check if it's needed)
         response = moneybird.update_contact(
             moneybird_contact.moneybird_id, moneybird_contact.to_moneybird()
         )
 
+    moneybird_contact.moneybird_sepa_mandate_id = response["sepa_mandate_id"] or None
     moneybird_contact.save()
     return moneybird_contact
 
@@ -243,22 +244,26 @@ def _sync_contacts_with_outdated_mandates():
     These contacts can be updated the next day using this function, wich syncs every
     contact where Moneybird doesn't have the correct mandate yet.
     """
-    mandates_to_push = MoneybirdContact.objects.annotate(
-        sepa_mandate_id=Subquery(
-            BankAccount.objects.filter(owner=OuterRef("member"))
-            .order_by("-created_at")
-            .values("mandate_no")[:1]
-        )
-    ).exclude(moneybird_sepa_mandate_id=F("sepa_mandate_id"))
+    contacts = (
+        MoneybirdContact.objects.annotate(
+            sepa_mandate_id=Subquery(
+                BankAccount.objects.filter(owner=OuterRef("member"))
+                .order_by("-created_at")
+                .values("mandate_no")[:1]
+            )
+        ).exclude(moneybird_sepa_mandate_id=F("sepa_mandate_id"))
+        # For some reason the DB does not consider None == None in the exclude above.
+        .exclude(sepa_mandate_id=None, moneybird_sepa_mandate_id=None)
+    )
 
-    if mandates_to_push.exists():
+    if contacts.exists():
         logger.info(
             "Pushing %d contacts with outdated mandates to Moneybird.",
-            mandates_to_push.count(),
+            contacts.count(),
         )
 
-    for mandates in mandates_to_push:
-        create_or_update_contact(mandates)
+    for contact in contacts:
+        create_or_update_contact(contact.member)
 
 
 def _try_create_or_update_external_invoices(queryset):

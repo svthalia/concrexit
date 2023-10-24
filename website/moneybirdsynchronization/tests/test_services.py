@@ -10,8 +10,12 @@ from events.models.event import Event
 from members.models import Member
 from moneybirdsynchronization import services
 from moneybirdsynchronization.administration import Administration
-from moneybirdsynchronization.models import MoneybirdExternalInvoice, MoneybirdPayment
-from payments.models import Payment
+from moneybirdsynchronization.models import (
+    MoneybirdContact,
+    MoneybirdExternalInvoice,
+    MoneybirdPayment,
+)
+from payments.models import BankAccount, Payment
 from pizzas.models import FoodEvent, FoodOrder, Product
 from registrations.models import Renewal
 
@@ -34,6 +38,8 @@ class ServicesTest(TestCase):
     def setUpTestData(cls):
         cls.member = Member.objects.get(pk=1)
         cls.member2 = Member.objects.get(pk=2)
+        cls.member3 = Member.objects.get(pk=3)
+        cls.member4 = Member.objects.get(pk=4)
         cls.bank_account = cls.member.bank_accounts.first()
 
     def test_create_or_update_contact_with_mandate(self, mock_api):
@@ -42,38 +48,152 @@ class ServicesTest(TestCase):
         This is a limitation imposed by the Moneybird API.
         See: https://github.com/svthalia/concrexit/issues/3295.
         """
-        # TODO: set mock response values:
-        mock_api.return_value.create_contact.return_value = {}
-        mock_api.return_value.update_contact.return_value = {}
+        # Drop the fixtures, we create our own bank account here.
+        BankAccount.objects.all().delete()
+
+        mock_create_contact = mock_api.return_value.create_contact
+        mock_update_contact = mock_api.return_value.update_contact
+
+        mock_create_contact.return_value = {"id": "1", "sepa_mandate_id": ""}
+        mock_update_contact.return_value = {"id": "1", "sepa_mandate_id": ""}
 
         # Bank account is valid from 2016-07-07.
         with freeze_time("2016-07-07"):
+            bank_account = BankAccount.objects.create(
+                owner=self.member,
+                iban="NL12ABNA1234567890",
+                initials="J.",
+                last_name="Doe",
+                valid_from=timezone.now().date(),
+                signature="base64,png",
+                mandate_no="1-1",
+            )
+
             with self.subTest("Creating a contact does not push today's SEPA mandate."):
                 services.create_or_update_contact(self.member)
-                mock_api.return_value.create_contact.assert_called_once_with(
-                    {},  # TODO: fill in the expected content, i.e. without the bank account.
-                    # Possibly the mock return values need to be changed between the subtests.
-                )
+                mock_create_contact.assert_called_once()
+                mock_update_contact.assert_not_called()
+
+                data = mock_create_contact.call_args[0][0]
+                self.assertNotIn("sepa_mandate_id", data["contact"])
+
+                moneybird_contact = self.member.moneybird_contact
+                self.assertEqual(moneybird_contact.moneybird_sepa_mandate_id, None)
+
+            mock_create_contact.reset_mock()
+            mock_update_contact.reset_mock()
 
             with self.subTest("Updating a contact does not push today's SEPA mandate."):
-                raise NotImplementedError
+                services.create_or_update_contact(self.member)
+                mock_create_contact.assert_not_called()
+                mock_update_contact.assert_called_once()
+
+                data = mock_update_contact.call_args[0][1]
+                self.assertEqual(mock_update_contact.call_args[0][0], "1")
+                self.assertNotIn("sepa_mandate_id", data["contact"])
+
+                moneybird_contact.refresh_from_db()
+                self.assertEqual(moneybird_contact.moneybird_sepa_mandate_id, None)
+
+        moneybird_contact.delete()
+        mock_create_contact.reset_mock()
+        mock_update_contact.reset_mock()
+        mock_create_contact.return_value = {"id": "1", "sepa_mandate_id": "1-1"}
+        mock_update_contact.return_value = {"id": "1", "sepa_mandate_id": "1-1"}
 
         with freeze_time("2016-07-08"):
             with self.subTest("Creating a contact pushes past SEPA mandate."):
-                raise NotImplementedError
+                services.create_or_update_contact(self.member)
+                mock_create_contact.assert_called_once()
+                mock_update_contact.assert_not_called()
+
+                data = mock_create_contact.call_args[0][0]
+                self.assertEqual(data["contact"]["sepa_mandate_id"], "1-1")
+
+                moneybird_contact = self.member.moneybird_contact
+                self.assertEqual(moneybird_contact.moneybird_sepa_mandate_id, "1-1")
+
+            mock_create_contact.reset_mock()
+            mock_update_contact.reset_mock()
 
             with self.subTest("Updating a contact pushes past SEPA mandate."):
-                raise NotImplementedError
+                services.create_or_update_contact(self.member)
+                mock_create_contact.assert_not_called()
+                mock_update_contact.assert_called_once()
+
+                data = mock_update_contact.call_args[0][1]
+                self.assertEqual(mock_update_contact.call_args[0][0], "1")
+                self.assertEqual(data["contact"]["sepa_mandate_id"], "1-1")
+
+                moneybird_contact.refresh_from_db()
+                self.assertEqual(moneybird_contact.moneybird_sepa_mandate_id, "1-1")
 
     @mock.patch("moneybirdsynchronization.services.create_or_update_contact")
     def test_sync_contacts_with_outdated_mandates(
         self, mock_create_or_update_contact, mock_api
     ):
-        # TODO: setup at least a contact with an outdated mandate, one with a correct mandate, and one with no mandate at all. Perhaps also one where moneybird has a mandate, but the user has invalidated it (so it is in fact outdated, and should be removed from moneybird).
+        # Drop the fixtures, we create our own bank account here.
+        BankAccount.objects.all().delete()
+
+        # Valid and already pushed.
+        ba1 = BankAccount.objects.create(
+            owner=self.member,
+            iban="NL12ABNA1234567890",
+            initials="J.",
+            last_name="Doe",
+            valid_from=timezone.now().date() - timezone.timedelta(days=1),
+            signature="base64,png",
+            mandate_no="1-1",
+        )
+        # Valid and new.
+        ba2 = BankAccount.objects.create(
+            owner=self.member2,
+            iban="NL12ABNA1234567891",
+            initials="J.",
+            last_name="Doe",
+            valid_from=timezone.now().date() - timezone.timedelta(days=1),
+            signature="base64,png",
+            mandate_no="2-1",
+        )
+
+        # Outdated and already pushed.
+        BankAccount.objects.create(
+            owner=self.member3,
+            iban="NL12ABNA1234567892",
+            initials="J.",
+            last_name="Doe",
+            valid_from=timezone.now().date() - timezone.timedelta(days=10),
+            valid_until=timezone.now().date() - timezone.timedelta(days=2),
+            signature="base64,png",
+            mandate_no="3-1",
+        )
+        # Valid and an outdated mandate already pushed.
+        BankAccount.objects.create(
+            owner=self.member3,
+            iban="NL12ABNA1234567892",
+            initials="J.",
+            last_name="Doe",
+            valid_from=timezone.now().date() - timezone.timedelta(days=1),
+            signature="base64,png",
+            mandate_no="3-2",
+        )
+
+        MoneybirdContact.objects.create(
+            member=self.member, moneybird_id="1", moneybird_sepa_mandate_id="1-1"
+        )
+        MoneybirdContact.objects.create(
+            member=self.member2, moneybird_id="2", moneybird_sepa_mandate_id=None
+        )
+        MoneybirdContact.objects.create(
+            member=self.member3, moneybird_id="3", moneybird_sepa_mandate_id="3-1"
+        )
+        MoneybirdContact.objects.create(member=self.member4, moneybird_id="4")
 
         services._sync_contacts_with_outdated_mandates()
 
-        # TODO: check that mock_create_or_update_contact was called with the right contacts.
+        self.assertEqual(mock_create_or_update_contact.call_count, 2)
+        members = [x[0].member.pk for x in mock_create_or_update_contact.call_args_list]
+        self.assertCountEqual(members, [self.member2.pk, self.member3.pk])
 
     def test_delete_invoices(self, mock_api):
         """Invoices marked for deletion are deleted."""
