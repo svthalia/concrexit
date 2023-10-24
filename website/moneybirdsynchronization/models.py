@@ -5,6 +5,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from events.models import EventRegistration
@@ -122,6 +123,14 @@ class MoneybirdContact(models.Model):
         null=True,
     )
 
+    moneybird_sepa_mandate_id = models.CharField(
+        _("Moneybird SEPA mandate ID"),
+        max_length=255,
+        blank=True,
+        null=True,
+        unique=True,
+    )
+
     def to_moneybird(self):
         if self.member.profile is None:
             return None
@@ -135,11 +144,10 @@ class MoneybirdContact(models.Model):
                 "city": self.member.profile.address_city,
                 "country": self.member.profile.address_country,
                 "send_invoices_to_email": self.member.email,
-                "customer_id": f"C-{self.member.pk}",
             }
         }
         bank_account = BankAccount.objects.filter(owner=self.member).last()
-        if bank_account:
+        if bank_account and bank_account.valid_from < timezone.now().date():
             data["contact"]["sepa_iban"] = bank_account.iban
             data["contact"]["sepa_bic"] = bank_account.bic or ""
             data["contact"][
@@ -475,8 +483,24 @@ class MoneybirdPayment(models.Model):
     def to_moneybird(self):
         data = {
             "date": self.payment.created_at.strftime("%Y-%m-%d"),
-            "message": f"{self.payment.pk}; {self.payment.type} by {self.payment.paid_by}; {self.payment.notes}; processed by {self.payment.processed_by or '?'} at {self.payment.created_at:%Y-%m-%d %H:%M:%S}.",
+            "message": f"{self.payment.pk}; {self.payment.type} by {self.payment.paid_by or '?'}; {self.payment.notes}; processed by {self.payment.processed_by or '?'} at {self.payment.created_at:%Y-%m-%d %H:%M:%S}.",
+            "sepa_fields": {
+                "trtp": f"Concrexit - {dict(Payment.PAYMENT_TYPE).get(self.payment.type)}",
+                "name": self.payment.paid_by.get_full_name()
+                if self.payment.paid_by
+                else "",
+                "remi": self.payment.notes,
+                "eref": f"{self.payment.pk} {self.payment.created_at.astimezone():%Y-%m-%d %H:%M:%S}",
+                "pref": self.payment.topic,
+                "marf": f"Processed by {self.payment.processed_by.get_full_name()}"
+                if self.payment.processed_by
+                else "",
+            },
             "amount": str(self.payment.amount),
+            "contra_account_name": self.payment.paid_by.get_full_name()
+            if self.payment.paid_by
+            else "",
+            "batch_reference": str(self.payment.pk),
         }
         if self.moneybird_financial_mutation_id is not None:
             data["financial_mutation_id"] = int(self.moneybird_financial_mutation_id)
