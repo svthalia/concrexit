@@ -16,8 +16,14 @@ from moneybirdsynchronization.models import (
     MoneybirdPayment,
 )
 from payments.models import BankAccount, Payment
-from pizzas.models import FoodEvent, FoodOrder, Product
+from payments.services import create_payment
+from pizzas.models import FoodEvent, FoodOrder
+from pizzas.models import Product as FoodProduct
 from registrations.models import Renewal
+from sales.models.order import Order, OrderItem
+from sales.models.product import Product as SalesProduct
+from sales.models.product import ProductList
+from sales.models.shift import Shift
 
 
 # Each test method has a mock_api argument that is a MagicMock instance, replacing the
@@ -32,7 +38,7 @@ from registrations.models import Renewal
     SUSPEND_SIGNALS=True,
 )
 class ServicesTest(TestCase):
-    fixtures = ["members.json", "bank_accounts.json"]
+    fixtures = ["members.json", "bank_accounts.json", "products.json"]
 
     @classmethod
     def setUpTestData(cls):
@@ -192,7 +198,7 @@ class ServicesTest(TestCase):
         services._sync_contacts_with_outdated_mandates()
 
         self.assertEqual(mock_create_or_update_contact.call_count, 2)
-        members = [x[0].member.pk for x in mock_create_or_update_contact.call_args_list]
+        members = [x[0][0].pk for x in mock_create_or_update_contact.call_args_list]
         self.assertCountEqual(members, [self.member2.pk, self.member3.pk])
 
     def test_delete_invoices(self, mock_api):
@@ -384,7 +390,7 @@ class ServicesTest(TestCase):
             start=timezone.now(),
             end=(timezone.now() + timezone.timedelta(hours=1)),
         )
-        product = Product.objects.create(name="foo", description="bar", price=1.00)
+        product = FoodProduct.objects.create(name="foo", description="bar", price=1.00)
         order1 = FoodOrder.objects.create(
             member=Member.objects.get(pk=1),
             food_event=food_event,
@@ -399,9 +405,37 @@ class ServicesTest(TestCase):
         services._sync_food_orders()
         self.assertEqual(mock_create_invoice.call_count, 2)
 
-    def test_sync_sales_orders(self, mock_api):
+    @mock.patch("moneybirdsynchronization.services.create_or_update_external_invoice")
+    def test_sync_sales_orders(self, mock_create_invoice, mock_api):
         """Invoices are created for paid sales orders."""
-        raise NotImplementedError
+        beer = SalesProduct.objects.get(name="beer")
+        soda = SalesProduct.objects.get(name="soda")
+        shift = Shift.objects.create(
+            start=timezone.now(),
+            end=timezone.now() + timezone.timedelta(hours=1),
+            product_list=ProductList.objects.get(name="normal"),
+        )
+
+        order1 = Order.objects.create(shift=shift, payer=self.member)
+        OrderItem.objects.create(
+            order=order1,
+            product=shift.product_list.product_items.get(product=soda),
+            amount=2,
+        )
+
+        order2 = Order.objects.create(shift=shift, payer=self.member)
+        OrderItem.objects.create(
+            order=order2,
+            product=shift.product_list.product_items.get(product=beer),
+            amount=1,
+        )
+
+        # Order 1 is free, and no invoice should be made for it.
+        create_payment(order2, self.member, Payment.TPAY)
+
+        services._sync_sales_orders()
+
+        mock_create_invoice.assert_called_once_with(order2)
 
     def test_sync_renewals(self, mock_api):
         raise NotImplementedError
