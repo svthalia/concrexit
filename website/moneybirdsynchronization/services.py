@@ -4,7 +4,8 @@ from django.conf import settings
 from django.contrib.admin.utils import model_ngettext
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Exists, F, OuterRef, Q, Subquery
+from django.db.models import CharField, Exists, F, OuterRef, Q, Subquery
+from django.db.models.functions import Cast
 from django.utils import timezone
 
 from events.models import EventRegistration
@@ -291,7 +292,7 @@ def _sync_food_orders():
     ).exclude(
         Exists(
             MoneybirdExternalInvoice.objects.filter(
-                object_id=OuterRef("pk"),
+                object_id=Cast(OuterRef("pk"), output_field=CharField()),
                 payable_model=ContentType.objects.get_for_model(FoodOrder),
             )
         ),
@@ -308,7 +309,7 @@ def _sync_sales_orders():
     ).exclude(
         Exists(
             MoneybirdExternalInvoice.objects.filter(
-                object_id=OuterRef("pk"),
+                object_id=Cast(OuterRef("pk"), output_field=CharField()),
                 payable_model=ContentType.objects.get_for_model(Order),
             )
         )
@@ -325,7 +326,7 @@ def _sync_registrations():
     ).exclude(
         Exists(
             MoneybirdExternalInvoice.objects.filter(
-                object_id=OuterRef("pk"),
+                object_id=Cast(OuterRef("pk"), output_field=CharField()),
                 payable_model=ContentType.objects.get_for_model(Registration),
             )
         )
@@ -342,7 +343,7 @@ def _sync_renewals():
     ).exclude(
         Exists(
             MoneybirdExternalInvoice.objects.filter(
-                object_id=OuterRef("pk"),
+                object_id=Cast(OuterRef("pk"), output_field=CharField()),
                 payable_model=ContentType.objects.get_for_model(Renewal),
             )
         )
@@ -370,7 +371,7 @@ def _sync_event_registrations():
         .exclude(
             Exists(
                 MoneybirdExternalInvoice.objects.filter(
-                    object_id=OuterRef("pk"),
+                    object_id=Cast(OuterRef("pk"), output_field=CharField()),
                     payable_model=ContentType.objects.get_for_model(EventRegistration),
                 )
             )
@@ -390,7 +391,7 @@ def _sync_event_registrations():
         .filter(
             Exists(
                 MoneybirdExternalInvoice.objects.filter(
-                    object_id=OuterRef("pk"),
+                    object_id=Cast(OuterRef("pk"), output_field=CharField()),
                     payable_model=ContentType.objects.get_for_model(EventRegistration),
                 )
             )
