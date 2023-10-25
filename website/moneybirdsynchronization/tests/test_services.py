@@ -7,6 +7,7 @@ from django.utils import timezone
 from freezegun import freeze_time
 
 from events.models.event import Event
+from events.models.event_registration import EventRegistration
 from members.models import Member
 from moneybirdsynchronization import services
 from moneybirdsynchronization.administration import Administration
@@ -437,11 +438,76 @@ class ServicesTest(TestCase):
 
         mock_create_invoice.assert_called_once_with(order2)
 
-    def test_sync_renewals(self, mock_api):
-        raise NotImplementedError
+    @mock.patch("moneybirdsynchronization.services.create_or_update_external_invoice")
+    def test_sync_renewals(self, mock_create_invoice, mock_api):
+        renewal1 = Renewal.objects.create(
+            member=self.member, length=Renewal.MEMBERSHIP_YEAR
+        )
+        renewal2 = Renewal.objects.create(
+            member=self.member2, length=Renewal.MEMBERSHIP_YEAR
+        )
 
-    def test_sync_registrations(self, mock_api):
-        raise NotImplementedError
+        create_payment(renewal1, self.member, Payment.TPAY)
 
-    def test_sync_event_registrations(self, mock_api):
-        raise NotImplementedError
+        services._sync_renewals()
+
+        # Renewal 2 is not paid yet, so no invoice should be made for it.
+        mock_create_invoice.assert_called_once_with(renewal1)
+
+    @mock.patch("moneybirdsynchronization.services.delete_external_invoice")
+    @mock.patch("moneybirdsynchronization.services.create_or_update_external_invoice")
+    def test_sync_event_registrations(
+        self, mock_create_invoice, mock_delete_invoice, mock_api
+    ):
+        """Invoices are created for event registrations."""
+        event1 = Event.objects.create(
+            title="testevent 1",
+            description="desc",
+            start=timezone.now(),
+            end=timezone.now() + timezone.timedelta(hours=1),
+            registration_start=timezone.now(),
+            registration_end=timezone.now() + timezone.timedelta(hours=1),
+            location="test location",
+            map_location="test map location",
+            price=0.00,
+            fine=0.00,
+        )
+
+        event2 = Event.objects.create(
+            title="testevent 2",
+            description="desc",
+            start=timezone.now(),
+            end=(timezone.now() + timezone.timedelta(hours=1)),
+            registration_start=timezone.now(),
+            registration_end=timezone.now() + timezone.timedelta(hours=1),
+            location="test location",
+            map_location="test map location",
+            price=10.00,
+            fine=20.00,
+        )
+
+        r1 = EventRegistration.objects.create(event=event1, member=self.member)
+        r2 = EventRegistration.objects.create(event=event2, member=self.member)
+        r3 = EventRegistration.objects.create(event=event2, name="John Doe")
+
+        services._sync_event_registrations()
+
+        self.assertEqual(mock_delete_invoice.call_count, 0)
+        self.assertEqual(mock_create_invoice.call_count, 2)
+        mock_create_invoice.assert_any_call(r2)
+        mock_create_invoice.assert_any_call(r3)
+
+        event2.price = 0.00
+        event2.save()
+
+        mock_create_invoice.reset_mock()
+
+        MoneybirdExternalInvoice.objects.create(payable_object=r2)
+        MoneybirdExternalInvoice.objects.create(payable_object=r3)
+
+        services._sync_event_registrations()
+
+        self.assertEqual(mock_create_invoice.call_count, 0)
+        self.assertEqual(mock_delete_invoice.call_count, 2)
+        mock_delete_invoice.assert_any_call(r2)
+        mock_delete_invoice.assert_any_call(r3)
