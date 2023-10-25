@@ -8,6 +8,8 @@ from django.utils.text import slugify
 
 from thumbnails.fields import ImageField
 
+from utils.media.services import get_upload_to_function
+
 
 def thabloid_filename(instance, filename):
     """Return path of thabloid."""
@@ -15,10 +17,7 @@ def thabloid_filename(instance, filename):
     return os.path.join("thabloids/", slugify(instance) + ext)
 
 
-def thabloid_cover_filename(instance, filename):
-    """Return path of thabloid cover."""
-    ext = os.path.splitext(filename)[1]
-    return os.path.join("thabloids/covers/", slugify(instance) + ext)
+thabloid_cover_filename = get_upload_to_function("thabloids/covers")
 
 
 def pagesets(count):

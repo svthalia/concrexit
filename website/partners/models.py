@@ -10,6 +10,7 @@ from tinymce.models import HTMLField
 
 from thaliawebsite.storage.backend import get_public_storage
 from utils import countries
+from utils.media.services import get_upload_to_function
 
 
 class Partner(models.Model):
@@ -24,13 +25,13 @@ class Partner(models.Model):
     company_profile = HTMLField(blank=True)
 
     logo = ImageField(
-        upload_to="partners/logos/",
+        upload_to=get_upload_to_function("partners/logos/"),
         resize_source_to="source_png",
         storage=get_public_storage,
     )
 
     alternate_logo = ImageField(
-        upload_to="partners/logos/",
+        upload_to=get_upload_to_function("partners/logos/"),
         resize_source_to="source_png",
         storage=get_public_storage,
         blank=True,
@@ -41,7 +42,7 @@ class Partner(models.Model):
     )
 
     site_header = ImageField(
-        upload_to="partners/headers/",
+        upload_to=get_upload_to_function("partners/headers/"),
         resize_source_to="source_png",
         storage=get_public_storage,
         null=True,
