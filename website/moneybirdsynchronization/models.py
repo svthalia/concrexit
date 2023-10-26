@@ -1,10 +1,12 @@
 import datetime
 from typing import Optional, Union
 
+from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from events.models import EventRegistration
@@ -15,7 +17,6 @@ from payments.payables import payables
 from pizzas.models import FoodOrder
 from registrations.models import Registration, Renewal
 from sales.models.order import Order
-from thaliawebsite import settings
 
 
 def financial_account_id_for_payment_type(payment_type) -> Optional[int]:
@@ -111,6 +112,14 @@ class MoneybirdContact(models.Model):
         null=True,
     )
 
+    moneybird_sepa_mandate_id = models.CharField(
+        _("Moneybird SEPA mandate ID"),
+        max_length=255,
+        blank=True,
+        null=True,
+        unique=True,
+    )
+
     def to_moneybird(self):
         if self.member.profile is None:
             return None
@@ -124,11 +133,10 @@ class MoneybirdContact(models.Model):
                 "city": self.member.profile.address_city,
                 "country": self.member.profile.address_country,
                 "send_invoices_to_email": self.member.email,
-                "customer_id": f"C-{self.member.pk}",
             }
         }
         bank_account = BankAccount.objects.filter(owner=self.member).last()
-        if bank_account:
+        if bank_account and bank_account.valid_from < timezone.now().date():
             data["contact"]["sepa_iban"] = bank_account.iban
             data["contact"]["sepa_bic"] = bank_account.bic or ""
             data["contact"][
@@ -191,6 +199,16 @@ class MoneybirdExternalInvoice(models.Model):
         null=True,
     )  # We need this id, so we can update the rows (otherwise, updates will create new rows without deleting).
     # We only support one attribute for now, so this is the easiest way to store it
+
+    needs_synchronization = models.BooleanField(
+        default=True,  # The field is set False only when it has been successfully synchronized.
+        help_text="Indicates that the invoice has to be synchronized (again).",
+    )
+
+    needs_deletion = models.BooleanField(
+        default=False,
+        help_text="Indicates that the invoice has to be deleted from moneybird.",
+    )
 
     @property
     def payable(self):
@@ -309,17 +327,11 @@ class MoneybirdPayment(models.Model):
     )
 
     moneybird_financial_statement_id = models.CharField(
-        verbose_name=_("moneybird financial statement id"),
-        max_length=255,
-        blank=True,
-        null=True,
+        verbose_name=_("moneybird financial statement id"), max_length=255
     )
 
     moneybird_financial_mutation_id = models.CharField(
-        verbose_name=_("moneybird financial mutation id"),
-        max_length=255,
-        blank=True,
-        null=True,
+        verbose_name=_("moneybird financial mutation id"), max_length=255
     )
 
     def __str__(self):
@@ -328,10 +340,26 @@ class MoneybirdPayment(models.Model):
     def to_moneybird(self):
         data = {
             "date": self.payment.created_at.strftime("%Y-%m-%d"),
-            "message": f"{self.payment.pk}; {self.payment.type} by {self.payment.paid_by}; {self.payment.notes}; processed by {self.payment.processed_by or '?'} at {self.payment.created_at:%Y-%m-%d %H:%M:%S}.",
+            "message": f"{self.payment.pk}; {self.payment.type} by {self.payment.paid_by or '?'}; {self.payment.notes}; processed by {self.payment.processed_by or '?'} at {self.payment.created_at:%Y-%m-%d %H:%M:%S}.",
+            "sepa_fields": {
+                "trtp": f"Concrexit - {self.payment.get_type_display()}",
+                "name": self.payment.paid_by.get_full_name()
+                if self.payment.paid_by
+                else "",
+                "remi": self.payment.notes,
+                "eref": f"{self.payment.pk} {self.payment.created_at.astimezone():%Y-%m-%d %H:%M:%S}",
+                "pref": self.payment.topic,
+                "marf": f"Processed by {self.payment.processed_by.get_full_name()}"
+                if self.payment.processed_by
+                else "",
+            },
             "amount": str(self.payment.amount),
+            "contra_account_name": self.payment.paid_by.get_full_name()
+            if self.payment.paid_by
+            else "",
+            "batch_reference": str(self.payment.pk),
         }
-        if self.moneybird_financial_mutation_id is not None:
+        if self.moneybird_financial_mutation_id:
             data["financial_mutation_id"] = int(self.moneybird_financial_mutation_id)
             data["financial_account_id"] = financial_account_id_for_payment_type(
                 self.payment.type

@@ -4,18 +4,21 @@ This code is largely based on moneybird-python by Jan-Jelle Kester,
 licensed under the MIT license. The source code of moneybird-python
 can be found on GitHub: https://github.com/jjkester/moneybird-python.
 """
+import functools
 import json
 import logging
+import time
 from abc import ABC, abstractmethod
+from datetime import datetime
 from functools import reduce
 from typing import Optional, Union
 from urllib.parse import urljoin
 
-from django.utils import timezone
+from django.conf import settings
 
 import requests
 
-from thaliawebsite import settings
+logger = logging.getLogger(__name__)
 
 
 class Administration(ABC):
@@ -68,6 +71,8 @@ class Administration(ABC):
     class Throttled(Error):
         """The client sent too many requests."""
 
+        retry_after: int
+
     class ServerError(Error):
         """An error happened on the server."""
 
@@ -90,10 +95,10 @@ class Administration(ABC):
         return reduce(urljoin, url_parts)
 
     def _process_response(self, response: requests.Response) -> Union[dict, None]:
-        logging.debug(f"Response {response.status_code}: {response.text}")
+        logger.debug(f"Response {response.status_code}: {response.text}")
 
         if response.next:
-            logging.debug(f"Received paginated response: {response.next}")
+            logger.debug(f"Received paginated response: {response.next}")
 
         good_codes = {200, 201, 204}
         bad_codes = {
@@ -112,7 +117,7 @@ class Administration(ABC):
         code_is_known: bool = code in good_codes | bad_codes.keys()
 
         if not code_is_known:
-            logging.warning(f"Unknown response code {code}")
+            logger.warning(f"Unknown response code {code}")
             raise Administration.Error(
                 code, "API response contained unknown status code"
             )
@@ -120,17 +125,23 @@ class Administration(ABC):
         if code in bad_codes:
             error = bad_codes[code]
             if error == Administration.Throttled:
-                throttled_retry_after = response.headers.get("Retry-After")
-                error_description = f"Retry after {timezone.datetime.fromtimestamp(float(throttled_retry_after)):'%Y-%m-%d %H:%M:%S'}"
+                e = Administration.Throttled(code, "Throttled")
+                e.retry_after = response.headers.get("Retry-After")
+                e.rate_limit_remaining = response.headers.get("RateLimit-Remaining")
+                e.rate_limit_limit = response.headers.get("RateLimit-Limit")
+                e.rate_limit_reset = response.headers.get("RateLimit-Reset")
+                error_description = f"retry after {e.retry_after}"
             else:
                 try:
                     error_description = response.json()["error"]
                 except (AttributeError, TypeError, KeyError, ValueError):
                     error_description = None
 
-            logging.warning(f"API error {code}: {error_description}")
+                e = error(code, error_description)
 
-            raise error(code, error_description)
+            logger.warning(f"API error {code}: {e}")
+
+            raise e
 
         if code == 204:
             return {}
@@ -139,6 +150,33 @@ class Administration(ABC):
             return {}
 
         return response.json()
+
+
+def _retry_if_throttled():
+    max_retries = 3
+
+    def decorator_retry(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            retries = 0
+            while retries < max_retries:
+                try:
+                    return func(*args, **kwargs)
+                except HttpsAdministration.Throttled as e:
+                    retries += 1
+                    retry_after = datetime.fromtimestamp(float(e.retry_after))
+                    now = datetime.now()
+                    sleep_seconds = int(retry_after.timestamp() - now.timestamp()) + 1
+                    if retries < max_retries:
+                        logger.info(f"Retrying in {sleep_seconds} seconds...")
+                        time.sleep(sleep_seconds)
+                    else:
+                        logger.warning("Max retries reached. Giving up.")
+            return None
+
+        return wrapper
+
+    return decorator_retry
 
 
 class HttpsAdministration(Administration):
@@ -155,33 +193,37 @@ class HttpsAdministration(Administration):
         session.headers.update({"Authorization": f"Bearer {self.key}"})
         return session
 
+    @_retry_if_throttled()
     def get(self, resource_path: str, params: Optional[dict] = None):
         """Do a GET on the Moneybird administration."""
         url = self._build_url(resource_path)
-        logging.debug(f"GET {url} {params}")
+        logger.debug(f"GET {url} {params}")
         response = self.session.get(url, params=params)
         return self._process_response(response)
 
+    @_retry_if_throttled()
     def post(self, resource_path: str, data: dict):
         """Do a POST request on the Moneybird administration."""
         url = self._build_url(resource_path)
         data = json.dumps(data)
-        logging.debug(f"POST {url} with {data}")
+        logger.debug(f"POST {url} with {data}")
         response = self.session.post(url, data=data)
         return self._process_response(response)
 
+    @_retry_if_throttled()
     def patch(self, resource_path: str, data: dict):
         """Do a PATCH request on the Moneybird administration."""
         url = self._build_url(resource_path)
         data = json.dumps(data)
-        logging.debug(f"PATCH {url} with {data}")
+        logger.debug(f"PATCH {url} with {data}")
         response = self.session.patch(url, data=data)
         return self._process_response(response)
 
+    @_retry_if_throttled()
     def delete(self, resource_path: str, data: Optional[dict] = None):
         """Do a DELETE on the Moneybird administration."""
         url = self._build_url(resource_path)
-        logging.debug(f"DELETE {url}")
+        logger.debug(f"DELETE {url}")
         response = self.session.delete(url, data=data)
         return self._process_response(response)
 
