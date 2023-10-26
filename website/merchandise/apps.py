@@ -23,9 +23,3 @@ class MerchandiseConfig(AppConfig):
                 },
             ],
         }
-
-    def ready(self):
-        """Register the payable when the app is ready."""
-        from .payables import register
-
-        register()

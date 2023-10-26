@@ -12,10 +12,9 @@ from events.models import EventRegistration
 from members.models import Member
 from moneybirdsynchronization.administration import Administration
 from moneybirdsynchronization.emails import send_sync_error
-from moneybirdsynchronization.models import (
+from moneybirdsynchronization.models import (  # MoneybirdMerchandiseSaleJournal,
     MoneybirdContact,
     MoneybirdExternalInvoice,
-    MoneybirdMerchandiseSaleJournal,
     MoneybirdPayment,
     financial_account_id_for_payment_type,
 )
@@ -542,56 +541,56 @@ def process_thalia_pay_batch(batch):
     )
 
 
-def create_or_update_merchandise_sale(sale):
-    if not settings.MONEYBIRD_SYNC_ENABLED:
-        return None
+# def create_or_update_merchandise_sale(sale):
+#     if not settings.MONEYBIRD_SYNC_ENABLED:
+#         return None
 
-    moneybird = get_moneybird_api_service()
-    external_invoice = create_or_update_external_invoice(sale)
+#     moneybird = get_moneybird_api_service()
+#     external_invoice = create_or_update_external_invoice(sale)
 
-    merchandise_sale_journal, _ = MoneybirdMerchandiseSaleJournal.objects.get_or_create(
-        merchandise_sale=sale
-    )
-    merchandise_sale_journal.external_invoice = external_invoice
-    merchandise_sale_journal.save()
+#     merchandise_sale_journal, _ = MoneybirdMerchandiseSaleJournal.objects.get_or_create(
+#         merchandise_sale=sale
+#     )
+#     merchandise_sale_journal.external_invoice = external_invoice
+#     merchandise_sale_journal.save()
 
-    if merchandise_sale_journal.moneybird_general_journal_document_id:
-        moneybird.update_general_journal_document(
-            merchandise_sale_journal.moneybird_general_journal_document_id,
-            merchandise_sale_journal.to_moneybird(),
-        )
-    else:
-        response = moneybird.create_general_journal_document(
-            merchandise_sale_journal.to_moneybird(),
-        )
-        merchandise_sale_journal.moneybird_general_journal_document_id = response["id"]
-        merchandise_sale_journal.save()
+#     if merchandise_sale_journal.moneybird_general_journal_document_id:
+#         moneybird.update_general_journal_document(
+#             merchandise_sale_journal.moneybird_general_journal_document_id,
+#             merchandise_sale_journal.to_moneybird(),
+#         )
+#     else:
+#         response = moneybird.create_general_journal_document(
+#             merchandise_sale_journal.to_moneybird(),
+#         )
+#         merchandise_sale_journal.moneybird_general_journal_document_id = response["id"]
+#         merchandise_sale_journal.save()
 
 
-def delete_merchandise_sale(sale):
-    if not settings.MONEYBIRD_SYNC_ENABLED:
-        return None
+# def delete_merchandise_sale(sale):
+#     if not settings.MONEYBIRD_SYNC_ENABLED:
+#         return None
 
-    try:
-        merchandise_sale_journal = MoneybirdMerchandiseSaleJournal.objects.get(
-            merchandise_sale=sale
-        )
-    except MoneybirdMerchandiseSaleJournal.DoesNotExist:
-        return None
+#     try:
+#         merchandise_sale_journal = MoneybirdMerchandiseSaleJournal.objects.get(
+#             merchandise_sale=sale
+#         )
+#     except MoneybirdMerchandiseSaleJournal.DoesNotExist:
+#         return None
 
-    if sale.payment is not None:
-        delete_moneybird_payment(sale.payment.moneybird_payment)
-        sale.payment.delete()
+#     if sale.payment is not None:
+#         delete_moneybird_payment(sale.payment.moneybird_payment)
+#         sale.payment.delete()
 
-    if merchandise_sale_journal.external_invoice is not None:
-        delete_external_invoice(sale)
+#     if merchandise_sale_journal.external_invoice is not None:
+#         delete_external_invoice(sale)
 
-    if merchandise_sale_journal.moneybird_general_journal_document_id is None:
-        merchandise_sale_journal.delete()
-        return None
+#     if merchandise_sale_journal.moneybird_general_journal_document_id is None:
+#         merchandise_sale_journal.delete()
+#         return None
 
-    moneybird = get_moneybird_api_service()
-    moneybird.delete_general_journal_document(
-        merchandise_sale_journal.moneybird_general_journal_document_id
-    )
-    merchandise_sale_journal.delete()
+#     moneybird = get_moneybird_api_service()
+#     moneybird.delete_general_journal_document(
+#         merchandise_sale_journal.moneybird_general_journal_document_id
+#     )
+#     merchandise_sale_journal.delete()

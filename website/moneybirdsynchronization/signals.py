@@ -199,13 +199,13 @@ def post_processed_batch(sender, instance, **kwargs):
         logging.exception("Moneybird synchronization error: %s", e)
 
 
-@suspendingreceiver(
-    post_delete,
-    sender="merchandise.MerchandiseSale",
-)
-def post_merchandise_sale_delete(sender, instance, **kwargs):
-    try:
-        services.delete_merchandise_sale(instance)
-    except Administration.Error as e:
-        send_sync_error(e, instance)
-        logging.exception("Moneybird synchronization error: %s", e)
+# @suspendingreceiver(
+#     post_delete,
+#     sender="merchandise.MerchandiseSale",
+# )
+# def post_merchandise_sale_delete(sender, instance, **kwargs):
+#     try:
+#         services.delete_merchandise_sale(instance)
+#     except Administration.Error as e:
+#         send_sync_error(e, instance)
+#         logging.exception("Moneybird synchronization error: %s", e)
