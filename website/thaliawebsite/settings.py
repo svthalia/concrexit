@@ -344,6 +344,10 @@ CELERY_BROKER_TRANSPORT_OPTIONS = {"visibility_timeout": 18000}
 
 # https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html
 CELERY_BEAT_SCHEDULE = {
+    "renew_merchandise_sale_shift": {
+        "task": "sales.tasks.renew_merchandise_sale_shift",
+        "schedule": crontab(minute=0, hour=0),
+    },
     "synchronize_mailinglists": {
         "task": "mailinglists.tasks.sync_mail",
         "schedule": crontab(minute=30),

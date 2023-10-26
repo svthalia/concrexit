@@ -6,6 +6,7 @@ import django.db.models.deletion
 
 itemlist = []
 
+
 class Migration(migrations.Migration):
     dependencies = [
         ("sales", "0007_alter_productlistitem_options_and_more"),
@@ -55,6 +56,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="merchandiseitem",
             name="purchase_price",
-            field=models.DecimalField(decimal_places=2, default=0, max_digits=8),
+            field=models.DecimalField(decimal_places=2, max_digits=8),
         ),
     ]

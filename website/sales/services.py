@@ -1,6 +1,11 @@
+import datetime
+
 from django.utils import timezone
 
+from activemembers.models import Board
 from sales.models.order import Order
+from sales.models.product import ProductList
+from sales.models.shift import Shift
 
 
 def is_adult(member):
@@ -33,3 +38,38 @@ def execute_data_minimisation(dry_run=False):
     if not dry_run:
         queryset.update(payer=None)
     return queryset.all()
+
+
+def create_daily_merchandise_sale_shift():
+    today = timezone.now().date()
+    merchandise_product_list = ProductList.objects.get_or_create(
+        name="Merchandise Product List"
+    )[0]
+    active_board = Board.objects.filter(since__lte=today, until__gte=today)
+
+    shift = Shift.objects.create(
+        title="Merchandise sales " + today.strftime("%Y-%m-%d"),
+        start=timezone.datetime.combine(today, datetime.time(0, 0, 0)),
+        end=timezone.datetime.combine(today, datetime.time(23, 59, 59)),
+        product_list=merchandise_product_list,
+    )
+    shift.managers.set(active_board)
+    shift.save()
+
+
+def lock_merchandise_sale_shift():
+    yesterday = timezone.now().date() - timezone.timedelta(days=1)
+    shift = Shift.objects.filter(
+        name="Merchandise sales " + yesterday.strftime("%Y-%m-%d")
+    )
+    if shift:
+        if shift.num_orders == 0:
+            shift.delete()
+        else:
+            shift.locked = True
+            shift.save()
+
+
+def renew_merchandise_sale_shift():
+    lock_merchandise_sale_shift()
+    create_daily_merchandise_sale_shift()

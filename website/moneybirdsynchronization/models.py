@@ -378,61 +378,74 @@ class MoneybirdPayment(models.Model):
         verbose_name_plural = _("moneybird payments")
 
 
-# class MoneybirdMerchandiseSaleJournal(models.Model):
-#     merchandise_sale = models.OneToOneField(
-#         MerchandiseSale,
-#         on_delete=models.DO_NOTHING,
-#         verbose_name=_("merchandise sale"),
-#         related_name="moneybird_journal_merchandise_sale",
-#     )
+class MoneybirdMerchandiseSaleJournal(models.Model):
+    order = models.OneToOneField(
+        Order,
+        on_delete=models.CASCADE,
+        verbose_name=_("order"),
+    )
 
-#     external_invoice = models.OneToOneField(
-#         MoneybirdExternalInvoice,
-#         on_delete=models.DO_NOTHING,
-#         verbose_name=_("external invoice"),
-#         related_name="moneybird_journal_external_invoice",
-#         blank=True,
-#         null=True,
-#     )
+    moneybird_general_journal_document_id = models.CharField(
+        verbose_name=_("moneybird general journal document id"),
+        max_length=255,
+        blank=True,
+        null=True,
+    )
 
-#     moneybird_general_journal_document_id = models.CharField(
-#         verbose_name=_("moneybird general journal document id"),
-#         max_length=255,
-#         blank=True,
-#         null=True,
-#     )
+    external_invoice = models.OneToOneField(
+        MoneybirdExternalInvoice,
+        on_delete=models.DO_NOTHING,
+        verbose_name=_("external invoice"),
+        related_name="moneybird_journal_external_invoice",
+        blank=True,
+        null=True,
+    )
 
-#     def __str__(self):
-#         return f"Moneybird journal for {self.merchandise_sale}"
+    needs_synchronization = models.BooleanField(
+        default=True,  # The field is set False only when it has been successfully synchronized.
+        help_text="Indicates that the journal has to be synchronized (again).",
+    )
 
-#     def to_moneybird(self):
-#         merchandise_stock_ledger_id = settings.MONEYBIRD_MERCHANDISE_STOCK_LEDGER_ID
-#         merchandise_costs_ledger_id = settings.MONEYBIRD_MERCHANDISE_COSTS_LEDGER_ID
-#         data = {
-#             "general_journal_document": {
-#                 "date": self.merchandise_sale.payment.created_at.strftime("%Y-%m-%d"),
-#                 "reference": f"M {self.external_invoice.payable.model.pk}",
-#                 "general_journal_document_entries_attributes": {
-#                     "0": {
-#                         "ledger_account_id": merchandise_costs_ledger_id,
-#                         "debit": str(self.merchandise_sale.total_purchase_amount),
-#                         "credit": "0",
-#                         "description": self.merchandise_sale.sale_description,
-#                         "contact_id": self.external_invoice.payable.payment_payer.moneybird_contact.moneybird_id,
-#                     },
-#                     "1": {
-#                         "ledger_account_id": merchandise_stock_ledger_id,
-#                         "debit": "0",
-#                         "credit": str(self.merchandise_sale.total_purchase_amount),
-#                         "description": self.merchandise_sale.sale_description,
-#                         "contact_id": self.external_invoice.payable.payment_payer.moneybird_contact.moneybird_id,
-#                     },
-#                 },
-#             }
-#         }
+    needs_deletion = models.BooleanField(
+        default=False,
+        help_text="Indicates that the journal has to be deleted from moneybird.",
+    )
 
-#         return data
+    def __str__(self):
+        return f"Moneybird journal for {self.order}"
 
-#     class Meta:
-#         verbose_name = _("moneybird merchandise sale journal")
-#         verbose_name_plural = _("moneybird merchandise sale journals")
+    def to_moneybird(self):
+        items = self.order.items.all()
+        total_purchase_amount = sum(item.purchase_price for item in items)
+
+        merchandise_stock_ledger_id = settings.MONEYBIRD_MERCHANDISE_STOCK_LEDGER_ID
+        merchandise_costs_ledger_id = settings.MONEYBIRD_MERCHANDISE_COSTS_LEDGER_ID
+
+        data = {
+            "general_journal_document": {
+                "date": self.order.payment.created_at.strftime("%Y-%m-%d"),
+                "reference": f"M {self.external_invoice.payable.model.pk}",
+                "general_journal_document_entries_attributes": {
+                    "0": {
+                        "ledger_account_id": merchandise_costs_ledger_id,
+                        "debit": str(total_purchase_amount),
+                        "credit": "0",
+                        "description": self.order.payment.notes,
+                        "contact_id": self.external_invoice.payable.payment_payer.moneybird_contact.moneybird_id,
+                    },
+                    "1": {
+                        "ledger_account_id": merchandise_stock_ledger_id,
+                        "debit": "0",
+                        "credit": str(total_purchase_amount),
+                        "description": self.order.payment.notes,
+                        "contact_id": self.external_invoice.payable.payment_payer.moneybird_contact.moneybird_id,
+                    },
+                },
+            }
+        }
+
+        return data
+
+    class Meta:
+        verbose_name = _("moneybird merchandise sale journal")
+        verbose_name_plural = _("moneybird merchandise sale journals")
