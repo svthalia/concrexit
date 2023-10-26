@@ -180,21 +180,19 @@ def create_or_update_merchandise_sale(obj):
     merchandise_sale_journal.external_invoice = external_invoice
     merchandise_sale_journal.save()
 
+    # Apparently each journal line has a unique id so for now we just delete and create again
     if merchandise_sale_journal.moneybird_general_journal_document_id:
-        moneybird.update_general_journal_document(
-            merchandise_sale_journal.moneybird_general_journal_document_id,
-            merchandise_sale_journal.to_moneybird(),
+        moneybird.delete_general_journal_document(
+            merchandise_sale_journal.moneybird_general_journal_document_id
         )
-    else:
-        response = moneybird.create_general_journal_document(
-            merchandise_sale_journal.to_moneybird(),
-        )
-        merchandise_sale_journal.moneybird_general_journal_document_id = response["id"]
-        merchandise_sale_journal.save()
+    response = moneybird.create_general_journal_document(
+        merchandise_sale_journal.to_moneybird(),
+    )
+    merchandise_sale_journal.moneybird_general_journal_document_id = response["id"]
+    merchandise_sale_journal.save()
 
-    # Mark the invoice as not outdated anymore only after everything has succeeded.
-    external_invoice.needs_synchronization = False
-    external_invoice.save()
+    merchandise_sale_journal.needs_synchronization = False
+    merchandise_sale_journal.save()
 
 
 def delete_merchandise_sale(obj):
@@ -425,7 +423,7 @@ def _sync_merchandise_sales():
     merchandise_sales = Order.objects.filter(
         shift__start__date__gte=settings.MONEYBIRD_START_DATE,
         payment__isnull=False,
-        shift__name__icontains="Merchandise sales",
+        shift__title__icontains="Merchandise sales",
     ).exclude(
         Exists(
             MoneybirdMerchandiseSaleJournal.objects.filter(

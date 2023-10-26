@@ -11,6 +11,7 @@ from django.utils.translation import gettext_lazy as _
 
 from events.models import EventRegistration
 from members.models import Member
+from merchandise.models import MerchandiseItem
 from moneybirdsynchronization.moneybird import get_moneybird_api_service
 from payments.models import BankAccount, Payment
 from payments.payables import payables
@@ -41,8 +42,8 @@ def project_name_for_payable_model(obj) -> Optional[str]:
         return f"{obj.shift} [{start_date}]"
     if isinstance(obj, (Registration, Renewal)):
         return None
-    # if isinstance(obj, MerchandiseSale):
-    #     return None
+    if isinstance(obj, Order):
+        return None
 
     raise ValueError(f"Unknown payable model {obj}")
 
@@ -56,8 +57,8 @@ def date_for_payable_model(obj) -> Union[datetime.datetime, datetime.date]:
         return obj.shift.start
     if isinstance(obj, (Registration, Renewal)):
         return obj.created_at.date()
-    # if isinstance(obj, MerchandiseSale):
-    #     return obj.created_at.date()
+    if isinstance(obj, Order):
+        return obj.created_at.date()
 
     raise ValueError(f"Unknown payable model {obj}")
 
@@ -65,8 +66,8 @@ def date_for_payable_model(obj) -> Union[datetime.datetime, datetime.date]:
 def ledger_id_for_payable_model(obj) -> Optional[int]:
     if isinstance(obj, (Registration, Renewal)):
         return settings.MONEYBIRD_CONTRIBUTION_LEDGER_ID
-    # if isinstance(obj, MerchandiseSale):
-    #     return settings.MONEYBIRD_MERCHANDISE_SALES_LEDGER_ID
+    if isinstance(obj, Order):
+        return settings.MONEYBIRD_MERCHANDISE_SALES_LEDGER_ID
 
     raise ValueError(f"Unknown payable model {obj}")
 
@@ -415,8 +416,12 @@ class MoneybirdMerchandiseSaleJournal(models.Model):
         return f"Moneybird journal for {self.order}"
 
     def to_moneybird(self):
-        items = self.order.items.all()
-        total_purchase_amount = sum(item.purchase_price for item in items)
+        items = self.order.order_items.all()
+        total_purchase_amount = sum(
+            MerchandiseItem.objects.get(name=i.product.product.name).purchase_price
+            * i.amount
+            for i in items
+        )
 
         merchandise_stock_ledger_id = settings.MONEYBIRD_MERCHANDISE_STOCK_LEDGER_ID
         merchandise_costs_ledger_id = settings.MONEYBIRD_MERCHANDISE_COSTS_LEDGER_ID
