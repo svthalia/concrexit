@@ -11,7 +11,6 @@ import base64
 import json
 import logging
 import os
-from typing import Optional
 
 from django.core.management.commands import makemessages
 from django.utils import timezone
@@ -1072,52 +1071,66 @@ GRAPH_MODELS = {
     ],
 }
 
-MONEYBIRD_START_DATE = os.environ.get("MONEYBIRD_START_DATE", "2023-09-01")
+# MONEYBIRD_START_DATE = os.environ.get("MONEYBIRD_START_DATE", "2023-09-01")
 
-MONEYBIRD_ADMINISTRATION_ID: Optional[int] = (
-    int(os.environ.get("MONEYBIRD_ADMINISTRATION_ID"))
-    if os.environ.get("MONEYBIRD_ADMINISTRATION_ID")
-    else None
-)
+# MONEYBIRD_ADMINISTRATION_ID: Optional[int] = (
+#     int(os.environ.get("MONEYBIRD_ADMINISTRATION_ID"))
+#     if os.environ.get("MONEYBIRD_ADMINISTRATION_ID")
+#     else None
+# )
 
-MONEYBIRD_API_KEY = os.environ.get("MONEYBIRD_API_KEY")
+# MONEYBIRD_API_KEY = os.environ.get("MONEYBIRD_API_KEY")
+
+# MONEYBIRD_SYNC_ENABLED = MONEYBIRD_ADMINISTRATION_ID and MONEYBIRD_API_KEY
+
+# MONEYBIRD_MEMBER_PK_CUSTOM_FIELD_ID: Optional[int] = (
+#     int(os.environ.get("MONEYBIRD_MEMBER_PK_CUSTOM_FIELD_ID"))
+#     if os.environ.get("MONEYBIRD_MEMBER_PK_CUSTOM_FIELD_ID")
+#     else None
+# )
+# MONEYBIRD_UNKNOWN_PAYER_CONTACT_ID: Optional[int] = (
+#     int(os.environ.get("MONEYBIRD_UNKNOWN_PAYER_CONTACT_ID"))
+#     if os.environ.get("MONEYBIRD_UNKNOWN_PAYER_CONTACT_ID")
+#     else None
+# )
+# MONEYBIRD_CONTRIBUTION_LEDGER_ID: Optional[int] = (
+#     int(os.environ.get("MONEYBIRD_CONTRIBUTION_LEDGER_ID"))
+#     if os.environ.get("MONEYBIRD_CONTRIBUTION_LEDGER_ID")
+#     else None
+# )
+
+# MONEYBIRD_TPAY_FINANCIAL_ACCOUNT_ID: Optional[int] = (
+#     int(os.environ.get("MONEYBIRD_TPAY_FINANCIAL_ACCOUNT_ID"))
+#     if os.environ.get("MONEYBIRD_TPAY_FINANCIAL_ACCOUNT_ID")
+#     else None
+# )
+# MONEYBIRD_CASH_FINANCIAL_ACCOUNT_ID: Optional[int] = (
+#     int(os.environ.get("MONEYBIRD_CASH_FINANCIAL_ACCOUNT_ID"))
+#     if os.environ.get("MONEYBIRD_CASH_FINANCIAL_ACCOUNT_ID")
+#     else None
+# )
+# MONEYBIRD_CARD_FINANCIAL_ACCOUNT_ID: Optional[int] = (
+#     int(os.environ.get("MONEYBIRD_CARD_FINANCIAL_ACCOUNT_ID"))
+#     if os.environ.get("MONEYBIRD_CARD_FINANCIAL_ACCOUNT_ID")
+#     else None
+# )
+
+# MONEYBIRD_ZERO_TAX_RATE_ID: Optional[int] = (
+#     int(os.environ.get("MONEYBIRD_ZERO_TAX_RATE_ID"))
+#     if os.environ.get("MONEYBIRD_ZERO_TAX_RATE_ID")
+#     else None
+# )
+
+MONEYBIRD_API_KEY = "i15kxoYISLeUwEtq7L6F0n1He2AhK7BQuFB8JjaUyOA"
+MONEYBIRD_ADMINISTRATION_ID = 380475297324075003
 
 MONEYBIRD_SYNC_ENABLED = MONEYBIRD_ADMINISTRATION_ID and MONEYBIRD_API_KEY
 
-MONEYBIRD_MEMBER_PK_CUSTOM_FIELD_ID: Optional[int] = (
-    int(os.environ.get("MONEYBIRD_MEMBER_PK_CUSTOM_FIELD_ID"))
-    if os.environ.get("MONEYBIRD_MEMBER_PK_CUSTOM_FIELD_ID")
-    else None
-)
-MONEYBIRD_UNKNOWN_PAYER_CONTACT_ID: Optional[int] = (
-    int(os.environ.get("MONEYBIRD_UNKNOWN_PAYER_CONTACT_ID"))
-    if os.environ.get("MONEYBIRD_UNKNOWN_PAYER_CONTACT_ID")
-    else None
-)
-MONEYBIRD_CONTRIBUTION_LEDGER_ID: Optional[int] = (
-    int(os.environ.get("MONEYBIRD_CONTRIBUTION_LEDGER_ID"))
-    if os.environ.get("MONEYBIRD_CONTRIBUTION_LEDGER_ID")
-    else None
-)
-
-MONEYBIRD_TPAY_FINANCIAL_ACCOUNT_ID: Optional[int] = (
-    int(os.environ.get("MONEYBIRD_TPAY_FINANCIAL_ACCOUNT_ID"))
-    if os.environ.get("MONEYBIRD_TPAY_FINANCIAL_ACCOUNT_ID")
-    else None
-)
-MONEYBIRD_CASH_FINANCIAL_ACCOUNT_ID: Optional[int] = (
-    int(os.environ.get("MONEYBIRD_CASH_FINANCIAL_ACCOUNT_ID"))
-    if os.environ.get("MONEYBIRD_CASH_FINANCIAL_ACCOUNT_ID")
-    else None
-)
-MONEYBIRD_CARD_FINANCIAL_ACCOUNT_ID: Optional[int] = (
-    int(os.environ.get("MONEYBIRD_CARD_FINANCIAL_ACCOUNT_ID"))
-    if os.environ.get("MONEYBIRD_CARD_FINANCIAL_ACCOUNT_ID")
-    else None
-)
-
-MONEYBIRD_ZERO_TAX_RATE_ID: Optional[int] = (
-    int(os.environ.get("MONEYBIRD_ZERO_TAX_RATE_ID"))
-    if os.environ.get("MONEYBIRD_ZERO_TAX_RATE_ID")
-    else None
-)
+MONEYBIRD_MEMBER_PK_CUSTOM_FIELD_ID = 380500576947930894
+MONEYBIRD_UNKNOWN_PAYER_ID = 401481614293468175
+MONEYBIRD_CONTRIBUTION_LEDGER_ID = 383463861476394202
+MONEYBIRD_TPAY_FINANCIAL_ACCOUNT_ID = 383198617600525966
+MONEYBIRD_CASH_FINANCIAL_ACCOUNT_ID = 383395851659117859
+MONEYBIRD_CARD_FINANCIAL_ACCOUNT_ID = 383395839145411799
+MONEYBIRD_ZERO_TAX_RATE_ID = 380475298014037040
+MONEYBIRD_START_DATE = "2023-09-01"

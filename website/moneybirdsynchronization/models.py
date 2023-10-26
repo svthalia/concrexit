@@ -339,6 +339,16 @@ class MoneybirdSalesInvoice(models.Model):
     )  # We need this id, so we can update the rows (otherwise, updates will create new rows without deleting).
     # We only support one attribute for now, so this is the easiest way to store it
 
+    needs_synchronization = models.BooleanField(
+        default=True,  # The field is set False only when it has been successfully synchronized.
+        help_text="Indicates that the invoice has to be synchronized (again).",
+    )
+
+    needs_deletion = models.BooleanField(
+        default=False,
+        help_text="Indicates that the invoice has to be deleted from moneybird.",
+    )
+
     @property
     def payable(self):
         payable = payables.get_payable(self.payable_object)
@@ -427,9 +437,7 @@ class MoneybirdSalesInvoice(models.Model):
                 project_id
             )
         if ledger_id is not None:
-            data["sales_invoice"]["details_attributes"][0]["ledger_account_id"] = int(
-                ledger_id
-            )
+            data["sales_invoice"]["details_attributes"][0]["ledger_id"] = int(ledger_id)
 
         if self.moneybird_details_attribute_id is not None:
             data["sales_invoice"]["details_attributes"][0]["id"] = int(

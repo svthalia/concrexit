@@ -143,6 +143,10 @@ def create_or_update_sales_invoice(obj):
                 },
             )
 
+    # Mark the invoice as not outdated anymore only after everything has succeeded.
+    invoice.needs_synchronization = False
+    invoice.save()
+
     return invoice
 
 
@@ -303,7 +307,10 @@ def _sync_outdated_invoices():
         for invoice in invoices:
             try:
                 instance = invoice.payable_object
-                create_or_update_external_invoice(instance)
+                if isinstance(invoice, MoneybirdSalesInvoice):
+                    create_or_update_sales_invoice(instance)
+                elif isinstance(invoice, MoneybirdExternalInvoice):
+                    create_or_update_external_invoice(instance)
             except Administration.Error as e:
                 logger.exception("Moneybird synchronization error: %s", e)
                 send_sync_error(e, instance)
@@ -365,6 +372,24 @@ def _try_create_or_update_external_invoices(queryset):
             send_sync_error(e, instance)
 
 
+def _try_create_or_update_sales_invoices(queryset):
+    if not queryset.exists():
+        return
+
+    logger.info(
+        "Pushing %d %s to Moneybird.",
+        model_ngettext(queryset),
+        queryset.count(),
+    )
+
+    for instance in queryset:
+        try:
+            create_or_update_sales_invoice(instance)
+        except Administration.Error as e:
+            logger.exception("Moneybird synchronization error: %s", e)
+            send_sync_error(e, instance)
+
+
 def _sync_food_orders():
     """Create invoices for new food orders."""
     food_orders = FoodOrder.objects.filter(
@@ -405,14 +430,14 @@ def _sync_registrations():
         payment__isnull=False,
     ).exclude(
         Exists(
-            MoneybirdExternalInvoice.objects.filter(
+            MoneybirdSalesInvoice.objects.filter(
                 object_id=Cast(OuterRef("pk"), output_field=CharField()),
                 payable_model=ContentType.objects.get_for_model(Registration),
             )
         )
     )
 
-    _try_create_or_update_external_invoices(registrations)
+    _try_create_or_update_sales_invoices(registrations)
 
 
 def _sync_renewals():
@@ -422,14 +447,14 @@ def _sync_renewals():
         payment__isnull=False,
     ).exclude(
         Exists(
-            MoneybirdExternalInvoice.objects.filter(
+            MoneybirdSalesInvoice.objects.filter(
                 object_id=Cast(OuterRef("pk"), output_field=CharField()),
                 payable_model=ContentType.objects.get_for_model(Renewal),
             )
         )
     )
 
-    _try_create_or_update_external_invoices(renewals)
+    _try_create_or_update_sales_invoices(renewals)
 
 
 def _sync_event_registrations():
