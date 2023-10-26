@@ -1,12 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import RelatedOnlyFieldListFilter
 
-from .models import (
-    MoneybirdContact,
-    MoneybirdExternalInvoice,
-    MoneybirdPayment,
-    MoneybirdSalesInvoice,
-)
+from .models import MoneybirdContact, MoneybirdExternalInvoice, MoneybirdPayment
 
 
 @admin.register(MoneybirdContact)
@@ -75,11 +70,6 @@ class MoneybirdExternalInvoiceAdmin(admin.ModelAdmin):
         "needs_deletion",
         ("payable_model", RelatedOnlyFieldListFilter),
     )
-
-
-@admin.register(MoneybirdSalesInvoice)
-class MoneybirdSalesInvoiceAdmin(admin.ModelAdmin):
-    list_display = ("payable_object",)
 
 
 @admin.register(MoneybirdPayment)

@@ -156,6 +156,11 @@ class PaymentTest(TestCase):
             ):
                 payment.clean()
 
+        with self.subTest("Thalia Pay payments must have a payer"):
+            with self.assertRaises(ValidationError):
+                Payment.objects.create(amount=10, type=Payment.TPAY)
+                payment.clean()
+
     def test_str(self) -> None:
         """Tests that the output is a description with the amount."""
         self.assertEqual("Payment of 10.00", str(self.payment))

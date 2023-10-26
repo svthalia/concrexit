@@ -4,10 +4,12 @@ from django.conf import settings
 from django.contrib.admin.utils import model_ngettext
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Exists, F, OuterRef, Q, Subquery
+from django.db.models import CharField, Exists, F, OuterRef, Q, Subquery
+from django.db.models.functions import Cast
 from django.utils import timezone
 
 from events.models import EventRegistration
+from members.models import Member
 from moneybirdsynchronization.administration import Administration
 from moneybirdsynchronization.emails import send_sync_error
 from moneybirdsynchronization.models import (
@@ -26,7 +28,7 @@ from sales.models.order import Order
 logger = logging.getLogger(__name__)
 
 
-def create_or_update_contact(member):
+def create_or_update_contact(member: Member):
     """Push a Django user/member to Moneybird."""
     if not settings.MONEYBIRD_SYNC_ENABLED:
         return None
@@ -39,13 +41,13 @@ def create_or_update_contact(member):
         # Push the contact to Moneybird.
         response = moneybird.create_contact(moneybird_contact.to_moneybird())
         moneybird_contact.moneybird_id = response["id"]
-        moneybird_contact.moneybird_sepa_mandate_id = response["sepa_mandate_id"]
     else:
         # Update the contact data (right now we always do this, but we could use the version to check if it's needed)
         response = moneybird.update_contact(
             moneybird_contact.moneybird_id, moneybird_contact.to_moneybird()
         )
 
+    moneybird_contact.moneybird_sepa_mandate_id = response["sepa_mandate_id"] or None
     moneybird_contact.save()
     return moneybird_contact
 
@@ -319,22 +321,30 @@ def _sync_contacts_with_outdated_mandates():
     These contacts can be updated the next day using this function, wich syncs every
     contact where Moneybird doesn't have the correct mandate yet.
     """
-    mandates_to_push = MoneybirdContact.objects.annotate(
-        sepa_mandate_id=Subquery(
-            BankAccount.objects.filter(owner=OuterRef("member"))
-            .order_by("-created_at")
-            .values("mandate_no")[:1]
-        )
-    ).exclude(moneybird_sepa_mandate_id=F("sepa_mandate_id"))
+    contacts = (
+        MoneybirdContact.objects.annotate(
+            sepa_mandate_id=Subquery(
+                BankAccount.objects.filter(owner=OuterRef("member"))
+                .order_by("-created_at")
+                .values("mandate_no")[:1]
+            )
+        ).exclude(moneybird_sepa_mandate_id=F("sepa_mandate_id"))
+        # For some reason the DB does not consider None == None in the exclude above.
+        .exclude(sepa_mandate_id=None, moneybird_sepa_mandate_id=None)
+    )
 
-    if mandates_to_push.exists():
+    if contacts.exists():
         logger.info(
             "Pushing %d contacts with outdated mandates to Moneybird.",
-            mandates_to_push.count(),
+            contacts.count(),
         )
 
-    for mandates in mandates_to_push:
-        create_or_update_contact(mandates.member)
+    for contact in contacts:
+        try:
+            create_or_update_contact(contact.member)
+        except Administration.Error as e:
+            logger.exception("Moneybird synchronization error: %s", e)
+            send_sync_error(e, contact.member)
 
 
 def _try_create_or_update_external_invoices(queryset):
@@ -355,24 +365,6 @@ def _try_create_or_update_external_invoices(queryset):
             send_sync_error(e, instance)
 
 
-def _try_create_or_update_sales_invoices(queryset):
-    if not queryset.exists():
-        return
-
-    logger.info(
-        "Pushing %d %s to Moneybird.",
-        model_ngettext(queryset),
-        queryset.count(),
-    )
-
-    for instance in queryset:
-        try:
-            create_or_update_sales_invoice(instance)
-        except Administration.Error as e:
-            logger.exception("Moneybird synchronization error: %s", e)
-            send_sync_error(e, instance)
-
-
 def _sync_food_orders():
     """Create invoices for new food orders."""
     food_orders = FoodOrder.objects.filter(
@@ -380,7 +372,7 @@ def _sync_food_orders():
     ).exclude(
         Exists(
             MoneybirdExternalInvoice.objects.filter(
-                object_id=OuterRef("pk"),
+                object_id=Cast(OuterRef("pk"), output_field=CharField()),
                 payable_model=ContentType.objects.get_for_model(FoodOrder),
             )
         ),
@@ -397,7 +389,7 @@ def _sync_sales_orders():
     ).exclude(
         Exists(
             MoneybirdExternalInvoice.objects.filter(
-                object_id=OuterRef("pk"),
+                object_id=Cast(OuterRef("pk"), output_field=CharField()),
                 payable_model=ContentType.objects.get_for_model(Order),
             )
         )
@@ -413,14 +405,14 @@ def _sync_registrations():
         payment__isnull=False,
     ).exclude(
         Exists(
-            MoneybirdSalesInvoice.objects.filter(
-                object_id=OuterRef("pk"),
+            MoneybirdExternalInvoice.objects.filter(
+                object_id=Cast(OuterRef("pk"), output_field=CharField()),
                 payable_model=ContentType.objects.get_for_model(Registration),
             )
         )
     )
 
-    _try_create_or_update_sales_invoices(registrations)
+    _try_create_or_update_external_invoices(registrations)
 
 
 def _sync_renewals():
@@ -430,14 +422,14 @@ def _sync_renewals():
         payment__isnull=False,
     ).exclude(
         Exists(
-            MoneybirdSalesInvoice.objects.filter(
-                object_id=OuterRef("pk"),
+            MoneybirdExternalInvoice.objects.filter(
+                object_id=Cast(OuterRef("pk"), output_field=CharField()),
                 payable_model=ContentType.objects.get_for_model(Renewal),
             )
         )
     )
 
-    _try_create_or_update_sales_invoices(renewals)
+    _try_create_or_update_external_invoices(renewals)
 
 
 def _sync_event_registrations():
@@ -459,7 +451,7 @@ def _sync_event_registrations():
         .exclude(
             Exists(
                 MoneybirdExternalInvoice.objects.filter(
-                    object_id=OuterRef("pk"),
+                    object_id=Cast(OuterRef("pk"), output_field=CharField()),
                     payable_model=ContentType.objects.get_for_model(EventRegistration),
                 )
             )
@@ -479,7 +471,7 @@ def _sync_event_registrations():
         .filter(
             Exists(
                 MoneybirdExternalInvoice.objects.filter(
-                    object_id=OuterRef("pk"),
+                    object_id=Cast(OuterRef("pk"), output_field=CharField()),
                     payable_model=ContentType.objects.get_for_model(EventRegistration),
                 )
             )

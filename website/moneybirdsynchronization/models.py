@@ -19,17 +19,6 @@ from registrations.models import Registration, Renewal
 from sales.models.order import Order
 
 
-def datetime_to_membership_period(date):
-    """Convert a :class:`~datetime.date` to a period that corresponds with the current membership period."""
-    start_date = date
-    if start_date.month == 8:
-        start_date = start_date.replace(month=9, day=1)
-    end_date = start_date.replace(month=8, day=31)
-    if start_date.month > 8:
-        end_date = end_date.replace(year=start_date.year + 1)
-    return f"{start_date.strftime('%Y%m%d')}..{end_date.strftime('%Y%m%d')}"
-
-
 def financial_account_id_for_payment_type(payment_type) -> Optional[int]:
     if payment_type == Payment.CARD:
         return settings.MONEYBIRD_CARD_FINANCIAL_ACCOUNT_ID
@@ -411,9 +400,9 @@ class MoneybirdSalesInvoice(models.Model):
         period = None
         tax_rate_id = None
         if isinstance(self.payable_object, (Registration, Renewal)):
-            period = datetime_to_membership_period(
-                self.payable_object.created_at.date()
-            )
+            # period = datetime_to_membership_period(
+            #     self.payable_object.created_at.date()
+            # )
             tax_rate_id = settings.MONEYBIRD_ZERO_TAX_RATE_ID
 
         data = {
