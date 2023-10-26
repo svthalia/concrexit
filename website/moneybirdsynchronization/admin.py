@@ -1,12 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import RelatedOnlyFieldListFilter
 
-from .models import (
-    MoneybirdContact,
-    MoneybirdExternalInvoice,
-    MoneybirdPayment,
-    MoneybirdSalesInvoice,
-)
+from .models import MoneybirdContact, MoneybirdExternalInvoice, MoneybirdPayment
 
 
 @admin.register(MoneybirdContact)
@@ -43,42 +38,6 @@ class MoneybirdContactAdmin(admin.ModelAdmin):
 
 @admin.register(MoneybirdExternalInvoice)
 class MoneybirdExternalInvoiceAdmin(admin.ModelAdmin):
-    """Manage moneybird external invoices."""
-
-    list_display = (
-        "payable_object",
-        "payable_model",
-        "moneybird_invoice_id",
-        "needs_synchronization",
-        "needs_deletion",
-    )
-
-    fields = (
-        "payable_object",
-        "payable_model",
-        "object_id",
-        "moneybird_invoice_id",
-        "needs_synchronization",
-        "needs_deletion",
-    )
-
-    readonly_fields = ("payable_object", "needs_synchronization", "needs_deletion")
-
-    search_fields = (
-        "payable_model__app_label",
-        "payable_model__model",
-        "moneybird_invoice_id",
-    )
-
-    list_filter = (
-        "needs_synchronization",
-        "needs_deletion",
-        ("payable_model", RelatedOnlyFieldListFilter),
-    )
-
-
-@admin.register(MoneybirdSalesInvoice)
-class MoneybirdSalesInvoiceAdmin(admin.ModelAdmin):
     """Manage moneybird external invoices."""
 
     list_display = (

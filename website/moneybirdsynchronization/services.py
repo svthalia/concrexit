@@ -16,7 +16,6 @@ from moneybirdsynchronization.models import (
     MoneybirdContact,
     MoneybirdExternalInvoice,
     MoneybirdPayment,
-    MoneybirdSalesInvoice,
     financial_account_id_for_payment_type,
 )
 from moneybirdsynchronization.moneybird import get_moneybird_api_service
@@ -69,85 +68,6 @@ def delete_contact(member):
     moneybird = get_moneybird_api_service()
     moneybird.delete_contact(moneybird_contact.moneybird_id)
     moneybird_contact.delete()
-
-
-def create_or_update_sales_invoice(obj):
-    """Create an invoice on Moneybird for a payable object."""
-    if not settings.MONEYBIRD_SYNC_ENABLED:
-        return None
-
-    invoice = MoneybirdSalesInvoice.get_for_object(obj)
-    if invoice is None:
-        invoice = MoneybirdSalesInvoice.create_for_object(obj)
-
-    moneybird = get_moneybird_api_service()
-
-    if invoice.moneybird_invoice_id:
-        moneybird.update_sales_invoice(
-            invoice.moneybird_invoice_id, invoice.to_moneybird()
-        )
-    else:
-        response = moneybird.create_sales_invoice(invoice.to_moneybird())
-        invoice.moneybird_invoice_id = response["id"]
-        invoice.moneybird_details_attribute_id = response["details"][0]["id"]
-        invoice.save()
-
-    send_invoice(invoice)
-
-    if invoice.payable.payment is not None:
-        # Mark the invoice as paid if the payable is paid as well
-        try:
-            moneybird_payment = MoneybirdPayment.objects.get(
-                payment=invoice.payable.payment
-            )
-        except MoneybirdPayment.DoesNotExist:
-            moneybird_payment = None
-
-        if (
-            moneybird_payment is not None
-            and moneybird_payment.moneybird_financial_mutation_id is not None
-        ):
-            mutation_info = moneybird.get_financial_mutation_info(
-                invoice.payable.payment.moneybird_payment.moneybird_financial_mutation_id
-            )
-            if not any(
-                x["invoice_type"] == "SalesInvoice"
-                and x["invoice_id"] == invoice.moneybird_invoice_id
-                for x in mutation_info["payments"]
-            ):
-                # If the payment itself also already exists in a financial mutation
-                # and is not yet linked to the booking, link it
-                moneybird.link_mutation_to_booking(
-                    mutation_id=int(
-                        invoice.payable.payment.moneybird_payment.moneybird_financial_mutation_id
-                    ),
-                    booking_id=int(invoice.moneybird_invoice_id),
-                    price_base=str(invoice.payable.payment_amount),
-                    booking_type="SalesInvoice",
-                )
-        else:
-            # Otherwise, mark it as paid without linking to an actual payment
-            # (announcing that in the future, a mutation should become available)
-            moneybird.register_invoice_payment(
-                invoice.moneybird_invoice_id,
-                {
-                    "payment": {
-                        "payment_date": invoice.payable.payment.created_at.strftime(
-                            "%Y-%m-%d %H:%M:%S"
-                        ),
-                        "price": str(invoice.payable.payment_amount),
-                        "financial_account_id": financial_account_id_for_payment_type(
-                            invoice.payable.payment.type
-                        ),
-                    }
-                },
-            )
-
-    # Mark the invoice as not outdated anymore only after everything has succeeded.
-    invoice.needs_synchronization = False
-    invoice.save()
-
-    return invoice
 
 
 def create_or_update_external_invoice(obj):
@@ -307,10 +227,7 @@ def _sync_outdated_invoices():
         for invoice in invoices:
             try:
                 instance = invoice.payable_object
-                if isinstance(invoice, MoneybirdSalesInvoice):
-                    create_or_update_sales_invoice(instance)
-                elif isinstance(invoice, MoneybirdExternalInvoice):
-                    create_or_update_external_invoice(instance)
+                create_or_update_external_invoice(instance)
             except Administration.Error as e:
                 logger.exception("Moneybird synchronization error: %s", e)
                 send_sync_error(e, instance)
@@ -384,7 +301,7 @@ def _try_create_or_update_sales_invoices(queryset):
 
     for instance in queryset:
         try:
-            create_or_update_sales_invoice(instance)
+            create_or_update_external_invoice(instance)
         except Administration.Error as e:
             logger.exception("Moneybird synchronization error: %s", e)
             send_sync_error(e, instance)
@@ -430,14 +347,14 @@ def _sync_registrations():
         payment__isnull=False,
     ).exclude(
         Exists(
-            MoneybirdSalesInvoice.objects.filter(
+            MoneybirdExternalInvoice.objects.filter(
                 object_id=Cast(OuterRef("pk"), output_field=CharField()),
                 payable_model=ContentType.objects.get_for_model(Registration),
             )
         )
     )
 
-    _try_create_or_update_sales_invoices(registrations)
+    _try_create_or_update_external_invoices(registrations)
 
 
 def _sync_renewals():
@@ -447,14 +364,14 @@ def _sync_renewals():
         payment__isnull=False,
     ).exclude(
         Exists(
-            MoneybirdSalesInvoice.objects.filter(
+            MoneybirdExternalInvoice.objects.filter(
                 object_id=Cast(OuterRef("pk"), output_field=CharField()),
                 payable_model=ContentType.objects.get_for_model(Renewal),
             )
         )
     )
 
-    _try_create_or_update_sales_invoices(renewals)
+    _try_create_or_update_external_invoices(renewals)
 
 
 def _sync_event_registrations():
