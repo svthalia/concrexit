@@ -12,6 +12,7 @@ from django.utils.translation import gettext_lazy as _
 from tinymce.models import HTMLField
 
 from thaliawebsite.storage.backend import get_public_storage
+from utils.media.services import get_upload_to_function
 
 
 class VisibleObjectManager(Manager):
@@ -153,7 +154,7 @@ class Slide(models.Model):
         verbose_name=_("Content"),
         help_text=_("The content of the slide; what image to display."),
         blank=False,
-        upload_to="announcements/slides/",
+        upload_to=get_upload_to_function("announcements/slides"),
         storage=get_public_storage,
         validators=[validate_image],
     )

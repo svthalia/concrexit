@@ -1,35 +1,21 @@
 import logging
-import os
 
 from django.conf import settings
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
-from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 
 from thumbnails.fields import ImageField
 
 from thaliawebsite.storage.backend import get_public_storage
 from utils import countries
+from utils.media.services import get_upload_to_function
 
 logger = logging.getLogger(__name__)
 
-
-def _profile_image_path(_instance, _filename):
-    """Set the upload path for profile images.
-
-    Makes sure that it's hard to enumerate profile images.
-
-    Also makes sure any user-picked filenames don't survive
-
-    >>> _profile_image_path(None, "bla.jpg")
-    public/avatars/...
-    >>> "swearword" in _profile_image_path(None, "swearword.jpg")
-    False
-    """
-    return f"avatars/{get_random_string(length=16)}{os.path.splitext(_filename)[1]}"
+_profile_image_path = get_upload_to_function("avatars", 16)
 
 
 class Profile(models.Model):

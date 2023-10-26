@@ -16,6 +16,7 @@ from thumbnails.fields import ImageField
 from tinymce.models import HTMLField
 
 from thaliawebsite.storage.backend import get_public_storage
+from utils.media.services import get_upload_to_function
 from utils.snippets import overlaps
 
 logger = logging.getLogger(__name__)
@@ -41,7 +42,7 @@ class MemberGroup(models.Model):
     photo = ImageField(
         verbose_name=_("Image"),
         resize_source_to="source",
-        upload_to="committeephotos/",
+        upload_to=get_upload_to_function("committeephotos"),
         storage=get_public_storage,
         null=True,
         blank=True,
