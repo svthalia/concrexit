@@ -17,6 +17,7 @@ from payments.payables import payables
 from pizzas.models import FoodOrder
 from registrations.models import Registration, Renewal
 from sales.models.order import Order
+from utils.snippets import datetime_to_membership_period
 
 
 def financial_account_id_for_payment_type(payment_type) -> Optional[int]:
@@ -400,9 +401,9 @@ class MoneybirdSalesInvoice(models.Model):
         period = None
         tax_rate_id = None
         if isinstance(self.payable_object, (Registration, Renewal)):
-            # period = datetime_to_membership_period(
-            #     self.payable_object.created_at.date()
-            # )
+            period = datetime_to_membership_period(
+                self.payable_object.created_at.date()
+            )
             tax_rate_id = settings.MONEYBIRD_ZERO_TAX_RATE_ID
 
         data = {

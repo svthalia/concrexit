@@ -36,6 +36,17 @@ def strtobool(val):
     raise ValueError(f"invalid truth value {val}")
 
 
+def datetime_to_membership_period(date):
+    """Convert a :class:`~datetime.date` to a period that corresponds with the current membership period."""
+    start_date = date
+    if start_date.month == 8:
+        start_date = start_date.replace(month=9, day=1)
+    end_date = start_date.replace(month=8, day=31)
+    if start_date.month > 8:
+        end_date = end_date.replace(year=start_date.year + 1)
+    return f"{start_date.strftime('%Y%m%d')}..{end_date.strftime('%Y%m%d')}"
+
+
 def datetime_to_lectureyear(date):
     """Convert a :class:`~datetime.date` to the start of the lectureyear.
 
