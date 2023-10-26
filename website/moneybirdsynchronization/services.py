@@ -264,7 +264,11 @@ def _sync_contacts_with_outdated_mandates():
         )
 
     for contact in contacts:
-        create_or_update_contact(contact.member)
+        try:
+            create_or_update_contact(contact.member)
+        except Administration.Error as e:
+            logger.exception("Moneybird synchronization error: %s", e)
+            send_sync_error(e, contact.member)
 
 
 def _try_create_or_update_external_invoices(queryset):
