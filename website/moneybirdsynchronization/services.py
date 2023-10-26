@@ -289,24 +289,6 @@ def _try_create_or_update_external_invoices(queryset):
             send_sync_error(e, instance)
 
 
-def _try_create_or_update_sales_invoices(queryset):
-    if not queryset.exists():
-        return
-
-    logger.info(
-        "Pushing %d %s to Moneybird.",
-        model_ngettext(queryset),
-        queryset.count(),
-    )
-
-    for instance in queryset:
-        try:
-            create_or_update_external_invoice(instance)
-        except Administration.Error as e:
-            logger.exception("Moneybird synchronization error: %s", e)
-            send_sync_error(e, instance)
-
-
 def _sync_food_orders():
     """Create invoices for new food orders."""
     food_orders = FoodOrder.objects.filter(
@@ -556,14 +538,3 @@ def process_thalia_pay_batch(batch):
             }
         }
     )
-
-
-def send_invoice(instance):
-    """Send an invoice to the member."""
-    if not settings.MONEYBIRD_SYNC_ENABLED:
-        return
-
-    moneybird = get_moneybird_api_service()
-    response = moneybird.get_invoice_info(instance.moneybird_invoice_id)
-    if response["state"] == "draft":
-        moneybird.send_invoice(instance.moneybird_invoice_id)

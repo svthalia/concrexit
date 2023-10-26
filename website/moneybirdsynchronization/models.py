@@ -17,7 +17,6 @@ from payments.payables import payables
 from pizzas.models import FoodOrder
 from registrations.models import Registration, Renewal
 from sales.models.order import Order
-from utils.snippets import datetime_to_membership_period
 
 
 def financial_account_id_for_payment_type(payment_type) -> Optional[int]:
@@ -63,6 +62,17 @@ def ledger_id_for_payable_model(obj) -> Optional[int]:
     if isinstance(obj, (Registration, Renewal)):
         return settings.MONEYBIRD_CONTRIBUTION_LEDGER_ID
     return None
+
+
+def datetime_to_membership_period(date):
+    """Convert a :class:`~datetime.date` to a period that corresponds with the current membership period."""
+    start_date = date
+    if start_date.month == 8:
+        start_date = start_date.replace(month=9, day=1)
+    end_date = start_date.replace(month=8, day=31)
+    if start_date.month > 8:
+        end_date = end_date.replace(year=start_date.year + 1)
+    return f"{start_date.strftime('%Y%m%d')}..{end_date.strftime('%Y%m%d')}"
 
 
 class MoneybirdProject(models.Model):
