@@ -278,15 +278,9 @@ class MoneybirdExternalInvoice(models.Model):
         period = None
         tax_rate_id = None
         if isinstance(self.payable_object, (Registration, Renewal)):
-            try:
-                membership = self.payable_object.membership
-                if membership is None:
-                    raise Membership.DoesNotExist
-
-                period = membership_to_mb_period(membership)
-            except Membership.DoesNotExist:
-                period = None
             tax_rate_id = settings.MONEYBIRD_ZERO_TAX_RATE_ID
+            if self.payable_object.membership is not None:
+                period = membership_to_mb_period(self.payable_object.membership)
 
         source_url = settings.BASE_URL + reverse(
             f"admin:{self.payable_object._meta.app_label}_{self.payable_object._meta.model_name}_change",
