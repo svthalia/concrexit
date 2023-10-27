@@ -10,7 +10,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from events.models import EventRegistration
-from members.models import Member
+from members.models import Member, Membership
 from moneybirdsynchronization.moneybird import get_moneybird_api_service
 from payments.models import BankAccount, Payment
 from payments.payables import payables
@@ -64,15 +64,10 @@ def ledger_id_for_payable_model(obj) -> Optional[int]:
     return None
 
 
-def datetime_to_membership_period(date):
-    """Convert a :class:`~datetime.date` to a period that corresponds with the current membership period."""
-    start_date = date
-    if start_date.month == 8:
-        start_date = start_date.replace(month=9, day=1)
-    end_date = start_date.replace(month=8, day=31)
-    if start_date.month > 8:
-        end_date = end_date.replace(year=start_date.year + 1)
-    return f"{start_date.strftime('%Y%m%d')}..{end_date.strftime('%Y%m%d')}"
+def membership_to_mb_period(membership: Membership) -> str:
+    """Convert a membership to a Moneybird period."""
+    start_date = membership.since
+    return f"{start_date.strftime('%Y%m%d')}..{start_date.strftime('%Y%m%d')}"
 
 
 class MoneybirdProject(models.Model):
@@ -283,9 +278,7 @@ class MoneybirdExternalInvoice(models.Model):
         period = None
         tax_rate_id = None
         if isinstance(self.payable_object, (Registration, Renewal)):
-            period = datetime_to_membership_period(
-                self.payable_object.created_at.date()
-            )
+            period = membership_to_mb_period(self.payable_object.membership)
             tax_rate_id = settings.MONEYBIRD_ZERO_TAX_RATE_ID
 
         source_url = settings.BASE_URL + reverse(
