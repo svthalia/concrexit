@@ -2,6 +2,7 @@ import hashlib
 import logging
 import os
 import random
+from secrets import token_hex
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -25,11 +26,8 @@ logger = logging.getLogger(__name__)
 
 
 def photo_uploadto(instance, filename):
-    """Get path of file to upload to."""
-    num = instance.album.photo_set.count()
-    extension = os.path.splitext(filename)[1]
-    new_filename = str(num).zfill(4) + extension
-    return os.path.join(Album.photosdir, instance.album.dirname, new_filename)
+    ext = os.path.splitext(filename)[1]
+    return f"photos/{instance.album.dirname}/{token_hex(8)}{ext}"
 
 
 class DuplicatePhotoException(Exception):

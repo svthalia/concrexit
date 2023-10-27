@@ -5,6 +5,7 @@ from zipfile import ZipFile, is_zipfile
 
 from django.contrib import messages
 from django.core.files import File
+from django.db import transaction
 from django.db.models import BooleanField, Case, ExpressionWrapper, Q, Value, When
 from django.forms import ValidationError
 from django.http import Http404
@@ -104,8 +105,9 @@ def _try_save_photo(request, album, file, filename):
     instance = Photo(album=album)
     instance.file = File(file, filename)
     try:
-        instance.full_clean()
-        instance.save()
+        with transaction.atomic():
+            instance.full_clean()
+            instance.save()
     except ValidationError as e:
         errors = e.message_dict
         if "This photo already exists in this album." in errors.get("file", []):
