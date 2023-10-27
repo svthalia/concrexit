@@ -83,7 +83,7 @@ def get_thumbnail_url(
     return get_media_url(file, absolute_url=absolute_url)
 
 
-def fetch_thumbnails(images, sizes=None):
+def fetch_thumbnails(images: list, sizes=None):
     """Prefetches thumbnails from the database or redis efficiently.
 
     :param images: A list of images to prefetch thumbnails for.
