@@ -987,6 +987,33 @@ THUMBNAILS = {
                 },
             ],
         },
+        "fit_small": {
+            "FORMAT": "webp",
+            "PROCESSORS": [
+                {
+                    "PATH": "utils.media.processors.thumbnail",
+                    "size": (300, 300),
+                },
+            ],
+        },
+        "fit_medium": {
+            "FORMAT": "webp",
+            "PROCESSORS": [
+                {
+                    "PATH": "utils.media.processors.thumbnail",
+                    "size": (600, 600),
+                },
+            ],
+        },
+        "fit_large": {
+            "FORMAT": "webp",
+            "PROCESSORS": [
+                {
+                    "PATH": "utils.media.processors.thumbnail",
+                    "size": (1200, 900),
+                },
+            ],
+        },
         "source": {
             "FORMAT": "jpg",
             "PROCESSORS": [
