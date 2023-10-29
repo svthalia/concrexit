@@ -1,10 +1,10 @@
 {% extends 'paginated_page.html' %}
-{% load i18n static photos_cards alert %}
+{% load i18n static photos_cards alert pick_header_image %}
 
 {% block title %}{% trans "Photos" %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans "Photos" %} — {{ block.super }}{% endblock %}
 
-{% block header_image %}{% static "img/headers/fixed/banner7.jpg" %}{% endblock header_image %}
+{% block header_image %}{% pick_header_image type='fun' %}{% endblock header_image %}
 
 {% block page_title %}{% trans "Photos" %}{% endblock %}
 {% block section_tags %}id="photos-index"{% endblock %}
