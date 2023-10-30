@@ -48,8 +48,8 @@ def create_daily_merchandise_sale_shift():
     active_board = Board.objects.filter(since__lte=today, until__gte=today)
 
     shift = Shift.objects.create(
-        title="Merchandise sales " + today.strftime("%Y-%m-%d"),
-        start=timezone.datetime.combine(today, datetime.time(0, 0, 0)),
+        title="Merchandise sales",
+        start=timezone.now(),
         end=timezone.datetime.combine(today, datetime.time(23, 59, 59)),
         product_list=merchandise_product_list,
     )
@@ -58,11 +58,8 @@ def create_daily_merchandise_sale_shift():
 
 
 def lock_merchandise_sale_shift():
-    yesterday = timezone.now().date() - timezone.timedelta(days=1)
-    shift = Shift.objects.filter(
-        name="Merchandise sales " + yesterday.strftime("%Y-%m-%d")
-    )
-    if shift:
+    shifts = Shift.objects.filter(title="Merchandise sales").all()
+    for shift in shifts:
         if shift.num_orders == 0:
             shift.delete()
         else:

@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name="MoneybirdMerchandiseSaleJournal",
+            name="MoneybirdGeneralJournalDocument",
             fields=[
                 (
                     "id",
@@ -54,10 +54,24 @@ class Migration(migrations.Migration):
                         verbose_name="order",
                     ),
                 ),
+                (
+                    "needs_deletion",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Indicates that the journal has to be deleted from moneybird.",
+                    ),
+                ),
+                (
+                    "needs_synchronization",
+                    models.BooleanField(
+                        default=True,
+                        help_text="Indicates that the journal has to be synchronized (again).",
+                    ),
+                ),
             ],
             options={
-                "verbose_name": "moneybird merchandise sale journal",
-                "verbose_name_plural": "moneybird merchandise sale journals",
+                "verbose_name": "moneybird general journal document",
+                "verbose_name_plural": "moneybird general journal documents",
             },
         ),
     ]

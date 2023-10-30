@@ -18,14 +18,16 @@ class Migration(migrations.Migration):
         itemlist = list(MerchandiseItem.objects.all())
         MerchandiseItem.objects.all().delete()
 
+    # This does not seem to work yet
     def create_merchandiseitems(apps, schema_editor):
         MerchandiseItem = apps.get_model("merchandise", "MerchandiseItem")
         for item in itemlist:
             MerchandiseItem.objects.create(
+                name=item.name,
                 price=item.price,
                 description=item.description,
                 image=item.image,
-                purchase_price=item.purchase_price,
+                purchase_price=0,
             )
 
     operations = [
@@ -52,10 +54,10 @@ class Migration(migrations.Migration):
             ),
             preserve_default=False,
         ),
-        migrations.RunPython(create_merchandiseitems),
         migrations.AddField(
             model_name="merchandiseitem",
             name="purchase_price",
             field=models.DecimalField(decimal_places=2, max_digits=8),
         ),
+        migrations.RunPython(create_merchandiseitems),
     ]

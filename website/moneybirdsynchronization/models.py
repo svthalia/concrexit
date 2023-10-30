@@ -379,7 +379,7 @@ class MoneybirdPayment(models.Model):
         verbose_name_plural = _("moneybird payments")
 
 
-class MoneybirdMerchandiseSaleJournal(models.Model):
+class MoneybirdGeneralJournalDocument(models.Model):
     order = models.OneToOneField(
         Order,
         on_delete=models.CASCADE,
@@ -452,5 +452,5 @@ class MoneybirdMerchandiseSaleJournal(models.Model):
         return data
 
     class Meta:
-        verbose_name = _("moneybird merchandise sale journal")
-        verbose_name_plural = _("moneybird merchandise sale journals")
+        verbose_name = _("moneybird general journal document")
+        verbose_name_plural = _("moneybird general journal documents")

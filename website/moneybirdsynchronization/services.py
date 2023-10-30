@@ -15,7 +15,7 @@ from moneybirdsynchronization.emails import send_sync_error
 from moneybirdsynchronization.models import (
     MoneybirdContact,
     MoneybirdExternalInvoice,
-    MoneybirdMerchandiseSaleJournal,
+    MoneybirdGeneralJournalDocument,
     MoneybirdPayment,
     financial_account_id_for_payment_type,
 )
@@ -167,14 +167,14 @@ def delete_external_invoice(obj):
     external_invoice.delete()
 
 
-def create_or_update_merchandise_sale(obj):
+def create_or_update_general_journal_document(obj):
     if not settings.MONEYBIRD_SYNC_ENABLED:
         return None
 
     moneybird = get_moneybird_api_service()
     external_invoice = create_or_update_external_invoice(obj)
 
-    merchandise_sale_journal, _ = MoneybirdMerchandiseSaleJournal.objects.get_or_create(
+    merchandise_sale_journal, _ = MoneybirdGeneralJournalDocument.objects.get_or_create(
         order=obj
     )
     merchandise_sale_journal.external_invoice = external_invoice
@@ -195,15 +195,15 @@ def create_or_update_merchandise_sale(obj):
     merchandise_sale_journal.save()
 
 
-def delete_merchandise_sale(obj):
+def delete_general_journal_document(obj):
     if not settings.MONEYBIRD_SYNC_ENABLED:
         return None
 
     try:
-        merchandise_sale_journal = MoneybirdMerchandiseSaleJournal.objects.get(
+        merchandise_sale_journal = MoneybirdGeneralJournalDocument.objects.get(
             order=obj
         )
-    except MoneybirdMerchandiseSaleJournal.DoesNotExist:
+    except MoneybirdGeneralJournalDocument.DoesNotExist:
         return None
 
     if merchandise_sale_journal.moneybird_general_journal_document_id is None:
@@ -273,7 +273,7 @@ def _delete_invoices():
 
 def _delete_journals():
     """Delete the journals that have been marked for deletion from moneybird."""
-    journals = MoneybirdMerchandiseSaleJournal.objects.filter(needs_deletion=True)
+    journals = MoneybirdGeneralJournalDocument.objects.filter(needs_deletion=True)
 
     if not journals.exists():
         return
@@ -314,7 +314,7 @@ def _sync_outdated_invoices():
 
 def _sync_outdated_journals():
     """Resynchronize all journals that have been marked as outdated."""
-    journals = MoneybirdMerchandiseSaleJournal.objects.filter(
+    journals = MoneybirdGeneralJournalDocument.objects.filter(
         needs_synchronization=True, needs_deletion=False
     ).order_by("order__pk")
 
@@ -323,7 +323,7 @@ def _sync_outdated_journals():
         for journal in journals:
             try:
                 instance = journal.order
-                create_or_update_merchandise_sale(instance)
+                create_or_update_general_journal_document(instance)
             except Administration.Error as e:
                 logger.exception("Moneybird synchronization error: %s", e)
                 send_sync_error(e, instance)
@@ -426,7 +426,7 @@ def _sync_merchandise_sales():
         shift__title__icontains="Merchandise sales",
     ).exclude(
         Exists(
-            MoneybirdMerchandiseSaleJournal.objects.filter(
+            MoneybirdGeneralJournalDocument.objects.filter(
                 order=OuterRef("pk"),
             )
         )
@@ -442,7 +442,7 @@ def _sync_merchandise_sales():
 
     for instance in merchandise_sales:
         try:
-            create_or_update_merchandise_sale(instance)
+            create_or_update_general_journal_document(instance)
         except Administration.Error as e:
             logger.exception("Moneybird synchronization error: %s", e)
             send_sync_error(e, instance)
