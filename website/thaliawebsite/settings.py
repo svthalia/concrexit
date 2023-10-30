@@ -545,7 +545,8 @@ if "SENTRY_DSN" in os.environ:
         release=SOURCE_COMMIT,
         send_default_pii=True,
         environment=DJANGO_ENV,
-        traces_sample_rate=0.2,
+        traces_sample_rate=float(os.environ.get("SENTRY_TRACES_SAMPLE_RATE", 0.2)),
+        profiles_sample_rate=float(os.environ.get("SENTRY_PROFILES_SAMPLE_RATE", 0.0)),
     )
 
 
