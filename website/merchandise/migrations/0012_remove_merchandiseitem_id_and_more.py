@@ -10,7 +10,7 @@ itemlist = []
 class Migration(migrations.Migration):
     dependencies = [
         ("sales", "0007_alter_productlistitem_options_and_more"),
-        ("merchandise", "0010_alter_merchandiseitem_image"),
+        ("merchandise", "0011_alter_merchandiseitem_image"),
     ]
 
     def store_and_delete_merchandiseitems(apps, schema_editor):
