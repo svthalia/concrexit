@@ -4,6 +4,7 @@ import math
 import random
 import string
 from datetime import date, datetime, timedelta
+from secrets import token_hex
 
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -670,9 +671,9 @@ class Command(BaseCommand):
 
         name = _generate_title()
 
-        igen = IconGenerator(5, 5)  # 5x5 blocks
+        igen = IconGenerator(12, 12)
         icon = igen.generate(
-            name,
+            token_hex(16),
             480,
             480,
             padding=(10, 10, 10, 10),

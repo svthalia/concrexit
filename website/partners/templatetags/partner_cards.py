@@ -13,7 +13,7 @@ def partner_card(partner):
     """Return grid item showing partner."""
     image_url = ""
     if partner.logo:
-        image_url = get_thumbnail_url(partner.logo, "medium")
+        image_url = get_thumbnail_url(partner.logo, "fit_medium")
 
     meta_text = truncatechars(bleach(striptags(partner.company_profile)), 80)
 
@@ -31,11 +31,11 @@ def partner_card(partner):
 def partner_image_card(image):
     """Return grid item showing partner image."""
     class_name = "partner-image-card"
-    image_url = get_thumbnail_url(image, "medium")
+    image_url = get_thumbnail_url(image, "fit_medium")
 
     return grid_item(
         title="",
-        url=get_thumbnail_url(image, "large"),
+        url=get_thumbnail_url(image, "fit_large"),
         image_url=image_url,
         class_name=class_name,
         anchor_attrs='data-fancybox="gallery"',
@@ -47,7 +47,7 @@ def vacancy_card(vacancy):
     """Return grid item showing vacancy."""
     image_url = None
     if vacancy.get_company_logo():
-        image_url = get_thumbnail_url(vacancy.get_company_logo(), "medium")
+        image_url = get_thumbnail_url(vacancy.get_company_logo(), "fit_medium")
 
     description = truncatechars(bleach(striptags(vacancy.description)), 300)
     extra_class = "external-vacancy"

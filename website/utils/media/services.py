@@ -1,3 +1,6 @@
+import os
+from functools import partial
+from secrets import token_hex
 from typing import Optional
 
 from django.conf import settings
@@ -9,6 +12,23 @@ from thumbnails.fields import fetch_thumbnails as fetch_thumbnails_redis
 from thumbnails.files import ThumbnailedImageFile
 from thumbnails.images import Thumbnail
 from thumbnails.models import ThumbnailMeta
+
+
+def _generic_upload_to(instance, filename, prefix: str, token_bytes: int):
+    ext = os.path.splitext(filename)[1]
+    return os.path.join(prefix, f"{token_hex(token_bytes)}{ext}")
+
+
+def get_upload_to_function(prefix: str, token_bytes: int = 8):
+    """Return a partial function that can be used as the upload_to argument of a FileField.
+
+    This is useful to avoid having numerous functions that all do the same thing, with
+    different prefixes. Using a partial function makes it serializable for migrations.
+    See: https://docs.djangoproject.com/en/4.2/topics/migrations/#migration-serializing.
+
+    The resulting function returns paths like `<prefix>/<random hex string>.<ext>`.
+    """
+    return partial(_generic_upload_to, prefix=prefix, token_bytes=token_bytes)
 
 
 def get_media_url(
@@ -63,7 +83,7 @@ def get_thumbnail_url(
     return get_media_url(file, absolute_url=absolute_url)
 
 
-def fetch_thumbnails(images, sizes=None):
+def fetch_thumbnails(images: list, sizes=None):
     """Prefetches thumbnails from the database or redis efficiently.
 
     :param images: A list of images to prefetch thumbnails for.

@@ -24,4 +24,6 @@ class PartnerSerializer(CleanedModelSerializer):
         )
 
     company_profile = CleanedHTMLSerializer()
-    logo = ThumbnailSerializer()
+    logo = ThumbnailSerializer(
+        size_small="fit_small", size_medium="fit_medium", size_large="fit_large"
+    )

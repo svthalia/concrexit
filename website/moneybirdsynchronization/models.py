@@ -10,7 +10,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from events.models import EventRegistration
-from members.models import Member
+from members.models import Member, Membership
 from merchandise.models import MerchandiseItem
 from moneybirdsynchronization.moneybird import get_moneybird_api_service
 from payments.models import BankAccount, Payment
@@ -70,6 +70,12 @@ def ledger_id_for_payable_model(obj) -> Optional[int]:
         return settings.MONEYBIRD_MERCHANDISE_SALES_LEDGER_ID
 
     raise ValueError(f"Unknown payable model {obj}")
+
+
+def membership_to_mb_period(membership: Membership) -> str:
+    """Convert a membership to a Moneybird period."""
+    start_date = membership.since
+    return f"{start_date.strftime('%Y%m%d')}..{start_date.strftime('%Y%m%d')}"
 
 
 class MoneybirdProject(models.Model):
@@ -277,6 +283,13 @@ class MoneybirdExternalInvoice(models.Model):
 
         ledger_id = ledger_id_for_payable_model(self.payable_object)
 
+        period = None
+        tax_rate_id = None
+        if isinstance(self.payable_object, (Registration, Renewal)):
+            tax_rate_id = settings.MONEYBIRD_ZERO_TAX_RATE_ID
+            if self.payable_object.membership is not None:
+                period = membership_to_mb_period(self.payable_object.membership)
+
         source_url = settings.BASE_URL + reverse(
             f"admin:{self.payable_object._meta.app_label}_{self.payable_object._meta.model_name}_change",
             args=(self.object_id,),
@@ -314,6 +327,13 @@ class MoneybirdExternalInvoice(models.Model):
             data["external_sales_invoice"]["details_attributes"][0]["id"] = int(
                 self.moneybird_details_attribute_id
             )
+        if period is not None:
+            data["external_sales_invoice"]["details_attributes"][0]["period"] = period
+        if tax_rate_id is not None:
+            data["external_sales_invoice"]["details_attributes"][0][
+                "tax_rate_id"
+            ] = int(tax_rate_id)
+
         return data
 
     def __str__(self):

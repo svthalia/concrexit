@@ -5,6 +5,9 @@ from thumbnails.fields import ImageField
 
 from sales.models.product import Product
 from thaliawebsite.storage.backend import get_public_storage
+from utils.media.services import get_upload_to_function
+
+_merchandise_photo_upload_to = get_upload_to_function("merchandise")
 
 
 class MerchandiseItem(Product):
@@ -30,7 +33,7 @@ class MerchandiseItem(Product):
 
     #: Image of the merchandise item
     image = ImageField(
-        upload_to="merchandise",
+        upload_to=_merchandise_photo_upload_to,
         storage=get_public_storage,
         resize_source_to="source",
     )

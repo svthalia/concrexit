@@ -41,7 +41,7 @@ def vacancies(request):
         .select_related("partner")
         .prefetch_related("categories")
     )
-    fetch_thumbnails(v.get_company_logo() for v in vacancies)
+    fetch_thumbnails([v.get_company_logo() for v in vacancies])
     context = {
         "vacancies": vacancies,
         "categories": list(VacancyCategory.objects.all()),

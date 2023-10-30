@@ -549,7 +549,8 @@ if "SENTRY_DSN" in os.environ:
         release=SOURCE_COMMIT,
         send_default_pii=True,
         environment=DJANGO_ENV,
-        traces_sample_rate=0.2,
+        traces_sample_rate=float(os.environ.get("SENTRY_TRACES_SAMPLE_RATE", 0.2)),
+        profiles_sample_rate=float(os.environ.get("SENTRY_PROFILES_SAMPLE_RATE", 0.0)),
     )
 
 
@@ -991,6 +992,33 @@ THUMBNAILS = {
                 },
             ],
         },
+        "fit_small": {
+            "FORMAT": "webp",
+            "PROCESSORS": [
+                {
+                    "PATH": "utils.media.processors.thumbnail",
+                    "size": (300, 300),
+                },
+            ],
+        },
+        "fit_medium": {
+            "FORMAT": "webp",
+            "PROCESSORS": [
+                {
+                    "PATH": "utils.media.processors.thumbnail",
+                    "size": (600, 600),
+                },
+            ],
+        },
+        "fit_large": {
+            "FORMAT": "webp",
+            "PROCESSORS": [
+                {
+                    "PATH": "utils.media.processors.thumbnail",
+                    "size": (1200, 900),
+                },
+            ],
+        },
         "source": {
             "FORMAT": "jpg",
             "PROCESSORS": [
@@ -1134,5 +1162,11 @@ MONEYBIRD_CASH_FINANCIAL_ACCOUNT_ID: Optional[int] = (
 MONEYBIRD_CARD_FINANCIAL_ACCOUNT_ID: Optional[int] = (
     int(os.environ.get("MONEYBIRD_CARD_FINANCIAL_ACCOUNT_ID"))
     if os.environ.get("MONEYBIRD_CARD_FINANCIAL_ACCOUNT_ID")
+    else None
+)
+
+MONEYBIRD_ZERO_TAX_RATE_ID: Optional[int] = (
+    int(os.environ.get("MONEYBIRD_ZERO_TAX_RATE_ID"))
+    if os.environ.get("MONEYBIRD_ZERO_TAX_RATE_ID")
     else None
 )
