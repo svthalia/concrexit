@@ -285,25 +285,30 @@ if AWS_STORAGE_BUCKET_NAME is not None:
     AWS_CLOUDFRONT_KEY_ID = os.environ.get("AWS_CLOUDFRONT_KEY_ID", None)
     AWS_S3_CUSTOM_DOMAIN = os.environ.get("AWS_CLOUDFRONT_DOMAIN", None)
 
-    STATICFILES_STORAGE = "thaliawebsite.storage.backend.StaticS3Storage"
+    _STATICFILES_STORAGE = "thaliawebsite.storage.backend.StaticS3Storage"
     STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/static/"
 
-    DEFAULT_FILE_STORAGE = "thaliawebsite.storage.backend.PrivateS3Storage"
+    _DEFAULT_FILE_STORAGE = "thaliawebsite.storage.backend.PrivateS3Storage"
 
-    PUBLIC_FILE_STORAGE = "thaliawebsite.storage.backend.PublicS3Storage"
+    _PUBLIC_FILE_STORAGE = "thaliawebsite.storage.backend.PublicS3Storage"
     PUBLIC_MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/"
 else:
-    STATICFILES_STORAGE = setting(
+    _STATICFILES_STORAGE = setting(
         development="django.contrib.staticfiles.storage.StaticFilesStorage",
         production="django.contrib.staticfiles.storage.ManifestStaticFilesStorage",
     )
     STATIC_URL = "/static/"
 
-    DEFAULT_FILE_STORAGE = "thaliawebsite.storage.backend.PrivateFileSystemStorage"
+    _DEFAULT_FILE_STORAGE = "thaliawebsite.storage.backend.PrivateFileSystemStorage"
 
-    PUBLIC_FILE_STORAGE = "thaliawebsite.storage.backend.PublicFileSystemStorage"
+    _PUBLIC_FILE_STORAGE = "thaliawebsite.storage.backend.PublicFileSystemStorage"
     PUBLIC_MEDIA_URL = "/media/public/"
 
+STORAGES = {
+    "default": {"BACKEND": _DEFAULT_FILE_STORAGE},
+    "public": {"BACKEND": _PUBLIC_FILE_STORAGE},
+    "staticfiles": {"BACKEND": _STATICFILES_STORAGE},
+}
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#conn-max-age
 CONN_MAX_AGE = int(from_env("CONN_MAX_AGE", development="0", production="60"))
@@ -879,6 +884,10 @@ STATICFILES_FINDERS = (
 # See https://github.com/jrief/django-sass-processor
 SASS_PROCESSOR_INCLUDE_FILE_PATTERN = r"^.+\.scss$"
 
+# django-sass-processor does not use the Django 4.2 `storages` API yet,
+# but we can simply give it the path as we would with the new API.
+SASS_PROCESSOR_STORAGE = _STATICFILES_STORAGE
+
 # See utils/model/signals.py for explanation
 SUSPEND_SIGNALS = False
 
@@ -897,7 +906,9 @@ THUMBNAILS_METADATA = (
 THUMBNAILS = {
     "METADATA": THUMBNAILS_METADATA,
     "STORAGE": {
-        "BACKEND": DEFAULT_FILE_STORAGE,
+        # django-thumbs does not use the Django 4.2 `storages` API yet,
+        # but we can simply give it the path as we would with the new API.
+        "BACKEND": _DEFAULT_FILE_STORAGE,
     },
     "SIZES": {
         "small": {

@@ -3,11 +3,11 @@ import os
 
 import announcements.models
 from django.db import migrations, models
-import thaliawebsite.storage.backend
+from django.core.files.storage import storages
 
 
 def forwards_func(apps, schema_editor):
-    Slide = apps.get_model('announcements', 'Slide')
+    Slide = apps.get_model("announcements", "Slide")
 
     existing_images = []
 
@@ -26,7 +26,7 @@ def forwards_func(apps, schema_editor):
 
 
 def reverse_func(apps, schema_editor):
-    Slide = apps.get_model('announcements', 'Slide')
+    Slide = apps.get_model("announcements", "Slide")
 
     for item in Slide.objects.filter(content__isnull=False):
         item.photo.name = f"public/{item.content.name}"
@@ -34,16 +34,21 @@ def reverse_func(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('announcements', '0012_auto_20201209_1704'),
+        ("announcements", "0012_auto_20201209_1704"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='slide',
-            name='content',
-            field=models.FileField(help_text='The content of the slide; what image to display.', storage=thaliawebsite.storage.backend.get_public_storage, upload_to='announcements/slides/', validators=[announcements.models.validate_image], verbose_name='Content'),
+            model_name="slide",
+            name="content",
+            field=models.FileField(
+                help_text="The content of the slide; what image to display.",
+                storage=storages["public"],
+                upload_to="announcements/slides/",
+                validators=[announcements.models.validate_image],
+                verbose_name="Content",
+            ),
         ),
         migrations.RunPython(forwards_func, reverse_func),
     ]

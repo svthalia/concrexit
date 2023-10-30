@@ -3,11 +3,11 @@ import os
 
 from django.db import migrations, models
 
-import thaliawebsite.storage.backend
+from django.core.files.storage import storages
 
 
 def forwards_func(apps, schema_editor):
-    MemberGroup = apps.get_model('activemembers', 'MemberGroup')
+    MemberGroup = apps.get_model("activemembers", "MemberGroup")
 
     existing_images = []
 
@@ -26,23 +26,29 @@ def forwards_func(apps, schema_editor):
 
 
 def reverse_func(apps, schema_editor):
-    MemberGroup = apps.get_model('activemembers', 'MemberGroup')
+    MemberGroup = apps.get_model("activemembers", "MemberGroup")
 
     for item in MemberGroup.objects.filter(photo__isnull=False):
         item.photo.name = f"public/{item.photo.name}"
         item.save()
 
-class Migration(migrations.Migration):
 
+class Migration(migrations.Migration):
     dependencies = [
-        ('activemembers', '0040_remove_multilang_field'),
+        ("activemembers", "0040_remove_multilang_field"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='membergroup',
-            name='photo',
-            field=models.ImageField(blank=True, null=True, storage=thaliawebsite.storage.backend.get_public_storage, upload_to='committeephotos/', verbose_name='Image'),
+            model_name="membergroup",
+            name="photo",
+            field=models.ImageField(
+                blank=True,
+                null=True,
+                storage=storages["public"],
+                upload_to="committeephotos/",
+                verbose_name="Image",
+            ),
         ),
         migrations.RunPython(forwards_func, reverse_func),
     ]

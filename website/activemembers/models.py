@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib.admin import display as admin_display
 from django.contrib.auth.models import Permission
 from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
+from django.core.files.storage import storages
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.urls import reverse
@@ -15,7 +16,6 @@ from django.utils.translation import gettext_lazy as _
 from thumbnails.fields import ImageField
 from tinymce.models import HTMLField
 
-from thaliawebsite.storage.backend import get_public_storage
 from utils.media.services import get_upload_to_function
 from utils.snippets import overlaps
 
@@ -43,7 +43,7 @@ class MemberGroup(models.Model):
         verbose_name=_("Image"),
         resize_source_to="source",
         upload_to=get_upload_to_function("committeephotos"),
-        storage=get_public_storage,
+        storage=storages["public"],
         null=True,
         blank=True,
     )

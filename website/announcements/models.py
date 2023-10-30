@@ -1,4 +1,5 @@
 """The models defined by the announcement package."""
+from django.core.files.storage import storages
 from django.core.validators import (
     FileExtensionValidator,
     get_available_image_extensions,
@@ -11,7 +12,6 @@ from django.utils.translation import gettext_lazy as _
 
 from tinymce.models import HTMLField
 
-from thaliawebsite.storage.backend import get_public_storage
 from utils.media.services import get_upload_to_function
 
 
@@ -155,7 +155,7 @@ class Slide(models.Model):
         help_text=_("The content of the slide; what image to display."),
         blank=False,
         upload_to=get_upload_to_function("announcements/slides"),
-        storage=get_public_storage,
+        storage=storages["public"],
         validators=[validate_image],
     )
 

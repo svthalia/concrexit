@@ -3,7 +3,7 @@
 import announcements.models
 from django.db import migrations, models
 import functools
-import thaliawebsite.storage.backend
+from django.core.files.storage import storages
 import utils.media.services
 
 
@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
             name="content",
             field=models.FileField(
                 help_text="The content of the slide; what image to display.",
-                storage=thaliawebsite.storage.backend.get_public_storage,
+                storage=storages["public"],
                 upload_to=functools.partial(
                     utils.media.services._generic_upload_to,
                     *(),
