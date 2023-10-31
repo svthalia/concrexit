@@ -188,8 +188,8 @@ class Album(models.Model):
         # Not prefetched because this should be rare and is a lot of data
         # `exists` is faster in theory, but requires everything to be fetched later anyways
         if self.photo_set.exists():
-            random.seed(self.dirname)
-            cover = random.choice(self.photo_set.all())
+            r = random.Random(self.dirname)
+            cover = r.choice(self.photo_set.all())
         return cover
 
     def __str__(self):
