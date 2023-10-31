@@ -1,4 +1,5 @@
 """Models for the merchandise database tables."""
+from django.core.files.storage import storages
 from django.db import models
 
 from thumbnails.fields import ImageField
@@ -34,7 +35,7 @@ class MerchandiseItem(Product):
     #: Image of the merchandise item
     image = ImageField(
         upload_to=_merchandise_photo_upload_to,
-        storage=get_public_storage,
+        storage=storages["public"],
         resize_source_to="source",
     )
 

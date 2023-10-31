@@ -3,11 +3,11 @@ import os
 
 from django.db import migrations, models
 import members.models.profile
-import thaliawebsite.storage.backend
+from django.core.files.storage import storages
 
 
 def forwards_func(apps, schema_editor):
-    Profile = apps.get_model('members', 'Profile')
+    Profile = apps.get_model("members", "Profile")
 
     existing_images = []
 
@@ -26,7 +26,7 @@ def forwards_func(apps, schema_editor):
 
 
 def reverse_func(apps, schema_editor):
-    Profile = apps.get_model('members', 'Profile')
+    Profile = apps.get_model("members", "Profile")
 
     for item in Profile.objects.filter(photo__isnull=False):
         item.photo.name = f"public/{item.photo.name}"
@@ -34,16 +34,21 @@ def reverse_func(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('members', '0040_remove_profile_auto_renew'),
+        ("members", "0040_remove_profile_auto_renew"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='profile',
-            name='photo',
-            field=models.ImageField(blank=True, null=True, storage=thaliawebsite.storage.backend.get_public_storage, upload_to=members.models.profile._profile_image_path, verbose_name='Photo'),
+            model_name="profile",
+            name="photo",
+            field=models.ImageField(
+                blank=True,
+                null=True,
+                storage=storages["public"],
+                upload_to=members.models.profile._profile_image_path,
+                verbose_name="Photo",
+            ),
         ),
         migrations.RunPython(forwards_func, reverse_func),
     ]

@@ -6,7 +6,10 @@ from events.models import EventRegistration
 
 @shared_task
 def send_registration_confirmation_email(registration_id: int):
-    registration = EventRegistration.objects.get(pk=registration_id)
+    try:
+        registration = EventRegistration.objects.get(pk=registration_id)
+    except EventRegistration.DoesNotExist:
+        return  # The registration was deleted.
     if (
         # Repeat the checks from the calling signal just in case
         # something changed between calling and running this task.

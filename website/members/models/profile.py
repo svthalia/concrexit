@@ -3,13 +3,13 @@ import logging
 from django.conf import settings
 from django.core import validators
 from django.core.exceptions import ValidationError
+from django.core.files.storage import storages
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from thumbnails.fields import ImageField
 
-from thaliawebsite.storage.backend import get_public_storage
 from utils import countries
 from utils.media.services import get_upload_to_function
 
@@ -208,7 +208,7 @@ class Profile(models.Model):
         verbose_name=_("Photo"),
         resize_source_to="source",
         upload_to=_profile_image_path,
-        storage=get_public_storage,
+        storage=storages["public"],
         null=True,
         blank=True,
     )
