@@ -4,7 +4,7 @@
 {% block title %}{{ album.title }} — {% trans "Photos" %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{{ album.title }} — {% trans "Photos" %} — {{ block.super }}{% endblock %}
 
-{% block header_image %}{% pick_header_image type='fun' %}{% endblock header_image %}
+{% block header_image_srcset %}{% pick_header_image type='fun' %}{% endblock header_image_srcset %}
 
 {% block page_title %}
     {{ album.title }}
