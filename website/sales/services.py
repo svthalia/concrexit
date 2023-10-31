@@ -42,9 +42,7 @@ def execute_data_minimisation(dry_run=False):
 
 def create_daily_merchandise_sale_shift():
     today = timezone.now().date()
-    merchandise_product_list = ProductList.objects.get_or_create(
-        name="Merchandise Product List"
-    )[0]
+    merchandise_product_list = ProductList.objects.get_or_create(name="Merchandise")[0]
     active_board = Board.objects.filter(since__lte=today, until__gte=today)
 
     shift = Shift.objects.create(

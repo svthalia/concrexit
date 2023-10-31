@@ -424,7 +424,7 @@ def _sync_merchandise_sales():
     merchandise_sales = Order.objects.filter(
         shift__start__date__gte=settings.MONEYBIRD_START_DATE,
         payment__isnull=False,
-        shift__title="Merchandise",
+        shift__title="Merchandise sales",
     ).exclude(
         Exists(
             MoneybirdMerchandiseSaleJournal.objects.filter(
