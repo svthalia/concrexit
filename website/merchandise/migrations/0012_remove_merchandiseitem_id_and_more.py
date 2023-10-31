@@ -6,6 +6,22 @@ import django.db.models.deletion
 
 itemlist = []
 
+def store_and_delete_merchandiseitems(apps, schema_editor):
+        MerchandiseItem = apps.get_model("merchandise", "MerchandiseItem")
+        itemlist = list(MerchandiseItem.objects.all())
+        MerchandiseItem.objects.all().delete()
+
+# This does not seem to work yet
+def create_merchandiseitems(apps, schema_editor):
+    MerchandiseItem = apps.get_model("merchandise", "MerchandiseItem")
+    for item in itemlist:
+        MerchandiseItem.objects.create(
+            name=item.name,
+            price=item.price,
+            description=item.description,
+            image=item.image,
+            purchase_price=0,
+        )
 
 class Migration(migrations.Migration):
     dependencies = [
@@ -13,22 +29,6 @@ class Migration(migrations.Migration):
         ("merchandise", "0011_alter_merchandiseitem_image"),
     ]
 
-    def store_and_delete_merchandiseitems(apps, schema_editor):
-        MerchandiseItem = apps.get_model("merchandise", "MerchandiseItem")
-        itemlist = list(MerchandiseItem.objects.all())
-        MerchandiseItem.objects.all().delete()
-
-    # This does not seem to work yet
-    def create_merchandiseitems(apps, schema_editor):
-        MerchandiseItem = apps.get_model("merchandise", "MerchandiseItem")
-        for item in itemlist:
-            MerchandiseItem.objects.create(
-                name=item.name,
-                price=item.price,
-                description=item.description,
-                image=item.image,
-                purchase_price=0,
-            )
 
     operations = [
         migrations.RunPython(store_and_delete_merchandiseitems),
@@ -56,7 +56,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="merchandiseitem",
-            name="purchase_price",
+            name="stock_value",
             field=models.DecimalField(decimal_places=2, max_digits=8),
         ),
         migrations.RunPython(create_merchandiseitems),

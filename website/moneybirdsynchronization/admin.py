@@ -4,7 +4,7 @@ from django.contrib.admin import RelatedOnlyFieldListFilter
 from .models import (
     MoneybirdContact,
     MoneybirdExternalInvoice,
-    MoneybirdGeneralJournalDocument,
+    MoneybirdMerchandiseSaleJournal,
     MoneybirdPayment,
 )
 
@@ -107,8 +107,8 @@ class MoneybirdPaymentAdmin(admin.ModelAdmin):
         return ("payment",)
 
 
-@admin.register(MoneybirdGeneralJournalDocument)
-class MoneybirdGeneralJournalDocumentAdmin(admin.ModelAdmin):
+@admin.register(MoneybirdMerchandiseSaleJournal)
+class MoneybirdMerchandiseSaleJournalAdmin(admin.ModelAdmin):
     list_display = (
         "order",
         "moneybird_general_journal_document_id",

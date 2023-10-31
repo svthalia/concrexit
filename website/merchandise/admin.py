@@ -14,10 +14,10 @@ class MerchandiseItemAdmin(ModelAdmin):
     fields = (
         "name",
         "price",
-        "purchase_price",
+        "stock_value",
         "description",
         "image",
     )
     search_fields = ("name", "description")
-    list_display = ("name", "price", "purchase_price")
-    list_filter = ("name", "price", "purchase_price")
+    list_display = ("name", "price", "stock_value")
+    list_filter = ("name", "price", "stock_value")

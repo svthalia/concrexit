@@ -400,24 +400,9 @@ class MoneybirdPayment(models.Model):
 
 
 class MoneybirdGeneralJournalDocument(models.Model):
-    order = models.OneToOneField(
-        Order,
-        on_delete=models.CASCADE,
-        verbose_name=_("order"),
-    )
-
     moneybird_general_journal_document_id = models.CharField(
         verbose_name=_("moneybird general journal document id"),
         max_length=255,
-        blank=True,
-        null=True,
-    )
-
-    external_invoice = models.OneToOneField(
-        MoneybirdExternalInvoice,
-        on_delete=models.DO_NOTHING,
-        verbose_name=_("external invoice"),
-        related_name="moneybird_journal_external_invoice",
         blank=True,
         null=True,
     )
@@ -435,10 +420,27 @@ class MoneybirdGeneralJournalDocument(models.Model):
     def __str__(self):
         return f"Moneybird journal for {self.order}"
 
+
+class MoneybirdMerchandiseSaleJournal(MoneybirdGeneralJournalDocument):
+    order = models.OneToOneField(
+        Order,
+        on_delete=models.CASCADE,
+        verbose_name=_("order"),
+    )
+
+    external_invoice = models.OneToOneField(
+        MoneybirdExternalInvoice,
+        on_delete=models.DO_NOTHING,
+        verbose_name=_("external invoice"),
+        related_name="moneybird_journal_external_invoice",
+        blank=True,
+        null=True,
+    )
+
     def to_moneybird(self):
         items = self.order.order_items.all()
         total_purchase_amount = sum(
-            MerchandiseItem.objects.get(name=i.product.product.name).purchase_price
+            MerchandiseItem.objects.get(name=i.product.product.name).stock_value
             * i.amount
             for i in items
         )

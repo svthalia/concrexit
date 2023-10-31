@@ -23,7 +23,7 @@ class MerchandiseItem(Product):
     )
 
     #: Purchase price of the merchandise item
-    purchase_price = models.DecimalField(
+    stock_value = models.DecimalField(
         max_digits=8,
         decimal_places=2,
     )
