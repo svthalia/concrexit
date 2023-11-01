@@ -1,22 +1,16 @@
-import io
 import os
 from secrets import token_urlsafe
 
-from django.conf import settings
-from django.core.files.base import ContentFile
-from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import models
 from django.db.models import Count, IntegerField, Value
 from django.db.models.functions import Coalesce
 
-from PIL import Image
 from queryable_properties.managers import QueryablePropertiesManager
 from queryable_properties.properties import AnnotationProperty
 from thumbnails.fields import ImageField
 
 from members.models import Member
 from photos.models import Photo
-from photos.services import photo_determine_rotation
 
 
 class FaceDetectionUser(Member):
@@ -101,36 +95,10 @@ class ReferenceFace(BaseFaceEncodingSource):
         related_name="reference_faces",
     )
 
-    file = ImageField(upload_to=reference_face_uploadto)
+    file = ImageField(resize_source_to="source", upload_to=reference_face_uploadto)
 
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     marked_for_deletion_at = models.DateTimeField(null=True, blank=True)
-
-    def save(self, **kwargs):
-        # Rotate the image and sotre an uprght version.
-        with self.file.open() as image_handle:
-            image = Image.open(image_handle)
-            image.load()
-
-        rotation = photo_determine_rotation(image)
-
-        image.thumbnail(settings.PHOTO_UPLOAD_SIZE, Image.ANTIALIAS)
-        image = image.rotate(360 - rotation, expand=True)
-
-        buffer = io.BytesIO()
-        image.convert("RGB").save(fp=buffer, format="JPEG")
-        buff_val = buffer.getvalue()
-        content = ContentFile(buff_val)
-        self.file = InMemoryUploadedFile(
-            content,
-            None,
-            "reference_face.jpg",
-            "image/jpeg",
-            content.tell,
-            None,
-        )
-
-        super().save(**kwargs)
 
     def delete(self, **kwargs):
         if self.file.name:
@@ -281,13 +249,13 @@ class BaseFaceEncoding(models.Model):
         if hasattr(self, "_encoding"):
             return self._encoding
 
-        self._encoding = [getattr(self, f"_field{i}") for i in range(0, 128)]
+        self._encoding = [getattr(self, f"_field{i}") for i in range(128)]
         return self._encoding
 
     @encoding.setter
     def encoding(self, value):
         self._encoding = value
-        for i in range(0, 128):
+        for i in range(128):
             setattr(self, f"_field{i}", value[i])
 
     def encoding_match_function(self) -> str:
@@ -297,7 +265,7 @@ class BaseFaceEncoding(models.Model):
         and checks whether it's less than a threshold of 0.49.
         """
         sum_of_squares = " + ".join(
-            f"power(_field{i} - {self.encoding[i]}, 2)" for i in range(0, 128)
+            f"power(_field{i} - {self.encoding[i]}, 2)" for i in range(128)
         )
         euclidean_distance = f"sqrt({sum_of_squares})"
 

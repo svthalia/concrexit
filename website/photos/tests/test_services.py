@@ -1,19 +1,11 @@
-import os
-
-from django.conf import settings
-from django.test import Client, RequestFactory, TestCase, override_settings
+from django.test import RequestFactory, TestCase, override_settings
 from django.utils.datetime_safe import datetime
 
 from freezegun import freeze_time
-from PIL import Image
 
 from members.models import Member, Membership
 from photos.models import Album
-from photos.services import (
-    get_annotated_accessible_albums,
-    is_album_accessible,
-    photo_determine_rotation,
-)
+from photos.services import get_annotated_accessible_albums, is_album_accessible
 
 
 @override_settings(SUSPEND_SIGNALS=True)
@@ -45,6 +37,8 @@ class IsAlbumAccesibleTest(TestCase):
             type=Membership.MEMBER,
             since=datetime(year=2016, month=1, day=1),
         )
+        self.member.refresh_from_db()  # Clear the cached membership
+
         with self.subTest(
             membership_since=membership.since, membership_until=membership.until
         ):
@@ -52,6 +46,8 @@ class IsAlbumAccesibleTest(TestCase):
 
         membership.until = datetime(year=2016, month=1, day=1)
         membership.save()
+        self.member.refresh_from_db()  # Clear the cached membership
+
         with self.subTest(
             membership_since=membership.since, membership_until=membership.until
         ):
@@ -59,6 +55,8 @@ class IsAlbumAccesibleTest(TestCase):
 
         membership.until = datetime(year=2017, month=1, day=1)
         membership.save()
+        self.member.refresh_from_db()  # Clear the cached membership
+
         with self.subTest(
             membership_since=membership.since, membership_until=membership.until
         ):
@@ -105,6 +103,8 @@ class GetAnnotatedAccessibleAlbumsTest(TestCase):
             type=Membership.MEMBER,
             since=datetime(year=2016, month=1, day=1),
         )
+        self.member.refresh_from_db()  # Clear the cached membership
+
         with self.subTest(
             membership_since=membership.since, membership_until=membership.until
         ):
@@ -115,6 +115,8 @@ class GetAnnotatedAccessibleAlbumsTest(TestCase):
 
         membership.until = datetime(year=2016, month=1, day=1)
         membership.save()
+        self.member.refresh_from_db()  # Clear the cached membership
+
         with self.subTest(
             membership_since=membership.since, membership_until=membership.until
         ):
@@ -125,6 +127,8 @@ class GetAnnotatedAccessibleAlbumsTest(TestCase):
 
         membership.until = datetime(year=2017, month=1, day=1)
         membership.save()
+        self.member.refresh_from_db()  # Clear the cached membership
+
         with self.subTest(
             membership_since=membership.since, membership_until=membership.until
         ):
@@ -132,27 +136,3 @@ class GetAnnotatedAccessibleAlbumsTest(TestCase):
             albums = get_annotated_accessible_albums(request, albums)
             for album in albums:
                 self.assertTrue(album.accessible)
-
-
-@override_settings(SUSPEND_SIGNALS=True)
-class DetermineRotationTest(TestCase):
-    fixtures = ["members.json"]
-
-    @classmethod
-    def setUpTestData(cls):
-        cls.member = Member.objects.filter(last_name="Wiggers").first()
-
-    def setUp(self):
-        self.client = Client()
-        self.client.force_login(self.member)
-
-    def test_rotation_detection(self):
-        orientations = [0, 0, 180, 180, 90, 90, 270, 270]
-        for i in range(1, 9):
-            with self.subTest(orentation=i):
-                with open(
-                    os.path.join(settings.BASE_DIR, f"photos/fixtures/poker_{i}.jpg"),
-                    "rb",
-                ) as f:
-                    rot = photo_determine_rotation(Image.open(f))
-                    self.assertEqual(orientations[i - 1], rot)

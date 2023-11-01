@@ -13,6 +13,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_healthy
 
   nginx:
     image: ghcr.io/svthalia/concrexit-nginx:${TAG}
@@ -38,12 +40,48 @@ services:
       - /volumes/postgres/data:/var/lib/postgresql/data:rw
     restart: always
     healthcheck:
-      test: ["CMD", "pg_isready", "--username", "concrexit"]
+      test: [ "CMD", "pg_isready", "--username", "concrexit" ]
       interval: 2s
       timeout: 2s
       retries: 30
+
+  redis:
+    image: redis:7.2-alpine
+    command: redis-server --save 120 1
+    volumes:
+      - redis-snapshot:/data/:rw
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli ping | grep PONG" ]
+      interval: 2s
+      timeout: 2s
+      retries: 10
+
+  worker:
+    image: ghcr.io/svthalia/concrexit:${TAG}
+    command: /app/worker-entrypoint.sh
+    env_file:
+      - env.public
+      - env.secret
+    volumes:
+      - celery-beat-db:/volumes/worker:rw
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      concrexit:
+        condition: service_started
+    healthcheck:
+      test: [ "CMD", "celery", "--app", "thaliawebsite", "status" ]
+      interval: 10s
+      timeout: 3s
+      retries: 10
 
 volumes:
   concrexit-media:
   concrexit-static:
   letsencrypt:
+  celery-beat-db:
+  redis-snapshot:

@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Permission
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.test import TestCase, override_settings
@@ -138,15 +139,36 @@ class PermissionsBackendTest(TestCase):
         cls.u1.save()
         cls.u2 = Member.objects.get(pk=2)
         cls.u3 = Member.objects.get(pk=3)
+        cls.u4 = Member.objects.get(pk=4)
+        cls.u5 = Member.objects.get(pk=5)
         cls.c1 = Committee.objects.get(pk=1)
         cls.c2 = Committee.objects.get(pk=2)
+        cls.c3 = Committee.objects.create()
+        cls.c3.chair_permissions.add(
+            Permission.objects.get(codename="add_board"),
+            Permission.objects.get(codename="change_board"),
+            Permission.objects.get(codename="view_board"),
+            Permission.objects.get(codename="delete_board"),
+        )
+
         cls.m1 = MemberGroupMembership.objects.create(group=cls.c1, member=cls.u1)
         cls.m2 = MemberGroupMembership.objects.create(group=cls.c2, member=cls.u2)
+        cls.m3 = MemberGroupMembership.objects.create(
+            group=cls.c3, member=cls.u4, has_chair_permissions=True
+        )
+        cls.m3 = MemberGroupMembership.objects.create(
+            group=cls.c3,
+            member=cls.u5,
+            has_chair_permissions=True,
+            until=timezone.now().replace(year=1900),
+        )
 
     def test_permissions(self):
         self.assertEqual(3, len(self.u1.get_all_permissions()))
         self.assertEqual(set(), self.u2.get_all_permissions())
         self.assertEqual(set(), self.u3.get_all_permissions())
+        self.assertEqual(4, len(self.u4.get_all_permissions()))
+        self.assertEqual(set(), self.u5.get_all_permissions())
 
     def test_nonmember_user(self):
         u = get_user_model().objects.create(username="foo")

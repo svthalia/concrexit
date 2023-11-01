@@ -14,7 +14,7 @@ from photos.api.v2.serializers.album import (
     PhotoListSerializer,
 )
 from photos.models import Album, Like, Photo
-from utils.media.services import fetch_thumbnails_db
+from utils.media.services import fetch_thumbnails
 
 
 class AlbumListView(ListAPIView):
@@ -25,7 +25,7 @@ class AlbumListView(ListAPIView):
     def get_serializer(self, *args, **kwargs):
         if len(args) > 0:
             albums = args[0]
-            fetch_thumbnails_db([album.cover.file for album in albums if album.cover])
+            fetch_thumbnails([album.cover.file for album in albums if album.cover])
         return super().get_serializer(*args, **kwargs)
 
     queryset = Album.objects.filter(hidden=False).select_related("_cover")
@@ -55,7 +55,7 @@ class AlbumDetailView(RetrieveAPIView):
 
     def get_object(self):
         object = super().get_object()
-        fetch_thumbnails_db([photo.file for photo in object.photo_set.all()])
+        fetch_thumbnails([photo.file for photo in object.photo_set.all()])
         return object
 
     def get_queryset(self):
@@ -95,7 +95,7 @@ class LikedPhotosListView(ListAPIView):
     def get_serializer(self, *args, **kwargs):
         if len(args) > 0:
             photos = args[0]
-            fetch_thumbnails_db([photo.file for photo in photos])
+            fetch_thumbnails([photo.file for photo in photos])
         return super().get_serializer(*args, **kwargs)
 
     def get_queryset(self):

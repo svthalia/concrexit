@@ -1,15 +1,14 @@
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Count, F, Q
+from django.db.models import Case, Count, F, Q, When
 from django.db.models.functions import Greatest, NullIf
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from queryable_properties.managers import QueryablePropertiesManager
-from queryable_properties.properties import AnnotationProperty
+from queryable_properties.properties import AnnotationProperty, queryable_property
 
-from events import emails
 from payments.models import PaymentAmountField
 
 from .event import Event
@@ -115,23 +114,30 @@ class EventRegistration(models.Model):
         return self.date_cancelled is None
 
     queue_position = AnnotationProperty(
-        # Get queue position by counting amount of registrations with lower date and in case of same date lower id
-        # Subsequently cast to None if this is 0 or lower, in which case it isn't in the queue
-        NullIf(
-            Greatest(
-                Count(
-                    "event__eventregistration",
-                    filter=Q(event__eventregistration__date_cancelled=None)
-                    & (
-                        Q(event__eventregistration__date__lt=F("date"))
-                        | Q(event__eventregistration__id__lte=F("id"))
-                        & Q(event__eventregistration__date__exact=F("date"))
+        Case(
+            # Get queue position by counting amount of registrations with lower date and in case of same date lower id
+            # Subsequently cast to None if this is 0 or lower, in which case it isn't in the queue
+            # If the current registration is cancelled, also force it to None.
+            When(
+                date_cancelled=None,
+                then=NullIf(
+                    Greatest(
+                        Count(
+                            "event__eventregistration",
+                            filter=Q(event__eventregistration__date_cancelled=None)
+                            & (
+                                Q(event__eventregistration__date__lt=F("date"))
+                                | Q(event__eventregistration__id__lte=F("id"))
+                                & Q(event__eventregistration__date__exact=F("date"))
+                            ),
+                        )
+                        - F("event__max_participants"),
+                        0,
                     ),
-                )
-                - F("event__max_participants"),
-                0,
+                    0,
+                ),
             ),
-            0,
+            default=None,
         )
     )
 
@@ -170,9 +176,17 @@ class EventRegistration(models.Model):
     def is_paid(self):
         return self.payment
 
-    @property
+    @queryable_property
     def payment_amount(self):
         return self.event.price if not self.special_price else self.special_price
+
+    @payment_amount.annotater
+    @classmethod
+    def payment_amount(cls):
+        return Case(
+            When(Q(special_price__isnull=False), then=F("special_price")),
+            default=F("event__price"),
+        )
 
     def would_cancel_after_deadline(self):
         now = timezone.now()
@@ -219,23 +233,7 @@ class EventRegistration(models.Model):
 
     def save(self, **kwargs):
         self.full_clean()
-
-        created = self.pk is None
         super().save(**kwargs)
-
-        if (
-            created
-            and self.is_registered
-            and self.email
-            and self.event.registration_required
-        ):
-            if (
-                self.member is not None
-                and not self.member.profile.receive_registration_confirmation
-            ):
-                return  # Don't send email if the user doesn't want them.
-
-            emails.notify_registration(self)
 
     def __str__(self):
         if self.member:

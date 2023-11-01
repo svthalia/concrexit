@@ -1,49 +1,21 @@
-import hashlib
-import io
 import logging
 import os
 import tarfile
-from zipfile import ZipFile, ZipInfo, is_zipfile
+from zipfile import ZipFile, is_zipfile
 
-from django.conf import settings
 from django.contrib import messages
 from django.core.files import File
-from django.core.files.base import ContentFile
-from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.db import transaction
 from django.db.models import BooleanField, Case, ExpressionWrapper, Q, Value, When
+from django.forms import ValidationError
 from django.http import Http404
 from django.utils.translation import gettext_lazy as _
 
-from PIL import ExifTags, Image, UnidentifiedImageError
-from PIL.JpegImagePlugin import JpegImageFile
+from PIL import UnidentifiedImageError
 
 from photos.models import Photo
 
 logger = logging.getLogger(__name__)
-
-EXIF_ORIENTATION = {
-    1: 0,
-    2: 0,
-    3: 180,
-    4: 180,
-    5: 90,
-    6: 90,
-    7: 270,
-    8: 270,
-}
-
-
-def photo_determine_rotation(pil_image):
-    """Get the rotation of an image."""
-    if isinstance(pil_image, JpegImageFile) and pil_image._getexif():
-        exif = {
-            ExifTags.TAGS[k]: v
-            for k, v in pil_image._getexif().items()
-            if k in ExifTags.TAGS
-        }
-        if exif.get("Orientation"):
-            return EXIF_ORIENTATION[exif.get("Orientation")]
-    return 0
 
 
 def check_shared_album_token(album, token):
@@ -95,107 +67,64 @@ def get_annotated_accessible_albums(request, albums):
 
 def extract_archive(request, album, archive):
     """Extract zip and tar files."""
-    iszipfile = is_zipfile(archive)
-    archive.seek(0)
-
-    if iszipfile:
+    if is_zipfile(archive):
+        archive.seek(0)
         with ZipFile(archive) as zip_file:
-            for photo in sorted(zip_file.infolist(), key=lambda x: x.filename):
-                extract_photo(request, zip_file, photo, album)
-    else:
-        # is_tarfile only supports filenames, so we cannot use that
-        try:
-            with tarfile.open(fileobj=archive) as tar_file:
-                for photo in sorted(tar_file.getmembers(), key=lambda x: x.name):
-                    extract_photo(request, tar_file, photo, album)
-        except tarfile.ReadError as e:
-            raise ValueError(_("The uploaded file is not a zip or tar file.")) from e
+            for photo in sorted(zip_file.namelist()):
+                if not _has_photo_extension(photo):
+                    messages.add_message(request, messages.WARNING, f"Ignoring {photo}")
+                    continue
 
-
-def extract_photo(request, archive_file, photo, album):
-    """Extract ZipInfo or TarInfo Photo object."""
-    # zipfile and tarfile are inconsistent
-    if isinstance(photo, ZipInfo):
-        photo_filename = photo.filename
-        extract_file = archive_file.open
-    elif isinstance(photo, tarfile.TarInfo):
-        photo_filename = photo.name
-        extract_file = archive_file.extractfile
-    else:
-        raise TypeError("'photo' must be a ZipInfo or TarInfo object.")
-
-    # Ignore directories
-    if not os.path.basename(photo_filename):
+                with zip_file.open(photo) as file:
+                    _try_save_photo(request, album, file, photo)
         return
 
-    # Generate unique filename
-    num = album.photo_set.count()
-    __, extension = os.path.splitext(photo_filename)
-    new_filename = str(num).zfill(4) + extension
-
-    photo_obj = Photo()
-    photo_obj.album = album
+    archive.seek(0)
+    # is_tarfile only supports filenames, so we cannot use that
     try:
-        with extract_file(photo) as f:
-            if not save_photo(photo_obj, File(f), new_filename):
-                messages.add_message(
-                    request,
-                    messages.WARNING,
-                    _("{} is duplicate.").format(photo_filename),
-                )
-    except (OSError, AttributeError, UnidentifiedImageError) as e:
-        print(e)
+        with tarfile.open(fileobj=archive) as tar_file:
+            for photo in sorted(tar_file.getnames()):
+                if not _has_photo_extension(photo):
+                    messages.add_message(request, messages.WARNING, f"Ignoring {photo}")
+                    continue
+
+                with tar_file.extractfile(photo) as file:
+                    _try_save_photo(request, album, file, photo)
+    except tarfile.ReadError as e:
+        raise ValueError(_("The uploaded file is not a zip or tar file.")) from e
+
+
+def _has_photo_extension(filename):
+    """Check if the filename has a photo extension."""
+    __, extension = os.path.splitext(filename)
+    return extension.lower() in (".jpg", ".jpeg", ".png", ".webp")
+
+
+def _try_save_photo(request, album, file, filename):
+    """Try to save a photo to an album."""
+    instance = Photo(album=album)
+    instance.file = File(file, filename)
+    try:
+        with transaction.atomic():
+            instance.full_clean()
+            instance.save()
+    except ValidationError as e:
+        errors = e.message_dict
+        if "This photo already exists in this album." in errors.get("file", []):
+            messages.add_message(
+                request,
+                messages.WARNING,
+                f"{filename} is duplicate.",
+            )
+        else:
+            messages.add_message(
+                request,
+                messages.WARNING,
+                f"{filename} cannot be opened.",
+            )
+    except UnidentifiedImageError:
         messages.add_message(
-            request, messages.WARNING, _("Ignoring {}").format(photo_filename)
+            request,
+            messages.WARNING,
+            f"{filename} cannot be opened.",
         )
-
-
-def save_photo(photo_obj, file, filename):
-    """Convert a Photo object to a JPG image and save it.
-
-    Returns True if photo is saved successfully and False if Photo is a duplicate.
-    """
-    hash_sha1 = hashlib.sha1()
-    for chunk in iter(lambda: file.read(4096), b""):
-        hash_sha1.update(chunk)
-    photo_obj.file.close()
-    digest = hash_sha1.hexdigest()
-    photo_obj._digest = digest
-
-    with file.open() as image_handle:
-        image = Image.open(image_handle)
-        image.load()
-
-    if (
-        Photo.objects.filter(album=photo_obj.album, _digest=digest)
-        .exclude(pk=photo_obj.pk)
-        .exists()
-    ):
-        return False
-
-    image_path, _ext = os.path.splitext(filename)
-    image_path = f"{image_path}.jpg"
-
-    photo_obj.rotation = photo_determine_rotation(image)
-
-    # Image.thumbnail does not upscale an image that is smaller
-    image.thumbnail(settings.PHOTO_UPLOAD_SIZE, Image.ANTIALIAS)
-
-    logger.info("Trying to save to %s", image_path)
-
-    buffer = io.BytesIO()
-    image.convert("RGB").save(fp=buffer, format="JPEG")
-    buff_val = buffer.getvalue()
-    content = ContentFile(buff_val)
-    photo_obj.file = InMemoryUploadedFile(
-        content,
-        None,
-        image_path,
-        "image/jpeg",
-        content.tell,
-        None,
-    )
-
-    photo_obj.save()
-
-    return True

@@ -1,5 +1,9 @@
-from moneybirdsynchronization.administration import Administration, HttpsAdministration
-from thaliawebsite import settings
+from decimal import Decimal
+from typing import Union
+
+from django.conf import settings
+
+from moneybirdsynchronization.administration import HttpsAdministration
 
 
 class MoneybirdAPIService:
@@ -14,12 +18,6 @@ class MoneybirdAPIService:
 
     def delete_contact(self, contact_id):
         self._administration.delete(f"contacts/{contact_id}")
-
-    def get_contact_by_customer_id(self, member):
-        try:
-            self._administration.get(f"contacts/customer_id/C-{member.pk}")
-        except Administration.NotFound:
-            return None
 
     def create_project(self, project_data):
         return self._administration.post("projects", project_data)
@@ -57,7 +55,11 @@ class MoneybirdAPIService:
         return self._administration.delete(f"financial_statements/{statement_id}")
 
     def link_mutation_to_booking(
-        self, mutation_id, booking_id, price_base, booking_type="ExternalSalesInvoice"
+        self,
+        mutation_id: int,
+        booking_id: int,
+        price_base: Union[Decimal, str],
+        booking_type: str = "ExternalSalesInvoice",
     ):
         return self._administration.patch(
             f"financial_mutations/{mutation_id}/link_booking",
@@ -69,12 +71,10 @@ class MoneybirdAPIService:
         )
 
     def get_financial_mutation_info(self, mutation_id):
-        return self._administration.post(
-            "financial_mutations/synchronization", data={"ids": [mutation_id]}
-        )
+        return self._administration.get(f"financial_mutations/{mutation_id}")
 
     def unlink_mutation_from_booking(
-        self, mutation_id, booking_id, booking_type="Payment"
+        self, mutation_id: int, booking_id: int, booking_type: str = "Payment"
     ):
         return self._administration.delete(
             f"financial_mutations/{mutation_id}/unlink_booking",

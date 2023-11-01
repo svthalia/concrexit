@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib.admin import display as admin_display
 from django.contrib.auth.models import Permission
 from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
+from django.core.files.storage import storages
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.urls import reverse
@@ -15,7 +16,7 @@ from django.utils.translation import gettext_lazy as _
 from thumbnails.fields import ImageField
 from tinymce.models import HTMLField
 
-from thaliawebsite.storage.backend import get_public_storage
+from utils.media.services import get_upload_to_function
 from utils.snippets import overlaps
 
 logger = logging.getLogger(__name__)
@@ -40,8 +41,9 @@ class MemberGroup(models.Model):
 
     photo = ImageField(
         verbose_name=_("Image"),
-        upload_to="committeephotos/",
-        storage=get_public_storage,
+        resize_source_to="source",
+        upload_to=get_upload_to_function("committeephotos"),
+        storage=storages["public"],
         null=True,
         blank=True,
     )
@@ -54,6 +56,15 @@ class MemberGroup(models.Model):
         Permission,
         verbose_name=_("permissions"),
         blank=True,
+        related_name="permissions_groups",
+    )
+
+    chair_permissions = models.ManyToManyField(
+        Permission,
+        verbose_name=_("chair permissions"),
+        blank=True,
+        help_text="Permissions only for certain members of a committee",
+        related_name="chair_permissions_groups",
     )
 
     since = models.DateField(
@@ -261,6 +272,12 @@ class MemberGroupMembership(models.Model):
     chair = models.BooleanField(
         verbose_name=_("Chair of the group"),
         help_text=_("There can only be one chair at a time!"),
+        default=False,
+    )
+
+    has_chair_permissions = models.BooleanField(
+        verbose_name=_("Person with chair permissions"),
+        help_text=_("Give this member chair permission"),
         default=False,
     )
 

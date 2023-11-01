@@ -137,20 +137,3 @@ class AlbumUploadTest(TestCase):
 
         self.assertEqual(Album.objects.all().count(), 1)
         self.assertEqual(Photo.objects.all().count(), 2)
-
-    def test_album_upload_rotated_photo_in_album(self):
-        output_file = create_zip(
-            [os.path.join(settings.BASE_DIR, "photos/fixtures/rotated_janbeleid.jpg")]
-        )
-        self.client.post(
-            "/admin/photos/album/add/",
-            {
-                "title": "test album",
-                "date": "2017-04-12",
-                "slug": "2017-04-12-test-album",
-                "album_archive": output_file,
-            },
-            follow=True,
-        )
-
-        self.assertEqual(Photo.objects.first().rotation, 90)

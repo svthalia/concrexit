@@ -1,38 +1,41 @@
-import io
+import os
+from functools import partial
+from secrets import token_hex
+from typing import Optional
 
 from django.conf import settings
-from django.core.files.base import ContentFile
 from django.core.files.storage import DefaultStorage
-from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models.fields.files import FieldFile, ImageFieldFile
 
 from thumbnails.backends.metadata import ImageMeta
+from thumbnails.fields import fetch_thumbnails as fetch_thumbnails_redis
 from thumbnails.files import ThumbnailedImageFile
 from thumbnails.images import Thumbnail
 from thumbnails.models import ThumbnailMeta
 
 
-def save_image(storage, image, path, format):
-    buffer = io.BytesIO()
-    image.convert("RGB" if format == "JPEG" else "RGBA").save(fp=buffer, format=format)
-    buff_val = buffer.getvalue()
-    content = ContentFile(buff_val)
-    file = InMemoryUploadedFile(
-        content,
-        None,
-        f"foo.{format.lower()}",
-        f"image/{format.lower()}",
-        content.tell,
-        None,
-    )
-    return storage.save(path, file)
+def _generic_upload_to(instance, filename, prefix: str, token_bytes: int):
+    ext = os.path.splitext(filename)[1]
+    return os.path.join(prefix, f"{token_hex(token_bytes)}{ext}")
+
+
+def get_upload_to_function(prefix: str, token_bytes: int = 8):
+    """Return a partial function that can be used as the upload_to argument of a FileField.
+
+    This is useful to avoid having numerous functions that all do the same thing, with
+    different prefixes. Using a partial function makes it serializable for migrations.
+    See: https://docs.djangoproject.com/en/4.2/topics/migrations/#migration-serializing.
+
+    The resulting function returns paths like `<prefix>/<random hex string>.<ext>`.
+    """
+    return partial(_generic_upload_to, prefix=prefix, token_bytes=token_bytes)
 
 
 def get_media_url(
     file,
     attachment=False,
     absolute_url: bool = False,
-    expire_seconds: int = None,
+    expire_seconds: Optional[int] = None,
 ):
     """Get the url of the provided media file to serve in a browser.
 
@@ -63,7 +66,7 @@ def get_thumbnail_url(
     file,
     size: str,
     absolute_url: bool = False,
-    expire_seconds: int = None,
+    expire_seconds: Optional[int] = None,
 ):
     name = file
     if isinstance(file, (ImageFieldFile, FieldFile)):
@@ -80,8 +83,8 @@ def get_thumbnail_url(
     return get_media_url(file, absolute_url=absolute_url)
 
 
-def fetch_thumbnails_db(images, sizes=None):
-    """Prefetches thumbnails from the database in one query.
+def fetch_thumbnails(images: list, sizes=None):
+    """Prefetches thumbnails from the database or redis efficiently.
 
     :param images: A list of images to prefetch thumbnails for.
     :param sizes: A list of sizes to prefetch. If None, all sizes will be prefetched.
@@ -89,6 +92,12 @@ def fetch_thumbnails_db(images, sizes=None):
     """
     if not images:
         return
+
+    if (
+        settings.THUMBNAILS["METADATA"]["BACKEND"]
+        != "thumbnails.backends.metadata.DatabaseBackend"
+    ):
+        return fetch_thumbnails_redis(images, sizes)
 
     image_dict = {image.thumbnails.source_image.name: image for image in images}
     thumbnails = ThumbnailMeta.objects.select_related("source").filter(

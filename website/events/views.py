@@ -15,7 +15,7 @@ from events.exceptions import RegistrationError
 from events.models import categories
 from events.services import is_user_registered
 from payments.models import Payment
-from utils.media.services import fetch_thumbnails_db
+from utils.media.services import fetch_thumbnails
 
 from .forms import FieldsForm
 from .models import Event, EventRegistration
@@ -88,7 +88,7 @@ class EventDetail(DetailView):
             "member", "member__profile"
         )
 
-        fetch_thumbnails_db(
+        fetch_thumbnails(
             [p.member.profile.photo for p in context["participants"] if p.member]
         )
 

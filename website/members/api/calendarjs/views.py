@@ -1,10 +1,12 @@
 import copy
 
+from django.db.models import Prefetch, prefetch_related_objects
+
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 
 from members.api.calendarjs.serializers import MemberBirthdaySerializer
-from members.models import Member
+from members.models import Member, Membership
 from utils.snippets import extract_date_range
 
 
@@ -37,11 +39,21 @@ class CalendarJSBirthdayListView(ListAPIView):
     def get_queryset(self):
         start, end = extract_date_range(self.request)
 
-        queryset = Member.current_members.with_birthdays_in_range(start, end).filter(
-            profile__show_birthday=True
+        queryset = (
+            Member.current_members.with_birthdays_in_range(start, end)
+            .filter(profile__show_birthday=True)
+            .select_related("profile")
         )
 
         all_birthdays = [self._get_birthdays(m, start, end) for m in queryset.all()]
         birthdays = [x for sublist in all_birthdays for x in sublist]
+        prefetch_related_objects(
+            birthdays,
+            Prefetch(
+                "membership_set",
+                queryset=Membership.objects.order_by("-since")[:1],
+                to_attr="_latest_membership",
+            ),
+        )
 
         return birthdays

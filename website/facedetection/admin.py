@@ -1,8 +1,10 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.db.models.query import Prefetch
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+
+from facedetection.services import trigger_facedetection_lambda
 
 from .models import (
     FaceDetectionPhoto,
@@ -44,10 +46,24 @@ class ReferenceFaceAdmin(admin.ModelAdmin):
     list_filter = ["status", "marked_for_deletion_at"]
     inlines = [ReferenceFaceEncodingInline]
 
+    actions = ["resubmit_reference_faces"]
+
     def get_readonly_fields(self, request, obj=None):
         if obj is None:
             return ["created_at", "submitted_at", "status"]
         return ["file", "user", "created_at", "submitted_at", "status"]
+
+    @admin.action(description="Resubmit reference faces for analysis.")
+    def resubmit_reference_faces(self, request, queryset) -> list[ReferenceFace]:
+        querylist = list(
+            queryset.filter(
+                status=FaceDetectionPhoto.Status.PROCESSING,
+            )
+        )
+        if querylist:
+            trigger_facedetection_lambda(querylist)
+            messages.success(request, "Resubmit successful.")
+        return querylist
 
 
 class PhotoFaceEncodingInline(admin.TabularInline):
@@ -120,6 +136,8 @@ class FaceDetectionPhotoAdmin(admin.ModelAdmin):
     list_filter = ["status", "submitted_at"]
     inlines = [PhotoFaceEncodingInline]
 
+    actions = ["resubmit_face_detection_photos"]
+
     def get_queryset(self, request):
         return (
             super()
@@ -131,3 +149,17 @@ class FaceDetectionPhotoAdmin(admin.ModelAdmin):
 
     def has_add_permission(self, request):
         return False
+
+    @admin.action(description="Resubmits face detection photos for analysis.")
+    def resubmit_face_detection_photos(
+        self, request, queryset
+    ) -> list[FaceDetectionPhoto]:
+        querylist = list(
+            queryset.filter(
+                status=FaceDetectionPhoto.Status.PROCESSING,
+            )
+        )
+        if querylist:
+            trigger_facedetection_lambda(querylist)
+            messages.success(request, "Resubmit successful.")
+        return querylist

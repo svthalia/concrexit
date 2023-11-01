@@ -11,10 +11,13 @@ import base64
 import json
 import logging
 import os
+from typing import Optional
 
 from django.core.management.commands import makemessages
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+
+from celery.schedules import crontab
 
 logger = logging.getLogger(__name__)
 
@@ -282,25 +285,30 @@ if AWS_STORAGE_BUCKET_NAME is not None:
     AWS_CLOUDFRONT_KEY_ID = os.environ.get("AWS_CLOUDFRONT_KEY_ID", None)
     AWS_S3_CUSTOM_DOMAIN = os.environ.get("AWS_CLOUDFRONT_DOMAIN", None)
 
-    STATICFILES_STORAGE = "thaliawebsite.storage.backend.StaticS3Storage"
+    _STATICFILES_STORAGE = "thaliawebsite.storage.backend.StaticS3Storage"
     STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/static/"
 
-    DEFAULT_FILE_STORAGE = "thaliawebsite.storage.backend.PrivateS3Storage"
+    _DEFAULT_FILE_STORAGE = "thaliawebsite.storage.backend.PrivateS3Storage"
 
-    PUBLIC_FILE_STORAGE = "thaliawebsite.storage.backend.PublicS3Storage"
+    _PUBLIC_FILE_STORAGE = "thaliawebsite.storage.backend.PublicS3Storage"
     PUBLIC_MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/"
 else:
-    STATICFILES_STORAGE = setting(
+    _STATICFILES_STORAGE = setting(
         development="django.contrib.staticfiles.storage.StaticFilesStorage",
         production="django.contrib.staticfiles.storage.ManifestStaticFilesStorage",
     )
     STATIC_URL = "/static/"
 
-    DEFAULT_FILE_STORAGE = "thaliawebsite.storage.backend.PrivateFileSystemStorage"
+    _DEFAULT_FILE_STORAGE = "thaliawebsite.storage.backend.PrivateFileSystemStorage"
 
-    PUBLIC_FILE_STORAGE = "thaliawebsite.storage.backend.PublicFileSystemStorage"
+    _PUBLIC_FILE_STORAGE = "thaliawebsite.storage.backend.PublicFileSystemStorage"
     PUBLIC_MEDIA_URL = "/media/public/"
 
+STORAGES = {
+    "default": {"BACKEND": _DEFAULT_FILE_STORAGE},
+    "public": {"BACKEND": _PUBLIC_FILE_STORAGE},
+    "staticfiles": {"BACKEND": _STATICFILES_STORAGE},
+}
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#conn-max-age
 CONN_MAX_AGE = int(from_env("CONN_MAX_AGE", development="0", production="60"))
@@ -322,6 +330,95 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
+
+###############################################################################
+# Celery settings
+# https://docs.celeryq.dev/en/stable/userguide/configuration.html#configuration
+
+# Set CELERY_BROKER_URL="redis://127.0.0.1:6379" to use a local redis server in development.
+CELERY_BROKER_URL = from_env("CELERY_BROKER_URL")
+
+# Always execute tasks synchronously when no broker is configured in development and testing.
+# See https://docs.celeryq.dev/en/stable/userguide/configuration.html#std-setting-task_always_eager
+CELERY_TASK_ALWAYS_EAGER = CELERY_BROKER_URL is None
+
+
+# See https://docs.celeryq.dev/en/stable/getting-started/backends-and-brokers/redis.html#caveats
+CELERY_BROKER_TRANSPORT_OPTIONS = {"visibility_timeout": 18000}
+
+# https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html
+CELERY_BEAT_SCHEDULE = {
+    "synchronize_mailinglists": {
+        "task": "mailinglists.tasks.sync_mail",
+        "schedule": crontab(minute=30),
+    },
+    "synchronize_moneybird": {
+        "task": "moneybirdsynchronization.tasks.synchronize_moneybird",
+        "schedule": crontab(minute=30, hour=1),
+    },
+    "sendpromooverviewweekly": {
+        "task": "promotion.tasks.promo_update_weekly",
+        "schedule": crontab(minute=0, hour=8, day_of_week=1),
+    },
+    "sendpromoooverviewdaily": {
+        "task": "promotion.tasks.promo_update_daily",
+        "schedule": crontab(minute=0, hour=8),
+    },
+    "facedetectlambda": {
+        "task": "facedetection.tasks.trigger_facedetect_lambda",
+        "schedule": crontab(minute=0, hour=1),
+    },
+    "revokeoldmandates": {
+        "task": "payments.tasks.revoke_mandates",
+        "schedule": crontab(minute=0, hour=1),
+    },
+    "membershipannouncement": {
+        "task": "members.tasks.membership_announcement",
+        "schedule": crontab(minute=0, hour=6, day_of_month=31, month_of_year=8),
+    },
+    "inforequest": {
+        "task": "members.tasks.info_request",
+        "schedule": crontab(minute=0, hour=6, day_of_month=15, month_of_year=10),
+    },
+    "expirationannouncement": {
+        "task": "members.tasks.expiration_announcement",
+        "schedule": crontab(minute=0, hour=6, day_of_month=8, month_of_year=8),
+    },
+    "minimiseregistration": {
+        "task": "registrations.tasks.minimise_registrations",
+        "schedule": crontab(minute=0, hour=3, day_of_month=1),
+    },
+    "sendscheduledmessages": {
+        "task": "pushnotifications.tasks.send_scheduled_messages",
+        "schedule": crontab(minute="*/2"),
+        "args": (120,),
+    },
+    "revokestaff": {
+        "task": "activemembers.tasks.revoke_staff",
+        "schedule": crontab(minute=30, hour=3),
+    },
+    "deletegsuiteusers": {
+        "task": "activemembers.tasks.delete_gsuite_users",
+        "schedule": crontab(minute=30, hour=3, day_of_week=1),
+    },
+    "sendplannednewsletters": {
+        "task": "newsletters.tasks.send_planned_newsletters",
+        "schedule": crontab(minute="*/5"),
+    },
+    "dataminimisation": {
+        "task": "thaliawebsite.tasks.data_minimisation",
+        "schedule": crontab(minute=0, hour=3),
+    },
+    "cleanup": {
+        "task": "thaliawebsite.tasks.clean_up",
+        "schedule": crontab(minute=0, hour=23),
+    },
+    "cleartokens": {
+        "task": "thaliawebsite.tasks.clear_tokens",
+        "schedule": crontab(minute=30, hour=3),
+    },
+}
 
 ###############################################################################
 # Email settings
@@ -439,15 +536,22 @@ GOOGLE_PLACES_API_KEY = os.environ.get("GOOGLE_PLACES_API_KEY", "")
 # Sentry setup
 if "SENTRY_DSN" in os.environ:
     import sentry_sdk
+    from sentry_sdk.integrations.celery import CeleryIntegration
     from sentry_sdk.integrations.django import DjangoIntegration
 
     sentry_sdk.init(
         dsn=os.environ.get("SENTRY_DSN"),
-        integrations=[DjangoIntegration()],
+        integrations=[
+            DjangoIntegration(),
+            CeleryIntegration(
+                monitor_beat_tasks=True,
+            ),
+        ],
         release=SOURCE_COMMIT,
         send_default_pii=True,
         environment=DJANGO_ENV,
-        traces_sample_rate=0.2,
+        traces_sample_rate=float(os.environ.get("SENTRY_TRACES_SAMPLE_RATE", 0.2)),
+        profiles_sample_rate=float(os.environ.get("SENTRY_PROFILES_SAMPLE_RATE", 0.0)),
     )
 
 
@@ -620,8 +724,21 @@ LOGGING = {
     },
 }
 
+REDIS_CACHE_PORT = int(
+    from_env("REDIS_CACHE_PORT", development="6379", production="6379")
+)
+REDIS_CACHE_HOST = from_env("REDIS_CACHE_HOST")
+REDIS_CACHE_URL = (
+    f"redis://{REDIS_CACHE_HOST}:{REDIS_CACHE_PORT}" if REDIS_CACHE_HOST else None
+)
+
 CACHES = {
     "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": REDIS_CACHE_URL,
+    }
+    if REDIS_CACHE_URL is not None
+    else {
         "BACKEND": "django.core.cache.backends.db.DatabaseCache",
         "LOCATION": "django_default_db_cache",
     },
@@ -767,112 +884,172 @@ STATICFILES_FINDERS = (
 # See https://github.com/jrief/django-sass-processor
 SASS_PROCESSOR_INCLUDE_FILE_PATTERN = r"^.+\.scss$"
 
+# django-sass-processor does not use the Django 4.2 `storages` API yet,
+# but we can simply give it the path as we would with the new API.
+SASS_PROCESSOR_STORAGE = _STATICFILES_STORAGE
+
 # See utils/model/signals.py for explanation
 SUSPEND_SIGNALS = False
 
-THUMBNAILS = {
-    "METADATA": {
+THUMBNAILS_METADATA = (
+    {
+        "BACKEND": "thumbnails.backends.metadata.RedisBackend",
+        "host": REDIS_CACHE_HOST,
+        "port": REDIS_CACHE_PORT,
+    }
+    if REDIS_CACHE_HOST
+    else {
         "BACKEND": "thumbnails.backends.metadata.DatabaseBackend",
-    },
+    }
+)
+
+THUMBNAILS = {
+    "METADATA": THUMBNAILS_METADATA,
     "STORAGE": {
-        "BACKEND": DEFAULT_FILE_STORAGE,
+        # django-thumbs does not use the Django 4.2 `storages` API yet,
+        # but we can simply give it the path as we would with the new API.
+        "BACKEND": _DEFAULT_FILE_STORAGE,
     },
     "SIZES": {
         "small": {
+            "FORMAT": "webp",
             "PROCESSORS": [
                 {
-                    "PATH": "thumbnails.processors.resize",
-                    "width": 300,
-                    "height": 300,
-                    "method": "fit",
+                    "PATH": "utils.media.processors.thumbnail",
+                    "size": (300, 300),
+                    "cover": True,
                 },
             ],
         },
         "medium": {
+            "FORMAT": "webp",
             "PROCESSORS": [
                 {
-                    "PATH": "thumbnails.processors.resize",
-                    "width": 600,
-                    "height": 600,
-                    "method": "fit",
+                    "PATH": "utils.media.processors.thumbnail",
+                    "size": (600, 600),
+                    "cover": True,
                 },
             ],
         },
         "large": {
+            "FORMAT": "webp",
             "PROCESSORS": [
                 {
-                    "PATH": "thumbnails.processors.resize",
-                    "width": 1200,
-                    "height": 900,
-                    "method": "fit",
+                    "PATH": "utils.media.processors.thumbnail",
+                    "size": (1200, 900),
+                    "cover": True,
                 },
             ],
         },
         "photo_medium": {
+            "FORMAT": "webp",
             "PROCESSORS": [
                 {
-                    "PATH": "thumbnails.processors.resize",
-                    "width": 1200,
-                    "height": 900,
+                    "PATH": "utils.media.processors.thumbnail",
+                    "size": (1200, 900),
                 },
             ],
         },
         "photo_large": {
+            "FORMAT": "webp",
             "PROCESSORS": [
                 {
-                    "PATH": "thumbnails.processors.resize",
-                    "width": 1920,
-                    "height": 1920,
+                    "PATH": "utils.media.processors.thumbnail",
+                    "size": (1920, 1920),
                 },
             ],
         },
         "avatar_large": {
+            "FORMAT": "webp",
             "PROCESSORS": [
                 {
-                    "PATH": "thumbnails.processors.resize",
-                    "width": 900,
-                    "height": 900,
-                    "method": "fit",
+                    "PATH": "utils.media.processors.thumbnail",
+                    "size": (900, 900),
+                    "cover": True,
                 },
             ],
         },
         "slide_small": {
+            "FORMAT": "webp",
             "PROCESSORS": [
                 {
-                    "PATH": "thumbnails.processors.resize",
-                    "width": 500,
-                    "height": 108,
-                    "method": "fit",
+                    "PATH": "utils.media.processors.thumbnail",
+                    "size": (500, 108),
+                    "cover": True,
                 },
             ],
         },
         "slide_medium": {
+            "FORMAT": "webp",
             "PROCESSORS": [
                 {
-                    "PATH": "thumbnails.processors.resize",
-                    "width": 1000,
-                    "height": 215,
-                    "method": "fit",
+                    "PATH": "utils.media.processors.thumbnail",
+                    "size": (1000, 215),
+                    "cover": True,
                 },
             ],
         },
         "slide": {
+            "FORMAT": "webp",
             "PROCESSORS": [
                 {
-                    "PATH": "thumbnails.processors.resize",
-                    "width": 200,
-                    "height": 430,
-                    "method": "fit",
+                    "PATH": "utils.media.processors.thumbnail",
+                    "size": (2000, 430),
+                    "cover": True,
                 },
+            ],
+        },
+        "fit_small": {
+            "FORMAT": "webp",
+            "PROCESSORS": [
+                {
+                    "PATH": "utils.media.processors.thumbnail",
+                    "size": (300, 300),
+                },
+            ],
+        },
+        "fit_medium": {
+            "FORMAT": "webp",
+            "PROCESSORS": [
+                {
+                    "PATH": "utils.media.processors.thumbnail",
+                    "size": (600, 600),
+                },
+            ],
+        },
+        "fit_large": {
+            "FORMAT": "webp",
+            "PROCESSORS": [
+                {
+                    "PATH": "utils.media.processors.thumbnail",
+                    "size": (1200, 900),
+                },
+            ],
+        },
+        "source": {
+            "FORMAT": "jpg",
+            "PROCESSORS": [
+                {
+                    "PATH": "utils.media.processors.process_upload",
+                    "size": (8_000, 8_000),
+                    "format": "jpg",
+                }
+            ],
+        },
+        "source_png": {
+            "FORMAT": "png",
+            "PROCESSORS": [
+                {
+                    "PATH": "utils.media.processors.process_upload",
+                    "size": (8_000, 8_000),
+                    "format": "png",
+                }
             ],
         },
     },
 }
 
 THUMBNAIL_SIZES = set(THUMBNAILS["SIZES"].keys())
-
-# Photos settings
-PHOTO_UPLOAD_SIZE = 2560, 1440
 
 # TinyMCE config
 TINYMCE_DEFAULT_CONFIG = {
@@ -934,27 +1111,52 @@ GRAPH_MODELS = {
     ],
 }
 
-MONEYBIRD_ADMINISTRATION_ID = os.environ.get("MONEYBIRD_ADMINISTRATION_ID", None)
-MONEYBIRD_API_KEY = os.environ.get("MONEYBIRD_API_KEY", None)
+MONEYBIRD_START_DATE = os.environ.get("MONEYBIRD_START_DATE", "2023-09-01")
+
+MONEYBIRD_ADMINISTRATION_ID: Optional[int] = (
+    int(os.environ.get("MONEYBIRD_ADMINISTRATION_ID"))
+    if os.environ.get("MONEYBIRD_ADMINISTRATION_ID")
+    else None
+)
+
+MONEYBIRD_API_KEY = os.environ.get("MONEYBIRD_API_KEY")
 
 MONEYBIRD_SYNC_ENABLED = MONEYBIRD_ADMINISTRATION_ID and MONEYBIRD_API_KEY
 
-MONEYBIRD_MEMBER_PK_CUSTOM_FIELD_ID = os.environ.get(
-    "MONEYBIRD_MEMBER_PK_CUSTOM_FIELD_ID", None
+MONEYBIRD_MEMBER_PK_CUSTOM_FIELD_ID: Optional[int] = (
+    int(os.environ.get("MONEYBIRD_MEMBER_PK_CUSTOM_FIELD_ID"))
+    if os.environ.get("MONEYBIRD_MEMBER_PK_CUSTOM_FIELD_ID")
+    else None
 )
-MONEYBIRD_UNKNOWN_PAYER_CONTACT_ID = os.environ.get(
-    "MONEYBIRD_UNKNOWN_PAYER_CONTACT_ID", None
+MONEYBIRD_UNKNOWN_PAYER_CONTACT_ID: Optional[int] = (
+    int(os.environ.get("MONEYBIRD_UNKNOWN_PAYER_CONTACT_ID"))
+    if os.environ.get("MONEYBIRD_UNKNOWN_PAYER_CONTACT_ID")
+    else None
 )
-MONEYBIRD_CONTRIBUTION_LEDGER_ID = os.environ.get(
-    "MONEYBIRD_CONTRIBUTION_LEDGER_ID", None
+MONEYBIRD_CONTRIBUTION_LEDGER_ID: Optional[int] = (
+    int(os.environ.get("MONEYBIRD_CONTRIBUTION_LEDGER_ID"))
+    if os.environ.get("MONEYBIRD_CONTRIBUTION_LEDGER_ID")
+    else None
 )
 
-MONEYBIRD_TPAY_FINANCIAL_ACCOUNT_ID = os.environ.get(
-    "MONEYBIRD_TPAY_FINANCIAL_ACCOUNT_ID", None
+MONEYBIRD_TPAY_FINANCIAL_ACCOUNT_ID: Optional[int] = (
+    int(os.environ.get("MONEYBIRD_TPAY_FINANCIAL_ACCOUNT_ID"))
+    if os.environ.get("MONEYBIRD_TPAY_FINANCIAL_ACCOUNT_ID")
+    else None
 )
-MONEYBIRD_CASH_FINANCIAL_ACCOUNT_ID = os.environ.get(
-    "MONEYBIRD_CASH_FINANCIAL_ACCOUNT_ID", None
+MONEYBIRD_CASH_FINANCIAL_ACCOUNT_ID: Optional[int] = (
+    int(os.environ.get("MONEYBIRD_CASH_FINANCIAL_ACCOUNT_ID"))
+    if os.environ.get("MONEYBIRD_CASH_FINANCIAL_ACCOUNT_ID")
+    else None
 )
-MONEYBIRD_CARD_FINANCIAL_ACCOUNT_ID = os.environ.get(
-    "MONEYBIRD_CARD_FINANCIAL_ACCOUNT_ID", None
+MONEYBIRD_CARD_FINANCIAL_ACCOUNT_ID: Optional[int] = (
+    int(os.environ.get("MONEYBIRD_CARD_FINANCIAL_ACCOUNT_ID"))
+    if os.environ.get("MONEYBIRD_CARD_FINANCIAL_ACCOUNT_ID")
+    else None
+)
+
+MONEYBIRD_ZERO_TAX_RATE_ID: Optional[int] = (
+    int(os.environ.get("MONEYBIRD_ZERO_TAX_RATE_ID"))
+    if os.environ.get("MONEYBIRD_ZERO_TAX_RATE_ID")
+    else None
 )

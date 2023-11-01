@@ -79,6 +79,18 @@ class ProfileForm(forms.ModelForm):
 
         return instance
 
+    def clean(self):
+        if self.cleaned_data.get("phone_number") is not None:
+            self.cleaned_data["phone_number"] = self.cleaned_data[
+                "phone_number"
+            ].replace(" ", "")
+
+        if self.cleaned_data.get("emergency_contact_phone_number") is not None:
+            self.cleaned_data["emergency_contact_phone_number"] = self.cleaned_data[
+                "emergency_contact_phone_number"
+            ].replace(" ", "")
+        super().clean()
+
 
 class UserCreationForm(BaseUserCreationForm):
     """Custom Form that lowercases the username on creation."""
@@ -86,6 +98,7 @@ class UserCreationForm(BaseUserCreationForm):
     def clean(self):
         if "username" in self.cleaned_data:
             self.cleaned_data["username"] = self.cleaned_data["username"].lower()
+
         super().clean()
 
     class Meta:

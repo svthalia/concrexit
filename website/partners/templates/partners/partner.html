@@ -5,13 +5,13 @@
 {% block opengraph_title %}{{ partner.name }} — {% trans "Partners" %} — {% trans "Career" %} —
     {{ block.super }}{% endblock %}
 
-{% block header_image %}{% spaceless %}
+{% block header_image_srcset %}{% spaceless %}
     {% if partner.site_header %}
         {{ partner.site_header.url }}
     {% else %}
         {{ block.super }}
     {% endif %}
-{% endspaceless %}{% endblock header_image %}
+{% endspaceless %}{% endblock header_image_srcset %}
 
 {% block body %}
     <section class="page-section" id="partners-index">
@@ -20,7 +20,7 @@
 
             <div class="row">
                 <div class="col-12 col-md-4">
-                    <img src="{% thumbnail partner.logo "medium" %}" alt="Logo {{ partner.name }}"/>
+                    <img src="{% thumbnail partner.logo "fit_medium" %}" alt="Logo {{ partner.name }}"/>
 
                     <h4 class="mt-4">{% trans "Address" %}</h4>
                     <p>

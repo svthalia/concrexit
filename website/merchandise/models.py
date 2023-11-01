@@ -1,9 +1,12 @@
 """Models for the merchandise database tables."""
+from django.core.files.storage import storages
 from django.db import models
 
 from thumbnails.fields import ImageField
 
-from thaliawebsite.storage.backend import get_public_storage
+from utils.media.services import get_upload_to_function
+
+_merchandise_photo_upload_to = get_upload_to_function("merchandise")
 
 
 class MerchandiseItem(models.Model):
@@ -25,7 +28,11 @@ class MerchandiseItem(models.Model):
     description = models.TextField()
 
     #: Image of the merchandise item
-    image = ImageField(upload_to="merchandise", storage=get_public_storage)
+    image = ImageField(
+        upload_to=_merchandise_photo_upload_to,
+        storage=storages["public"],
+        resize_source_to="source",
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

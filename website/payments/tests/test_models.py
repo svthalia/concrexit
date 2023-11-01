@@ -3,6 +3,7 @@ from decimal import Decimal
 from unittest.mock import PropertyMock, patch
 
 from django.core.exceptions import ValidationError
+from django.db.models.deletion import ProtectedError
 from django.test import TestCase, override_settings
 from django.utils import timezone
 
@@ -85,9 +86,9 @@ class PaymentTest(TestCase):
         with self.assertRaises(ValidationError):
             self.payment.save()
 
-    def test_deleting_member_who_made_a_payment_doesnt_crach(self) -> None:
-        """Check that https://github.com/svthalia/concrexit/issues/1328 is fixed."""
-        self.member.delete()
+    def test_delete_payer_raises_protectederror(self):
+        with self.assertRaises(ProtectedError):
+            self.member.delete()
 
     def test_clean(self):
         """Tests the model clean functionality."""
@@ -153,6 +154,11 @@ class PaymentTest(TestCase):
             with self.assertRaisesMessage(
                 ValidationError, "Cannot add a payment to a processed batch"
             ):
+                payment.clean()
+
+        with self.subTest("Thalia Pay payments must have a payer"):
+            with self.assertRaises(ValidationError):
+                Payment.objects.create(amount=10, type=Payment.TPAY)
                 payment.clean()
 
     def test_str(self) -> None:

@@ -2,6 +2,7 @@ import hashlib
 import logging
 import os
 import random
+from secrets import token_hex
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -25,11 +26,12 @@ logger = logging.getLogger(__name__)
 
 
 def photo_uploadto(instance, filename):
-    """Get path of file to upload to."""
-    num = instance.album.photo_set.count()
-    extension = os.path.splitext(filename)[1]
-    new_filename = str(num).zfill(4) + extension
-    return os.path.join(Album.photosdir, instance.album.dirname, new_filename)
+    ext = os.path.splitext(filename)[1]
+    return f"photos/{instance.album.dirname}/{token_hex(8)}{ext}"
+
+
+class DuplicatePhotoException(Exception):
+    """Raised when a photo with the same digest already exists in a given album."""
 
 
 class Photo(models.Model):
@@ -41,7 +43,11 @@ class Photo(models.Model):
         "Album", on_delete=models.CASCADE, verbose_name=_("album")
     )
 
-    file = ImageField(_("file"), upload_to=photo_uploadto)
+    file = ImageField(
+        _("file"),
+        upload_to=photo_uploadto,
+        resize_source_to="source",
+    )
 
     rotation = models.IntegerField(
         verbose_name=_("rotation"),
@@ -53,6 +59,8 @@ class Photo(models.Model):
     _digest = models.CharField(
         "digest",
         max_length=40,
+        blank=True,
+        editable=False,
     )
 
     num_likes = AnnotationProperty(
@@ -70,6 +78,25 @@ class Photo(models.Model):
     def __str__(self):
         """Return the filename of a Photo object."""
         return os.path.basename(self.file.name)
+
+    def clean(self):
+        if not self.file._committed:
+            hash_sha1 = hashlib.sha1()
+            for chunk in iter(lambda: self.file.read(4096), b""):
+                hash_sha1.update(chunk)
+            digest = hash_sha1.hexdigest()
+            self._digest = digest
+
+            if (
+                Photo.objects.filter(album=self.album, _digest=digest)
+                .exclude(pk=self.pk)
+                .exists()
+            ):
+                raise ValidationError(
+                    {"file": "This photo already exists in this album."}
+                )
+
+        return super().clean()
 
     def delete(self, using=None, keep_parents=False):
         removed = super().delete(using, keep_parents)
@@ -161,8 +188,8 @@ class Album(models.Model):
         # Not prefetched because this should be rare and is a lot of data
         # `exists` is faster in theory, but requires everything to be fetched later anyways
         if self.photo_set.exists():
-            random.seed(self.dirname)
-            cover = random.choice(self.photo_set.all())
+            r = random.Random(self.dirname)
+            cover = r.choice(self.photo_set.all())
         return cover
 
     def __str__(self):

@@ -1,0 +1,30 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Django: manage.py runserver",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/website/manage.py",
+            "args": [
+                "runserver",
+            ],
+            "justMyCode": true,
+            "django": true,
+        },
+        {
+            "name": "Django: manage.py test",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/website/manage.py",
+            "args": [
+                "test",
+                "--noinput",
+                "--buffer",
+            ],
+            "cwd": "${workspaceFolder}/website",
+            "justMyCode": true,
+            "django": true,
+        }
+    ]
+}

@@ -2,13 +2,11 @@ import os
 
 from django.apps import apps
 from django.conf import settings
-from django.core.files.storage import DefaultStorage
+from django.core.files.storage import DefaultStorage, storages
 from django.core.management.base import BaseCommand
 from django.core.validators import EMPTY_VALUES
 from django.db import models
 from django.utils import timezone
-
-from thaliawebsite.storage.backend import get_public_storage
 
 
 def get_file_fields():
@@ -152,7 +150,7 @@ class Command(BaseCommand):
             minimum_file_age=options.get("minimum_file_age"),
         )
 
-        public_storage = get_public_storage()
+        public_storage = storages["public"]
         unused_public_media = get_unused_media(
             public_storage,
             minimum_file_age=options.get("minimum_file_age"),

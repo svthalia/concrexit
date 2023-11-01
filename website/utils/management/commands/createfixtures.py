@@ -4,9 +4,10 @@ import math
 import random
 import string
 from datetime import date, datetime, timedelta
+from secrets import token_hex
 
 from django.contrib.auth import get_user_model
-from django.core.files.base import ContentFile
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.management.base import BaseCommand, CommandError
 from django.db.utils import IntegrityError
 from django.utils import timezone
@@ -177,7 +178,7 @@ class Command(BaseCommand):
         icon = igen.generate(
             board.name, 480, 480, padding=(10, 10, 10, 10), output_format="jpeg"
         )  # 620x620 pixels, with 10 pixels padding on each side
-        board.photo.save(f"{board.name}.jpg", ContentFile(icon))
+        board.photo = SimpleUploadedFile(f"{board.name}.jpg", icon, "image/jpeg")
 
         board.since = date(year=lecture_year, month=9, day=1)
         board.until = date(year=lecture_year + 1, month=8, day=31)
@@ -225,15 +226,16 @@ class Command(BaseCommand):
             padding=(10, 10, 10, 10),
             output_format="jpeg",
         )  # 620x620 pixels, with 10 pixels padding on each side
-        member_group.photo.save(member_group.name + ".jpg", ContentFile(icon))
+        member_group.photo = SimpleUploadedFile(
+            member_group.name + ".jpg", icon, "image/jpeg"
+        )
 
         member_group.since = _faker.date_time_between("-10y", "+30d").date()
 
         if random.random() < 0.1:
-            now = date.today()
             month = timedelta(days=30)
             member_group.until = _faker.date_time_between_dates(
-                member_group.since, now + 2 * month
+                member_group.since, member_group.since + 30 * month
             ).date()
 
         member_group.active = random.random() < 0.9
@@ -360,7 +362,7 @@ class Command(BaseCommand):
             padding=(10, 10, 10, 10),
             output_format="jpeg",
         )  # 620x620 pixels, with 10 pixels padding on each side
-        partner.logo.save(partner.name + ".jpg", ContentFile(icon))
+        partner.logo = SimpleUploadedFile(partner.name + ".jpg", icon, "image/jpeg")
 
         partner.address = _faker.street_address()
         partner.zip_code = _faker.postcode()
@@ -413,7 +415,9 @@ class Command(BaseCommand):
             padding=(10, 10, 10, 10),
             output_format="jpeg",
         )  # 620x620 pixels, with 10 pixels padding on each side
-        profile.photo.save(fakeprofile["username"] + ".jpg", ContentFile(icon))
+        profile.photo = SimpleUploadedFile(
+            fakeprofile["username"] + ".jpg", icon, "image/jpeg"
+        )
 
         membership = Membership()
         membership.user_id = user.id
@@ -462,7 +466,10 @@ class Command(BaseCommand):
                 padding=(10, 10, 10, 10),
                 output_format="jpeg",
             )  # 620x620 pixels, with 10 pixels padding on each side
-            vacancy.company_logo.save(vacancy.company_name + ".jpg", ContentFile(icon))
+            vacancy.company_logo = SimpleUploadedFile(
+                vacancy.company_name + ".jpg", icon, "image/jpeg"
+            )
+
         vacancy.clean()
         vacancy.save()
 
@@ -487,7 +494,9 @@ class Command(BaseCommand):
         doc.name = _faker.text(max_nb_chars=30)
         doc.category = random.choice([c[0] for c in Document.DOCUMENT_CATEGORIES])
         doc.members_only = random.random() < 0.75
-        doc.file.save(f"{doc.name}.txt", ContentFile(_faker.text(max_nb_chars=120)))
+        doc.file = SimpleUploadedFile(
+            f"{doc.name}.txt", _faker.text(max_nb_chars=120).encode()
+        )
         doc.clean()
         doc.save()
 
@@ -662,15 +671,15 @@ class Command(BaseCommand):
 
         name = _generate_title()
 
-        igen = IconGenerator(5, 5)  # 5x5 blocks
+        igen = IconGenerator(12, 12)
         icon = igen.generate(
-            name,
+            token_hex(16),
             480,
             480,
             padding=(10, 10, 10, 10),
             output_format="jpeg",
         )  # 620x620 pixels, with 10 pixels padding on each side
-        photo.file.save(f"{name}.jpg", ContentFile(icon))
+        photo.file = SimpleUploadedFile(f"{name}.jpg", icon, "image/jpeg")
 
         photo.clean()
         photo.save()

@@ -2,13 +2,9 @@ import os
 
 from django.conf import settings
 from django.core import signing
-from django.core.files.storage import FileSystemStorage, get_storage_class
+from django.core.files.storage import FileSystemStorage
 
 from storages.backends.s3boto3 import S3Boto3Storage, S3ManifestStaticStorage
-
-
-def get_public_storage():
-    return get_storage_class(settings.PUBLIC_FILE_STORAGE)()
 
 
 class S3RenameMixin:
@@ -74,6 +70,11 @@ class PrivateS3Storage(S3RenameMixin, S3Boto3Storage):
 class StaticS3Storage(S3ManifestStaticStorage):
     location = settings.STATICFILES_LOCATION
     object_parameters = {"CacheControl": "max-age=31536000"}
+
+    # Clear the signing information as we don't need it for static files.
+    # Loading the cloudfront key would waste some time for no reason.
+    cloudfront_key_id = None
+    cloudfront_key = None
 
 
 class FileSystemRenameMixin:

@@ -3,11 +3,11 @@ import os.path
 
 from django.db import migrations, models
 
-import thaliawebsite.storage.backend
+from django.core.files.storage import storages
 
 
 def forwards_func(apps, schema_editor):
-    MerchandiseItem = apps.get_model('merchandise', 'MerchandiseItem')
+    MerchandiseItem = apps.get_model("merchandise", "MerchandiseItem")
 
     existing_images = []
 
@@ -26,7 +26,7 @@ def forwards_func(apps, schema_editor):
 
 
 def reverse_func(apps, schema_editor):
-    MerchandiseItem = apps.get_model('merchandise', 'MerchandiseItem')
+    MerchandiseItem = apps.get_model("merchandise", "MerchandiseItem")
 
     for item in MerchandiseItem.objects.filter(image__isnull=False):
         item.image.name = f"public/{item.image.name}"
@@ -34,16 +34,17 @@ def reverse_func(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('merchandise', '0007_alter_merchandiseitem_price'),
+        ("merchandise", "0007_alter_merchandiseitem_price"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='merchandiseitem',
-            name='image',
-            field=models.ImageField(storage=thaliawebsite.storage.backend.get_public_storage, upload_to='merchandise'),
+            model_name="merchandiseitem",
+            name="image",
+            field=models.ImageField(
+                storage=storages["public"], upload_to="merchandise"
+            ),
         ),
         migrations.RunPython(forwards_func, reverse_func),
     ]

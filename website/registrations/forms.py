@@ -43,6 +43,13 @@ class BaseRegistrationForm(forms.ModelForm):
         )
         self.fields["birthday"].widget.input_type = "date"
 
+    def clean(self):
+        if self.cleaned_data.get("phone_number") is not None:  # pragma: no cover
+            self.cleaned_data["phone_number"] = self.cleaned_data[
+                "phone_number"
+            ].replace(" ", "")
+        super().clean()
+
 
 class RegistrationAdminForm(forms.ModelForm):
     """Custom admin form for Registration model to add the widget for the signature."""

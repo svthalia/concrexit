@@ -59,11 +59,7 @@ class EntryTest(TestCase):
         entry = Entry(renewal=self.renewal)
         self.assertEqual(
             str(entry),
-            "{} {} ({})".format(
-                self.member.first_name,
-                self.member.last_name,
-                self.member.email,
-            ),
+            f"{self.member.first_name} {self.member.last_name} ({self.member.email})",
         )
 
     @freeze_time("2019-01-01")
@@ -322,11 +318,7 @@ class RenewalTest(TestCase):
     def test_str(self):
         self.assertEqual(
             str(self.renewal),
-            "{} {} ({})".format(
-                self.member.first_name,
-                self.member.last_name,
-                self.member.email,
-            ),
+            f"{self.member.first_name} {self.member.last_name} ({self.member.email})",
         )
 
     def test_save(self):
@@ -395,7 +387,7 @@ class RenewalTest(TestCase):
         self.renewal.length = Entry.MEMBERSHIP_STUDY
         self.renewal.membership_type = Membership.BENEFACTOR
         membership = self.member.latest_membership
-        membership.until = timezone.now()
+        membership.until = timezone.now().date()
         membership.save()
 
         with self.assertRaises(ValidationError):

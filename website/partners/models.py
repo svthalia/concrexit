@@ -1,4 +1,5 @@
 from django.core.exceptions import ValidationError
+from django.core.files.storage import storages
 from django.core.validators import RegexValidator, URLValidator
 from django.db import models
 from django.urls import reverse
@@ -8,8 +9,8 @@ from django.utils.translation import gettext_lazy as _
 from thumbnails.fields import ImageField
 from tinymce.models import HTMLField
 
-from thaliawebsite.storage.backend import get_public_storage
 from utils import countries
+from utils.media.services import get_upload_to_function
 
 
 class Partner(models.Model):
@@ -24,13 +25,15 @@ class Partner(models.Model):
     company_profile = HTMLField(blank=True)
 
     logo = ImageField(
-        upload_to="partners/logos/",
-        storage=get_public_storage,
+        upload_to=get_upload_to_function("partners/logos/"),
+        resize_source_to="source_png",
+        storage=storages["public"],
     )
 
     alternate_logo = ImageField(
-        upload_to="partners/logos/",
-        storage=get_public_storage,
+        upload_to=get_upload_to_function("partners/logos/"),
+        resize_source_to="source_png",
+        storage=storages["public"],
         blank=True,
         null=True,
         help_text=_(
@@ -39,8 +42,9 @@ class Partner(models.Model):
     )
 
     site_header = ImageField(
-        upload_to="partners/headers/",
-        storage=get_public_storage,
+        upload_to=get_upload_to_function("partners/headers/"),
+        resize_source_to="source_png",
+        storage=storages["public"],
         null=True,
         blank=True,
     )
@@ -139,7 +143,8 @@ class PartnerImage(models.Model):
     )
     image = ImageField(
         upload_to="partners/images/",
-        storage=get_public_storage,
+        resize_source_to="source_png",
+        storage=storages["public"],
     )
 
     def __init__(self, *args, **kwargs):
@@ -212,7 +217,8 @@ class Vacancy(models.Model):
     company_logo = ImageField(
         _("company logo"),
         upload_to="partners/vacancy-logos/",
-        storage=get_public_storage,
+        resize_source_to="source_png",
+        storage=storages["public"],
         null=True,
         blank=True,
     )

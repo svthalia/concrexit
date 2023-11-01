@@ -3,7 +3,7 @@ from random import random
 from django.shortcuts import get_object_or_404, render
 
 from partners.models import Partner, Vacancy, VacancyCategory
-from utils.media.services import fetch_thumbnails_db
+from utils.media.services import fetch_thumbnails
 
 
 def index(request):
@@ -14,7 +14,7 @@ def index(request):
     main_partner = Partner.objects.filter(is_main_partner=True).first()
     local_partners = Partner.objects.filter(is_local_partner=True)
 
-    fetch_thumbnails_db([p.logo for p in partners])
+    fetch_thumbnails([p.logo for p in partners])
 
     context = {
         "main_partner": main_partner,
@@ -41,7 +41,7 @@ def vacancies(request):
         .select_related("partner")
         .prefetch_related("categories")
     )
-    fetch_thumbnails_db(v.get_company_logo() for v in vacancies)
+    fetch_thumbnails([v.get_company_logo() for v in vacancies])
     context = {
         "vacancies": vacancies,
         "categories": list(VacancyCategory.objects.all()),
