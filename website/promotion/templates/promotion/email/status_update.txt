@@ -4,8 +4,8 @@ Hi there,
 Your request for promo on: {{ updated_request.channel }}, for the "{{ updated_request.event.title }}" event has been updated:
 
 Publish date: {{ updated_request.publish_date|date:"d F Y" }}
-Assignee: {{ updated_request.assigned_to }}
-Drive Folder: {{ updated_request.drive_folder }}
+{% if updated_request.assigned_to %}Assignee: {{ updated_request.assigned_to }}{% endif %}
+{% if updated_request.drive_folder %}Drive Folder: {{ updated_request.drive_folder }}{% endif %}
 
 The status has been updated to {{ updated_request.get_status_display }}.
 
