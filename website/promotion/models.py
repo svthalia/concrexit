@@ -116,9 +116,10 @@ class PromotionRequest(models.Model):
         oldstatus = PromotionRequest.objects.get(pk=self.pk).status
         if not self.status_updated:
             self.status_updated = oldstatus != self.status
-        super().save(kwargs)
+        ret = super().save(kwargs)
         if oldstatus != self.status:
             updated_status.send(sender=None, updated_request=self)
+        return ret
 
     class Meta:
         verbose_name = _("Promotion request")
