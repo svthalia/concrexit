@@ -113,11 +113,13 @@ class PromotionRequest(models.Model):
     def save(self, **kwargs):
         if not self.publish_date and self.event:
             self.publish_date = self.event.start.date()
-        oldstatus = PromotionRequest.objects.get(pk=self.pk).status
-        if not self.status_updated:
-            self.status_updated = oldstatus != self.status
+        oldstatus = None
+        if self.pk:
+            oldstatus = PromotionRequest.objects.get(pk=self.pk).status
+            if not self.status_updated:
+                self.status_updated = oldstatus != self.status
         ret = super().save(kwargs)
-        if oldstatus != self.status:
+        if oldstatus and oldstatus != self.status:
             updated_status.send(sender=None, updated_request=self)
         return ret
 
