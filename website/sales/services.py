@@ -3,6 +3,7 @@ import datetime
 from django.utils import timezone
 
 from activemembers.models import Board
+from merchandise.models import MerchandiseItem
 from sales.models.order import Order
 from sales.models.product import ProductList
 from sales.models.shift import Shift
@@ -40,9 +41,23 @@ def execute_data_minimisation(dry_run=False):
     return queryset.all()
 
 
+def update_merchandise_product_list():
+    product_list = ProductList.objects.get_or_create(name="Merchandise")[0]
+    product_list_products = product_list.products.all()
+    merchandise_items = MerchandiseItem.objects.all()
+
+    for merchandise_item in merchandise_items:
+        if merchandise_item not in product_list_products:
+            product_list.product_items.create(
+                product=merchandise_item, price=merchandise_item.price
+            )
+
+    return product_list
+
+
 def create_daily_merchandise_sale_shift():
     today = timezone.now().date()
-    merchandise_product_list = ProductList.objects.get_or_create(name="Merchandise")[0]
+    merchandise_product_list = update_merchandise_product_list()
     active_board = Board.objects.filter(since__lte=today, until__gte=today)
 
     shift = Shift.objects.create(

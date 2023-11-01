@@ -119,6 +119,8 @@ class MoneybirdMerchandiseSaleJournalAdmin(admin.ModelAdmin):
     readonly_fields = (
         "order",
         "moneybird_general_journal_document_id",
+        "moneybird_details_debit_attribute_id",
+        "moneybird_details_credit_attribute_id",
         "needs_synchronization",
         "needs_deletion",
     )
@@ -126,6 +128,8 @@ class MoneybirdMerchandiseSaleJournalAdmin(admin.ModelAdmin):
     fields = (
         "order",
         "moneybird_general_journal_document_id",
+        "moneybird_details_debit_attribute_id",
+        "moneybird_details_credit_attribute_id",
         "external_invoice",
     )
 
