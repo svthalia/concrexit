@@ -1,4 +1,6 @@
 {% extends 'simple_page.html' %}
 {% load static %}
 
-{% block header_image_srcset %}{% static "education/image/banner.webp" %}{% endblock header_image%}
+{% block header_image_container %}
+    <img src="{% static "education/img/banner.webp" %}" class="image"/>
+{% endblock header_image_container %}
