@@ -56,7 +56,7 @@ def send_status_update(updated_request):
         email = (
             organiser.contact_email
             if organiser.contact_email
-            else "{organiser.contact_mailinglist}@thalia.nu"
+            else f"{organiser.contact_mailinglist}@thalia.nu"
         )
 
         if email:

@@ -100,7 +100,10 @@ class PromotionRequest(models.Model):
         null=True,
         blank=True,
     )
-    status_updated = models.BooleanField()
+    status_updated = models.BooleanField(
+        verbose_name=_("status updated"),
+        default=False,
+    )
 
     def __str__(self):
         if self.event:
