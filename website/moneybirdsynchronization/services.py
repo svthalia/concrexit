@@ -183,14 +183,22 @@ def create_or_update_merchandise_sale_journal(obj):
 
     # Apparently each journal line has a unique id so for now we just delete and create again
     if merchandise_sale_journal.moneybird_general_journal_document_id:
-        moneybird.delete_general_journal_document(
-            merchandise_sale_journal.moneybird_general_journal_document_id
+        moneybird.update_general_journal_document(
+            merchandise_sale_journal.moneybird_general_journal_document_id,
+            merchandise_sale_journal.to_moneybird(),
         )
-    response = moneybird.create_general_journal_document(
-        merchandise_sale_journal.to_moneybird(),
-    )
-    merchandise_sale_journal.moneybird_general_journal_document_id = response["id"]
-    merchandise_sale_journal.save()
+    else:
+        response = moneybird.create_general_journal_document(
+            merchandise_sale_journal.to_moneybird(),
+        )
+
+        merchandise_sale_journal.moneybird_general_journal_document_id = response["id"]
+        merchandise_sale_journal.moneybird_details_debit_attribute_id = response[
+            "details"
+        ][0]["id"]
+        merchandise_sale_journal.moneybird_details_credit_attribute_id = response[
+            "details"
+        ][1]["id"]
 
     merchandise_sale_journal.needs_synchronization = False
     merchandise_sale_journal.save()

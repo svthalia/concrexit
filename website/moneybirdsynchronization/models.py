@@ -417,6 +417,20 @@ class MoneybirdGeneralJournalDocument(models.Model):
         help_text="Indicates that the journal has to be deleted from moneybird.",
     )
 
+    moneybird_details_debit_attribute_id = models.CharField(
+        verbose_name=_("moneybird details attribute id (debit)"),
+        max_length=255,
+        blank=True,
+        null=True,
+    )
+
+    moneybird_details_credit_attribute_id = models.CharField(
+        verbose_name=_("moneybird details attribute id (credit)"),
+        max_length=255,
+        blank=True,
+        null=True,
+    )
+
     def __str__(self):
         return f"Moneybird journal for {self.order}"
 
@@ -470,6 +484,16 @@ class MoneybirdMerchandiseSaleJournal(MoneybirdGeneralJournalDocument):
                 },
             }
         }
+
+        if self.moneybird_details_debit_attribute_id is not None:
+            data["general_journal_document"][
+                "general_journal_document_entries_attributes"
+            ][0]["id"] = int(self.moneybird_details_debit_attribute_id)
+
+        if self.moneybird_details_credit_attribute_id is not None:
+            data["general_journal_document"][
+                "general_journal_document_entries_attributes"
+            ][1]["id"] = int(self.moneybird_details_credit_attribute_id)
 
         return data
 
