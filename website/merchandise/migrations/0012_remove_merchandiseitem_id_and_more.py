@@ -6,29 +6,38 @@ import django.db.models.deletion
 
 itemlist = []
 
+
 def store_and_delete_merchandiseitems(apps, schema_editor):
-        MerchandiseItem = apps.get_model("merchandise", "MerchandiseItem")
-        itemlist = list(MerchandiseItem.objects.all())
-        MerchandiseItem.objects.all().delete()
+    MerchandiseItem = apps.get_model("merchandise", "MerchandiseItem")
+    global itemlist
+    itemlist = list(MerchandiseItem.objects.all())
+    MerchandiseItem.objects.all().delete()
+
 
 # This does not seem to work yet
 def create_merchandiseitems(apps, schema_editor):
     MerchandiseItem = apps.get_model("merchandise", "MerchandiseItem")
+    Product = apps.get_model("sales", "Product")
+
     for item in itemlist:
-        MerchandiseItem.objects.create(
+        product = Product.objects.create(
             name=item.name,
+        )
+
+        MerchandiseItem.objects.create(
+            product_ptr=product,
             price=item.price,
             description=item.description,
             image=item.image,
-            purchase_price=0,
+            stock_value=0,
         )
+
 
 class Migration(migrations.Migration):
     dependencies = [
         ("sales", "0007_alter_productlistitem_options_and_more"),
         ("merchandise", "0011_alter_merchandiseitem_image"),
     ]
-
 
     operations = [
         migrations.RunPython(store_and_delete_merchandiseitems),
