@@ -68,8 +68,6 @@ def send_status_update(updated_request):
                     "updated_request": updated_request,
                 },
             )
-        else:
-            print("No email for organiser")
 
 
 def send_daily_update_overview():
