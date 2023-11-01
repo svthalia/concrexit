@@ -73,7 +73,7 @@ def send_status_update(updated_request):
 
 
 def send_daily_update_overview():
-    updated_requests = PromotionChannel.objects.filter(status_updated=True)
+    updated_requests = PromotionRequest.objects.filter(status_updated=True)
 
     if updated_requests:
         send_email(
