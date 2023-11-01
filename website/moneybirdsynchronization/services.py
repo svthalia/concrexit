@@ -194,10 +194,10 @@ def create_or_update_merchandise_sale_journal(obj):
 
         merchandise_sale_journal.moneybird_general_journal_document_id = response["id"]
         merchandise_sale_journal.moneybird_details_debit_attribute_id = response[
-            "details"
+            "general_journal_document_entries_attributes"
         ][0]["id"]
         merchandise_sale_journal.moneybird_details_credit_attribute_id = response[
-            "details"
+            "general_journal_document_entries_attributes"
         ][1]["id"]
 
     merchandise_sale_journal.needs_synchronization = False
