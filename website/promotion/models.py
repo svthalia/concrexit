@@ -100,6 +100,7 @@ class PromotionRequest(models.Model):
         null=True,
         blank=True,
     )
+    status_updated = models.BooleanField()
 
     def __str__(self):
         if self.event:
@@ -110,6 +111,8 @@ class PromotionRequest(models.Model):
         if not self.publish_date and self.event:
             self.publish_date = self.event.start.date()
         oldstatus = PromotionRequest.objects.get(pk=self.pk).status
+        if not self.status_updated:
+            self.status_updated = oldstatus != self.status
         super().save(kwargs)
         if oldstatus != self.status:
             updated_status.send(sender=None, updated_request=self)

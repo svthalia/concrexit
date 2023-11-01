@@ -70,3 +70,19 @@ def send_status_update(updated_request):
             )
         else:
             print("No email for organiser")
+
+
+def send_daily_update_overview():
+    updated_requests = PromotionChannel.objects.filter(status_updated=True)
+
+    if updated_requests:
+        send_email(
+            to=[settings.PROMO_REQUEST_NOTIFICATION_ADDRESS],
+            subject="[PROMO] Daily update overview",
+            txt_template="promotion/email/daily_update_overview.txt",
+            html_template="promotion/email/daily_update_overview.html",
+            context={
+                "updated_requests": updated_requests,
+            },
+        )
+        updated_requests.update(status_updated=False)
