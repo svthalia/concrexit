@@ -5,13 +5,13 @@
 {% block opengraph_title %}{{ partner.name }} — {% trans "Partners" %} — {% trans "Career" %} —
     {{ block.super }}{% endblock %}
 
-{% block header_image %}{% spaceless %}
+{% block header_image_srcset %}{% spaceless %}
     {% if partner.site_header %}
         {{ partner.site_header.url }}
     {% else %}
         {{ block.super }}
     {% endif %}
-{% endspaceless %}{% endblock header_image %}
+{% endspaceless %}{% endblock header_image_srcset %}
 
 {% block body %}
     <section class="page-section" id="partners-index">

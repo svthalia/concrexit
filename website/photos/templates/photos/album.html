@@ -1,10 +1,10 @@
 {% extends 'simple_page.html' %}
-{% load static i18n sass_tags photos_cards %}
+{% load static i18n sass_tags photos_cards pick_header_image %}
 
 {% block title %}{{ album.title }} — {% trans "Photos" %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{{ album.title }} — {% trans "Photos" %} — {{ block.super }}{% endblock %}
 
-{% block header_image %}{% static "img/headers/fixed/banner7.jpg" %}{% endblock %}
+{% block header_image_srcset %}{% pick_header_image type='fun' %}{% endblock header_image_srcset %}
 
 {% block page_title %}
     {{ album.title }}
