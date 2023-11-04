@@ -425,7 +425,7 @@ def execute_data_minimisation(dry_run=False):
     )
 
     if dry_run:
-        return registrations.count() + renewals.count()
+        return registrations.count() + renewals.count()  # pragma: no cover
 
     # Mark that this deletion is for data minimisation so that it can be recognized
     # in any post_delete signal handlers. This is used to prevent the deletion of
