@@ -10,7 +10,10 @@
   {% for request in updated_requests %}
     <p>
       {% if request.event %}Event: {{ request.event.title }}<br>{% endif %}
-      {% if request.status %}New Status: {{ request.get_status_display }}.<br>{% endif %}
+      Promotion channel: {{ request.channel }}<br>
+      New Status: {{ request.get_status_display }}.<br>
+      Publish date: {{ request.publish_date }}<br>
+      Remarks: {{ request.remarks|safe }}<br>
     </p>
   {% endfor%}
 {% endblock %}

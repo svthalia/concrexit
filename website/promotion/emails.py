@@ -50,24 +50,19 @@ def send_daily_overview():
 
 
 def send_status_update(updated_request):
-    organisers = updated_request.event.organisers.all()
+    if updated_request.event is None:
+        return
 
-    for organiser in organisers:
-        email = (
-            organiser.contact_email
-            if organiser.contact_email
-            else f"{organiser.contact_mailinglist}@thalia.nu"
-        )
+    event = updated_request.event
 
-        if email:
-            send_email(
-                to=[email],
-                subject="[PROMO] Status update",
-                txt_template="promotion/email/status_update.txt",
-                context={
-                    "updated_request": updated_request,
-                },
-            )
+    send_email(
+        to=[organiser.contact_address for organiser in event.organisers.all()],
+        subject="[PROMO] Status update",
+        txt_template="promotion/email/status_update.txt",
+        context={
+            "updated_request": updated_request,
+        },
+    )
 
 
 def send_daily_update_overview():
