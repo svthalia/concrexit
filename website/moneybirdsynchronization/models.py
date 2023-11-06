@@ -50,7 +50,7 @@ def project_name_for_payable_model(obj) -> Optional[str]:
 
 def date_for_payable_model(obj) -> Union[datetime.datetime, datetime.date]:
     if isinstance(obj, EventRegistration):
-        return obj.event.start
+        return obj.date.date()
     if isinstance(obj, FoodOrder):
         return obj.food_event.event.start
     if isinstance(obj, Order):
@@ -63,19 +63,28 @@ def date_for_payable_model(obj) -> Union[datetime.datetime, datetime.date]:
     raise ValueError(f"Unknown payable model {obj}")
 
 
-def ledger_id_for_payable_model(obj) -> Optional[int]:
+def period_for_payable_model(obj) -> Optional[str]:
     if isinstance(obj, (Registration, Renewal)):
-        return settings.MONEYBIRD_CONTRIBUTION_LEDGER_ID
+        if obj.membership is not None:
+            # Only bill for the start date, ignore the until date.
+            date = obj.membership.since
+            return f"{date.strftime('%Y%m%d')}..{date.strftime('%Y%m%d')}"
     if isinstance(obj, Order):
         return settings.MONEYBIRD_MERCHANDISE_SALES_LEDGER_ID
 
     raise ValueError(f"Unknown payable model {obj}")
 
 
-def membership_to_mb_period(membership: Membership) -> str:
-    """Convert a membership to a Moneybird period."""
-    start_date = membership.since
-    return f"{start_date.strftime('%Y%m%d')}..{start_date.strftime('%Y%m%d')}"
+def tax_rate_for_payable_model(obj) -> Optional[int]:
+    if isinstance(obj, (Registration, Renewal)):
+        return settings.MONEYBIRD_ZERO_TAX_RATE_ID
+    return None
+
+
+def ledger_id_for_payable_model(obj) -> Optional[int]:
+    if isinstance(obj, (Registration, Renewal)):
+        return settings.MONEYBIRD_CONTRIBUTION_LEDGER_ID
+    return None
 
 
 class MoneybirdProject(models.Model):
@@ -259,6 +268,8 @@ class MoneybirdExternalInvoice(models.Model):
             moneybird_contact, __ = MoneybirdContact.objects.get_or_create(
                 member=self.payable.payment_payer
             )
+            # If the contact is not yet in Moneybird, create it
+            # This should not happen in practice, but it is a nice fallback
             if moneybird_contact.moneybird_id is None:
                 # I know this is ugly, but I don't want to totally refactor the app.
                 from moneybirdsynchronization.services import create_or_update_contact
@@ -268,6 +279,10 @@ class MoneybirdExternalInvoice(models.Model):
             contact_id = moneybird_contact.moneybird_id
 
         invoice_date = date_for_payable_model(self.payable_object).strftime("%Y-%m-%d")
+
+        period = period_for_payable_model(self.payable_object)
+
+        tax_rate_id = tax_rate_for_payable_model(self.payable_object)
 
         project_name = project_name_for_payable_model(self.payable_object)
 
@@ -282,13 +297,6 @@ class MoneybirdExternalInvoice(models.Model):
             project_id = project.moneybird_id
 
         ledger_id = ledger_id_for_payable_model(self.payable_object)
-
-        period = None
-        tax_rate_id = None
-        if isinstance(self.payable_object, (Registration, Renewal)):
-            tax_rate_id = settings.MONEYBIRD_ZERO_TAX_RATE_ID
-            if self.payable_object.membership is not None:
-                period = membership_to_mb_period(self.payable_object.membership)
 
         source_url = settings.BASE_URL + reverse(
             f"admin:{self.payable_object._meta.app_label}_{self.payable_object._meta.model_name}_change",

@@ -132,7 +132,7 @@
 
 <header id="page-header">
     {% block header_image_container %}
-        <img src="{% block header_image %}{% pick_header_image %}{% endblock header_image %}" class="image"/>
+        <img srcset="{% block header_image_srcset %}{% pick_header_image %}{% endblock header_image_srcset %}" class="image"/>
     {% endblock header_image_container %}
 </header>
 
