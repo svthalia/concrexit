@@ -10,7 +10,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from events.models import EventRegistration
-from members.models import Member, Membership
+from members.models import Member
 from merchandise.models import MerchandiseItem
 from moneybirdsynchronization.moneybird import get_moneybird_api_service
 from payments.models import BankAccount, Payment
