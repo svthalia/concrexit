@@ -1,5 +1,6 @@
 import datetime
 
+from django.db.models import Q
 from django.utils import timezone
 
 from activemembers.models import Board
@@ -46,11 +47,12 @@ def update_merchandise_product_list():
     product_list_products = product_list.products.all()
     merchandise_items = MerchandiseItem.objects.all()
 
-    for merchandise_item in merchandise_items:
-        if merchandise_item not in product_list_products:
-            product_list.product_items.create(
-                product=merchandise_item, price=merchandise_item.price
-            )
+    for merchandise_item in merchandise_items.filter(
+        ~Q(productlistitem__product__in=product_list_products)
+    ):
+        product_list.product_items.create(
+            product=merchandise_item, price=merchandise_item.price
+        )
 
     return product_list
 

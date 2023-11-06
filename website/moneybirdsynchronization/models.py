@@ -431,6 +431,9 @@ class MoneybirdGeneralJournalDocument(models.Model):
         null=True,
     )
 
+    def to_moneybird(self):
+        raise NotImplementedError
+
     def __str__(self):
         return f"Moneybird journal for {self.order}"
 

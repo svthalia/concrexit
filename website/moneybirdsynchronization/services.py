@@ -10,6 +10,7 @@ from django.utils import timezone
 
 from events.models import EventRegistration
 from members.models import Member
+from merchandise.models import MerchandiseItem
 from moneybirdsynchronization.administration import Administration
 from moneybirdsynchronization.emails import send_sync_error
 from moneybirdsynchronization.models import (
@@ -432,7 +433,7 @@ def _sync_merchandise_sales():
     merchandise_sales = Order.objects.filter(
         shift__start__date__gte=settings.MONEYBIRD_START_DATE,
         payment__isnull=False,
-        shift__title="Merchandise sales",
+        items__product__merchandiseitem__in=MerchandiseItem.objects.all(),
     ).exclude(
         Exists(
             MoneybirdMerchandiseSaleJournal.objects.filter(
@@ -440,7 +441,7 @@ def _sync_merchandise_sales():
             )
         )
     )
-
+    print(merchandise_sales)
     if not merchandise_sales.exists():
         return
 
