@@ -69,7 +69,7 @@ coverage = {extras = ["toml"], version = "^7.3.2"}
 isort = "5.12.0"
 black = "23.9.1"
 ruff = "0.0.291"
-pre-commit = "3.4.0"
+pre-commit = "3.5.0"
 pyparsing = "^3.0.9"
 pydot = "^1.4.2"
 django-extensions = "^3.2.1"
