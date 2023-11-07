@@ -3,7 +3,14 @@
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 
-from .models import MerchandiseItem
+from .models import MerchandiseItem, MerchandiseProduct
+
+
+class MerchandiseProductInline(admin.TabularInline):
+    """Inline admin interface for the merchandise products."""
+
+    model = MerchandiseProduct
+    extra = 0
 
 
 @admin.register(MerchandiseItem)
@@ -14,10 +21,11 @@ class MerchandiseItemAdmin(ModelAdmin):
     fields = (
         "name",
         "price",
-        "stock_value",
         "description",
         "image",
     )
     search_fields = ("name", "description")
-    list_display = ("name", "price", "stock_value")
-    list_filter = ("name", "price", "stock_value")
+    list_display = ("name", "price")
+    list_filter = ("name", "price")
+
+    inlines = [MerchandiseProductInline]
