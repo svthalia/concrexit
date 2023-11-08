@@ -9,10 +9,5 @@ MANAGE_PY=1 runuser -u appuser -- ./manage.py createcachetable
 
 
 exec runuser -u appuser -- /venv/bin/gunicorn \
-    --bind 0.0.0.0:8000 \
-    --log-level info \
-    --worker-class gthread \
-    --workers 4 \
-    --threads 4 \
-    --timeout 240 \
-    --capture-output thaliawebsite.wsgi:application \
+  --config=/app/gunicorn.conf.py \
+  thaliawebsite.wsgi:application

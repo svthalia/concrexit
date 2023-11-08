@@ -60,6 +60,7 @@ RUN apt-get update && \
 
 COPY infra/concrexit/server-entrypoint.sh /app/server-entrypoint.sh
 COPY infra/concrexit/worker-entrypoint.sh /app/worker-entrypoint.sh
+COPY infra/concrexit/gunicorn.conf.py /app/gunicorn.conf.py
 
 # CMD can be set to /app/worker-entrypoint.sh for a celery worker container.
 CMD [ "/app/server-entrypoint.sh" ]
