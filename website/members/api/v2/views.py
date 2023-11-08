@@ -71,6 +71,7 @@ class MemberDetailView(RetrieveAPIView):
     )
     permission_classes = [
         IsAuthenticatedOrTokenHasScope,
+        HasActiveMembership,
     ]
     required_scopes = ["members:read"]
 
