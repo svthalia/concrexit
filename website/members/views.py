@@ -4,6 +4,7 @@ from datetime import date, datetime
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.exceptions import PermissionDenied
 from django.db.models import Q, QuerySet
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
@@ -134,6 +135,8 @@ class ProfileDetailView(DetailView):
     def setup(self, request, *args, **kwargs) -> None:
         if "pk" not in kwargs and request.member:
             kwargs["pk"] = request.member.pk
+        elif not (request.member and request.member.has_active_membership()):
+            raise PermissionDenied
         super().setup(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs) -> dict:

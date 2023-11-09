@@ -8,6 +8,7 @@ from rest_framework import filters as framework_filters
 from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView
 
 from members.api.v2 import filters
+from members.api.v2.permissions import HasActiveMembership
 from members.api.v2.serializers.member import (
     MemberCurrentSerializer,
     MemberListSerializer,
@@ -42,9 +43,7 @@ class MemberListView(ListAPIView):
             fetch_thumbnails([member.profile.photo for member in members])
         return super().get_serializer(*args, **kwargs)
 
-    permission_classes = [
-        IsAuthenticatedOrTokenHasScope,
-    ]
+    permission_classes = [IsAuthenticatedOrTokenHasScope, HasActiveMembership]
     required_scopes = ["members:read"]
     filter_backends = (
         framework_filters.OrderingFilter,
@@ -72,6 +71,7 @@ class MemberDetailView(RetrieveAPIView):
     )
     permission_classes = [
         IsAuthenticatedOrTokenHasScope,
+        HasActiveMembership,
     ]
     required_scopes = ["members:read"]
 
