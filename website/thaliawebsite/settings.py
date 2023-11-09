@@ -744,6 +744,8 @@ CACHES = {
     },
 }
 
+SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
+
 WSGI_APPLICATION = "thaliawebsite.wsgi.application"
 
 # Login pages
