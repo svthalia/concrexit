@@ -168,7 +168,7 @@ class MemberGroup(models.Model):
     class Meta:
         verbose_name = _("member group")
         verbose_name_plural = _("member groups")
-        # ordering is done in the manager, to sort on a translated field
+        ordering = ["name"]
 
 
 class Committee(MemberGroup):
