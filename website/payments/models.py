@@ -486,17 +486,39 @@ class BankAccount(models.Model):
 class PaymentRequest(Payable):
     requester = models.OneToOneField(Member, on_delete=models.CASCADE)
 
-    request_timestamp = models.DateTimeField()
+    request_timestamp = models.DateTimeField(
+        verbose_name=_("request timestamp"),
+        blank=False,
+        null=False,
+    )
 
     payer = models.OneToOneField(PaymentUser, on_delete=models.CASCADE)
 
-    payment_timestamp = models.DateTimeField()
+    payment_timestamp = models.DateTimeField(
+        verbose_name=_("payment timestamp"),
+        blank=True,
+        null=True,
+    )
 
-    amount = models.FloatField()
+    amount = models.FloatField(
+        verbose_name=_("payment amount"),
+        blank=False,
+        null=False,
+    )
 
-    topic = models.TextField()
+    topic = models.TextField(
+        max_length=32,
+        verbose_name=_("payment topic"),
+        blank=False,
+        null=False,
+    )
 
-    notes = models.TextField()
+    notes = models.TextField(
+        max_length=256,
+        verbose_name=_("payment notes"),
+        blank=True,
+        null=True,
+    )
 
     @property
     def payed(self):
@@ -523,7 +545,7 @@ class PaymentRequest(Payable):
         return self.payer.allow_tpay
 
     def can_manage_payment(self, member):
-        # TODO who is actually allowed to manage these?
+        # TODO who is actually allowed to manage these? (next standup met daddy dirk)
         return member == self.requester
 
     def immutable_after_payment(self):
