@@ -16,11 +16,11 @@ from django.utils.translation import gettext_lazy as _
 
 from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
 from localflavor.generic.models import BICField, IBANField
-from payables import Payable
 from queryable_properties.managers import QueryablePropertiesManager
 from queryable_properties.properties import AggregateProperty, queryable_property
 
 from members.models import Member
+from payments.payables import Payable
 
 
 def validate_not_zero(value):

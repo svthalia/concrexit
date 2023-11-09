@@ -10,7 +10,14 @@ from django.utils import timezone
 from freezegun import freeze_time
 
 from payments import services
-from payments.models import BankAccount, Batch, Payment, PaymentUser, validate_not_zero
+from payments.models import (
+    BankAccount,
+    Batch,
+    Payment,
+    PaymentRequest,
+    PaymentUser,
+    validate_not_zero,
+)
 from payments.payables import Payable
 from payments.tests.__mocks__ import MockModel, MockPayable
 
@@ -556,3 +563,64 @@ class BlacklistedPaymentUserTest(TestCase):
             str(member.blacklistedpaymentuser),
             "Thom Wiggers (thom) (blacklisted from using Thalia Pay)",
         )
+
+
+@freeze_time("2019-01-01")
+@override_settings(SUSPEND_SIGNALS=True, THALIA_PAY_ENABLED_PAYMENT_METHOD=True)
+@patch("payments.models.PaymentUser.tpay_allowed", PropertyMock, True)
+class PaymentRequestTest(TestCase):
+    @classmethod
+    def setUpTestData(cls) -> None:
+        cls.user1 = PaymentUser.objects.create(
+            username="test1",
+            first_name="Test1",
+            last_name="Example",
+            email="test1@example.org",
+            is_staff=False,
+        )
+        cls.user2 = PaymentUser.objects.create(
+            username="test2",
+            first_name="Test2",
+            last_name="Example",
+            email="test2@example.org",
+            is_staff=True,
+        )
+        cls.paymentrequest1 = PaymentRequest.objects.create(
+            requester=cls.user1,
+            payer=cls.user2,
+            amount=10.0,
+            topic="test",
+            notes="test",
+            request_timestamp=timezone.now() - datetime.timedelta(days=2),
+            payment_timestamp=timezone.now() - datetime.timedelta(days=1),
+        )
+        cls.paymentrequest2 = PaymentRequest.objects.create(
+            requester=cls.user2,
+            payer=cls.user1,
+            amount=30.0,
+            topic="test1",
+            notes="test1",
+            request_timestamp=timezone.now() - datetime.timedelta(days=1),
+        )
+
+    def test_paid_request(self):
+        self.assertTrue(self.paymentrequest1.payed())
+        self.assertFalse(self.paymentrequest2.payed())
+
+    def test_manage_request(self):
+        self.assertTrue(self.paymentrequest1.can_manage(self.user1))
+        self.assertFalse(self.paymentrequest1.can_manage(self.user2))
+        self.assertFalse(self.paymentrequest2.can_manage(self.user2))
+        self.assertFalse(self.paymentrequest2.can_manage(self.user1))
+
+    def test_tpay_allowed(self):
+        self.assertTrue(self.paymentrequest1.tpay_allowed)
+
+    def test_immutable_after_payment(self):
+        self.paymentrequest1.amount = 20.0
+        self.paymentrequest1.payer = self.user1
+        self.paymentrequest1.requester = self.user2
+        self.paymentrequest1.save()
+        self.assertEqual(self.paymentrequest1.amount, 10.0)
+        self.assertEqual(self.paymentrequest1.payer, self.user2)
+        self.assertEqual(self.paymentrequest1.requester, self.user1)
