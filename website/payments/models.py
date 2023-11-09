@@ -16,10 +16,10 @@ from django.utils.translation import gettext_lazy as _
 
 from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
 from localflavor.generic.models import BICField, IBANField
+from payables import Payable
 from queryable_properties.managers import QueryablePropertiesManager
 from queryable_properties.properties import AggregateProperty, queryable_property
 
-from payables import Payable
 from members.models import Member
 
 
@@ -79,10 +79,10 @@ class PaymentUser(Member):
             Sum(
                 "paid_payment_set__amount",
                 filter=Q(paid_payment_set__type="tpay_payment")
-                       & (
-                           Q(paid_payment_set__batch__isnull=True)
-                           | Q(paid_payment_set__batch__processed=False)
-                       ),
+                & (
+                    Q(paid_payment_set__batch__isnull=True)
+                    | Q(paid_payment_set__batch__processed=False)
+                ),
             ),
             Value(0.00),
             output_field=PaymentAmountField(),
@@ -484,17 +484,11 @@ class BankAccount(models.Model):
 
 
 class PaymentRequest(Payable):
-    requester = models.OneToOneField(
-        Member,
-        on_delete=models.CASCADE
-    )
+    requester = models.OneToOneField(Member, on_delete=models.CASCADE)
 
     request_timestamp = models.DateTimeField()
 
-    payer = models.OneToOneField(
-        PaymentUser,
-        on_delete=models.CASCADE
-    )
+    payer = models.OneToOneField(PaymentUser, on_delete=models.CASCADE)
 
     payment_timestamp = models.DateTimeField()
 
