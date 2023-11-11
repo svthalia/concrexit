@@ -3,6 +3,7 @@ from django.test import TestCase, override_settings
 from django.utils import timezone
 
 from members.models import Member, Membership
+from payments.exceptions import PaymentError
 from payments.models import BankAccount, Payment
 from payments.services import create_payment
 from registrations import services
@@ -40,6 +41,7 @@ class ServicesTest(TestCase):
         cls.benefactor_registration = Registration.objects.create(
             first_name="Jane",
             last_name="Doe",
+            username="janedoe",
             email="janedoe@example.com",
             student_number="s1234568",
             starting_year=2014,
@@ -179,8 +181,9 @@ class ServicesTest(TestCase):
             self.assertEqual(self.member_registration.status, Entry.STATUS_ACCEPTED)
 
         with self.subTest("Revert paid, but somehow not completed registration."):
-            # This case is similar to how a registration is automatically reverted when
-            # an exception is raised in complete_registration() in a signal handler.
+            # As of now, it should no longer be possible to create a payment without
+            # completing the registration successfully, but still, revert_registration
+            # should be able to handle this.
             services.revert_registration(self.member_registration, actor=self.admin)
             self.assertEqual(self.member_registration.status, Entry.STATUS_REVIEW)
             self.assertFalse(Payment.objects.filter(pk=payment.pk).exists())
@@ -205,14 +208,47 @@ class ServicesTest(TestCase):
             # TODO: check bank account.
             # TODO: check sent emails.
 
-        with self.subTest("Complete benefactor registration when payment is made."):
-            raise NotImplementedError
+        self.benefactor_registration.status = Entry.STATUS_ACCEPTED
+        self.benefactor_registration.username = None  # Default 'jdoe' is taken already.
+        self.benefactor_registration.save()
+        mail.outbox = []
 
         with self.subTest("Username is not unique."):
-            raise NotImplementedError
+            # Signal triggers call to complete_registration, which raises.
+            # Creating the payment is rolled back. The registration remains accepted.
+            with self.assertRaises(PaymentError):
+                create_payment(self.benefactor_registration, self.admin, Payment.CASH)
 
-        with self.subTest("Email is not unique."):
-            raise NotImplementedError
+            self.benefactor_registration.refresh_from_db()
+            self.assertEqual(self.benefactor_registration.status, Entry.STATUS_ACCEPTED)
+            self.assertIsNone(self.benefactor_registration.payment)
+            self.assertEqual(len(mail.outbox), 0)
+
+        self.benefactor_registration.status = Entry.STATUS_ACCEPTED
+        self.benefactor_registration.username = "janedoe"
+        self.benefactor_registration.save()
+        mail.outbox = []
+
+        with self.subTest("Complete benefactor registration when payment is made."):
+            # Signal triggers call to complete_registration.
+            create_payment(self.benefactor_registration, self.admin, Payment.CASH)
+
+            self.benefactor_registration.refresh_from_db()
+            self.assertEqual(
+                self.benefactor_registration.status, Entry.STATUS_COMPLETED
+            )
+            membership = self.benefactor_registration.membership
+            self.assertIsNotNone(membership)
+            member = membership.user
+            self.assertEqual(member.first_name, "Jane")
+            self.assertEqual(member.last_name, "Doe")
+            self.assertEqual(member.username, "janedoe")
+            self.assertEqual(membership.type, Membership.BENEFACTOR)
+            self.assertEqual(len(mail.outbox), 1)
+            self.assertEqual(
+                mail.outbox[0].subject,
+                "[THALIA] Welcome to Study Association Thalia",
+            )
 
     def test_accept_renewal(self):
         raise NotImplementedError

@@ -13,23 +13,15 @@ logger = logging.getLogger(__name__)
 def complete_paid_registration(sender, instance: Registration, **kwargs):
     """Complete a registration once a payment for it is made."""
     if instance.status == Registration.STATUS_ACCEPTED and instance.payment is not None:
-        try:
-            services.complete_registration(instance)
-        except Exception as e:
-            # If something goes wrong completing the registration, log it and revert
-            # the registration: delete the payment and put it back to review.
-            logger.exception(f"Error completing registration: {e}")
-            services.revert_registration(instance)
+        services.complete_registration(instance)
+        # If something goes wrong completing the registration, the exception is propagated.
+        # Creating the payment will in turn fail, leaving the registration accepted but not paid.
 
 
 @suspendingreceiver(post_save, sender=Renewal)
 def complete_paid_renewal(sender, instance: Renewal, **kwargs):
     """Complete a renewal once a payment for it is made."""
     if instance.status == Renewal.STATUS_ACCEPTED and instance.payment is not None:
-        try:
-            services.complete_renewal(instance)
-        except Exception as e:
-            # If something goes wrong completing the renewal, log it and revert
-            # the renewal: delete the payment and put it back to review.
-            logger.exception(f"Error completing renewal: {e}")
-            services.revert_renewal(instance)
+        services.complete_renewal(instance)
+        # If something goes wrong completing the renewal, the exception is propagated.
+        # Creating the payment will in turn fail, leaving the renewal accepted but not paid.
