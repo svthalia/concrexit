@@ -13,7 +13,10 @@ def update_merchandise_product_list():
     merchandise_products = MerchandiseProduct.objects.all()
 
     for merchandise_product in merchandise_products:
-        item, _ = product_list.product_items.get_or_create(product=merchandise_product)
+        item, _ = product_list.product_items.get_or_create(
+            product=merchandise_product,
+            defaults={"price": merchandise_product.merchandise_item.price},
+        )
         item.price = merchandise_product.merchandise_item.price
         item.save()
 

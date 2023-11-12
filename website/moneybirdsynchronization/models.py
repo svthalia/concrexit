@@ -464,7 +464,8 @@ class MoneybirdMerchandiseSaleJournal(MoneybirdGeneralJournalDocument):
     def to_moneybird(self):
         items = self.order.order_items.all()
         total_purchase_amount = sum(
-            i.merchandiseproduct.stock_value or 0 * i.amount for i in items
+            i.product.product.merchandiseproduct.stock_value or 0 * i.amount
+            for i in items
         )
 
         merchandise_stock_ledger_id = settings.MONEYBIRD_MERCHANDISE_STOCK_LEDGER_ID
@@ -480,14 +481,18 @@ class MoneybirdMerchandiseSaleJournal(MoneybirdGeneralJournalDocument):
                         "debit": str(total_purchase_amount),
                         "credit": "0",
                         "description": self.order.payment.notes,
-                        "contact_id": self.external_invoice.payable.payment_payer.moneybird_contact.moneybird_id,
+                        "contact_id": self.external_invoice.payable.payment_payer.moneybird_contact.moneybird_id
+                        if self.external_invoice.payable.payment_payer
+                        else None,
                     },
                     "1": {
                         "ledger_account_id": merchandise_stock_ledger_id,
                         "debit": "0",
                         "credit": str(total_purchase_amount),
                         "description": self.order.payment.notes,
-                        "contact_id": self.external_invoice.payable.payment_payer.moneybird_contact.moneybird_id,
+                        "contact_id": self.external_invoice.payable.payment_payer.moneybird_contact.moneybird_id
+                        if self.external_invoice.payable.payment_payer
+                        else None,
                     },
                 },
             }
