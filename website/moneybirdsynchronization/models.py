@@ -11,7 +11,6 @@ from django.utils.translation import gettext_lazy as _
 
 from events.models import EventRegistration
 from members.models import Member
-from merchandise.models import MerchandiseItem
 from moneybirdsynchronization.moneybird import get_moneybird_api_service
 from payments.models import BankAccount, Payment
 from payments.payables import payables
@@ -465,9 +464,7 @@ class MoneybirdMerchandiseSaleJournal(MoneybirdGeneralJournalDocument):
     def to_moneybird(self):
         items = self.order.order_items.all()
         total_purchase_amount = sum(
-            MerchandiseItem.objects.get(name=i.product.product.name).stock_value
-            * i.amount
-            for i in items
+            i.merchandiseproduct.stock_value or 0 * i.amount for i in items
         )
 
         merchandise_stock_ledger_id = settings.MONEYBIRD_MERCHANDISE_STOCK_LEDGER_ID
