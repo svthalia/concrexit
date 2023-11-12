@@ -1,25 +1,21 @@
 import datetime
 
-from django.db.models import Q
 from django.utils import timezone
 
 from activemembers.models import Board
-from merchandise.models import MerchandiseItem
+from merchandise.models import MerchandiseProduct
 from sales.models.product import ProductList
 from sales.models.shift import Shift
 
 
 def update_merchandise_product_list():
     product_list = ProductList.objects.get_or_create(name="Merchandise")[0]
-    product_list_products = product_list.products.all()
-    merchandise_items = MerchandiseItem.objects.all()
+    merchandise_products = MerchandiseProduct.objects.all()
 
-    for merchandise_item in merchandise_items.filter(
-        ~Q(productlistitem__product__in=product_list_products)
-    ):
-        product_list.product_items.create(
-            product=merchandise_item, price=merchandise_item.price
-        )
+    for merchandise_product in merchandise_products:
+        item, _ = product_list.product_items.get_or_create(product=merchandise_product)
+        item.price = merchandise_product.merchandise_item.price
+        item.save()
 
     return product_list
 

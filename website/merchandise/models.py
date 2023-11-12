@@ -20,7 +20,9 @@ class MerchandiseItem(models.Model):
     name = models.CharField(max_length=200)
 
     #: Price of the merchandise item
-    price = PaymentAmountField()
+    price = PaymentAmountField(
+        help_text="Current sales price of the merchandise item per piece (incl. VAT)."
+    )
 
     #: Description of the merchandise item
     description = models.TextField()
@@ -69,7 +71,9 @@ class MerchandiseProduct(Product):
         on_delete=models.CASCADE,
     )
 
-    stock_value = PaymentAmountField()
+    stock_value = PaymentAmountField(
+        help_text="Current stock ledger value of this product per piece (excl. VAT)."
+    )
 
     def __str__(self):
         """Give the name of the merchandise product in the currently active locale."""
