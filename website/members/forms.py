@@ -54,6 +54,15 @@ class ProfileForm(forms.ModelForm):
                 "email_gsuite_only"
             ].hidden_widget()
 
+        if (
+            not kwargs["instance"].user.has_been_member()
+            and not kwargs["instance"].receive_oldmembers
+        ):
+            self.fields["receive_oldmembers"].disabled = True
+            # TODO: Explain why.
+
+            # TODO: migration to set False for benefactors created after 2016-2017.
+
         self.render_app_specific_profile_form_fields()
 
     def render_app_specific_profile_form_fields(self):

@@ -340,6 +340,7 @@ def _create_member(registration: Registration) -> Member:
         birthday=registration.birthday,
         show_birthday=registration.optin_birthday,
         receive_optin=registration.optin_mailinglist,
+        receive_oldmembers=registration.membership_type == Membership.MEMBER,
     )
 
     if registration.direct_debit:
