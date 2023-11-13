@@ -143,6 +143,7 @@ def revert_renewal(renewal: Renewal, actor: Optional[Member] = None) -> None:
     if renewal.payment:
         renewal.payment.delete()
 
+    renewal.payment = None
     renewal.status = renewal.STATUS_REVIEW
     renewal.save()
 
