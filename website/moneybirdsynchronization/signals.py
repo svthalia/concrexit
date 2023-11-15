@@ -37,24 +37,17 @@ def post_profile_save(sender, instance, **kwargs):
     if not instance.user.first_name or not instance.user.last_name:
         return
 
-    try:
-        if instance.is_minimized:
-            services.delete_contact(instance.user)
-        else:
-            services.create_or_update_contact(instance.user)
-    except Administration.Error as e:
-        logger.exception("Moneybird synchronization error: %s", e)
-        send_sync_error(e, instance.user)
+    if hasattr(instance.user, "moneybird_contact"):
+        instance.user.moneybird_contact.needs_synchronization = True
+        instance.user.moneybird_contact.save()
 
 
 @suspendingreceiver(post_delete, sender="members.Profile")
 def post_profile_delete(sender, instance, **kwargs):
     """Delete the contact in Moneybird when the profile is deleted."""
-    try:
-        services.delete_contact(instance.user)
-    except Administration.Error as e:
-        logger.exception("Moneybird synchronization error: %s", e)
-        send_sync_error(e, instance.user)
+    if hasattr(instance.user, "moneybird_contact"):
+        instance.user.moneybird_contact.needs_synchronization = True
+        instance.user.moneybird_contact.save()
 
 
 @suspendingreceiver(
@@ -75,24 +68,17 @@ def post_user_save(sender, instance, **kwargs):
         # Only update the contact when the name is changed
         return
 
-    try:
-        if instance.profile.is_minimized:
-            services.delete_contact(instance)
-        else:
-            services.create_or_update_contact(instance)
-    except Administration.Error as e:
-        logger.exception("Moneybird synchronization error: %s", e)
-        send_sync_error(e, instance)
+    if hasattr(instance, "moneybird_contact"):
+        instance.moneybird_contact.needs_synchronization = True
+        instance.moneybird_contact.save()
 
 
 @suspendingreceiver(post_delete, sender=User)
 def post_user_delete(sender, instance, **kwargs):
     """Delete the contact in Moneybird when the user is deleted."""
-    try:
-        services.delete_contact(instance)
-    except Administration.Error as e:
-        logger.exception("Moneybird synchronization error: %s", e)
-        send_sync_error(e, instance)
+    if hasattr(instance, "moneybird_contact"):
+        instance.moneybird_contact.needs_synchronization = True
+        instance.moneybird_contact.save()
 
 
 @suspendingreceiver(post_save, sender=BankAccount)
@@ -107,25 +93,18 @@ def post_bank_account_save(sender, instance, **kwargs):
         return
 
     member = Member.objects.get(pk=instance.owner.pk)
-    try:
-        if member.profile.is_minimized:
-            services.delete_contact(member)
-        else:
-            services.create_or_update_contact(member)
-    except Administration.Error as e:
-        logger.exception("Moneybird synchronization error: %s", e)
-        send_sync_error(e, instance)
+    if hasattr(member, "moneybird_contact"):
+        member.moneybird_contact.needs_synchronization = True
+        member.moneybird_contact.save()
 
 
 @suspendingreceiver(post_delete, sender=BankAccount)
 def post_bank_account_delete(sender, instance, **kwargs):
     """Update the contact in Moneybird when the bank account is deleted."""
     member = Member.objects.get(pk=instance.owner.pk)
-    try:
-        services.create_or_update_contact(member)
-    except Administration.Error as e:
-        logger.exception("Moneybird synchronization error: %s", e)
-        send_sync_error(e, instance)
+    if hasattr(member, "moneybird_contact"):
+        member.moneybird_contact.needs_synchronization = True
+        member.moneybird_contact.save()
 
 
 @suspendingreceiver(
