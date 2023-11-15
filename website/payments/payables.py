@@ -6,6 +6,7 @@ from django.db.models.signals import pre_save
 from django.utils.functional import classproperty
 
 from payments.exceptions import PaymentError
+from payments.models import PaymentRequest
 
 
 class NotRegistered(Exception):
@@ -164,3 +165,50 @@ def prevent_saving_related(foreign_key_field):
                 raise PaymentError("Cannot change this model")
 
     return prevent_related_saving_paid_after_immutable
+
+
+class PaymentRequestPayable(Payable):
+    @property
+    def payment_amount(self):
+        return self.model.amount
+
+    @property
+    def payment_topic(self):
+        return self.model.topic
+
+    @property
+    def payment_notes(self):
+        return self.model.notes
+
+    @property
+    def payment_payer(self):
+        return self.model.payer
+
+    def can_manage_payment(self, member):
+        return member.has_perm("payments.change_paymentrequest")
+
+    @classproperty
+    def immutable_after_payment(self):
+        return True
+
+    @classproperty
+    def immutable_model_fields_after_payment(self):
+        return [
+            "amount",
+            "topic",
+            "notes",
+            "required_paid_date",
+            "payer",
+            "created_at",
+            "requester",
+        ]
+
+    # def payable(self):
+    #     payable = payables.get_payable(self.payable_object)
+    #     if payable is None:
+    #         raise ValueError("payable object not found")
+    #     return payable
+
+
+def register():
+    payables.register(PaymentRequest, PaymentRequestPayable)
