@@ -47,6 +47,7 @@ class Photo(models.Model):
         _("file"),
         upload_to=photo_uploadto,
         resize_source_to="source",
+        pregenerated_sizes=[],
     )
 
     _digest = models.CharField(

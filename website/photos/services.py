@@ -3,7 +3,6 @@ import os
 import tarfile
 from zipfile import ZipFile, is_zipfile
 
-from django.contrib import messages
 from django.core.files import File
 from django.db import transaction
 from django.db.models import BooleanField, Case, ExpressionWrapper, Q, Value, When
@@ -65,18 +64,17 @@ def get_annotated_accessible_albums(request, albums):
     return albums
 
 
-def extract_archive(request, album, archive):
+def extract_archive(album, archive):
     """Extract zip and tar files."""
     if is_zipfile(archive):
         archive.seek(0)
         with ZipFile(archive) as zip_file:
             for photo in sorted(zip_file.namelist()):
                 if not _has_photo_extension(photo):
-                    messages.add_message(request, messages.WARNING, f"Ignoring {photo}")
                     continue
 
                 with zip_file.open(photo) as file:
-                    _try_save_photo(request, album, file, photo)
+                    _try_save_photo(album, file, photo)
         return
 
     archive.seek(0)
@@ -85,11 +83,10 @@ def extract_archive(request, album, archive):
         with tarfile.open(fileobj=archive) as tar_file:
             for photo in sorted(tar_file.getnames()):
                 if not _has_photo_extension(photo):
-                    messages.add_message(request, messages.WARNING, f"Ignoring {photo}")
                     continue
 
                 with tar_file.extractfile(photo) as file:
-                    _try_save_photo(request, album, file, photo)
+                    _try_save_photo(album, file, photo)
     except tarfile.ReadError as e:
         raise ValueError(_("The uploaded file is not a zip or tar file.")) from e
 
@@ -100,7 +97,7 @@ def _has_photo_extension(filename):
     return extension.lower() in (".jpg", ".jpeg", ".png", ".webp")
 
 
-def _try_save_photo(request, album, file, filename):
+def _try_save_photo(album, file, filename):
     """Try to save a photo to an album."""
     instance = Photo(album=album)
     instance.file = File(file, filename)
@@ -108,23 +105,7 @@ def _try_save_photo(request, album, file, filename):
         with transaction.atomic():
             instance.full_clean()
             instance.save()
-    except ValidationError as e:
-        errors = e.message_dict
-        if "This photo already exists in this album." in errors.get("file", []):
-            messages.add_message(
-                request,
-                messages.WARNING,
-                f"{filename} is duplicate.",
-            )
-        else:
-            messages.add_message(
-                request,
-                messages.WARNING,
-                f"{filename} cannot be opened.",
-            )
+    except ValidationError:
+        pass
     except UnidentifiedImageError:
-        messages.add_message(
-            request,
-            messages.WARNING,
-            f"{filename} cannot be opened.",
-        )
+        pass

@@ -1,16 +1,13 @@
 from django.contrib import admin, messages
-from django.db import transaction
 from django.db.models import Count
 from django.dispatch import Signal
 from django.utils.translation import gettext_lazy as _
 
-from django_filepond_widget.fields import FilePondFile
-
 from .forms import AlbumForm
 from .models import Album, Like, Photo
-from .services import extract_archive
+from .tasks import process_album_upload
 
-album_uploaded = Signal()
+album_uploaded = Signal()  # remove?
 
 
 @admin.register(Album)
@@ -54,26 +51,20 @@ class AlbumAdmin(admin.ModelAdmin):
         """Save the new Album by extracting the archive."""
         super().save_model(request, obj, form, change)
 
-        archive = form.cleaned_data.get("album_archive", None)
-        if archive is not None:
-            try:
-                with transaction.atomic():
-                    # We make the upload atomic separately, so we can keep using the db if it fails.
-                    # See https://docs.djangoproject.com/en/4.2/topics/db/transactions/#handling-exceptions-within-postgresql-transactions.
-                    extract_archive(request, obj, archive)
-                album_uploaded.send(sender=None, album=obj)
-            except Exception:
-                raise
-            finally:
-                if isinstance(archive, FilePondFile):
-                    archive.remove()
+        # This step probably belonfs in AlbumForm.clean:
+        # status = processing
 
-            messages.add_message(
-                request,
-                messages.WARNING,
-                "Thumbnails have not yet been generated. The first time you visit the "
-                "album (both in the website and the app) will be slow. Please do so now.",
-            )
+        archive = form.cleaned_data.get("album_archive")
+        if archive is not None:
+            process_album_upload.delay(
+                archive.temporary_upload.upload_id, obj.id
+            )  # look for album_id
+
+        self.message_user(
+            request,
+            "Album is being processed, you will be notified when it is ready.",
+            messages.INFO,
+        )
 
     def get_deleted_objects(self, objs, request):
         (
