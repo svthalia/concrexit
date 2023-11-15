@@ -89,6 +89,17 @@
         {% endblocktrans %}
     </p>
     <p>
+        <strong>{% trans "Profile" %}</strong><br/>
+        {% blocktrans trimmed %}
+            Some data that is part of the member profile is shown to other members, including for example
+            the profile picture and profile text. Logged-in users can always view exactly what is shown via
+            the <a href="https://thalia.nu/members/profile/">Show public profile</a> button in the user dropdown menu.
+            Additionally, if a member is on a committee with publically viewable membership information, some of their information
+            (including displayed name and profile picture) will be visible to anyone including people outside of Thalia, and can
+            also be indexed by search engines.
+        {% endblocktrans %}
+    </p>
+    <p>
         <strong>{% trans "Bank account number" %}</strong><br/>
         {% blocktrans trimmed %}
             Thalia uses the bank account number of members, benefactors and honorary members when they pay via
