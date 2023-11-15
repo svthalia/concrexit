@@ -15,5 +15,6 @@ urlpatterns = [
                 path("", views.index, name="index"),
             ]
         ),
-    )
+    ),
+    path("association/merchandise/<int:id>/", views.product_page, name="product"),
 ]

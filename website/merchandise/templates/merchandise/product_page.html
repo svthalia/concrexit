@@ -1,0 +1,40 @@
+{% extends 'simple_page.html' %}
+{% load static i18n thumbnail %}
+
+{% block title %}{% trans "Product" %} — {{ block.super }}{% endblock %}
+{% block opengraph_title %}{% trans "Merchandise" %} — {{ block.super }}{% endblock %}
+
+{% block page_title %}{{product.name}}{% endblock %}
+{% block css_head %}
+    {{ block.super }}
+    <link href="{% static 'merchandise/css/product.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block page_content %}
+
+
+
+
+    <div class="product-page-image">
+        <img class="product-page-centre-image" src="{% thumbnail product.image "medium" %}" id="image" alt="{{ product.name }}" /> </a>
+    </div>
+
+    <div class="product-page-price">
+        <p>
+            <b>
+                {%if product.price == 0.00%}
+                    FREE
+                {%else%}
+                    € {{ product.price }}
+                {%endif%}
+            </b>
+        <p>
+    </div>
+
+    <div class="produt-page-item-description">
+        <p>
+            {{ product.description }}
+        </p>
+    </div>
+
+
+{% endblock %}
