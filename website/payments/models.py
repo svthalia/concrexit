@@ -20,7 +20,6 @@ from queryable_properties.managers import QueryablePropertiesManager
 from queryable_properties.properties import AggregateProperty, queryable_property
 
 from members.models import Member
-from payments.payables import Payable
 
 
 def validate_not_zero(value):
@@ -483,19 +482,24 @@ class BankAccount(models.Model):
         ordering = ("created_at",)
 
 
-class PaymentRequest(Payable):
-    requester = models.OneToOneField(Member, on_delete=models.CASCADE)
+class PaymentRequest(models.Model):
+    requester = models.ForeignKey(
+        Member, on_delete=models.PROTECT, related_name="payment_requester"
+    )
 
-    request_timestamp = models.DateTimeField(
+    created_at = models.DateTimeField(
         verbose_name=_("request timestamp"),
-        blank=False,
+        auto_now_add=True,
+        editable=False,
         null=False,
     )
 
-    payer = models.OneToOneField(PaymentUser, on_delete=models.CASCADE)
+    payer = models.ForeignKey(
+        PaymentUser, on_delete=models.PROTECT, related_name="payment_request_payer"
+    )
 
-    payment_timestamp = models.DateTimeField(
-        verbose_name=_("payment timestamp"),
+    required_paid_date = models.DateTimeField(
+        verbose_name=_("required paid date"),
         blank=True,
         null=True,
     )
@@ -520,39 +524,8 @@ class PaymentRequest(Payable):
         null=True,
     )
 
-    @property
-    def payed(self):
-        return self.payment_timestamp is not None
-
-    @property
-    def payment_amount(self):
-        return self.amount
-
-    @property
-    def payment_topic(self):
-        return self.topic
-
-    @property
-    def payment_notes(self):
-        return self.notes
-
-    @property
-    def payment_payer(self):
-        return self.payer
-
-    @property
-    def tpay_allowed(self):
-        return self.payer.allow_tpay
-
-    def can_manage_payment(self, member):
-        # TODO who is actually allowed to manage these? (next standup met daddy dirk)
-        return member == self.requester
-
-    def immutable_after_payment(self):
-        return True
-
-    def immutable_foreign_key_models(self):
-        return super()
-
-    def immutable_model_fields_after_payment(self):
-        return [self.requester, self.payer, self.amount]
+    def __str__(self):
+        return (
+            f"{self.topic}, €{self.amount}"
+            f" requested by {self.requester} to get paid by {self.payer}"
+        )
