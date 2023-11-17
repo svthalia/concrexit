@@ -487,21 +487,20 @@ class PaymentRequest(models.Model):
         Member, on_delete=models.PROTECT, related_name="payment_requester"
     )
 
-    created_at = models.DateTimeField(
-        verbose_name=_("request timestamp"),
-        auto_now_add=True,
-        editable=False,
-        null=False,
-    )
-
     payer = models.ForeignKey(
         PaymentUser, on_delete=models.PROTECT, related_name="payment_request_payer"
     )
 
+    payment = models.OneToOneField(
+        Payment,
+        on_delete=models.PROTECT,
+        related_name="related_payment",
+    )
+
     required_paid_date = models.DateTimeField(
         verbose_name=_("required paid date"),
-        blank=True,
-        null=True,
+        blank=False,
+        null=False,
     )
 
     amount = models.FloatField(
@@ -529,3 +528,6 @@ class PaymentRequest(models.Model):
             f"{self.topic}, €{self.amount}"
             f" requested by {self.requester} to get paid by {self.payer}"
         )
+
+    class Meta:
+        ordering = ("required_paid_date",)
