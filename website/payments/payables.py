@@ -203,12 +203,6 @@ class PaymentRequestPayable(Payable):
             "requester",
         ]
 
-    # def payable(self):
-    #     payable = payables.get_payable(self.payable_object)
-    #     if payable is None:
-    #         raise ValueError("payable object not found")
-    #     return payable
-
 
 def register():
     payables.register(PaymentRequest, PaymentRequestPayable)
