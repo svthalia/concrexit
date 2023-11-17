@@ -523,6 +523,15 @@ class PaymentRequest(models.Model):
         null=True,
     )
 
+    @property
+    def status(self):
+        if self.paid_payment_set.exists():
+            return "paid"
+        if self.required_paid_date and self.required_paid_date < timezone.now():
+            return "overdue"
+
+        return "pending"
+
     def __str__(self):
         return (
             f"{self.topic}, €{self.amount}"
