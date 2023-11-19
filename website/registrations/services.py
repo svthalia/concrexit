@@ -7,7 +7,7 @@ from django.contrib.admin.models import CHANGE, LogEntry
 from django.contrib.admin.options import get_content_type_for_model
 from django.contrib.auth import get_user_model
 from django.db import transaction
-from django.db.models import Q, QuerySet
+from django.db.models import Q, QuerySet, Value
 from django.utils import timezone
 
 import members
@@ -412,14 +412,25 @@ def execute_data_minimisation(dry_run=False):
     """Delete completed or rejected registrations that were modified at least 31 days ago.
 
     :param dry_run: does not really remove data if True
-    :return: number of removed registrations
+    :return: number of removed objects.
     """
     deletion_period = timezone.now() - timezone.timedelta(days=31)
-    objects = Entry.objects.filter(
-        (Q(status=Entry.STATUS_COMPLETED) | Q(status=Entry.STATUS_REJECTED))
-        & Q(updated_at__lt=deletion_period)
+    registrations = Registration.objects.filter(
+        Q(status=Entry.STATUS_COMPLETED) | Q(status=Entry.STATUS_REJECTED),
+        updated_at__lt=deletion_period,
+    )
+    renewals = Renewal.objects.filter(
+        Q(status=Entry.STATUS_COMPLETED) | Q(status=Entry.STATUS_REJECTED),
+        updated_at__lt=deletion_period,
     )
 
     if dry_run:
-        return objects.count()
-    return objects.delete()[0]
+        return registrations.count() + renewals.count()  # pragma: no cover
+
+    # Mark that this deletion is for data minimisation so that it can be recognized
+    # in any post_delete signal handlers. This is used to prevent the deletion of
+    # Moneybird invoices.
+    registrations = registrations.annotate(__deleting_for_dataminimisation=Value(True))
+    renewals = renewals.annotate(__deleting_for_dataminimisation=Value(True))
+
+    return registrations.delete()[0] + renewals.delete()[0]

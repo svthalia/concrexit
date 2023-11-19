@@ -158,20 +158,23 @@ def mark_invoice_outdated(sender, instance, **kwargs):
 
 
 @suspendingreceiver(post_delete, sender="registrations.Renewal")
-@suspendingreceiver(
-    post_delete,
-    sender="registrations.Registration",
-)
-@suspendingreceiver(
-    post_delete,
-    sender="pizzas.FoodOrder",
-)
-@suspendingreceiver(
-    post_delete,
-    sender="events.EventRegistration",
-)
+@suspendingreceiver(post_delete, sender="registrations.Registration")
+@suspendingreceiver(post_delete, sender="pizzas.FoodOrder")
+@suspendingreceiver(post_delete, sender="events.EventRegistration")
+@suspendingreceiver(post_delete, sender="sales.Order")
 def post_renewal_delete(sender, instance, **kwargs):
-    """Mark the invoice for deletion if it exists, so that it will be deleted later."""
+    """When a payable is deleted, other than during data minimisation, delete the invoice.
+
+    When objects are deleted for data minimisation, we don't want to delete the
+    Moneybird invoice as well, because we are obligated to store those for 7 years.
+    """
+    # During data minimisation, deletions are marked with a flag. This is currently
+    # the case only for registrations and renewals. The other payables are not deleted
+    # for data minimisation, but bulk-updated to remove personally identifiable
+    # information. Those bulk updates do not trigger post_save signals.
+    if getattr(instance, "__deleting_for_dataminimisation", False):
+        return
+
     invoice = MoneybirdExternalInvoice.get_for_object(instance)
     if invoice:
         invoice.needs_deletion = True
