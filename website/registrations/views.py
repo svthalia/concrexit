@@ -103,10 +103,11 @@ class ConfirmEmailView(View, TemplateResponseMixin):
     def get(self, request, *args, **kwargs):
         registration = get_object_or_404(Registration, pk=kwargs["pk"])
 
-        if registration.status != Registration.STATUS_CONFIRM:
-            return redirect("registrations:register-member")
+        if registration.status == Registration.STATUS_CONFIRM:
+            services.confirm_registration(registration)
 
-        services.confirm_registration(registration)
+        if registration.status != Registration.STATUS_REVIEW:
+            raise Http404
 
         return self.render_to_response({})
 

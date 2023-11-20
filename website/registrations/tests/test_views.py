@@ -3,6 +3,7 @@ from unittest.mock import MagicMock, Mock
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core import mail
 from django.http import HttpResponse
 from django.template.defaultfilters import floatformat
 from django.test import RequestFactory, TestCase, override_settings
@@ -33,7 +34,103 @@ class EntryAdminViewTest(TestCase):
 
 
 class ConfirmEmailViewTest(TestCase):
-    pass
+    @classmethod
+    def setUpTestData(cls):
+        cls.registration = Registration.objects.create(
+            first_name="John",
+            last_name="Doe",
+            email="johndoe@example.com",
+            programme="computingscience",
+            student_number="s1234567",
+            starting_year=2014,
+            address_street="Heyendaalseweg 135",
+            address_street2="",
+            address_postal_code="6525AJ",
+            address_city="Nijmegen",
+            address_country="NL",
+            phone_number="06123456789",
+            birthday=timezone.now().replace(year=1990, day=1).date(),
+            length=Entry.MEMBERSHIP_YEAR,
+            contribution=7.5,
+            membership_type=Membership.MEMBER,
+            status=Entry.STATUS_CONFIRM,
+        )
+
+    def test_incorrect_uuid(self):
+        response = self.client.get(
+            reverse(
+                "registrations:confirm-email",
+                args=["11111111-2222-3333-4444-555555555555"],
+            )
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_confirm_email(self):
+        with self.subTest("Member registration."):
+            response = self.client.get(
+                reverse("registrations:confirm-email", args=[self.registration.pk])
+            )
+
+            self.assertContains(response, "Your email address has been confirmed.")
+            self.registration.refresh_from_db()
+            self.assertEqual(self.registration.status, Entry.STATUS_REVIEW)
+            self.assertEqual(len(mail.outbox), 1)
+
+        self.registration.status = Entry.STATUS_CONFIRM
+        self.registration.membership_type = Membership.BENEFACTOR
+        self.registration.save()
+        mail.outbox = []
+
+        with self.subTest("Benefactor registration."):
+            response = self.client.get(
+                reverse(
+                    "registrations:confirm-email",
+                    args=[self.registration.pk],
+                )
+            )
+
+            self.assertContains(response, "Your email address has been confirmed.")
+            self.registration.refresh_from_db()
+            self.assertEqual(self.registration.status, Entry.STATUS_REVIEW)
+            self.assertEqual(len(mail.outbox), 2)
+
+        self.registration.status = Entry.STATUS_CONFIRM
+        self.registration.no_references = True
+        self.registration.save()
+        mail.outbox = []
+
+        with self.subTest("Benefacor that doesn't need references."):
+            response = self.client.get(
+                reverse("registrations:confirm-email", args=[self.registration.pk]),
+                follow=True,
+            )
+
+            self.assertContains(response, "Your email address has been confirmed.")
+            self.registration.refresh_from_db()
+            self.assertEqual(self.registration.status, Entry.STATUS_REVIEW)
+            self.assertEqual(len(mail.outbox), 1)
+
+    def test_already_confirmed(self):
+        self.registration.status = Entry.STATUS_REVIEW
+        self.registration.save()
+
+        with self.subTest("In review."):
+            response = self.client.get(
+                reverse("registrations:confirm-email", args=[self.registration.pk])
+            )
+
+            self.assertContains(response, "Your email address has been confirmed.")
+            self.assertEqual(len(mail.outbox), 0)
+
+        self.registration.status = Entry.STATUS_ACCEPTED
+        self.registration.save()
+
+        with self.subTest("Reviewed."):
+            response = self.client.get(
+                reverse("registrations:confirm-email", args=[self.registration.pk])
+            )
+            self.assertEqual(response.status_code, 404)
+            self.assertEqual(len(mail.outbox), 0)
 
 
 class BecomeAMemberViewTest(TestCase):
