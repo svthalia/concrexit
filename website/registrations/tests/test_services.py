@@ -605,16 +605,22 @@ class ServicesTest(TestCase):
             self.member_registration.updated_at = timezone.now()
             self.member_registration.save()
 
+        self.assertEqual(Registration.objects.count(), 3)
+        self.assertEqual(Renewal.objects.count(), 1)
+
         with freeze_time("2024-09-15"):
             with self.subTest("A recent completed registration and renewal."):
                 services.execute_data_minimisation()
-                self.assertEqual(Registration.objects.count(), 1)
+                self.assertEqual(Registration.objects.count(), 3)
+                self.assertEqual(Renewal.objects.count(), 1)
 
         with freeze_time("2024-10-15"):
             with self.subTest("Dry run."):
                 services.execute_data_minimisation(dry_run=True)
-                self.assertEqual(Registration.objects.count(), 2)
+                self.assertEqual(Registration.objects.count(), 3)
+                self.assertEqual(Renewal.objects.count(), 1)
 
             with self.subTest("An old completed registration and renewal."):
                 services.execute_data_minimisation()
-                self.assertEqual(Registration.objects.count(), 1)
+                self.assertEqual(Registration.objects.count(), 2)
+                self.assertEqual(Renewal.objects.count(), 0)
