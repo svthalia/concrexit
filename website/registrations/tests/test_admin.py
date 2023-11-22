@@ -1,11 +1,13 @@
 from unittest import mock
 
 from django.contrib.admin import AdminSite
+from django.contrib.auth.models import Permission
 from django.http import HttpRequest
 from django.test import TestCase, override_settings
 from django.utils import timezone
 
 from members.models import Member
+from members.models.membership import Membership
 from payments.widgets import PaymentWidget
 from registrations import admin, payables
 from registrations.models import Entry, Reference, Registration, Renewal
@@ -360,8 +362,73 @@ class RegistrationAdminTest(TestCase):
             self.admin.save_model({}, reg, None, True)
             self.assertFalse(Registration.objects.filter(first_name="Test2").exists())
 
+    def test_bulk_actions_permissions(self):
+        admin = Member.objects.get(pk=1)
+        self.client.force_login(Member.objects.get(pk=1))
+        Registration.objects.create(
+            length=Entry.MEMBERSHIP_YEAR,
+            status=Entry.STATUS_REVIEW,
+            birthday=timezone.now(),
+        )
+
+        Renewal.objects.create(
+            length=Entry.MEMBERSHIP_YEAR,
+            status=Entry.STATUS_REVIEW,
+            member=Member.objects.get(pk=2),
+        )
+
+        response = self.client.get("/admin/registrations/registration/")
+        self.assertContains(response, "Accept selected registrations")
+        self.assertContains(response, "Reject selected registrations")
+
+        admin.is_superuser = False
+        admin.is_staff = True
+        admin.save()
+
+        admin.user_permissions.add(Permission.objects.get(codename="view_registration"))
+
+        response = self.client.get("/admin/registrations/registration/")
+        self.assertNotContains(response, "Accept selected registrations")
+        self.assertNotContains(response, "Accept selected registrations")
+
+        admin.user_permissions.add(Permission.objects.get(codename="review_entries"))
+
+        response = self.client.get("/admin/registrations/registration/")
+        self.assertContains(response, "Accept selected registrations")
+        self.assertContains(response, "Reject selected registrations")
+
+    def test_can_open_registration_change_view(self):
+        # Just a sanity check and to get coverage.
+        self.client.force_login(Member.objects.get(pk=1))
+
+        registration = Registration.objects.create(
+            first_name="John",
+            last_name="Doe",
+            email="johndoe@example.com",
+            programme="computingscience",
+            student_number="s1234567",
+            starting_year=2014,
+            address_street="Heyendaalseweg 135",
+            address_street2="",
+            address_postal_code="6525AJ",
+            address_city="Nijmegen",
+            address_country="NL",
+            phone_number="06123456789",
+            birthday=timezone.now().replace(year=1990, day=1).date(),
+            length=Entry.MEMBERSHIP_YEAR,
+            contribution=7.5,
+            membership_type=Membership.MEMBER,
+            status=Entry.STATUS_CONFIRM,
+        )
+        response = self.client.get(
+            f"/admin/registrations/registration/{registration.pk}/change/"
+        )
+        self.assertEqual(response.status_code, 200)
+
 
 class RenewalAdminTest(TestCase):
+    fixtures = ["members.json"]
+
     def setUp(self):
         self.site = AdminSite()
         self.admin = admin.RenewalAdmin(Renewal, admin_site=self.site)
@@ -429,3 +496,39 @@ class RenewalAdminTest(TestCase):
     def test_email(self):
         renewal = Renewal(member=Member(email="test@example.org"))
         self.assertEqual(self.admin.email(renewal), "test@example.org")
+
+    def test_bulk_actions_permissions(self):
+        admin = Member.objects.get(pk=1)
+        self.client.force_login(Member.objects.get(pk=1))
+
+        Registration.objects.create(
+            length=Entry.MEMBERSHIP_YEAR,
+            status=Entry.STATUS_REVIEW,
+            birthday=timezone.now(),
+        )
+
+        Renewal.objects.create(
+            length=Entry.MEMBERSHIP_YEAR,
+            status=Entry.STATUS_REVIEW,
+            member=Member.objects.get(pk=2),
+        )
+
+        response = self.client.get("/admin/registrations/renewal/")
+        self.assertContains(response, "Accept selected renewals")
+        self.assertContains(response, "Reject selected renewals")
+
+        admin.is_superuser = False
+        admin.is_staff = True
+        admin.save()
+
+        admin.user_permissions.add(Permission.objects.get(codename="view_renewal"))
+
+        response = self.client.get("/admin/registrations/renewal/")
+        self.assertNotContains(response, "Accept selected renewals")
+        self.assertNotContains(response, "Accept selected renewals")
+
+        admin.user_permissions.add(Permission.objects.get(codename="review_entries"))
+
+        response = self.client.get("/admin/registrations/renewal/")
+        self.assertContains(response, "Accept selected renewals")
+        self.assertContains(response, "Reject selected renewals")

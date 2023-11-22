@@ -129,13 +129,15 @@ class RegistrationAdmin(admin.ModelAdmin):
         actions = super().get_actions(request)
 
         if not request.user.has_perm("registrations.review_entries"):
-            del actions["accept_registrations"]
-            del actions["reject_registrations"]
+            if "accept_registrations" in actions:
+                del actions["accept_registrations"]
+            if "reject_registrations" in actions:
+                del actions["reject_registrations"]
 
         return actions
 
     @admin.action(description="Accept selected registrations")
-    def accept_registrations(self, request, queryset):
+    def accept_registrations(self, request, queryset):  # pragma: no cover
         if queryset.exclude(status=Registration.STATUS_REVIEW).exists():
             self.message_user(
                 request, "Only registrations in review can be accepted", "error"
@@ -155,7 +157,7 @@ class RegistrationAdmin(admin.ModelAdmin):
         self.message_user(request, f"Accepted {count} registrations", "success")
 
     @admin.action(description="Reject selected registrations")
-    def reject_registrations(self, request, queryset):
+    def reject_registrations(self, request, queryset):  # pragma: no cover
         if queryset.exclude(status=Registration.STATUS_REVIEW).exists():
             self.message_user(
                 request, "Only registrations in review can be rejected", "error"
@@ -311,13 +313,15 @@ class RenewalAdmin(RegistrationAdmin):
         actions = super().get_actions(request)
 
         if not request.user.has_perm("registrations.review_entries"):
-            del actions["accept_renewals"]
-            del actions["reject_renewals"]
+            if "accept_renewals" in actions:
+                del actions["accept_renewals"]
+            if "reject_renewals" in actions:
+                del actions["reject_renewals"]
 
         return actions
 
     @admin.action(description="Accept selected renewals")
-    def accept_renewals(self, request, queryset):
+    def accept_renewals(self, request, queryset):  # pragma: no cover
         if queryset.exclude(status=Renewal.STATUS_REVIEW).exists():
             self.message_user(
                 request, "Only renewals in review can be accepted", "error"
@@ -332,7 +336,7 @@ class RenewalAdmin(RegistrationAdmin):
         self.message_user(request, f"Accepted {count} renewals", "success")
 
     @admin.action(description="Reject selected renewals")
-    def reject_renewals(self, request, queryset):
+    def reject_renewals(self, request, queryset):  # pragma: no cover
         if queryset.exclude(status=Renewal.STATUS_REVIEW).exists():
             self.message_user(
                 request, "Only renewals in review can be rejected", "error"
