@@ -6,6 +6,7 @@ from django.contrib.auth.forms import UserCreationForm as BaseUserCreationForm
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 
+from members.models import Member
 from thabloid.models.thabloid_user import ThabloidUser
 
 from .models import Profile
@@ -55,13 +56,16 @@ class ProfileForm(forms.ModelForm):
             ].hidden_widget()
 
         if (
-            not kwargs["instance"].user.has_been_member()
+            not Member.objects.get(pk=kwargs["instance"].user_id).has_been_member()
             and not kwargs["instance"].receive_oldmembers
         ):
             self.fields["receive_oldmembers"].disabled = True
-            # TODO: Explain why.
-
-            # TODO: migration to set False for benefactors created after 2016-2017.
+            self.fields["receive_oldmembers"].help_text = (
+                "If you are a past member, receive emails about Thalia events aimed at alumni. "
+                "You cannot enable this option, as we don't have any records of you having been a member "
+                "(a long time ago, we didn't keep track of this yet). Contact "
+                "<a href='mailto:info@thalia.nu'>info@thalia.nu</a> if you want to receive alumni emails."
+            )
 
         self.render_app_specific_profile_form_fields()
 
