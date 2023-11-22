@@ -12,7 +12,7 @@ django-localflavor = "4.0"
 djangorestframework = "3.14.0"
 django-ical = "1.9.2"
 django-sendfile2 = "0.7.0"
-django-queryable-properties = "1.8.4"
+django-queryable-properties = "1.8.5"
 django-oauth-toolkit = "2.3.0"
 django-cors-headers = "3.14.0"
 django-debug-toolbar = "4.2.0"
@@ -39,7 +39,7 @@ gunicorn = "21.2.0"
 qrcode = {version = "^7.4.2", extras = ["pil"]}
 freezegun = "1.2.2"
 PyYAML = "6.0.1"
-celery = {version = "^5.3.1", extras = ["redis"]}
+celery = {version = "^5.3.5", extras = ["redis"]}
 
 [tool.poetry.group.scss.dependencies]
 # These dependencies are only needed to compile SASS, which can be done
