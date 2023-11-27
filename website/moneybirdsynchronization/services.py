@@ -262,8 +262,6 @@ def _sync_contacts():
             logger.exception("Moneybird synchronization error: %s", e)
             send_sync_error(e, minimized)
 
-    # unarchive moneybird contacts where user is not minimized but moneybird is archived
-
     _sync_contacts_with_outdated_mandates()
 
 

@@ -58,10 +58,10 @@ class ServicesTest(TestCase):
         # Drop the fixtures, we create our own bank account here.
         BankAccount.objects.all().delete()
 
-        mock_create_contact = mock_api.return_value.create_contact
+        mock_create_or_update_contact = mock_api.return_value.create_contact
         mock_update_contact = mock_api.return_value.update_contact
 
-        mock_create_contact.return_value = {"id": "1", "sepa_mandate_id": ""}
+        mock_create_or_update_contact.return_value = {"id": "1", "sepa_mandate_id": ""}
         mock_update_contact.return_value = {"id": "1", "sepa_mandate_id": ""}
 
         # Bank account is valid from 2016-07-07.
@@ -78,21 +78,21 @@ class ServicesTest(TestCase):
 
             with self.subTest("Creating a contact does not push today's SEPA mandate."):
                 services.create_or_update_contact(self.member)
-                mock_create_contact.assert_called_once()
+                mock_create_or_update_contact.assert_called_once()
                 mock_update_contact.assert_not_called()
 
-                data = mock_create_contact.call_args[0][0]
+                data = mock_create_or_update_contact.call_args[0][0]
                 self.assertNotIn("sepa_mandate_id", data["contact"])
 
                 moneybird_contact = self.member.moneybird_contact
                 self.assertEqual(moneybird_contact.moneybird_sepa_mandate_id, None)
 
-            mock_create_contact.reset_mock()
+            mock_create_or_update_contact.reset_mock()
             mock_update_contact.reset_mock()
 
             with self.subTest("Updating a contact does not push today's SEPA mandate."):
                 services.create_or_update_contact(self.member)
-                mock_create_contact.assert_not_called()
+                mock_create_or_update_contact.assert_not_called()
                 mock_update_contact.assert_called_once()
 
                 data = mock_update_contact.call_args[0][1]
@@ -103,29 +103,32 @@ class ServicesTest(TestCase):
                 self.assertEqual(moneybird_contact.moneybird_sepa_mandate_id, None)
 
         moneybird_contact.delete()
-        mock_create_contact.reset_mock()
+        mock_create_or_update_contact.reset_mock()
         mock_update_contact.reset_mock()
-        mock_create_contact.return_value = {"id": "1", "sepa_mandate_id": "1-1"}
+        mock_create_or_update_contact.return_value = {
+            "id": "1",
+            "sepa_mandate_id": "1-1",
+        }
         mock_update_contact.return_value = {"id": "1", "sepa_mandate_id": "1-1"}
 
         with freeze_time("2016-07-08"):
             with self.subTest("Creating a contact pushes past SEPA mandate."):
                 services.create_or_update_contact(self.member)
-                mock_create_contact.assert_called_once()
+                mock_create_or_update_contact.assert_called_once()
                 mock_update_contact.assert_not_called()
 
-                data = mock_create_contact.call_args[0][0]
+                data = mock_create_or_update_contact.call_args[0][0]
                 self.assertEqual(data["contact"]["sepa_mandate_id"], "1-1")
 
                 moneybird_contact = self.member.moneybird_contact
                 self.assertEqual(moneybird_contact.moneybird_sepa_mandate_id, "1-1")
 
-            mock_create_contact.reset_mock()
+            mock_create_or_update_contact.reset_mock()
             mock_update_contact.reset_mock()
 
             with self.subTest("Updating a contact pushes past SEPA mandate."):
                 services.create_or_update_contact(self.member)
-                mock_create_contact.assert_not_called()
+                mock_create_or_update_contact.assert_not_called()
                 mock_update_contact.assert_called_once()
 
                 data = mock_update_contact.call_args[0][1]
@@ -511,3 +514,43 @@ class ServicesTest(TestCase):
         self.assertEqual(mock_delete_invoice.call_count, 2)
         mock_delete_invoice.assert_any_call(r2)
         mock_delete_invoice.assert_any_call(r3)
+
+    @mock.patch("moneybirdsynchronization.services.delete_contact")
+    @mock.patch("moneybirdsynchronization.services.create_or_update_contact")
+    def test_sync_contacts(
+        self, mock_create_or_update_contact, mock_delete_contact, mock_api
+    ):
+        # test moneyboard contact is made for users without moneybird contact (and not minimized)
+        services._sync_contacts()
+
+        self.assertEqual(mock_create_or_update_contact.call_count, 4)
+        self.assertEqual(mock_delete_contact.call_count, 0)
+        mock_create_or_update_contact.assert_any_call(self.member)
+        mock_create_or_update_contact.assert_any_call(self.member2)
+        mock_create_or_update_contact.assert_any_call(self.member3)
+        mock_create_or_update_contact.assert_any_call(self.member4)
+
+        mock_create_or_update_contact.reset_mock()
+
+        MoneybirdContact.objects.create(member=self.member, needs_synchronization=False)
+        # moneybird contact is updated if adress changes
+        self.member.profile.address_line1 = "foo"
+        self.member.profile.save()
+
+        services._sync_contacts()
+
+        self.assertEqual(mock_create_or_update_contact.call_count, 1)
+        self.assertEqual(mock_delete_contact.call_count, 0)
+        mock_create_or_update_contact.assert_any_call(self.member)
+
+        mock_create_or_update_contact.reset_mock()
+
+        # moneybird contact is deleted if someone is minimized
+        self.member.profile.is_minimized = True
+        self.member.profile.save()
+
+        services._sync_contacts()
+
+        self.assertEqual(mock_create_or_update_contact.call_count, 0)
+        self.assertEqual(mock_delete_contact.call_count, 1)
+        mock_delete_contact.assert_any_call(self.member)
