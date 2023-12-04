@@ -7,7 +7,7 @@ license = "AGPL-3.0-or-later"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-Django = "4.2.7"
+Django = "4.2.8"
 django-localflavor = "4.0"
 djangorestframework = "3.14.0"
 django-ical = "1.9.2"
@@ -34,7 +34,7 @@ firebase-admin = "6.2.0"
 google-api-python-client = "2.101.0"
 sentry-sdk = "1.35.0"
 beautifulsoup4 = "^4.11.1"
-boto3 = "1.33.5"
+boto3 = "1.33.6"
 gunicorn = "21.2.0"
 qrcode = {version = "^7.4.2", extras = ["pil"]}
 freezegun = "1.2.2"
