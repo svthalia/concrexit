@@ -47,3 +47,35 @@ def send_daily_overview():
                     "daily_promotion": daily_promotion,
                 },
             )
+
+
+def send_status_update(updated_request):
+    if updated_request.event is None:
+        return
+
+    event = updated_request.event
+
+    send_email(
+        to=[organiser.contact_address for organiser in event.organisers.all()],
+        subject="[PROMO] Status update",
+        txt_template="promotion/email/status_update.txt",
+        context={
+            "updated_request": updated_request,
+        },
+    )
+
+
+def send_daily_update_overview():
+    updated_requests = PromotionRequest.objects.filter(status_updated=True)
+
+    if updated_requests:
+        send_email(
+            to=[settings.PROMO_REQUEST_NOTIFICATION_ADDRESS],
+            subject="[PROMO] Daily update overview",
+            txt_template="promotion/email/daily_update_overview.txt",
+            html_template="promotion/email/daily_update_overview.html",
+            context={
+                "updated_requests": updated_requests,
+            },
+        )
+        updated_requests.update(status_updated=False)

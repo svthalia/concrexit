@@ -1,0 +1,19 @@
+{% extends "email/board_email.html" %}
+
+{% block content %}
+  Hi Promocie,<br>
+
+  <p>Here is your daily update of all promotion requests with a changed status.</p>
+
+  <p>Updated requests:</p>
+
+  {% for request in updated_requests %}
+    <p>
+      {% if request.event %}Event: {{ request.event.title }}<br>{% endif %}
+      Promotion channel: {{ request.channel }}<br>
+      New Status: {{ request.get_status_display }}.<br>
+      Publish date: {{ request.publish_date }}<br>
+      Remarks: {{ request.remarks|safe }}<br>
+    </p>
+  {% endfor%}
+{% endblock %}

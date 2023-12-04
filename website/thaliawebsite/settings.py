@@ -418,6 +418,10 @@ CELERY_BEAT_SCHEDULE = {
         "task": "thaliawebsite.tasks.clear_tokens",
         "schedule": crontab(minute=30, hour=3),
     },
+    "sendpromoupdateoverviewdaily": {
+        "task": "promotion.tasks.promo_update_overview_daily",
+        "schedule": crontab(minute=0, hour=8),
+    },
 }
 
 ###############################################################################

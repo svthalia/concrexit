@@ -1,0 +1,18 @@
+{% load i18n bleach_tags %}
+Hi Promocie,
+
+Here is your daily update of all promotion requests with a changed status.
+
+Updated requests:
+{% for request in updated_requests %}
+{% if request.event %}Event: {{ request.event.title }}{% endif %}
+Promotion channel: {{ request.channel }}
+New Status: {{ request.get_status_display }}
+Publish date: {{ request.publish_date }}
+Remarks: {{ request.remarks|striptags }}
+
+{% endfor %}
+
+Kisses,
+
+The website

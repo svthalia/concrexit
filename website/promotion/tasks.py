@@ -11,3 +11,8 @@ def promo_update_weekly():
 @shared_task
 def promo_update_daily():
     emails.send_daily_overview()
+
+
+@shared_task
+def promo_update_overview_daily():
+    emails.send_daily_update_overview()
