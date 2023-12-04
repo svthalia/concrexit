@@ -47,6 +47,7 @@ class ServicesTest(TestCase):
         cls.member2 = Member.objects.get(pk=2)
         cls.member3 = Member.objects.get(pk=3)
         cls.member4 = Member.objects.get(pk=4)
+        cls.member5 = Member.objects.get(pk=5)
         cls.bank_account = cls.member.bank_accounts.first()
 
     def test_create_or_update_contact_with_mandate(self, mock_api):
@@ -517,21 +518,39 @@ class ServicesTest(TestCase):
 
     @mock.patch("moneybirdsynchronization.services.delete_contact")
     @mock.patch("moneybirdsynchronization.services.create_or_update_contact")
+    @mock.patch(
+        "moneybirdsynchronization.services._sync_contacts_with_outdated_mandates"
+    )  # this is to prevent sync_contacts from actaully calling the function, since it is testet in another test
     def test_sync_contacts(
-        self, mock_create_or_update_contact, mock_delete_contact, mock_api
+        self,
+        mock_create_or_update_contact,
+        mock_delete_contact,
+        mock_sync_contacts_with_outdated_mandates,
+        mock_api,
     ):
-        # test moneyboard contact is made for users without moneybird contact (and not minimized)
+        # test moneyboard contact is made for users without moneybird contact (and not minimized), in this case only for self.member
         services._sync_contacts()
 
-        self.assertEqual(mock_create_or_update_contact.call_count, 4)
+        self.assertEqual(mock_create_or_update_contact.call_count, 5)
         self.assertEqual(mock_delete_contact.call_count, 0)
         mock_create_or_update_contact.assert_any_call(self.member)
         mock_create_or_update_contact.assert_any_call(self.member2)
         mock_create_or_update_contact.assert_any_call(self.member3)
         mock_create_or_update_contact.assert_any_call(self.member4)
+        mock_create_or_update_contact.assert_any_call(self.member5)
 
         mock_create_or_update_contact.reset_mock()
 
+        # create contacs so that mock_create_or_update_contact is not called again
+        MoneybirdContact.objects.create(
+            member=self.member2, needs_synchronization=False
+        )
+        MoneybirdContact.objects.create(
+            member=self.member3, needs_synchronization=False
+        )
+        MoneybirdContact.objects.create(
+            member=self.member4, needs_synchronization=False
+        )
         MoneybirdContact.objects.create(member=self.member, needs_synchronization=False)
         # moneybird contact is updated if adress changes
         self.member.profile.address_line1 = "foo"
@@ -542,6 +561,7 @@ class ServicesTest(TestCase):
         self.assertEqual(mock_create_or_update_contact.call_count, 1)
         self.assertEqual(mock_delete_contact.call_count, 0)
         mock_create_or_update_contact.assert_any_call(self.member)
+        mock_create_or_update_contact.assert_any_call(self.member5)
 
         mock_create_or_update_contact.reset_mock()
 
