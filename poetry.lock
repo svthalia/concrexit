@@ -1045,13 +1045,13 @@ python-dateutil = "*"
 
 [[package]]
 name = "django-sass-processor"
-version = "1.2.2"
+version = "1.3"
 description = "SASS processor to compile SCSS files into *.css, while rendering, or offline."
 optional = false
 python-versions = "*"
 files = [
-    {file = "django-sass-processor-1.2.2.tar.gz", hash = "sha256:f6098c181cc95a21593df6bb502791e32015615222803de216fdcc8bb42c0f77"},
-    {file = "django_sass_processor-1.2.2-py3-none-any.whl", hash = "sha256:d5e2970228ec9648da83d083a2b468fa682bef80357d0bab8e3f6c6df301681e"},
+    {file = "django-sass-processor-1.3.tar.gz", hash = "sha256:5d88d93c99bd0326c1c2fe46dc06d8b3c14927bbae0216c335c3967659206afd"},
+    {file = "django_sass_processor-1.3-py3-none-any.whl", hash = "sha256:53bbb3f533a1b8428c4508d135781f23997cf181d4f5d7b8da61445ae76e8ca8"},
 ]
 
 [package.extras]
@@ -3111,4 +3111,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "684e44487dcbe834469850e02ff29ec2dfc8c465a344a2ba5a45b76427a1b3e8"
+content-hash = "36ec581a7560467f828373067067c8534744857c40f2e35440fafa3618a02bc7"
