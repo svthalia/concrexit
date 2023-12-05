@@ -277,8 +277,8 @@ def _try_create_or_update_external_invoices(queryset):
 
     logger.info(
         "Pushing %d %s to Moneybird.",
-        model_ngettext(queryset),
         queryset.count(),
+        model_ngettext(queryset),
     )
 
     for instance in queryset:
@@ -435,7 +435,9 @@ def _sync_moneybird_payments():
             continue
 
         logger.info(
-            "Pushing %d %s payments to Moneybird.", payments.count(), payment_type
+            "Pushing %d %s payments to Moneybird.",
+            payments.count(),
+            payment_type,
         )
 
         financial_account_id = financial_account_id_for_payment_type(payment_type)
