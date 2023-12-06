@@ -17,7 +17,7 @@ def schedule_new_album_pushnotification(sender, instance, **kwargs):
     """Create, update or delete a scheduled message for the saved album if necessary."""
     message = getattr(instance, "new_album_notification", None)
 
-    if instance.hidden:
+    if instance.hidden or instance.is_processing:
         # Remove existing not-sent notification if there is one.
         if message is not None and not message.sent:
             instance.new_album_notification = None

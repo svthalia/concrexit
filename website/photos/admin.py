@@ -14,17 +14,26 @@ album_uploaded = Signal()  # remove?
 class AlbumAdmin(admin.ModelAdmin):
     """Model for Album admin page."""
 
-    list_display = ("title", "date", "num_photos", "hidden", "shareable")
+    list_display = (
+        "title",
+        "date",
+        "num_photos",
+        "hidden",
+        "is_processing",
+        "shareable",
+    )
     fields = (
         "title",
         "slug",
         "date",
         "event",
         "hidden",
+        "is_processing",
         "shareable",
         "album_archive",
         "_cover",
     )
+    readonly_fields = ("is_processing",)
     search_fields = ("title", "date")
     list_filter = ("hidden", "shareable")
     date_hierarchy = "date"
@@ -35,6 +44,13 @@ class AlbumAdmin(admin.ModelAdmin):
         )
     }
     form = AlbumForm
+
+    def get_fields(self, request, obj=None):
+        fields = list(super().get_fields(request, obj))
+        if obj is None:
+            fields.remove("_cover")
+
+        return fields
 
     def get_queryset(self, request):
         """Get Albums and add the amount of photos as an annotation."""
@@ -51,11 +67,10 @@ class AlbumAdmin(admin.ModelAdmin):
         """Save the new Album by extracting the archive."""
         super().save_model(request, obj, form, change)
 
-        # This step probably belonfs in AlbumForm.clean:
-        # status = processing
-
         archive = form.cleaned_data.get("album_archive")
         if archive is not None:
+            obj.is_processing = True
+            obj.save()
             process_album_upload.delay(
                 archive.temporary_upload.upload_id, obj.id
             )  # look for album_id

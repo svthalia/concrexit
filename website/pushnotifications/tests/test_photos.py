@@ -24,6 +24,7 @@ class TestNewAlbumNotifications(TestCase):
             title="test album",
             date="2000-01-01",
             hidden=False,
+            is_processing=False,
         )
 
         self.assertIsNotNone(album.new_album_notification)
@@ -39,6 +40,19 @@ class TestNewAlbumNotifications(TestCase):
             title="test album",
             date="2000-01-01",
             hidden=True,
+        )
+
+        self.assertFalse(hasattr(album, "new_album_notification"))
+        self.assertFalse(NewAlbumMessage.objects.filter(album=album).exists())
+
+    def test_new_uploading_album_does_not_schedule_notification(self):
+        """Creating a new hidden album does not schedule a notification."""
+        album = Album.objects.create(
+            slug="test-album",
+            title="test album",
+            date="2000-01-01",
+            hidden=False,
+            is_processing=True,
         )
 
         self.assertFalse(hasattr(album, "new_album_notification"))

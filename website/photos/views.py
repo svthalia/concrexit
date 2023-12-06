@@ -30,7 +30,9 @@ class IndexView(LoginRequiredMixin, PagedView):
         self.keywords = request.GET.get("keywords", "").split()
 
     def get_queryset(self):
-        albums = Album.objects.filter(hidden=False).select_related("_cover")
+        albums = Album.objects.filter(hidden=False, is_processing=False).select_related(
+            "_cover"
+        )
         for key in self.keywords:
             albums = albums.filter(title__icontains=key)
         albums = get_annotated_accessible_albums(self.request, albums)
@@ -139,7 +141,11 @@ class LikedPhotoView(LoginRequiredMixin, PagedView):
 
     def get_queryset(self):
         photos = (
-            Photo.objects.filter(likes__member=self.request.member, album__hidden=False)
+            Photo.objects.filter(
+                likes__member=self.request.member,
+                album__hidden=False,
+                album__is_processing=False,
+            )
             .select_related("album")
             .select_properties("num_likes")
             .order_by("-album__date")
