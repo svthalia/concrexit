@@ -1,5 +1,5 @@
 {% extends 'admin/index.html' %}
-{% load i18n admin_urls static sass_tags admin_modify %}
+{% load i18n admin_urls static sass_tags bleach_tags admin_modify %}
 
 {% block title %}{{ event.title }} | {{ site_title|default:_('Thalia site admin') }}{% endblock %}
 {% block opengraph_title %}{{ event.title }} | {{ site_title|default:_('Thalia site admin') }}{% endblock %}
@@ -95,7 +95,7 @@
             <dd>{{ event.registration_required|yesno }}</dd>
             {% if not event.registration_required %}
             <dt>{% trans "registration message"|capfirst %}</dt>
-            <dd>{{ event.registration_message|default:event.DEFAULT_NO_REGISTRATION_MESSAGE }}</dd>
+            <dd>{{ event.no_registration_message|default:event.DEFAULT_NO_REGISTRATION_MESSAGE | bleach }}</dd>
             {% endif %}
             <dt>{% trans "number of registrations"|capfirst %}</dt>
             <dd>
