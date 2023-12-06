@@ -1,7 +1,7 @@
 from django import forms
 from django.conf import settings
 from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
-from django.forms import TypedChoiceField
+from django.forms import HiddenInput, TypedChoiceField
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.safestring import mark_safe
@@ -85,6 +85,8 @@ class MemberRegistrationForm(BaseRegistrationForm):
         model = Registration
         widgets = {
             "signature": SignatureWidget(),
+            # Contribution needs to be a field to be able to set it from .clean().
+            "contribution": HiddenInput(),
         }
         fields = (
             "length",
@@ -103,6 +105,7 @@ class MemberRegistrationForm(BaseRegistrationForm):
             "address_country",
             "optin_birthday",
             "optin_mailinglist",
+            "contribution",
             "membership_type",
             "direct_debit",
             "initials",
