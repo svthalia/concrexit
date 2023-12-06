@@ -206,6 +206,9 @@ class Profile(models.Model):
 
     photo = ImageField(
         verbose_name=_("Photo"),
+        help_text=_(
+            "Note that your photo may be publicly visible and indexable by search engines in some cases. This happens when you are in a committee with publicly visible members."
+        ),
         resize_source_to="source",
         upload_to=_profile_image_path,
         storage=storages["public"],
