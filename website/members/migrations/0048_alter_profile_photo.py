@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
             name="photo",
             field=thumbnails.fields.ImageField(
                 blank=True,
-                help_text="Note that your photo may be publically viewable and indexable by search engines in some cases. This happens when you are in a commitee with publically viewable members.",
+                help_text="Note that your photo may be publicly visible and indexable by search engines in some cases. This happens when you are in a committee with publicly visible members.",
                 null=True,
                 upload_to=functools.partial(
                     utils.media.services._generic_upload_to,
