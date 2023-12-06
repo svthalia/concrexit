@@ -81,6 +81,12 @@ class MemberRegistrationForm(BaseRegistrationForm):
         help_text=_("What lecture year did you start studying at Radboud University?"),
     )
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["student_number"].required = True
+        self.fields["programme"].required = True
+        self.fields["starting_year"].required = True
+
     class Meta:
         model = Registration
         widgets = {
