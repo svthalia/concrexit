@@ -57,7 +57,6 @@ class CalendarJSEventListView(ListAPIView):
 class CalendarJSUnpublishedEventListView(ListAPIView):
     """Define a custom route that outputs the correctly formatted external events information for CalendarJS, unpublished events only."""
 
-    queryset = Event.objects.filter(published=False)
     serializer_class = UnpublishedEventsCalenderJSSerializer
     permission_classes = [IsAdminUser, UnpublishedEventPermissions]
     pagination_class = None
@@ -66,6 +65,19 @@ class CalendarJSUnpublishedEventListView(ListAPIView):
         filters.CategoryFilter,
         filters.OrganiserFilter,
     )
+
+    def get_queryset(self):
+        queryset = Event.objects.filter(published=False)
+        if not (
+            self.request.user.has_perm("events.override_organiser")
+            or self.request.user.has_perm("events.view_unpublished")
+        ):
+            queryset = queryset.filter(
+                organisers__in=list(
+                    self.request.member.get_member_groups().values_list("id", flat=True)
+                )
+            )
+        return queryset
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
