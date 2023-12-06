@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
             name="display_members",
             field=models.BooleanField(
                 default=False,
-                help_text="With this enabled, the members of this committee will be viewable to anyone without logging in. Logged-in users can always view the list of members.",
+                help_text="With this enabled, the members of this committee will be visible to anyone without logging in. Logged-in users can always view the list of members.",
             ),
         ),
     ]
