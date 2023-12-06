@@ -362,6 +362,9 @@ class RenewalAdmin(RegistrationAdmin):
             return fields + ["member"]
         return fields
 
+    def has_add_permission(self, request):
+        return False
+
     @staticmethod
     def name(obj):
         return obj.member.get_full_name()
