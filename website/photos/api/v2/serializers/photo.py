@@ -14,7 +14,7 @@ class PhotoSerializer(CleanedModelSerializer):
         """Meta class for the serializer."""
 
         model = Photo
-        fields = ("pk", "rotation", "file")
+        fields = ("pk", "file")
 
     file = ThumbnailSerializer(
         size_medium="photo_medium",
@@ -29,7 +29,6 @@ class PhotoListSerializer(PhotoSerializer):
         model = Photo
         fields = (
             "pk",
-            "rotation",
             "file",
             "num_likes",
             "liked",
