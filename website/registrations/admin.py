@@ -249,6 +249,9 @@ class RegistrationAdmin(admin.ModelAdmin):
             else super().has_change_permission(request, obj)
         )
 
+    def has_add_permission(self, request):
+        return False
+
     def save_model(self, request, obj, form, change):
         if obj.status not in (
             Entry.STATUS_REJECTED,

@@ -37,6 +37,8 @@ class BaseRegistrationForm(forms.ModelForm):
         ),
     )
 
+    contribution = forms.DecimalField(required=False, widget=HiddenInput())
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["privacy_policy"].label = mark_safe(
@@ -89,11 +91,7 @@ class MemberRegistrationForm(BaseRegistrationForm):
 
     class Meta:
         model = Registration
-        widgets = {
-            "signature": SignatureWidget(),
-            # Contribution needs to be a field to be able to set it from .clean().
-            "contribution": HiddenInput(),
-        }
+        widgets = {"signature": SignatureWidget()}
         fields = (
             "length",
             "first_name",
@@ -134,6 +132,12 @@ class BenefactorRegistrationForm(BaseRegistrationForm):
 
     icis_employee = forms.BooleanField(
         required=False, label=_("I am an employee of iCIS")
+    )
+
+    contribution = forms.DecimalField(
+        required=True,
+        max_digits=5,
+        decimal_places=2,
     )
 
     class Meta:
