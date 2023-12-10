@@ -4,6 +4,8 @@ from django.db import models
 
 from thumbnails.fields import ImageField
 
+from payments.models import PaymentAmountField
+from sales.models.product import Product
 from utils.media.services import get_upload_to_function
 
 _merchandise_photo_upload_to = get_upload_to_function("merchandise")
@@ -15,13 +17,11 @@ class MerchandiseItem(models.Model):
     This model describes merchandise items.
     """
 
-    #: Name of the merchandise item.
     name = models.CharField(max_length=200)
 
     #: Price of the merchandise item
-    price = models.DecimalField(
-        max_digits=8,
-        decimal_places=2,
+    price = PaymentAmountField(
+        help_text="Current sales price of the merchandise item per piece (incl. VAT)."
     )
 
     #: Description of the merchandise item
@@ -61,3 +61,20 @@ class MerchandiseItem(models.Model):
         :rtype: str
         """
         return str(self.name)
+
+
+class MerchandiseProduct(Product):
+    """Merchandise products."""
+
+    merchandise_item = models.ForeignKey(
+        MerchandiseItem,
+        on_delete=models.CASCADE,
+    )
+
+    stock_value = PaymentAmountField(
+        help_text="Current stock ledger value of this product per piece (excl. VAT)."
+    )
+
+    def __str__(self):
+        """Give the name of the merchandise product in the currently active locale."""
+        return f"{self.name} ({self.merchandise_item})"

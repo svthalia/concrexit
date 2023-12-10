@@ -81,6 +81,21 @@ class MoneybirdAPIService:
             {"booking_type": booking_type, "booking_id": booking_id},
         )
 
+    def create_general_journal_document(self, document_data):
+        return self._administration.post(
+            "documents/general_journal_documents", document_data
+        )
+
+    def update_general_journal_document(self, document_id, document_data):
+        return self._administration.patch(
+            f"documents/general_journal_documents/{document_id}", document_data
+        )
+
+    def delete_general_journal_document(self, document_id):
+        return self._administration.delete(
+            f"documents/general_journal_documents/{document_id}"
+        )
+
 
 def get_moneybird_api_service():
     if (

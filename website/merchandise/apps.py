@@ -11,6 +11,9 @@ class MerchandiseConfig(AppConfig):
     name = "merchandise"
     verbose_name = _("Merchandise")
 
+    def ready(self):
+        from . import signals  # noqa: F401
+
     def menu_items(self):
         return {
             "categories": [{"name": "association", "title": "Association", "key": 1}],
