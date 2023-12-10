@@ -1,13 +1,10 @@
 from django.contrib import admin, messages
 from django.db.models import Count
-from django.dispatch import Signal
 from django.utils.translation import gettext_lazy as _
 
 from .forms import AlbumForm
 from .models import Album, Like, Photo
 from .tasks import process_album_upload
-
-album_uploaded = Signal()  # remove?
 
 
 @admin.register(Album)
@@ -71,15 +68,16 @@ class AlbumAdmin(admin.ModelAdmin):
         if archive is not None:
             obj.is_processing = True
             obj.save()
-            process_album_upload.delay(
-                archive.temporary_upload.upload_id, obj.id
-            )  # look for album_id
+            # Schedule a celery task to unpack the upload in the background.
+            # In local development (when to Redis queue is set up) these
+            # tasks are run immediately as if it is a normal function call.
+            process_album_upload.delay(archive.temporary_upload.upload_id, obj.id)
 
-        self.message_user(
-            request,
-            "Album is being processed, you will be notified when it is ready.",
-            messages.INFO,
-        )
+            self.message_user(
+                request,
+                "Album is being processed, is_processing will become False when it is ready.",
+                messages.INFO,
+            )
 
     def get_deleted_objects(self, objs, request):
         (

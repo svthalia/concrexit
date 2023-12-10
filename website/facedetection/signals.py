@@ -1,6 +1,6 @@
 from django.db.models.signals import post_save
 
-from photos.admin import album_uploaded
+from photos.tasks import album_uploaded
 from utils.models.signals import suspendingreceiver
 
 from .models import FaceDetectionPhoto, ReferenceFace
