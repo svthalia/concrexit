@@ -16,8 +16,6 @@ def album_card(album):
 
     if album.cover:
         image_url = album.cover.file.thumbnails.medium.url
-        if album.cover.rotation > 0:
-            class_name += f" rotate{album.cover.rotation}"
 
     url = album.get_absolute_url
     if not album.accessible:
@@ -37,7 +35,7 @@ def album_card(album):
 def photo_card(photo):
     """Create a card of a photo to show on an album page."""
     class_name = "photo-card"
-    anchor_attrs = f'data-rotation="{photo.rotation}" data-fancybox="gallery"'
+    anchor_attrs = 'data-fancybox="gallery"'
 
     if photo.album.shareable:
         url = reverse(
@@ -55,12 +53,6 @@ def photo_card(photo):
     )
 
     image_url = get_media_url(photo.file.thumbnails.medium)
-
-    if photo.rotation > 0:
-        class_name += f" rotate{photo.rotation}"
-        anchor_attrs += (
-            f""" data-options=\'{{"slideClass": "rotate{photo.rotation}"}}\'"""
-        )
 
     return grid_item(
         title="",

@@ -49,13 +49,6 @@ class Photo(models.Model):
         resize_source_to="source",
     )
 
-    rotation = models.IntegerField(
-        verbose_name=_("rotation"),
-        default=0,
-        choices=((x, x) for x in (0, 90, 180, 270)),
-        help_text=_("This does not modify the original image file."),
-    )
-
     _digest = models.CharField(
         "digest",
         max_length=40,
