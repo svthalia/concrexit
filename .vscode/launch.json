@@ -9,7 +9,7 @@
             "args": [
                 "runserver",
             ],
-            "justMyCode": true,
+            "justMyCode": false,
             "django": true,
         },
         {
@@ -23,7 +23,7 @@
                 "--buffer",
             ],
             "cwd": "${workspaceFolder}/website",
-            "justMyCode": true,
+            "justMyCode": false,
             "django": true,
         }
     ]
