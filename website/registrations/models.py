@@ -69,6 +69,7 @@ class Entry(models.Model):
     length = models.CharField(
         verbose_name=_("membership length"),
         choices=MEMBERSHIP_LENGTHS,
+        help_text="Warning: changing this in the admin does not update the contribution.",
         max_length=20,
     )
 
