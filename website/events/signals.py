@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.db.models.signals import post_save
 
 from events.models import EventRegistration
@@ -25,4 +26,8 @@ def send_event_registration_confirmation(
         )
     ):
         # Start a celery task to email the user in the background.
-        send_registration_confirmation_email.apply_async((instance.pk,), expires=600)
+        transaction.on_commit(
+            lambda: send_registration_confirmation_email.apply_async(
+                (instance.pk,), expires=600
+            )
+        )

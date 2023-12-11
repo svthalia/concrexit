@@ -1,4 +1,5 @@
 from django.contrib import admin, messages
+from django.db import transaction
 from django.db.models import Count
 from django.utils.translation import gettext_lazy as _
 
@@ -68,10 +69,13 @@ class AlbumAdmin(admin.ModelAdmin):
         if archive is not None:
             obj.is_processing = True
             obj.save()
-            # Schedule a celery task to unpack the upload in the background.
-            # In local development (when to Redis queue is set up) these
-            # tasks are run immediately as if it is a normal function call.
-            process_album_upload.delay(archive.temporary_upload.upload_id, obj.id)
+            # Schedule a celery task to unpack the upload in the background. In local development
+            # (when to Redis queue is set up) these tasks are run immediately as if it is a normal
+            # function call. In a real deployment, it has to be called only when the current db
+            # transaction is committed,
+            transaction.on_commit(
+                process_album_upload.s(archive.temporary_upload.upload_id, obj.id).delay
+            )
 
             self.message_user(
                 request,
