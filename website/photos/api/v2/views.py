@@ -28,7 +28,9 @@ class AlbumListView(ListAPIView):
             fetch_thumbnails([album.cover.file for album in albums if album.cover])
         return super().get_serializer(*args, **kwargs)
 
-    queryset = Album.objects.filter(hidden=False).select_related("_cover")
+    queryset = Album.objects.filter(hidden=False, is_processing=False).select_related(
+        "_cover"
+    )
 
     permission_classes = [
         IsAuthenticatedOrTokenHasScope,
@@ -68,7 +70,7 @@ class AlbumDetailView(RetrieveAPIView):
         # Fix select_properties dropping the default ordering.
         photos = photos.order_by("pk")
 
-        return Album.objects.filter(hidden=False).prefetch_related(
+        return Album.objects.filter(hidden=False, is_processing=False).prefetch_related(
             Prefetch("photo_set", queryset=photos)
         )
 
@@ -100,7 +102,11 @@ class LikedPhotosListView(ListAPIView):
 
     def get_queryset(self):
         return (
-            Photo.objects.filter(likes__member=self.request.member, album__hidden=False)
+            Photo.objects.filter(
+                likes__member=self.request.member,
+                album__hidden=False,
+                album__is_processing=False,
+            )
             .annotate(
                 member_likes=Count("likes", filter=Q(likes__member=self.request.member))
             )
@@ -117,7 +123,9 @@ class PhotoLikeView(APIView):
     def get(self, request, **kwargs):
         photo_id = kwargs.get("pk")
         try:
-            photo = Photo.objects.filter(album__hidden=False).get(pk=photo_id)
+            photo = Photo.objects.filter(
+                album__hidden=False, album__is_processing=False
+            ).get(pk=photo_id)
         except Photo.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -132,7 +140,9 @@ class PhotoLikeView(APIView):
     def post(self, request, **kwargs):
         photo_id = kwargs.get("pk")
         try:
-            photo = Photo.objects.filter(album__hidden=False).get(pk=photo_id)
+            photo = Photo.objects.filter(
+                album__hidden=False, album__is_processing=False
+            ).get(pk=photo_id)
         except Photo.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -157,14 +167,16 @@ class PhotoLikeView(APIView):
     def delete(self, request, **kwargs):
         photo_id = kwargs.get("pk")
         try:
-            photo = Photo.objects.filter(album__hidden=False).get(pk=photo_id)
+            photo = Photo.objects.filter(
+                album__hidden=False, album__is_processing=False
+            ).get(pk=photo_id)
         except Photo.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         try:
-            like = Like.objects.filter(photo__album__hidden=False).get(
-                member=request.member, photo__pk=photo_id
-            )
+            like = Like.objects.filter(
+                photo__album__hidden=False, photo___album__is_processing=False
+            ).get(member=request.member, photo__pk=photo_id)
         except Like.DoesNotExist:
             return Response(
                 {

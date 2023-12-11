@@ -47,6 +47,7 @@ class Photo(models.Model):
         _("file"),
         upload_to=photo_uploadto,
         resize_source_to="source",
+        pregenerated_sizes=["small", "photo_medium", "photo_large"],
     )
 
     _digest = models.CharField(
@@ -140,6 +141,13 @@ class Album(models.Model):
     )
 
     hidden = models.BooleanField(verbose_name=_("hidden"), default=False)
+
+    is_processing = models.BooleanField(
+        verbose_name="is processing",
+        help_text="This album is hidden until fully uploaded",
+        default=False,
+        editable=False,
+    )
 
     event = models.ForeignKey(
         "events.Event",
