@@ -124,8 +124,8 @@ server {
         default_type application/json;
     }
 
-    location = /.well-known/assetslinks.json {
-        alias /resources/assetslinks.json;
+    location = /.well-known/assetlinks.json {
+        alias /resources/assetlinks.json;
         default_type application/json;
     }
 
