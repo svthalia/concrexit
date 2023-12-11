@@ -65,6 +65,7 @@ services:
       - env.secret
     volumes:
       - celery-beat-db:/volumes/worker:rw
+      - concrexit-media:/volumes/media:rw
     restart: always
     depends_on:
       postgres:
