@@ -5,7 +5,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("photos", "0025_alter_photo__digest"),
+        ("photos", "0026_remove_photo_rotation"),
     ]
 
     operations = [
