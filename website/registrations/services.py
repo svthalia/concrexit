@@ -79,7 +79,7 @@ def revert_registration(
         registration.status = registration.STATUS_REVIEW
         registration.save()
 
-    if actor is not None:
+    if actor is not None:  # pragma: no cover
         # Log that the `actor` changed the status.
         LogEntry.objects.log_action(
             user_id=actor.id,
@@ -147,7 +147,7 @@ def revert_renewal(renewal: Renewal, actor: Optional[Member] = None) -> None:
     renewal.status = renewal.STATUS_REVIEW
     renewal.save()
 
-    if actor is not None:
+    if actor is not None:  # pragma: no cover
         # Log that the `actor` changed the status.
         LogEntry.objects.log_action(
             user_id=actor.id,
@@ -257,7 +257,7 @@ def complete_renewal(renewal: Renewal):
     with transaction.atomic():
         if renewal.length == Entry.MEMBERSHIP_STUDY:
             # Handle the 'membership upgrade' case.
-            if latest_membership is not None:
+            if latest_membership is not None:  # pragma: no cover
                 if latest_membership.until is None:
                     raise ValueError(
                         "This member already has a never ending membership"

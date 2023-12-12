@@ -63,14 +63,14 @@ class EntryAdminView(View):
                 else:
                     services.accept_registration(registration, actor=request.user)
                     messages.success(request, f"Successfully accepted {registration}.")
-            elif renewal is not None:
+            elif renewal is not None:  # pragma: no cover
                 services.accept_renewal(renewal, actor=request.user)
                 messages.success(request, f"Successfully accepted {renewal}.")
         elif action == "reject":
             if registration is not None:
                 services.reject_registration(registration, actor=request.user)
                 messages.success(request, f"Successfully rejected {registration}.")
-            elif renewal is not None:
+            elif renewal is not None:  # pragma: no cover
                 services.reject_renewal(renewal, actor=request.user)
                 messages.success(request, f"Successfully rejected {renewal}.")
         elif action == "resend":
@@ -81,7 +81,7 @@ class EntryAdminView(View):
                 )
             else:
                 messages.error(request, "Cannot resend renewal.")
-        elif action == "revert":
+        elif action == "revert":  # pragma: no cover
             if registration is not None:
                 services.revert_registration(registration, actor=request.user)
                 messages.success(

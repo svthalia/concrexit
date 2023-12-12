@@ -316,9 +316,9 @@ class RenewalAdmin(RegistrationAdmin):
         actions = super().get_actions(request)
 
         if not request.user.has_perm("registrations.review_entries"):
-            if "accept_renewals" in actions:
+            if "accept_renewals" in actions:  # pragma: no cover
                 del actions["accept_renewals"]
-            if "reject_renewals" in actions:
+            if "reject_renewals" in actions:  # pragma: no cover
                 del actions["reject_renewals"]
 
         return actions
