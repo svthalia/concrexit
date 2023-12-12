@@ -81,7 +81,7 @@ class EmailChangeTest(TestCase):
             send_message_mock.assert_called_once_with(change_request)
 
 
-@freeze_time("2018-10-2")
+@freeze_time("2018-12-2")
 @override_settings(SUSPEND_SIGNALS=True)
 class DataMinimisationTest(TestCase):
     @classmethod
@@ -114,12 +114,12 @@ class DataMinimisationTest(TestCase):
         )
 
     def test_removes_after_31_days_or_no_membership(self):
-        with self.subTest("Deletes after 31 days"):
+        with self.subTest("Deletes after 90 days"):
             processed = services.execute_data_minimisation(True)
             self.assertEqual(len(processed), 2)
             self.assertEqual(processed[0], self.m1)
 
-        with self.subTest("Deletes after 31 days"):
+        with self.subTest("Deletes after 90 days"):
             self.s1.until = timezone.now().replace(year=2018, month=11, day=1)
             self.s1.save()
             processed = services.execute_data_minimisation(True)
