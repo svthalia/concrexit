@@ -249,8 +249,9 @@ def complete_renewal(renewal: Renewal):
     lecture_year = datetime_to_lectureyear(since)
 
     latest_membership = member.latest_membership
-    # TODO: current_membership can be a future membership if just renewed before september.
-    # That doesn't matter here, but it is incorrect.
+    # Not that currently, Member. current_membership can be a future membership if a new
+    # membership has been created but it's not yet september. This does not matter here,
+    # but it is kind of incorrect.
     current_membership = member.current_membership
 
     with transaction.atomic():

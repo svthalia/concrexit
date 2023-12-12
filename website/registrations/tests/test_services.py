@@ -27,7 +27,7 @@ class ServicesTest(TestCase):
         cls.member.save()
 
         cls.membership = cls.member.membership_set.first()
-        cls.membership.until = "2023-08-31"
+        cls.membership.until = "2023-09-01"
         cls.membership.save()
 
         cls.member_registration = Registration.objects.create(
@@ -257,7 +257,8 @@ class ServicesTest(TestCase):
 
         with self.subTest("Complete member registration when payment is made."):
             # Signal triggers call to complete_registration.
-            create_payment(self.member_registration, self.admin, Payment.CASH)
+            with freeze_time("2023-08-28"):
+                create_payment(self.member_registration, self.admin, Payment.CASH)
 
             self.member_registration.refresh_from_db()
             self.assertEqual(self.member_registration.status, Entry.STATUS_COMPLETED)
@@ -267,9 +268,18 @@ class ServicesTest(TestCase):
             self.assertEqual(member.first_name, "John")
             self.assertEqual(member.last_name, "Doe")
             self.assertEqual(member.username, "jdoe")
-            # TODO: check membership since and until.
-            # TODO: check bank account.
-            # TODO: check sent emails.
+            self.assertEqual(
+                membership.since,
+                timezone.now().replace(year=2023, month=9, day=1).date(),
+            )
+            self.assertEqual(
+                membership.until,
+                timezone.now().replace(year=2024, month=9, day=1).date(),
+            )
+            self.assertEqual(membership.type, Membership.MEMBER)
+            self.assertFalse(member.bank_accounts.all().exists())
+
+            self.assertEqual(len(mail.outbox), 1)
 
         self.benefactor_registration.status = Entry.STATUS_ACCEPTED
         self.benefactor_registration.username = None  # Default 'jdoe' is taken already.
@@ -421,16 +431,24 @@ class ServicesTest(TestCase):
             with self.assertRaises(ValueError):
                 services.complete_renewal(self.renewal)
 
-        with freeze_time("2023-08-27"):
-            with self.subTest("Complete renewal before end of latest membership."):
+        with self.subTest("Complete renewal before end of latest membership."):
+            with freeze_time("2023-08-27"):
                 create_payment(self.renewal, self.admin, Payment.CASH)
 
-                self.renewal.refresh_from_db()
-                self.assertEqual(self.renewal.status, Entry.STATUS_COMPLETED)
-                membership = self.renewal.membership
-                self.assertIsNotNone(membership)
+            self.renewal.refresh_from_db()
+            self.assertEqual(self.renewal.status, Entry.STATUS_COMPLETED)
+            membership = self.renewal.membership
+            self.assertIsNotNone(membership)
+            self.assertEqual(self.member.membership_set.all().count(), 2)
 
-                # TODO: check since and until.
+            self.assertEqual(
+                membership.since,
+                timezone.now().replace(year=2023, month=9, day=1).date(),
+            )
+            self.assertEqual(
+                membership.until,
+                timezone.now().replace(year=2024, month=9, day=1).date(),
+            )
 
         # Restore data.
         with freeze_time("2023-08-25"):
@@ -446,16 +464,23 @@ class ServicesTest(TestCase):
         self.renewal.status = Entry.STATUS_ACCEPTED
         self.renewal.save()
 
-        with freeze_time("2023-09-10"):
-            with self.subTest("Complete renewal after end of latest membership."):
+        with self.subTest("Complete renewal after end of latest membership."):
+            with freeze_time("2023-09-10"):
                 create_payment(self.renewal, self.admin, Payment.CASH)
 
-                self.renewal.refresh_from_db()
-                self.assertEqual(self.renewal.status, Entry.STATUS_COMPLETED)
-                membership = self.renewal.membership
-                self.assertIsNotNone(membership)
+            self.renewal.refresh_from_db()
+            self.assertEqual(self.renewal.status, Entry.STATUS_COMPLETED)
+            membership = self.renewal.membership
+            self.assertIsNotNone(membership)
 
-                # TODO: check since and until.
+            self.assertEqual(
+                membership.since,
+                timezone.now().replace(year=2023, month=9, day=10).date(),
+            )
+            self.assertEqual(
+                membership.until,
+                timezone.now().replace(year=2024, month=9, day=1).date(),
+            )
 
         # Restore data.
         with freeze_time("2023-08-25"):
@@ -486,7 +511,7 @@ class ServicesTest(TestCase):
 
         # Restore data.
         with freeze_time("2023-08-25"):
-            self.membership.until = "2023-08-31"
+            self.membership.until = "2023-09-01"
             self.membership.save()
             self.renewal.delete()
             self.renewal = Renewal.objects.create(
@@ -539,7 +564,7 @@ class ServicesTest(TestCase):
 
         # Restore data.
         with freeze_time("2023-09-05"):
-            self.membership.until = "2023-08-31"
+            self.membership.until = "2023-09-01"
             self.membership.save()
             self.renewal.delete()
             self.renewal = Renewal.objects.create(
@@ -566,7 +591,7 @@ class ServicesTest(TestCase):
         # Restore data.
         with freeze_time("2023-09-05"):
             membership.delete()
-            self.membership.until = "2023-08-31"
+            self.membership.until = "2023-09-01"
             self.membership.type = Membership.BENEFACTOR
             self.membership.save()
             self.renewal.delete()
@@ -590,7 +615,12 @@ class ServicesTest(TestCase):
                 self.assertIsNotNone(membership)
                 self.assertNotEqual(self.membership.pk, membership.pk)
 
-                # TODO: check since and until and type.
+                self.assertEqual(membership.since, timezone.now().date())
+                self.assertEqual(
+                    membership.until,
+                    timezone.now().replace(year=2024, month=9, day=1).date(),
+                )
+                self.assertEqual(membership.type, Membership.BENEFACTOR)
 
     def test_data_minimisation(self):
         with freeze_time("2025-01-01"):
