@@ -30,7 +30,105 @@ def _get_mock_user(is_staff=False, is_authenticated=False, perms=None):
 
 
 class EntryAdminViewTest(TestCase):
-    pass
+    fixtures = ["members.json"]
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.admin = Member.objects.get(pk=2)
+        cls.admin.is_superuser = True
+        cls.admin.save()
+
+        cls.member = Member.objects.get(pk=1)
+        cls.member.email = "test@example.com"
+        cls.member.save()
+
+        cls.membership = cls.member.membership_set.first()
+        cls.membership.until = "2023-09-01"
+        cls.membership.save()
+
+        cls.registration = Registration.objects.create(
+            first_name="John",
+            last_name="Doe",
+            email="johndoe@example.com",
+            programme="computingscience",
+            student_number="s1234567",
+            starting_year=2014,
+            address_street="Heyendaalseweg 135",
+            address_street2="",
+            address_postal_code="6525AJ",
+            address_city="Nijmegen",
+            address_country="NL",
+            phone_number="06123456789",
+            birthday=timezone.now().replace(year=1990, day=1).date(),
+            length=Entry.MEMBERSHIP_YEAR,
+            contribution=7.5,
+            membership_type=Membership.MEMBER,
+            status=Entry.STATUS_REVIEW,
+        )
+
+        cls.renewal = Renewal.objects.create(
+            member=cls.member,
+            length=Entry.MEMBERSHIP_YEAR,
+            membership_type=Membership.MEMBER,
+            status=Entry.STATUS_REVIEW,
+            contribution=7.5,
+        )
+
+    def setUp(self):
+        self.client.force_login(self.admin)
+
+    @mock.patch("registrations.services.revert_registration")
+    @mock.patch("registrations.services.reject_registration")
+    @mock.patch("registrations.services.accept_registration")
+    def test_registration_actions(self, mock_accept, mock_reject, mock_revert):
+        url = reverse("registrations:admin-process", args=(self.registration.pk,))
+
+        with self.subTest("accept"):
+            self.client.post(url, data={"action": "accept"})
+            mock_accept.assert_called_once_with(self.registration, actor=self.admin)
+
+        with self.subTest("reject"):
+            self.client.post(url, data={"action": "reject"})
+            mock_reject.assert_called_once_with(self.registration, actor=self.admin)
+
+        mail.outbox = []
+        with self.subTest("resend"):
+            self.client.post(url, data={"action": "resend"})
+            self.assertEqual(len(mail.outbox), 1)
+
+        with self.subTest("revert"):
+            self.client.post(url, data={"action": "revert"})
+            mock_revert.assert_called_once_with(self.registration, actor=self.admin)
+
+        with self.subTest("accept with non-unique email"):
+            mock_accept.reset_mock()
+            self.registration.email = self.member.email
+            self.registration.save()
+            self.client.post(url, data={"action": "accept"})
+            mock_accept.assert_not_called()
+
+    @mock.patch("registrations.services.revert_renewal")
+    @mock.patch("registrations.services.reject_renewal")
+    @mock.patch("registrations.services.accept_renewal")
+    def test_renewal_actions(self, mock_accept, mock_reject, mock_revert):
+        url = reverse("registrations:admin-process", args=(self.renewal.pk,))
+
+        with self.subTest("accept"):
+            self.client.post(url, data={"action": "accept"})
+            mock_accept.assert_called_once_with(self.renewal, actor=self.admin)
+
+        with self.subTest("reject"):
+            self.client.post(url, data={"action": "reject"})
+            mock_reject.assert_called_once_with(self.renewal, actor=self.admin)
+
+        with self.subTest("resend"):
+            response = self.client.post(url, data={"action": "resend"}, follow=True)
+            self.assertContains(response, "Cannot resend renewal")
+            self.assertEqual(len(mail.outbox), 0)
+
+        with self.subTest("revert"):
+            self.client.post(url, data={"action": "revert"})
+            mock_revert.assert_called_once_with(self.renewal, actor=self.admin)
 
 
 class ConfirmEmailViewTest(TestCase):
