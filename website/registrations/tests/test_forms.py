@@ -63,7 +63,7 @@ class MemberRegistrationFormTest(TestCase):
             registration = form.save()
             self.assertEqual(
                 registration.contribution,
-                settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_YEAR],
+                settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_STUDY],
             )
             registration.delete()
 
