@@ -1,12 +1,8 @@
-import logging
-
 from django.db.models.signals import post_save
 
 from registrations import services
 from registrations.models import Registration, Renewal
 from utils.models.signals import suspendingreceiver
-
-logger = logging.getLogger(__name__)
 
 
 @suspendingreceiver(post_save, sender=Registration)
