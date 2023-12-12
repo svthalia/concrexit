@@ -1,7 +1,3 @@
-from datetime import timedelta
-from unittest import mock
-
-from django.contrib.auth import get_user_model
 from django.core import mail
 from django.test import TestCase, override_settings
 from django.utils import timezone
@@ -9,26 +5,32 @@ from django.utils import timezone
 from freezegun import freeze_time
 
 from members.models import Member, Membership
+from payments.exceptions import PaymentError
 from payments.models import BankAccount, Payment
-from registrations import payables, services
+from payments.services import create_payment
+from registrations import services
 from registrations.models import Entry, Registration, Renewal
-from utils.snippets import datetime_to_lectureyear
 
 
-@override_settings(SUSPEND_SIGNALS=True)
 class ServicesTest(TestCase):
     fixtures = ["members.json"]
 
     @classmethod
+    @freeze_time("2023-08-25")
     def setUpTestData(cls):
-        payables.register()
+        cls.admin = Member.objects.get(pk=2)
+        cls.admin.is_superuser = True
+        cls.admin.save()
 
-        cls.e0 = Entry.objects.create(
-            length=Entry.MEMBERSHIP_YEAR,
-            membership_type=Membership.MEMBER,
-            status=Entry.STATUS_REVIEW,
-        )
-        cls.e1 = Registration.objects.create(
+        cls.member = Member.objects.get(pk=1)
+        cls.member.email = "test@example.com"
+        cls.member.save()
+
+        cls.membership = cls.member.membership_set.first()
+        cls.membership.until = "2023-09-01"
+        cls.membership.save()
+
+        cls.member_registration = Registration.objects.create(
             first_name="John",
             last_name="Doe",
             email="johndoe@example.com",
@@ -47,490 +49,608 @@ class ServicesTest(TestCase):
             membership_type=Membership.MEMBER,
             status=Entry.STATUS_CONFIRM,
         )
-        cls.e2 = Registration.objects.create(
-            first_name="Paula",
-            last_name="Test",
-            email="ptest@example.com",
-            programme="computingscience",
-            student_number="s2345678",
-            starting_year=2015,
-            address_street="Heyendaalseweg 136",
+
+        cls.benefactor_registration = Registration.objects.create(
+            first_name="Jane",
+            last_name="Doe",
+            username="janedoe",
+            email="janedoe@example.com",
+            student_number="s1234568",
+            starting_year=2014,
+            address_street="Heyendaalseweg 135",
             address_street2="",
             address_postal_code="6525AJ",
             address_city="Nijmegen",
             address_country="NL",
-            phone_number="06098765432",
-            birthday=timezone.now().replace(year=1992, day=2).date(),
-            length=Entry.MEMBERSHIP_STUDY,
-            contribution=7.5,
-            membership_type=Membership.MEMBER,
-            status=Entry.STATUS_CONFIRM,
-        )
-        cls.e3 = Renewal.objects.create(
-            member=Member.objects.get(pk=2),
-            length=Entry.MEMBERSHIP_STUDY,
-            contribution=7.5,
-            membership_type=Membership.MEMBER,
-            status=Entry.STATUS_CONFIRM,
-        )
-        cls.e4 = Renewal.objects.create(
-            member=Member.objects.get(pk=3),
+            phone_number="06123456789",
+            birthday=timezone.now().replace(year=1990, day=1).date(),
             length=Entry.MEMBERSHIP_YEAR,
             contribution=7.5,
-            membership_type=Membership.MEMBER,
-            status=Entry.STATUS_ACCEPTED,
+            membership_type=Membership.BENEFACTOR,
+            status=Entry.STATUS_CONFIRM,
         )
-        cls.e4.status = Entry.STATUS_ACCEPTED
-        cls.e4.save()
-        cls.e5 = Renewal.objects.create(
-            member=Member.objects.get(pk=4),
+
+        cls.study_time_member_registration = Registration.objects.create(
+            first_name="Foo",
+            last_name="Bar",
+            email="foobar@example.com",
+            programme="computingscience",
+            student_number="s1234569",
+            starting_year=2014,
+            address_street="Heyendaalseweg 135",
+            address_street2="",
+            address_postal_code="6525AJ",
+            address_city="Nijmegen",
+            address_country="NL",
+            phone_number="06123456789",
+            birthday=timezone.now().replace(year=1990, day=1).date(),
             length=Entry.MEMBERSHIP_STUDY,
             contribution=30,
             membership_type=Membership.MEMBER,
-            status=Entry.STATUS_ACCEPTED,
-            created_at=timezone.now() - timedelta(days=10),
-        )
-        cls.e5.status = Entry.STATUS_ACCEPTED
-        cls.e5.save()
-
-    def setUp(self):
-        self.e1.refresh_from_db()
-        self.e2.refresh_from_db()
-        self.e3.refresh_from_db()
-        self.e4.refresh_from_db()
-
-    def test_generate_username(self):
-        username = services._generate_username(self.e1)
-        self.assertEqual(username, "jdoe")
-
-        self.e1.last_name = (
-            "famgtjbblvpcxpebclsjfamgtjbblvpcxpebcl"
-            "sjfamgtjbblvpcxpebclsjfamgtjbblvpcxpeb"
-            "clsjfamgtjbblvpcxpebclsjfamgtjbblvpcxp"
-            "ebclsjfamgtjbblvpcxpebclsjfamgtjbblvpc"
-            "xpebclsj"
+            status=Entry.STATUS_CONFIRM,
         )
 
-        username = services._generate_username(self.e1)
-        self.assertEqual(
-            username,
-            "jfamgtjbblvpcxpebclsjfamgtjbblvpcxpebclsjf"
-            "amgtjbblvpcxpebclsjfamgtjbblvpcxpebclsjfam"
-            "gtjbblvpcxpebclsjfamgtjbblvpcxpebclsjfamgt"
-            "jbblvpcxpebclsjfamgtjbbl",
+        cls.renewal = Renewal.objects.create(
+            member=cls.member,
+            length=Entry.MEMBERSHIP_YEAR,
+            membership_type=Membership.MEMBER,
+            status=Entry.STATUS_REVIEW,
+            contribution=7.5,
         )
 
-        possibilities = [
-            ("Bram", "in 't Zandt", "bintzandt"),
-            ("Astrid", "van der Jagt", "avanderjagt"),
-            ("Bart", "van den Boom", "bvandenboom"),
-            ("Richard", "van Ginkel", "rvanginkel"),
-            ("Edwin", "de Koning", "edekoning"),
-            ("Martijn", "de la Cosine", "mdelacosine"),
-            ("Robert", "Hissink Muller", "rhissinkmuller"),
-            ("Robert", "Al-Malak", "ralmalak"),
-            ("Arthur", "Domelé", "adomele"),
-            ("Ben", "Brücker", "bbrucker"),
-        ]
+    def test_confirm_registration(self):
+        with self.subTest("Member"):
+            self.assertEqual(self.member_registration.status, Entry.STATUS_CONFIRM)
+            services.confirm_registration(self.member_registration)
+            self.assertEqual(self.member_registration.status, Entry.STATUS_REVIEW)
+            self.assertEqual(len(mail.outbox), 1)  # Sends an email to the board.
 
-        for pos in possibilities:
-            username = services._generate_username(
-                Registration(first_name=pos[0], last_name=pos[1])
+        mail.outbox = []
+
+        with self.subTest("Benefactor"):
+            self.assertEqual(self.benefactor_registration.status, Entry.STATUS_CONFIRM)
+            services.confirm_registration(self.benefactor_registration)
+            self.assertEqual(self.benefactor_registration.status, Entry.STATUS_REVIEW)
+            self.assertEqual(
+                len(mail.outbox), 2
+            )  # Also sends information about references.
+
+        mail.outbox = []
+
+        with self.subTest("Already confirmed."):
+            with self.assertRaises(ValueError):
+                services.confirm_registration(self.member_registration)
+
+    def test_accept_registration(self):
+        with self.subTest("Not in review."):
+            with self.assertRaises(ValueError):
+                services.accept_registration(self.member_registration, actor=self.admin)
+
+        self.member_registration.status = Entry.STATUS_REVIEW
+        self.member_registration.save()
+
+        # Existing member has the default username.
+        self.member.username = "jdoe"
+        self.member.save()
+
+        with self.subTest("Username not unique"):
+            # Raises and does not commit changes. Does not send email.
+            with self.assertRaises(ValueError):
+                services.accept_registration(self.member_registration, actor=self.admin)
+
+            self.member_registration.refresh_from_db()
+            self.assertEqual(self.member_registration.status, Entry.STATUS_REVIEW)
+            self.assertEqual(len(mail.outbox), 0)
+
+        self.member_registration.username = "johndoe"
+        self.member_registration.save()
+
+        self.member.email = self.member_registration.email
+        self.member.save()
+        mail.outbox = []
+
+        with self.subTest("Email not unique"):
+            # Raises and does not commit changes. Does not send email.
+            with self.assertRaises(ValueError):
+                services.accept_registration(self.member_registration, actor=self.admin)
+
+            self.member_registration.refresh_from_db()
+            self.assertEqual(self.member_registration.status, Entry.STATUS_REVIEW)
+            self.assertEqual(len(mail.outbox), 0)
+
+        self.member_registration.email = "unique@example.com"
+        self.member_registration.save()
+        mail.outbox = []
+
+        with self.subTest("Normal"):
+            # Succeeds and sends payment email.
+            services.accept_registration(self.member_registration, actor=self.admin)
+
+            self.member_registration.refresh_from_db()
+            self.assertEqual(self.member_registration.status, Entry.STATUS_ACCEPTED)
+            self.assertEqual(len(mail.outbox), 1)
+            self.assertEqual(
+                mail.outbox[0].subject,
+                "[THALIA] Registration accepted",
             )
-            self.assertEqual(username, pos[2])
 
-    def test_check_unique_user(self):
-        user = get_user_model().objects.create_user(
-            "johnnydoe", "johnnydoe@example.com"
-        )
+        services.revert_registration(self.member_registration, actor=self.admin)
 
-        self.assertEqual(services.check_unique_user(self.e1), True)
+        self.member_registration.direct_debit = True
+        self.member_registration.iban = "NL12ABNA1234567890"
+        self.member_registration.signature = "base64,png"
+        self.member_registration.initials = "J."
+        self.member_registration.save()
+        mail.outbox = []
 
-        user.username = "jdoe"
-        user.save()
+        with self.subTest("With Thalia Pay"):
+            # Completes the registration, does not send payment email,
+            # but sends final email after completing the registration.
+            services.accept_registration(self.member_registration, actor=self.admin)
 
-        self.assertEqual(services.check_unique_user(self.e1), False)
+            self.member_registration.refresh_from_db()
+            self.assertEqual(self.member_registration.status, Entry.STATUS_COMPLETED)
+            self.assertIsNotNone(self.member_registration.membership)
+            self.assertIsNotNone(self.member_registration.membership.user)
+            member = self.member_registration.membership.user
+            self.assertEqual(BankAccount.objects.filter(owner_id=member.id).count(), 1)
+            self.assertEqual(self.member_registration.payment.amount, 7.5)
+            self.assertEqual(self.member_registration.payment.type, Payment.TPAY)
+            self.assertEqual(len(mail.outbox), 1)
+            self.assertEqual(
+                mail.outbox[0].subject,
+                "[THALIA] Welcome to Study Association Thalia",
+            )
 
-        user.username = "johnnydoe"
-        user.email = "johndoe@example.com"
-        user.save()
+    def test_reject_registration(self):
+        with self.subTest("Not in review."):
+            with self.assertRaises(ValueError):
+                services.reject_registration(self.member_registration, actor=self.admin)
 
-        self.assertEqual(services.check_unique_user(self.e1), False)
+        self.member_registration.status = Entry.STATUS_REVIEW
+        self.member_registration.save()
 
-        user.username = "jdoe"
-        user.email = "unique@example.com"
-        user.save()
-        self.e1.registration.username = "unique_username"
+        services.reject_registration(self.member_registration, actor=self.admin)
+        self.assertEqual(self.member_registration.status, Entry.STATUS_REJECTED)
+        self.assertEqual(len(mail.outbox), 1)
 
-        self.assertEqual(services.check_unique_user(self.e1), True)
+    def test_revert_registration(self):
+        with self.subTest("Not accepted or rejected."):
+            with self.assertRaises(ValueError):
+                services.revert_registration(self.member_registration, actor=self.admin)
 
-    def test_confirm_entry(self):
-        self.e3.status = Entry.STATUS_REVIEW
-        self.e3.save()
+        self.member_registration.status = Entry.STATUS_REJECTED
+        self.member_registration.save()
 
-        rows_updated = services.confirm_entry(Entry.objects.all())
+        with self.subTest("Revert rejected registration."):
+            services.revert_registration(self.member_registration, actor=self.admin)
+            self.assertEqual(self.member_registration.status, Entry.STATUS_REVIEW)
 
-        self.assertEqual(rows_updated, 2)
-        self.assertEqual(Entry.objects.filter(status=Entry.STATUS_REVIEW).count(), 4)
+        self.member_registration.status = Entry.STATUS_ACCEPTED
+        self.member_registration.save()
 
-    def test_reject_entries(self):
-        self.e2.status = Entry.STATUS_REVIEW
-        self.e2.save()
-        self.e3.status = Entry.STATUS_REVIEW
-        self.e3.save()
+        with override_settings(SUSPEND_SIGNALS=True):
+            payment = create_payment(self.member_registration, self.admin, Payment.CASH)
+            # Signals are suspended, so this does not complete the registration.
+            self.member_registration.refresh_from_db()
+            self.assertEqual(self.member_registration.status, Entry.STATUS_ACCEPTED)
 
-        rows_updated = services.reject_entries(1, Entry.objects.all())
+        with self.subTest("Revert paid, but somehow not completed registration."):
+            # As of now, it should no longer be possible to create a payment without
+            # completing the registration successfully, but still, revert_registration
+            # should be able to handle this.
+            services.revert_registration(self.member_registration, actor=self.admin)
+            self.assertEqual(self.member_registration.status, Entry.STATUS_REVIEW)
+            self.assertFalse(Payment.objects.filter(pk=payment.pk).exists())
 
-        self.assertEqual(rows_updated, 3)
-        self.assertEqual(Entry.objects.filter(status=Entry.STATUS_REJECTED).count(), 3)
-        self.assertEqual(len(mail.outbox), 2)
+    def test_complete_registration(self):
+        with self.subTest("Not accepted."):
+            with self.assertRaises(ValueError):
+                services.complete_registration(self.member_registration)
 
-    def test_accept_entries(self):
-        self.e2.status = Entry.STATUS_REVIEW
-        self.e2.save()
-        self.e3.status = Entry.STATUS_REVIEW
-        self.e3.save()
+        self.member_registration.status = Entry.STATUS_ACCEPTED
+        self.member_registration.save()
 
-        rows_updated = services.accept_entries(1, Entry.objects.all())
+        with self.subTest("No payment."):
+            with self.assertRaises(ValueError):
+                services.complete_registration(self.member_registration)
 
-        self.e2.refresh_from_db()
-        self.e3.refresh_from_db()
+        with self.subTest("Complete member registration when payment is made."):
+            # Signal triggers call to complete_registration.
+            with freeze_time("2023-08-28"):
+                create_payment(self.member_registration, self.admin, Payment.CASH)
 
-        self.assertEqual(self.e2.username, "ptest")
+            self.member_registration.refresh_from_db()
+            self.assertEqual(self.member_registration.status, Entry.STATUS_COMPLETED)
+            membership = self.member_registration.membership
+            self.assertIsNotNone(membership)
+            member = membership.user
+            self.assertEqual(member.first_name, "John")
+            self.assertEqual(member.last_name, "Doe")
+            self.assertEqual(member.username, "jdoe")
+            self.assertEqual(
+                membership.since,
+                timezone.now().replace(year=2023, month=9, day=1).date(),
+            )
+            self.assertEqual(
+                membership.until,
+                timezone.now().replace(year=2024, month=9, day=1).date(),
+            )
+            self.assertEqual(membership.type, Membership.MEMBER)
+            self.assertFalse(member.bank_accounts.all().exists())
 
-        self.assertEqual(rows_updated, 3)
-        self.assertEqual(Entry.objects.filter(status=Entry.STATUS_ACCEPTED).count(), 5)
-        self.assertEqual(len(mail.outbox), 2)
+            self.assertEqual(len(mail.outbox), 1)
 
-    def test_accept_entries_manual_username(self):
-        self.e2.status = Entry.STATUS_REVIEW
-        self.e2.username = "manual_username"
-        self.e2.save()
-        self.e3.status = Entry.STATUS_REVIEW
-        self.e3.save()
+        self.benefactor_registration.status = Entry.STATUS_ACCEPTED
+        self.benefactor_registration.username = None  # Default 'jdoe' is taken already.
+        self.benefactor_registration.save()
+        mail.outbox = []
 
-        rows_updated = services.accept_entries(1, Entry.objects.all())
+        with self.subTest("Username is not unique."):
+            # Signal triggers call to complete_registration, which raises.
+            # Creating the payment is rolled back. The registration remains accepted.
+            with self.assertRaises(PaymentError):
+                create_payment(self.benefactor_registration, self.admin, Payment.CASH)
 
-        self.e2.refresh_from_db()
-        self.assertEqual(self.e2.username, "manual_username")
+            self.benefactor_registration.refresh_from_db()
+            self.assertEqual(self.benefactor_registration.status, Entry.STATUS_ACCEPTED)
+            self.assertIsNone(self.benefactor_registration.payment)
+            self.assertEqual(len(mail.outbox), 0)
 
-        self.assertEqual(rows_updated, 3)
-        self.assertEqual(Entry.objects.filter(status=Entry.STATUS_ACCEPTED).count(), 5)
-        self.assertEqual(len(mail.outbox), 2)
+        self.benefactor_registration.status = Entry.STATUS_ACCEPTED
+        self.benefactor_registration.username = "janedoe"
+        self.benefactor_registration.save()
+        mail.outbox = []
 
-    @mock.patch("registrations.services.check_unique_user")
-    def test_accept_entries_user_not_unique(self, check_unique_user):
-        check_unique_user.return_value = False
+        with self.subTest("Complete benefactor registration when payment is made."):
+            # Signal triggers call to complete_registration.
+            create_payment(self.benefactor_registration, self.admin, Payment.CASH)
 
-        self.e2.status = Entry.STATUS_REVIEW
-        self.e2.save()
-        self.e3.status = Entry.STATUS_REVIEW
-        self.e3.save()
+            self.benefactor_registration.refresh_from_db()
+            self.assertEqual(
+                self.benefactor_registration.status, Entry.STATUS_COMPLETED
+            )
+            membership = self.benefactor_registration.membership
+            self.assertIsNotNone(membership)
+            member = membership.user
+            self.assertEqual(member.first_name, "Jane")
+            self.assertEqual(member.last_name, "Doe")
+            self.assertEqual(member.username, "janedoe")
+            self.assertEqual(membership.type, Membership.BENEFACTOR)
+            self.assertEqual(len(mail.outbox), 1)
+            self.assertEqual(
+                mail.outbox[0].subject,
+                "[THALIA] Welcome to Study Association Thalia",
+            )
 
-        rows_updated = services.accept_entries(1, Entry.objects.all())
+        self.study_time_member_registration.status = Entry.STATUS_ACCEPTED
+        self.study_time_member_registration.save()
+        mail.outbox = []
 
-        self.assertEqual(rows_updated, 0)
-        self.assertEqual(Entry.objects.filter(status=Entry.STATUS_ACCEPTED).count(), 2)
-        self.assertEqual(len(mail.outbox), 0)
+        with self.subTest("Complete study time registration when payment is made."):
+            create_payment(
+                self.study_time_member_registration, self.admin, Payment.CASH
+            )
 
-    def test_revert_entry(self):
-        with self.subTest("Revert accepted entry"):
-            self.e2.status = Entry.STATUS_ACCEPTED
-            self.e2.payment = Payment.objects.create(amount=7.5)
-            self.e2.save()
+            self.study_time_member_registration.refresh_from_db()
+            self.assertEqual(
+                self.study_time_member_registration.status, Entry.STATUS_COMPLETED
+            )
+            membership = self.study_time_member_registration.membership
+            self.assertIsNotNone(membership)
+            member = membership.user
+            self.assertEqual(member.first_name, "Foo")
+            self.assertEqual(member.last_name, "Bar")
+            self.assertEqual(member.username, "fbar")
+            self.assertEqual(membership.type, Membership.MEMBER)
+            self.assertIsNone(membership.until)
+            self.assertEqual(len(mail.outbox), 1)
+            self.assertEqual(
+                mail.outbox[0].subject,
+                "[THALIA] Welcome to Study Association Thalia",
+            )
 
-            services.revert_entry(1, self.e2)
+    def test_accept_renewal(self):
+        services.accept_renewal(self.renewal, actor=self.admin)
 
-            self.e2.refresh_from_db()
-
-            self.assertEqual(self.e2.status, Entry.STATUS_REVIEW)
-            self.assertIsNone(self.e2.payment)
-
-        with self.subTest("Revert rejected entry"):
-            self.e3.status = Entry.STATUS_REJECTED
-            self.e3.save()
-
-            services.revert_entry(1, self.e3)
-
-            self.e3.refresh_from_db()
-
-            self.assertEqual(self.e3.status, Entry.STATUS_REVIEW)
-
-        with self.subTest("Revert another rejected entry"):
-            self.e0.status = Entry.STATUS_REJECTED
-            self.e0.payment = Payment.objects.create(amount=7.5)
-            self.e0.save()
-
-            services.revert_entry(1, self.e0)
-
-            self.e0.refresh_from_db()
-
-            self.assertEqual(self.e0.status, Entry.STATUS_REVIEW)
-
-        with self.subTest("Does not revert completed entry"):
-            self.e2.status = Entry.STATUS_COMPLETED
-            self.e2.payment = Payment.objects.create(amount=7.5)
-            self.e2.save()
-
-            services.revert_entry(1, self.e0)
-
-            self.e2.refresh_from_db()
-
-            self.assertEqual(self.e2.status, Entry.STATUS_COMPLETED)
-            self.assertIsNotNone(self.e2.payment)
-
-    @mock.patch("registrations.services.check_unique_user")
-    def test_create_member_from_registration(self, check_unique_user):
-        # We use capitalisation here because we want
-        # to test if the username is lowercased
-        self.e1.username = "JDoe"
-        self.e1.save()
-
-        check_unique_user.return_value = False
-        with self.assertRaises(ValueError):
-            services._create_member_from_registration(self.e1)
-
-        check_unique_user.return_value = True
-        member = services._create_member_from_registration(self.e1)
-
-        self.assertEqual(member.username, "jdoe")
-        self.assertEqual(member.first_name, "John")
-        self.assertEqual(member.last_name, "Doe")
-        self.assertEqual(member.email, "johndoe@example.com")
-        self.assertEqual(member.email, "johndoe@example.com")
-
-        self.assertEqual(member.profile.programme, "computingscience")
-        self.assertEqual(member.profile.student_number, "s1234567")
-        self.assertEqual(member.profile.starting_year, 2014)
-        self.assertEqual(member.profile.address_street, "Heyendaalseweg 135")
-        self.assertEqual(member.profile.address_street2, "")
-        self.assertEqual(member.profile.address_postal_code, "6525AJ")
-        self.assertEqual(member.profile.address_city, "Nijmegen")
-        self.assertEqual(member.profile.address_country, "NL")
-        self.assertEqual(member.profile.phone_number, "06123456789")
-        self.assertEqual(
-            member.profile.birthday, timezone.now().replace(year=1990, day=1).date()
-        )
-
+        self.renewal.refresh_from_db()
+        self.assertEqual(self.renewal.status, Entry.STATUS_ACCEPTED)
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(
-            mail.outbox[0].subject, "[THALIA] Welcome to Study Association Thalia"
+            mail.outbox[0].subject,
+            "[THALIA] Renewal accepted",
         )
 
-    def test_create_member_from_registration_tpay(self):
-        self.e1.username = "jdoe"
+        mail.outbox = []
 
-        self.e1.direct_debit = True
-        self.e1.iban = "NL91ABNA0417164300"
-        self.e1.initials = "J"
-        self.e1.signature = "base64,png"
-        self.e1.save()
-
-        member = services._create_member_from_registration(self.e1)
-        bankaccount = BankAccount.objects.get(owner=member)
-
-        self.assertEqual(bankaccount.iban, "NL91ABNA0417164300")
-        self.assertEqual(bankaccount.initials, "J")
-        self.assertEqual(bankaccount.last_name, "Doe")
-        self.assertEqual(bankaccount.signature, "base64,png")
-
-    def test_create_membership_from_entry(self):
-        self.e1.username = "jdoe"
-        self.e1.save()
-        self.e2.username = "ptest"
-        self.e2.save()
-
-        with freeze_time("2017-01-12"):
-            lecture_year = datetime_to_lectureyear(timezone.now())
-            self.assertEqual(lecture_year, 2016)
-
-            m1 = services._create_member_from_registration(self.e1)
-            m2 = services._create_member_from_registration(self.e2)
-
-            # Registration to new 'year' membership starting today
-            membership1 = services._create_membership_from_entry(self.e1, m1)
-
-            self.assertEqual(membership1.since, timezone.now().date())
-            self.assertEqual(
-                membership1.until, timezone.datetime(year=2017, month=9, day=1).date()
-            )
-            self.assertEqual(membership1.user, m1)
-            self.assertEqual(membership1.type, self.e1.membership_type)
-
-            # Registration to new 'study' membership starting today
-            membership2 = services._create_membership_from_entry(self.e2, m2)
-
-            self.assertEqual(membership2.since, timezone.now().date())
-            self.assertEqual(membership2.until, None)
-            self.assertEqual(membership2.user, m2)
-            self.assertEqual(membership2.type, self.e2.membership_type)
-
-            membership2.delete()
-
-        with freeze_time("2017-08-12"):
-            # Check if since is new lecture year in august
-            membership2 = services._create_membership_from_entry(self.e2, m2)
-
-            self.assertEqual(
-                membership2.since, timezone.datetime(year=2017, month=9, day=1).date()
-            )
-            self.assertEqual(membership2.until, None)
-            self.assertEqual(membership2.user, m2)
-            self.assertEqual(membership2.type, self.e2.membership_type)
-
-        with freeze_time("2017-01-12"):
-            # Renewal to new 'study' membership starting today
-            self.e3.length = Entry.MEMBERSHIP_STUDY
-            self.e3.save()
-            membership3 = services._create_membership_from_entry(self.e3)
-
-            self.assertEqual(membership3.since, timezone.now().date())
-            self.assertEqual(membership3.until, None)
-            self.assertEqual(membership3.user, self.e3.member)
-            self.assertEqual(membership3.type, self.e3.membership_type)
-
-            membership3.delete()
-
-            # Renewal to new 'year' membership starting today
-            self.e3.length = Entry.MEMBERSHIP_YEAR
-            self.e3.save()
-            membership3 = services._create_membership_from_entry(self.e3)
-
-            self.assertEqual(membership3.since, timezone.now().date())
-            self.assertEqual(
-                membership3.until, timezone.datetime(month=9, day=1, year=2017).date()
-            )
-            self.assertEqual(membership3.user, self.e3.member)
-            self.assertEqual(membership3.type, self.e3.membership_type)
-
-            membership3.delete()
-
-            self.e3.length = Entry.MEMBERSHIP_YEAR
-            self.e3.save()
-            existing_membership = Membership.objects.create(
-                type=Membership.MEMBER,
-                since=timezone.datetime(year=2016, month=9, day=1).date(),
-                until=timezone.datetime(year=2017, month=1, day=31).date(),
-                user=self.e3.member,
-            )
-
-            # Renewal to new 'year' membership starting 1 day after
-            # end of the previous membership
-            self.e3.length = Entry.MEMBERSHIP_YEAR
-            self.e3.save()
-            membership3 = services._create_membership_from_entry(self.e3)
-            self.assertEqual(membership3.since, existing_membership.until)
-            self.assertEqual(
-                membership3.until, timezone.datetime(year=2017, month=9, day=1).date()
-            )
-            self.assertEqual(membership3.user, self.e3.member)
-            self.assertEqual(membership3.type, self.e3.membership_type)
-
-            membership3.delete()
-            self.e3.length = Entry.MEMBERSHIP_STUDY
-            self.e3.save()
-
-            # Renewal (aka upgrade) existing membership to 'study' membership
-            # It doesn't work when the entry was made after the renewal
-            # was due, so this is a new membership
-            membership3 = services._create_membership_from_entry(self.e3)
-            self.assertEqual(membership3.since, timezone.now().date())
-            self.assertEqual(membership3.until, None)
-            self.assertEqual(membership3.user, self.e3.member)
-            self.assertEqual(membership3.type, self.e3.membership_type)
-
-            membership3.delete()
-
-            # But it does work when the entry was created before the renewal
-            # was actually due. This modifies the existing membership
-            self.e3.created_at = timezone.make_aware(timezone.datetime(2017, 1, 30))
-            self.e3.save()
-            membership3 = services._create_membership_from_entry(self.e3)
-            self.assertEqual(membership3.since, existing_membership.since)
-            self.assertEqual(membership3.until, None)
-            self.assertEqual(membership3.user, self.e3.member)
-            self.assertEqual(membership3.type, self.e3.membership_type)
-
-            # Fail 'study' renewal of existing 'study' membership
-            existing_membership.until = None
-            existing_membership.save()
+        with self.subTest("Not in review."):
             with self.assertRaises(ValueError):
-                services._create_membership_from_entry(self.e3)
+                services.accept_renewal(self.renewal, actor=self.admin)
 
-            # Fail 'year' renewal of existing 'study' membership
-            self.e3.length = Entry.MEMBERSHIP_YEAR
-            self.e3.save()
-            existing_membership.until = None
-            existing_membership.save()
+            self.assertEqual(self.renewal.status, Entry.STATUS_ACCEPTED)
+            self.assertEqual(len(mail.outbox), 0)
+
+    def test_reject_renewal(self):
+        services.reject_renewal(self.renewal, actor=self.admin)
+
+        self.renewal.refresh_from_db()
+        self.assertEqual(self.renewal.status, Entry.STATUS_REJECTED)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(
+            mail.outbox[0].subject,
+            "[THALIA] Renewal rejected",
+        )
+
+        mail.outbox = []
+
+        with self.subTest("Not in review."):
             with self.assertRaises(ValueError):
-                services._create_membership_from_entry(self.e3)
+                services.reject_renewal(self.renewal, actor=self.admin)
 
-    @freeze_time("2019-01-01")
-    @mock.patch("registrations.emails.send_renewal_complete_message")
-    def test_process_entry_save(self, send_renewal_email):
-        self.e1.username = "jdoe"
-        self.e1.save()
+            self.assertEqual(self.renewal.status, Entry.STATUS_REJECTED)
+            self.assertEqual(len(mail.outbox), 0)
 
-        self.e1.status = Entry.STATUS_ACCEPTED
-        self.e1.membership = None
-        self.e1.payment = Payment.objects.create(amount=8)
-        self.e1.save()
-        self.e3.status = Entry.STATUS_ACCEPTED
-        self.e3.membership = None
-        self.e3.payment = Payment.objects.create(amount=8)
-        self.e3.save()
+    def test_revert_renewal(self):
+        with self.subTest("Not accepted or rejected."):
+            with self.assertRaises(ValueError):
+                services.revert_renewal(self.member_registration, actor=self.admin)
 
-        with self.subTest("No entry"):
-            services.process_entry_save(None)
+        self.renewal.status = Entry.STATUS_REJECTED
+        self.renewal.save()
 
-        with self.subTest("No payment for entry"):
-            services.process_entry_save(Entry(payment=None))
+        with self.subTest("Revert rejected renewal."):
+            services.revert_renewal(self.renewal, actor=self.admin)
+            self.assertEqual(self.renewal.status, Entry.STATUS_REVIEW)
 
-        with self.subTest("Status is not accepted"):
-            services.process_entry_save(Entry(payment=Payment()))
+        self.renewal.status = Entry.STATUS_ACCEPTED
+        self.renewal.save()
 
-        with self.subTest("Registration paid"):
-            services.process_entry_save(self.e1)
+        with override_settings(SUSPEND_SIGNALS=True):
+            payment = create_payment(self.renewal, self.admin, Payment.CASH)
+            # Signals are suspended, so this does not complete the renewal.
+            self.renewal.refresh_from_db()
+            self.assertEqual(self.renewal.status, Entry.STATUS_ACCEPTED)
 
-            self.e1.refresh_from_db()
-            self.assertIsNotNone(self.e1.membership)
-            self.assertEqual(self.e1.status, Entry.STATUS_COMPLETED)
+        with self.subTest("Revert paid, but somehow not completed renewal."):
+            # As of now, it should no longer be possible to create a payment without
+            # completing the renewal successfully, but still, revert_renewal
+            # should be able to handle this.
+            services.revert_renewal(self.renewal, actor=self.admin)
+            self.assertEqual(self.renewal.status, Entry.STATUS_REVIEW)
+            self.assertFalse(Payment.objects.filter(pk=payment.pk).exists())
 
-        with self.subTest("Renewal paid"):
-            services.process_entry_save(self.e3)
+    def test_complete_renewal(self):
+        with self.subTest("Not accepted."):
+            with self.assertRaises(ValueError):
+                services.complete_renewal(self.renewal)
 
-            self.e3.refresh_from_db()
-            self.e3.payment.refresh_from_db()
+        self.renewal.status = Entry.STATUS_ACCEPTED
+        self.renewal.save()
 
-            send_renewal_email.assert_called_with(self.e3)
-            self.assertEqual(self.e3.payment.paid_by, self.e3.member)
-            self.assertIsNotNone(self.e3.membership)
-            self.assertEqual(self.e3.status, Entry.STATUS_COMPLETED)
+        with self.subTest("No payment."):
+            with self.assertRaises(ValueError):
+                services.complete_renewal(self.renewal)
 
-    @freeze_time("2019-01-01")
-    def test_accept_tpay_registration(self):
-        self.e2.created_at = timezone.now()
-        self.e2.direct_debit = True
-        self.e2.iban = "NL91ABNA0417164300"
-        self.e2.initials = "J"
-        self.e2.signature = "base64,png"
+        with self.subTest("Complete renewal before end of latest membership."):
+            with freeze_time("2023-08-27"):
+                create_payment(self.renewal, self.admin, Payment.CASH)
 
-        self.e2.status = Entry.STATUS_REVIEW
-        self.e2.save()
+            self.renewal.refresh_from_db()
+            self.assertEqual(self.renewal.status, Entry.STATUS_COMPLETED)
+            membership = self.renewal.membership
+            self.assertIsNotNone(membership)
+            self.assertEqual(self.member.membership_set.all().count(), 2)
 
-        rows_updated = services.accept_entries(1, Entry.objects.all())
+            self.assertEqual(
+                membership.since,
+                timezone.now().replace(year=2023, month=9, day=1).date(),
+            )
+            self.assertEqual(
+                membership.until,
+                timezone.now().replace(year=2024, month=9, day=1).date(),
+            )
 
-        self.e2.refresh_from_db()
+        # Restore data.
+        with freeze_time("2023-08-25"):
+            membership.delete()
+            self.renewal.delete()
+            self.renewal = Renewal.objects.create(
+                member=self.member,
+                length=Entry.MEMBERSHIP_YEAR,
+                membership_type=Membership.MEMBER,
+                contribution=7.5,
+            )
 
-        self.assertEqual(rows_updated, 3)
-        self.assertEqual(Entry.objects.filter(status=Entry.STATUS_ACCEPTED).count(), 4)
-        self.assertEqual(len(mail.outbox), 2)
+        self.renewal.status = Entry.STATUS_ACCEPTED
+        self.renewal.save()
 
-        self.assertEqual(Entry.objects.filter(status=Entry.STATUS_COMPLETED).count(), 1)
+        with self.subTest("Complete renewal after end of latest membership."):
+            with freeze_time("2023-09-10"):
+                create_payment(self.renewal, self.admin, Payment.CASH)
 
-        registration = Entry.objects.filter(status=Entry.STATUS_COMPLETED).first()
+            self.renewal.refresh_from_db()
+            self.assertEqual(self.renewal.status, Entry.STATUS_COMPLETED)
+            membership = self.renewal.membership
+            self.assertIsNotNone(membership)
 
-        self.assertIsNotNone(registration.payment)
+            self.assertEqual(
+                membership.since,
+                timezone.now().replace(year=2023, month=9, day=10).date(),
+            )
+            self.assertEqual(
+                membership.until,
+                timezone.now().replace(year=2024, month=9, day=1).date(),
+            )
 
-        self.assertEqual(registration.payment.amount, self.e2.contribution)
-        self.assertEqual(registration.payment.type, Payment.TPAY)
+        # Restore data.
+        with freeze_time("2023-08-25"):
+            membership.delete()
+            self.renewal.delete()
+            self.renewal = Renewal.objects.create(
+                member=self.member,
+                length=Entry.MEMBERSHIP_STUDY,
+                membership_type=Membership.MEMBER,
+                contribution=22.5,
+            )
+
+        self.renewal.status = Entry.STATUS_ACCEPTED
+        self.renewal.save()
+
+        with freeze_time("2023-08-27"):
+            with self.subTest(
+                "Discounted membership upgrade before membership expiry."
+            ):
+                create_payment(self.renewal, self.admin, Payment.CASH)
+
+                self.renewal.refresh_from_db()
+                self.assertEqual(self.renewal.status, Entry.STATUS_COMPLETED)
+                membership = self.renewal.membership
+                self.assertIsNotNone(membership)
+                self.assertEqual(self.membership.pk, membership.pk)
+                self.assertIsNone(membership.until)
+
+        # Restore data.
+        with freeze_time("2023-08-25"):
+            self.membership.until = "2023-09-01"
+            self.membership.save()
+            self.renewal.delete()
+            self.renewal = Renewal.objects.create(
+                member=self.member,
+                length=Entry.MEMBERSHIP_STUDY,
+                membership_type=Membership.MEMBER,
+                contribution=22.5,
+            )
+
+        self.renewal.status = Entry.STATUS_ACCEPTED
+        self.renewal.save()
+
+        with freeze_time("2023-09-10"):
+            with self.subTest("Discounted membership upgrade after membership expiry."):
+                create_payment(self.renewal, self.admin, Payment.CASH)
+
+                self.renewal.refresh_from_db()
+                self.assertEqual(self.renewal.status, Entry.STATUS_COMPLETED)
+                membership = self.renewal.membership
+                self.assertIsNotNone(membership)
+                self.assertEqual(self.membership.pk, membership.pk)
+                self.assertIsNone(membership.until)
+
+        # Restore data.
+        with freeze_time("2023-08-25"):
+            self.membership.until = None
+            self.membership.save()
+            self.renewal.delete()
+            self.renewal = Renewal.objects.create(
+                member=self.member,
+                length=Entry.MEMBERSHIP_STUDY,
+                membership_type=Membership.MEMBER,
+                contribution=22.5,
+            )
+
+        self.renewal.status = Entry.STATUS_ACCEPTED
+        self.renewal.save()
+
+        with freeze_time("2023-09-10"):
+            with self.subTest("Already has study-time membership."):
+                with self.assertRaises(PaymentError):
+                    create_payment(self.renewal, self.admin, Payment.CASH)
+
+            self.renewal.length = Entry.MEMBERSHIP_YEAR
+            self.renewal.save()
+
+            with self.subTest("Already has study-time membership."):
+                with self.assertRaises(PaymentError):
+                    create_payment(self.renewal, self.admin, Payment.CASH)
+
+        # Restore data.
+        with freeze_time("2023-09-05"):
+            self.membership.until = "2023-09-01"
+            self.membership.save()
+            self.renewal.delete()
+            self.renewal = Renewal.objects.create(
+                member=self.member,
+                length=Entry.MEMBERSHIP_STUDY,
+                membership_type=Membership.MEMBER,
+                contribution=30,
+            )
+
+        self.renewal.status = Entry.STATUS_ACCEPTED
+        self.renewal.save()
+
+        with freeze_time("2023-09-10"):
+            with self.subTest("Non-discounted membership upgrade."):
+                create_payment(self.renewal, self.admin, Payment.CASH)
+
+                self.renewal.refresh_from_db()
+                self.assertEqual(self.renewal.status, Entry.STATUS_COMPLETED)
+                membership = self.renewal.membership
+                self.assertIsNotNone(membership)
+                self.assertNotEqual(self.membership.pk, membership.pk)
+                self.assertIsNone(membership.until)
+
+        # Restore data.
+        with freeze_time("2023-09-05"):
+            membership.delete()
+            self.membership.until = "2023-09-01"
+            self.membership.type = Membership.BENEFACTOR
+            self.membership.save()
+            self.renewal.delete()
+            self.renewal = Renewal.objects.create(
+                member=self.member,
+                length=Entry.MEMBERSHIP_YEAR,
+                membership_type=Membership.BENEFACTOR,
+                contribution=30,
+            )
+
+        self.renewal.status = Entry.STATUS_ACCEPTED
+        self.renewal.save()
+
+        with freeze_time("2023-09-10"):
+            with self.subTest("Complete benefactor renewal."):
+                create_payment(self.renewal, self.admin, Payment.CASH)
+
+                self.renewal.refresh_from_db()
+                self.assertEqual(self.renewal.status, Entry.STATUS_COMPLETED)
+                membership = self.renewal.membership
+                self.assertIsNotNone(membership)
+                self.assertNotEqual(self.membership.pk, membership.pk)
+
+                self.assertEqual(membership.since, timezone.now().date())
+                self.assertEqual(
+                    membership.until,
+                    timezone.now().replace(year=2024, month=9, day=1).date(),
+                )
+                self.assertEqual(membership.type, Membership.BENEFACTOR)
+
+    def test_data_minimisation(self):
+        with freeze_time("2025-01-01"):
+            with self.subTest("No old completed registrations."):
+                self.assertEqual(services.execute_data_minimisation(), 0)
+
+        with freeze_time("2024-09-10"):
+            self.renewal.status = Entry.STATUS_COMPLETED
+            self.renewal.updated_at = timezone.now()
+            self.renewal.save()
+            self.member_registration.status = Entry.STATUS_COMPLETED
+            self.member_registration.updated_at = timezone.now()
+            self.member_registration.save()
+
+        self.assertEqual(Registration.objects.count(), 3)
+        self.assertEqual(Renewal.objects.count(), 1)
+
+        with freeze_time("2024-09-15"):
+            with self.subTest("A recent completed registration and renewal."):
+                services.execute_data_minimisation()
+                self.assertEqual(Registration.objects.count(), 3)
+                self.assertEqual(Renewal.objects.count(), 1)
+
+        with freeze_time("2024-10-15"):
+            with self.subTest("Dry run."):
+                services.execute_data_minimisation(dry_run=True)
+                self.assertEqual(Registration.objects.count(), 3)
+                self.assertEqual(Renewal.objects.count(), 1)
+
+            with self.subTest("An old completed registration and renewal."):
+                services.execute_data_minimisation()
+                self.assertEqual(Registration.objects.count(), 2)
+                self.assertEqual(Renewal.objects.count(), 0)

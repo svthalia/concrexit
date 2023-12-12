@@ -1,4 +1,3 @@
-"""The signals checked by the registrations package."""
 from django.db.models.signals import post_save
 
 from registrations import services
@@ -7,14 +6,18 @@ from utils.models.signals import suspendingreceiver
 
 
 @suspendingreceiver(post_save, sender=Registration)
+def complete_paid_registration(sender, instance: Registration, **kwargs):
+    """Complete a registration once a payment for it is made."""
+    if instance.status == Registration.STATUS_ACCEPTED and instance.payment is not None:
+        services.complete_registration(instance)
+        # If something goes wrong completing the registration, the exception is propagated.
+        # Creating the payment will in turn fail, leaving the registration accepted but not paid.
+
+
 @suspendingreceiver(post_save, sender=Renewal)
-def post_entry_save(sender, instance, **kwargs):
-    """Process an entry when it is saved."""
-    try:
-        services.process_entry_save(instance)
-    except Exception as e:
-        # if something goes wrong creating the member,
-        # revert the entry: remove the payment
-        # and mark the entry again as 'ready for review'
-        services.revert_entry(None, instance)
-        raise e
+def complete_paid_renewal(sender, instance: Renewal, **kwargs):
+    """Complete a renewal once a payment for it is made."""
+    if instance.status == Renewal.STATUS_ACCEPTED and instance.payment is not None:
+        services.complete_renewal(instance)
+        # If something goes wrong completing the renewal, the exception is propagated.
+        # Creating the payment will in turn fail, leaving the renewal accepted but not paid.

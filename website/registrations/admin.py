@@ -1,14 +1,18 @@
 """Registers admin interfaces for the registrations module."""
 from functools import partial
 
-from django.contrib import admin, messages
-from django.contrib.admin.utils import model_ngettext
+from django.contrib import admin
 from django.forms import Field
 from django.utils.translation import gettext_lazy as _
 
 from payments.widgets import PaymentWidget
+from registrations.services import (
+    accept_registration,
+    accept_renewal,
+    reject_registration,
+    reject_renewal,
+)
 
-from . import services
 from .forms import RegistrationAdminForm
 from .models import Entry, Reference, Registration, Renewal
 
@@ -16,18 +20,6 @@ from .models import Entry, Reference, Registration, Renewal
 class ReferenceInline(admin.StackedInline):
     model = Reference
     extra = 0
-
-
-def _show_message(model_admin, request, n, message, error):
-    """Show a message in the Django Admin."""
-    if n == 0:
-        model_admin.message_user(request, error, messages.ERROR)
-    else:
-        model_admin.message_user(
-            request,
-            message % {"count": n, "items": model_ngettext(model_admin.opts, n)},
-            messages.SUCCESS,
-        )
 
 
 @admin.register(Registration)
@@ -128,8 +120,55 @@ class RegistrationAdmin(admin.ModelAdmin):
             },
         ),
     )
-    actions = ["accept_selected", "reject_selected"]
+
     form = RegistrationAdminForm
+
+    actions = ["accept_registrations", "reject_registrations"]
+
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+
+        if not request.user.has_perm("registrations.review_entries"):
+            if "accept_registrations" in actions:
+                del actions["accept_registrations"]
+            if "reject_registrations" in actions:
+                del actions["reject_registrations"]
+
+        return actions
+
+    @admin.action(description="Accept selected registrations")
+    def accept_registrations(self, request, queryset):  # pragma: no cover
+        if queryset.exclude(status=Registration.STATUS_REVIEW).exists():
+            self.message_user(
+                request, "Only registrations in review can be accepted", "error"
+            )
+            return
+
+        count = 0
+        for registration in queryset:
+            try:
+                accept_registration(registration, actor=request.user)
+                count += 1
+            except ValueError as e:
+                self.message_user(
+                    request, f"Error accepting {registration}: {e.message}", "error"
+                )
+
+        self.message_user(request, f"Accepted {count} registrations", "success")
+
+    @admin.action(description="Reject selected registrations")
+    def reject_registrations(self, request, queryset):  # pragma: no cover
+        if queryset.exclude(status=Registration.STATUS_REVIEW).exists():
+            self.message_user(
+                request, "Only registrations in review can be rejected", "error"
+            )
+            return
+
+        count = queryset.count()
+        for registration in queryset:
+            reject_registration(registration, actor=request.user)
+
+        self.message_user(request, f"Rejected {count} registrations", "success")
 
     def reference_count(self, obj):
         return obj.reference_set.count()
@@ -143,7 +182,7 @@ class RegistrationAdmin(admin.ModelAdmin):
             formfield_callback=partial(
                 self.formfield_for_dbfield, request=request, obj=obj
             ),
-            **kwargs
+            **kwargs,
         )
 
     def formfield_for_dbfield(self, db_field, request, obj=None, **kwargs):
@@ -191,7 +230,7 @@ class RegistrationAdmin(admin.ModelAdmin):
             Entry.STATUS_ACCEPTED,
             Entry.STATUS_COMPLETED,
         ):
-            return ["status", "created_at", "updated_at", "payment", "contribution"]
+            return ["status", "created_at", "updated_at", "payment"]
         return [
             field.name
             for field in self.model._meta.get_fields()
@@ -202,40 +241,6 @@ class RegistrationAdmin(admin.ModelAdmin):
     def name(obj):
         return obj.get_full_name()
 
-    def reject_selected(self, request, queryset):
-        """Reject the selected entries."""
-        if request.user.has_perm("registrations.review_entries"):
-            rows_updated = services.reject_entries(request.user.pk, queryset)
-            _show_message(
-                self,
-                request,
-                rows_updated,
-                message=_("Successfully rejected %(count)d %(items)s."),
-                error=_("The selected registration(s) could not be rejected."),
-            )
-
-    reject_selected.short_description = _("Reject selected registrations")
-    reject_selected.allowed_permissions = ("review",)
-
-    def accept_selected(self, request, queryset):
-        """Accept the selected entries."""
-        if request.user.has_perm("registrations.review_entries"):
-            rows_updated = services.accept_entries(request.user.pk, queryset)
-            _show_message(
-                self,
-                request,
-                rows_updated,
-                message=_("Successfully accepted %(count)d %(items)s."),
-                error=_("The selected registration(s) could not be accepted."),
-            )
-
-    accept_selected.short_description = _("Accept selected registrations")
-    accept_selected.allowed_permissions = ("review",)
-
-    def has_review_permission(self, request):
-        """Check if the user has the review permission."""
-        return request.user.has_perm("registrations.review_entries")
-
     def has_change_permission(self, request, obj=None):
         """Completed registrations are read-only."""
         return (
@@ -243,6 +248,9 @@ class RegistrationAdmin(admin.ModelAdmin):
             if obj and obj.status == Entry.STATUS_COMPLETED
             else super().has_change_permission(request, obj)
         )
+
+    def has_add_permission(self, request):
+        return False
 
     def save_model(self, request, obj, form, change):
         if obj.status not in (
@@ -301,20 +309,58 @@ class RenewalAdmin(RegistrationAdmin):
             },
         ),
     )
-    actions = RegistrationAdmin.actions
+
+    actions = ["accept_renewals", "reject_renewals"]
+
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+
+        if not request.user.has_perm("registrations.review_entries"):
+            if "accept_renewals" in actions:  # pragma: no cover
+                del actions["accept_renewals"]
+            if "reject_renewals" in actions:  # pragma: no cover
+                del actions["reject_renewals"]
+
+        return actions
+
+    @admin.action(description="Accept selected renewals")
+    def accept_renewals(self, request, queryset):  # pragma: no cover
+        if queryset.exclude(status=Renewal.STATUS_REVIEW).exists():
+            self.message_user(
+                request, "Only renewals in review can be accepted", "error"
+            )
+            return
+
+        count = queryset.count()
+        for renewal in queryset:
+            accept_renewal(renewal, actor=request.user)
+            count += 1
+
+        self.message_user(request, f"Accepted {count} renewals", "success")
+
+    @admin.action(description="Reject selected renewals")
+    def reject_renewals(self, request, queryset):  # pragma: no cover
+        if queryset.exclude(status=Renewal.STATUS_REVIEW).exists():
+            self.message_user(
+                request, "Only renewals in review can be rejected", "error"
+            )
+            return
+
+        count = queryset.count()
+        for renewal in queryset:
+            reject_renewal(renewal, actor=request.user)
+
+        self.message_user(request, f"Rejected {count} renewals", "success")
 
     def get_readonly_fields(self, request, obj=None):
         """Make all fields read-only and add member if needed."""
         fields = super().get_readonly_fields(request, obj)
-        if obj is None or obj.status not in (
-            Entry.STATUS_REJECTED,
-            Entry.STATUS_ACCEPTED,
-            Entry.STATUS_COMPLETED,
-        ):
-            fields.remove("contribution")
         if "member" not in fields and obj is not None:
             return fields + ["member"]
         return fields
+
+    def has_add_permission(self, request):
+        return False
 
     @staticmethod
     def name(obj):

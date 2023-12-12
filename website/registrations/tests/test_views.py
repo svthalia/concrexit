@@ -2,18 +2,13 @@ from unittest import mock
 from unittest.mock import MagicMock, Mock
 
 from django.conf import settings
-from django.contrib import messages
-from django.contrib.admin.utils import model_ngettext
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Permission
-from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import ValidationError
+from django.core import mail
 from django.http import HttpResponse
 from django.template.defaultfilters import floatformat
-from django.test import Client, RequestFactory, TestCase, override_settings
+from django.test import RequestFactory, TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
 
 from members.models import Member, Membership, Profile
 from registrations import views
@@ -34,11 +29,24 @@ def _get_mock_user(is_staff=False, is_authenticated=False, perms=None):
     return user
 
 
-@override_settings(SUSPEND_SIGNALS=True)
 class EntryAdminViewTest(TestCase):
+    fixtures = ["members.json"]
+
     @classmethod
     def setUpTestData(cls):
-        cls.entry1 = Registration.objects.create(
+        cls.admin = Member.objects.get(pk=2)
+        cls.admin.is_superuser = True
+        cls.admin.save()
+
+        cls.member = Member.objects.get(pk=1)
+        cls.member.email = "test@example.com"
+        cls.member.save()
+
+        cls.membership = cls.member.membership_set.first()
+        cls.membership.until = "2023-09-01"
+        cls.membership.save()
+
+        cls.registration = Registration.objects.create(
             first_name="John",
             last_name="Doe",
             email="johndoe@example.com",
@@ -51,300 +59,82 @@ class EntryAdminViewTest(TestCase):
             address_city="Nijmegen",
             address_country="NL",
             phone_number="06123456789",
-            birthday=timezone.now().replace(year=1990, day=1),
+            birthday=timezone.now().replace(year=1990, day=1).date(),
             length=Entry.MEMBERSHIP_YEAR,
+            contribution=7.5,
             membership_type=Membership.MEMBER,
-            status=Entry.STATUS_CONFIRM,
+            status=Entry.STATUS_REVIEW,
         )
-        cls.user = get_user_model().objects.create_user(username="username")
-        cls.entry2 = Renewal.objects.create(
+
+        cls.renewal = Renewal.objects.create(
+            member=cls.member,
             length=Entry.MEMBERSHIP_YEAR,
             membership_type=Membership.MEMBER,
-            status=Entry.STATUS_CONFIRM,
-            member=cls.user,
+            status=Entry.STATUS_REVIEW,
+            contribution=7.5,
         )
 
     def setUp(self):
-        self.rf = RequestFactory()
-        self.client = Client()
-        self.client.force_login(self.user)
-        self.view = views.EntryAdminView()
+        self.client.force_login(self.admin)
 
-    def _give_user_permissions(self):
-        content_type = ContentType.objects.get_for_model(Entry)
-        permissions = Permission.objects.filter(
-            content_type__app_label=content_type.app_label,
-        )
-        for p in permissions:
-            self.user.user_permissions.add(p)
-        self.user.is_staff = True
-        self.user.save()
+    @mock.patch("registrations.services.revert_registration")
+    @mock.patch("registrations.services.reject_registration")
+    @mock.patch("registrations.services.accept_registration")
+    def test_registration_actions(self, mock_accept, mock_reject, mock_revert):
+        url = reverse("registrations:admin-process", args=(self.registration.pk,))
 
-        self.client.logout()
-        self.client.force_login(self.user)
+        with self.subTest("accept"):
+            self.client.post(url, data={"action": "accept"})
+            mock_accept.assert_called_once_with(self.registration, actor=self.admin)
 
-    def test_permissions(self):
-        url = f"/registration/admin/process/{self.entry1.pk}/"
-        response = self.client.post(url)
-        self.assertEqual(response.status_code, 302)
-        self.assertURLEqual(response.url, f"/admin/login/?next={url}")
+        with self.subTest("reject"):
+            self.client.post(url, data={"action": "reject"})
+            mock_reject.assert_called_once_with(self.registration, actor=self.admin)
 
-        self._give_user_permissions()
+        mail.outbox = []
+        with self.subTest("resend"):
+            self.client.post(url, data={"action": "resend"})
+            self.assertEqual(len(mail.outbox), 1)
 
-        response = self.client.post(url)
-        self.assertRedirects(
-            response, f"/admin/registrations/registration/{self.entry1.pk}/change/"
-        )
+        with self.subTest("revert"):
+            self.client.post(url, data={"action": "revert"})
+            mock_revert.assert_called_once_with(self.registration, actor=self.admin)
 
-    @mock.patch("registrations.services.check_unique_user")
-    @mock.patch("registrations.services.accept_entries")
-    @mock.patch("registrations.services.reject_entries")
-    def test_post_accept(self, reject_entries, accept_entries, check_unique_user):
-        self.view.action = "accept"
-        for reg_type, entry in {
-            "registration": self.entry1,
-            "renewal": self.entry2,
-        }.items():
-            entry_qs = Entry.objects.filter(pk=entry.pk)
-            check_unique_user.reset_mock()
-            check_unique_user.return_value = True
-            reject_entries.reset_mock()
-            reject_entries.return_value = 1
-            accept_entries.reset_mock()
-            accept_entries.return_value = 1
-            with mock.patch("registrations.models.Entry.objects.filter") as qs_mock:
-                qs_mock.return_value = entry_qs
-                qs_mock.get = Mock(return_value=entry_qs.get())
+        with self.subTest("accept with non-unique email"):
+            mock_accept.reset_mock()
+            self.registration.email = self.member.email
+            self.registration.save()
+            self.client.post(url, data={"action": "accept"})
+            mock_accept.assert_not_called()
 
-                request = self.rf.post(
-                    f"/registration/admin/process/{entry.pk}/",
-                    {
-                        "action": "accept",
-                    },
-                )
-                request.user = _get_mock_user()
-                request.member = request.user
-                request._messages = Mock()
-                response = self.view.post(request, pk=entry.pk)
+    @mock.patch("registrations.services.revert_renewal")
+    @mock.patch("registrations.services.reject_renewal")
+    @mock.patch("registrations.services.accept_renewal")
+    def test_renewal_actions(self, mock_accept, mock_reject, mock_revert):
+        url = reverse("registrations:admin-process", args=(self.renewal.pk,))
 
-                self.assertEqual(response.status_code, 302)
-                self.assertEqual(
-                    response.url,
-                    f"/admin/registrations/{reg_type}/{entry.pk}/change/",
-                )
+        with self.subTest("accept"):
+            self.client.post(url, data={"action": "accept"})
+            mock_accept.assert_called_once_with(self.renewal, actor=self.admin)
 
-                accept_entries.assert_called_once_with(1, entry_qs)
-                self.assertFalse(reject_entries.called)
+        with self.subTest("reject"):
+            self.client.post(url, data={"action": "reject"})
+            mock_reject.assert_called_once_with(self.renewal, actor=self.admin)
 
-                request._messages.add.assert_called_once_with(
-                    messages.SUCCESS,
-                    _("Successfully accepted %s.")
-                    % model_ngettext(entry_qs.all()[0], 1),
-                    "",
-                )
+        with self.subTest("resend"):
+            response = self.client.post(url, data={"action": "resend"}, follow=True)
+            self.assertContains(response, "Cannot resend renewal")
+            self.assertEqual(len(mail.outbox), 0)
 
-                accept_entries.return_value = 0
-                self.view.post(request, pk=entry.pk)
-
-                request._messages.add.assert_any_call(
-                    messages.ERROR,
-                    _("Could not accept %s.") % model_ngettext(entry_qs.all()[0], 1),
-                    "",
-                )
-
-                accept_entries.return_value = 1
-                check_unique_user.return_value = False
-                self.view.post(request, pk=entry.pk)
-
-                request._messages.add.assert_any_call(
-                    messages.ERROR,
-                    _("Could not accept %s. Username is not unique.")
-                    % model_ngettext(entry_qs.all()[0], 1),
-                    "",
-                )
-
-    @mock.patch("registrations.services.accept_entries")
-    @mock.patch("registrations.services.reject_entries")
-    def test_post_reject(self, reject_entries, accept_entries):
-        self.view.action = "reject"
-        for reg_type, entry in {
-            "registration": self.entry1,
-            "renewal": self.entry2,
-        }.items():
-            accept_entries.reset_mock()
-            accept_entries.return_value = 1
-            reject_entries.reset_mock()
-            reject_entries.return_value = 1
-            entry_qs = Entry.objects.filter(pk=entry.pk)
-            with mock.patch("registrations.models.Entry.objects.filter") as qs_mock:
-                qs_mock.return_value = entry_qs
-                qs_mock.get = Mock(return_value=entry_qs.get())
-
-                request = self.rf.post(
-                    f"/registration/admin/process/{entry.pk}/",
-                    {
-                        "action": "reject",
-                    },
-                )
-                request.user = _get_mock_user()
-                request.member = request.user
-                request._messages = Mock()
-                response = self.view.post(request, pk=entry.pk)
-
-                self.assertEqual(response.status_code, 302)
-
-                self.assertEqual(
-                    response.url,
-                    f"/admin/registrations/{reg_type}/{entry.pk}/change/",
-                )
-
-                reject_entries.assert_called_once_with(1, entry_qs)
-                self.assertFalse(accept_entries.called)
-
-                request._messages.add.assert_called_once_with(
-                    messages.SUCCESS,
-                    _("Successfully rejected %s.")
-                    % model_ngettext(entry_qs.all()[0], 1),
-                    "",
-                )
-
-                reject_entries.return_value = 0
-                self.view.post(request, pk=entry.pk)
-
-                request._messages.add.assert_any_call(
-                    messages.ERROR,
-                    _("Could not reject %s.") % model_ngettext(entry_qs.all()[0], 1),
-                    "",
-                )
-
-    @mock.patch("registrations.emails.send_registration_email_confirmation")
-    def test_post_resend(self, send_email):
-        self.view.action = "resend"
-        for reg_type, entry in {
-            "registration": self.entry1,
-            "renewal": self.entry2,
-        }.items():
-            entry_qs = Entry.objects.filter(pk=entry.pk)
-            send_email.reset_mock()
-            send_email.return_value = None
-            with mock.patch("registrations.models.Entry.objects.filter") as qs_mock:
-                qs_mock.return_value = entry_qs
-                qs_mock.get = Mock(return_value=entry_qs.get())
-
-                request = self.rf.post(
-                    f"/registration/admin/process/{entry.pk}/",
-                    {
-                        "action": "resend",
-                    },
-                )
-                request.user = _get_mock_user()
-                request.member = request.user
-                request._messages = Mock()
-                response = self.view.post(request, pk=entry.pk)
-
-                self.assertEqual(response.status_code, 302)
-                self.assertEqual(
-                    response.url,
-                    f"/admin/registrations/{reg_type}/{entry.pk}/change/",
-                )
-
-                if reg_type == "registration":
-                    send_email.assert_called_once_with(entry)
-                elif reg_type == "renewal":
-                    send_email.assert_not_called()
-
-    @mock.patch("registrations.services.revert_entry")
-    def test_post_revert(self, revert):
-        self.view.action = "revert"
-        for reg_type, entry in {
-            "registration": self.entry1,
-            "renewal": self.entry2,
-        }.items():
-            entry_qs = Entry.objects.filter(pk=entry.pk)
-            revert.reset_mock()
-            revert.return_value = None
-            with mock.patch("registrations.models.Entry.objects.filter") as qs_mock:
-                qs_mock.return_value = entry_qs
-                qs_mock.get = Mock(return_value=entry_qs.get())
-
-                request = self.rf.post(
-                    f"/registration/admin/process/{entry.pk}/",
-                    {
-                        "action": "revert",
-                    },
-                )
-                request.user = _get_mock_user()
-                request.member = request.user
-                request._messages = Mock()
-                response = self.view.post(request, pk=entry.pk)
-
-                self.assertEqual(response.status_code, 302)
-                self.assertEqual(
-                    response.url,
-                    f"/admin/registrations/{reg_type}/{entry.pk}/change/",
-                )
-
-                revert.assert_called_once_with(1, entry.entry_ptr)
-
-    @mock.patch("registrations.models.Entry.objects.filter")
-    def test_post_not_exists(self, qs_mock):
-        qs_mock.return_value = MagicMock(
-            get=Mock(
-                side_effect=Entry.DoesNotExist,
-                return_value=4,
-            )
-        )
-
-        request = self.rf.post(
-            "/registration/admin/process/1234/", {"action": "accept"}
-        )
-        request.user = _get_mock_user()
-        request.member = request.user
-        request._messages = Mock()
-        response = self.view.post(request, pk=4)
-
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("admin:index"))
-
-    @mock.patch("registrations.services.accept_entries")
-    @mock.patch("registrations.services.reject_entries")
-    def test_post_no_action(self, reject_entries, accept_entries):
-        self.view.action = None
-        for reg_type, entry in {
-            "registration": self.entry1,
-            "renewal": self.entry2,
-        }.items():
-            entry_qs = Entry.objects.filter(pk=entry.pk)
-            accept_entries.reset_mock()
-            accept_entries.return_value = 1
-            reject_entries.reset_mock()
-            reject_entries.return_value = 1
-            with mock.patch("registrations.models.Entry.objects.filter") as qs_mock:
-                qs_mock.return_value = entry_qs
-                qs_mock.get = Mock(return_value=entry_qs.get())
-
-                request = self.rf.post(
-                    f"/registration/admin/process/{entry.pk}/",
-                )
-                request.user = _get_mock_user()
-                request.member = request.user
-                request._messages = Mock()
-                response = self.view.post(request, pk=entry.pk)
-
-                self.assertFalse(reject_entries.called)
-                self.assertFalse(accept_entries.called)
-
-                self.assertEqual(response.status_code, 302)
-                self.assertEqual(
-                    response.url,
-                    f"/admin/registrations/{reg_type}/{entry.pk}/change/",
-                )
+        with self.subTest("revert"):
+            self.client.post(url, data={"action": "revert"})
+            mock_revert.assert_called_once_with(self.renewal, actor=self.admin)
 
 
 class ConfirmEmailViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.entry = Registration.objects.create(
+        cls.registration = Registration.objects.create(
             first_name="John",
             last_name="Doe",
             email="johndoe@example.com",
@@ -357,90 +147,88 @@ class ConfirmEmailViewTest(TestCase):
             address_city="Nijmegen",
             address_country="NL",
             phone_number="06123456789",
-            birthday=timezone.now().replace(year=1990, day=1),
+            birthday=timezone.now().replace(year=1990, day=1).date(),
             length=Entry.MEMBERSHIP_YEAR,
+            contribution=7.5,
             membership_type=Membership.MEMBER,
             status=Entry.STATUS_CONFIRM,
         )
 
-    def setUp(self):
-        self.client = Client()
-        self.view = views.ConfirmEmailView()
-
-    @mock.patch("registrations.services.confirm_entry")
-    @mock.patch("registrations.emails.send_references_information_message")
-    @mock.patch("registrations.emails.send_new_registration_board_message")
-    def test_get(self, board_mail, references_email, confirm_entry):
-        reg_qs = Entry.objects.filter(pk=self.entry.pk)
-        with mock.patch("registrations.models.Registration.objects.filter") as qs_mock:
-            qs_mock.return_value = reg_qs
-            qs_mock.get = Mock(return_value=reg_qs.get())
-
-            with self.subTest("Successful email confirmation"):
-                response = self.client.get(
-                    reverse("registrations:confirm-email", args=(self.entry.pk,))
-                )
-
-                self.assertEqual(response.status_code, 200)
-                self.assertEqual(
-                    response.template_name, ["registrations/confirm_email.html"]
-                )
-
-                confirm_entry.assert_called_once_with(reg_qs)
-                board_mail.assert_called_once_with(reg_qs.get())
-                self.assertFalse(references_email.called)
-
-            with self.subTest("Successful voucher information"):
-                self.entry.membership_type = Membership.BENEFACTOR
-                self.entry.no_references = False
-                self.entry.save()
-
-                response = self.client.get(
-                    reverse("registrations:confirm-email", args=(self.entry.pk,))
-                )
-
-                self.assertEqual(response.status_code, 200)
-                self.assertEqual(
-                    response.template_name, ["registrations/confirm_email.html"]
-                )
-
-                references_email.assert_called_once_with(reg_qs.get())
-
-            with self.subTest("Redirect when nothing was processed"):
-                confirm_entry.return_value = 0
-
-                response = self.client.get(
-                    reverse("registrations:confirm-email", args=(self.entry.pk,))
-                )
-                self.assertEqual(response.status_code, 302)
-                self.assertEqual(response.url, "/association/register/member/")
-
-            with self.subTest("Redirect when registration confirm errors"):
-                confirm_entry.side_effect = ValidationError(message="Error")
-
-                response = self.client.get(
-                    reverse("registrations:confirm-email", args=(self.entry.pk,))
-                )
-                self.assertEqual(response.status_code, 302)
-                self.assertEqual(response.url, "/association/register/member/")
-
-            with self.subTest("Redirect when no entries were processed"):
-                confirm_entry.return_value = 0
-
-                response = self.client.get(
-                    reverse(
-                        "registrations:confirm-email",
-                        args=("00000000-0000-0000-0000-000000000000",),
-                    )
-                )
-                self.assertEqual(response.status_code, 302)
-                self.assertEqual(response.url, "/association/register/member/")
-
-    def test_get_no_mocks(self):
+    def test_incorrect_uuid(self):
         response = self.client.get(
-            reverse("registrations:confirm-email", args=(self.entry.pk,))
+            reverse(
+                "registrations:confirm-email",
+                args=["11111111-2222-3333-4444-555555555555"],
+            )
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 404)
+
+    def test_confirm_email(self):
+        with self.subTest("Member registration."):
+            response = self.client.get(
+                reverse("registrations:confirm-email", args=[self.registration.pk])
+            )
+
+            self.assertContains(response, "Your email address has been confirmed.")
+            self.registration.refresh_from_db()
+            self.assertEqual(self.registration.status, Entry.STATUS_REVIEW)
+            self.assertEqual(len(mail.outbox), 1)
+
+        self.registration.status = Entry.STATUS_CONFIRM
+        self.registration.membership_type = Membership.BENEFACTOR
+        self.registration.save()
+        mail.outbox = []
+
+        with self.subTest("Benefactor registration."):
+            response = self.client.get(
+                reverse(
+                    "registrations:confirm-email",
+                    args=[self.registration.pk],
+                )
+            )
+
+            self.assertContains(response, "Your email address has been confirmed.")
+            self.registration.refresh_from_db()
+            self.assertEqual(self.registration.status, Entry.STATUS_REVIEW)
+            self.assertEqual(len(mail.outbox), 2)
+
+        self.registration.status = Entry.STATUS_CONFIRM
+        self.registration.no_references = True
+        self.registration.save()
+        mail.outbox = []
+
+        with self.subTest("Benefacor that doesn't need references."):
+            response = self.client.get(
+                reverse("registrations:confirm-email", args=[self.registration.pk]),
+                follow=True,
+            )
+
+            self.assertContains(response, "Your email address has been confirmed.")
+            self.registration.refresh_from_db()
+            self.assertEqual(self.registration.status, Entry.STATUS_REVIEW)
+            self.assertEqual(len(mail.outbox), 1)
+
+    def test_already_confirmed(self):
+        self.registration.status = Entry.STATUS_REVIEW
+        self.registration.save()
+
+        with self.subTest("In review."):
+            response = self.client.get(
+                reverse("registrations:confirm-email", args=[self.registration.pk])
+            )
+
+            self.assertContains(response, "Your email address has been confirmed.")
+            self.assertEqual(len(mail.outbox), 0)
+
+        self.registration.status = Entry.STATUS_ACCEPTED
+        self.registration.save()
+
+        with self.subTest("Reviewed."):
+            response = self.client.get(
+                reverse("registrations:confirm-email", args=[self.registration.pk])
+            )
+            self.assertEqual(response.status_code, 404)
+            self.assertEqual(len(mail.outbox), 0)
 
 
 class BecomeAMemberViewTest(TestCase):
@@ -664,7 +452,7 @@ class RenewalFormViewTest(TestCase):
                             False
                         )
 
-                        _ = self.view.get_context_data(form=MagicMock())
+                        self.view.get_context_data(form=MagicMock())
 
                         mock_messages.assert_called_once()
 
@@ -831,7 +619,6 @@ class ReferenceCreateViewTest(TestCase):
     def setUp(self):
         self.rf = RequestFactory()
         self.view = views.ReferenceCreateView()
-        self.client = Client()
         self.client.force_login(self.login_user)
 
     def test_not_logged_in(self):

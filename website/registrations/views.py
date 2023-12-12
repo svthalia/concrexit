@@ -1,11 +1,8 @@
 """Views provided by the registrations package."""
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.admin.utils import model_ngettext
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
@@ -51,81 +48,66 @@ class EntryAdminView(View):
 
     def post(self, request, *args, **kwargs):
         action = request.POST.get("action")
-        entry_qs = Entry.objects.filter(pk=kwargs["pk"])
-        try:
-            entry = entry_qs.get()
-        except Entry.DoesNotExist:
-            return redirect("admin:index")
+        entry = get_object_or_404(Entry, pk=kwargs["pk"])
+
+        registration = getattr(entry, "registration", None)
+        renewal = getattr(entry, "renewal", None)
 
         if action == "accept":
-            if not services.check_unique_user(entry):
-                messages.error(
-                    request,
-                    _("Could not accept %s. Username is not unique.")
-                    % model_ngettext(entry, 1),
-                )
-            elif services.accept_entries(request.user.pk, entry_qs) > 0:
-                messages.success(
-                    request, _("Successfully accepted %s.") % model_ngettext(entry, 1)
-                )
-            else:
-                messages.error(
-                    request, _("Could not accept %s.") % model_ngettext(entry, 1)
-                )
+            if registration is not None:
+                if not registration.check_user_is_unique():
+                    messages.error(
+                        request,
+                        f"Could not accept {registration}. Username or email is not unique.",
+                    )
+                else:
+                    services.accept_registration(registration, actor=request.user)
+                    messages.success(request, f"Successfully accepted {registration}.")
+            elif renewal is not None:  # pragma: no cover
+                services.accept_renewal(renewal, actor=request.user)
+                messages.success(request, f"Successfully accepted {renewal}.")
         elif action == "reject":
-            if services.reject_entries(request.user.pk, entry_qs) > 0:
+            if registration is not None:
+                services.reject_registration(registration, actor=request.user)
+                messages.success(request, f"Successfully rejected {registration}.")
+            elif renewal is not None:  # pragma: no cover
+                services.reject_renewal(renewal, actor=request.user)
+                messages.success(request, f"Successfully rejected {renewal}.")
+        elif action == "resend":
+            if registration is not None:
+                emails.send_registration_email_confirmation(entry.registration)
                 messages.success(
-                    request, _("Successfully rejected %s.") % model_ngettext(entry, 1)
+                    request, f"Resent registration email of {registration}."
                 )
             else:
-                messages.error(
-                    request, _("Could not reject %s.") % model_ngettext(entry, 1)
+                messages.error(request, "Cannot resend renewal.")
+        elif action == "revert":  # pragma: no cover
+            if registration is not None:
+                services.revert_registration(registration, actor=request.user)
+                messages.success(
+                    request, f"Successfully reverted registration {registration}."
                 )
-        elif action == "resend":
-            try:
-                emails.send_registration_email_confirmation(entry.registration)
-            except Registration.DoesNotExist:
-                pass
-        elif action == "revert":
-            services.revert_entry(request.user.pk, entry)
+            elif renewal is not None:
+                services.revert_renewal(renewal, actor=request.user)
+                messages.success(request, f"Successfully reverted renewal {renewal}.")
 
-        if entry_qs.filter(renewal=None).exists():
-            content_type = ContentType.objects.get_for_model(Registration)
-        else:
-            content_type = ContentType.objects.get_for_model(Renewal)
-
-        return redirect(
-            f"admin:{content_type.app_label}_{content_type.model}_change",
-            kwargs["pk"],
-        )
+        redirect_model = "registration" if registration is not None else "renewal"
+        return redirect(f"admin:registrations_{redirect_model}_change", kwargs["pk"])
 
 
 class ConfirmEmailView(View, TemplateResponseMixin):
-    """View that renders an HTML template and confirms the email address of the provided registration."""
+    """View that confirms the email address of the provided registration."""
 
     template_name = "registrations/confirm_email.html"
 
     def get(self, request, *args, **kwargs):
-        queryset = Registration.objects.filter(pk=kwargs["pk"])
+        registration = get_object_or_404(Registration, pk=kwargs["pk"])
 
-        processed = 0
-        try:
-            processed = services.confirm_entry(queryset)
-        except ValidationError:
-            pass
+        if registration.status == Registration.STATUS_CONFIRM:
+            services.confirm_registration(registration)
 
-        if processed == 0:
-            return redirect("registrations:register-member")
-
-        registration = queryset.get()
-
-        if (
-            registration.membership_type == Membership.BENEFACTOR
-            and not registration.no_references
-        ):
-            emails.send_references_information_message(registration)
-
-        emails.send_new_registration_board_message(registration)
+        if registration.status != Registration.STATUS_REVIEW:
+            raise Http404
 
         return self.render_to_response({})
 

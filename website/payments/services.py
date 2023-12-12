@@ -23,13 +23,12 @@ def create_payment(
     model_payable: Union[Model, Payable],
     processed_by: Member,
     pay_type: Union[Payment.CASH, Payment.CARD, Payment.WIRE, Payment.TPAY],
-) -> Payment:
+) -> Optional[Payment]:
     """Create a new payment from a payable object.
 
-    :param model_payable: Payable or Model object
-    :param processed_by: PaymentUser that processed this payment
-    :param pay_type: Payment type
-    :return: Payment object
+    The payable model is saved with the new payment set on it.
+    Normally, this function will return the payment. However, it is possible that the
+    payable model's payment field is set to None while saving, so it might return None.
     """
     if pay_type not in (Payment.CASH, Payment.CARD, Payment.WIRE, Payment.TPAY):
         raise PaymentError("Invalid payment type")
@@ -98,7 +97,11 @@ def create_payment(
                 type=pay_type,
             )
 
-        payable.model.save()
+        try:
+            payable.model.save()
+        except Exception as e:
+            raise PaymentError(f"Something went wrong saving the payable: {e}") from e
+
     return payable.payment
 
 

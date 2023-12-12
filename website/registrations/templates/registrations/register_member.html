@@ -48,6 +48,7 @@
     <hr/>
     <form method="post" enctype="multipart/form-data" class="row">
         {% csrf_token %}
+        {{ form.contribution }}
         <fieldset class="col-12 col-lg-6">
             {% bootstrap_field form.length %}
             {% bootstrap_field form.first_name %}
