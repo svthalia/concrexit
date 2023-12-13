@@ -523,9 +523,9 @@ class ServicesTest(TestCase):
     )  # this is to prevent sync_contacts from actaully calling the function, since it is testet in another test
     def test_sync_contacts(
         self,
+        mock_sync_contacts_with_outdated_mandates,
         mock_create_or_update_contact,
         mock_delete_contact,
-        mock_sync_contacts_with_outdated_mandates,
         mock_api,
     ):
         # test moneyboard contact is made for users without moneybird contact (and not minimized), in this case only for self.member
@@ -552,20 +552,29 @@ class ServicesTest(TestCase):
             member=self.member4, needs_synchronization=False
         )
         MoneybirdContact.objects.create(member=self.member, needs_synchronization=False)
-        # moneybird contact is updated if adress changes
-        self.member.profile.address_line1 = "foo"
-        self.member.profile.save()
+
+        with override_settings(SUSPEND_SIGNALS=False):
+            # MoneybirdContact is marked for resynchronization if address changes.
+            self.member.profile.address_line1 = "foo"
+            self.member.profile.save()
 
         services._sync_contacts()
 
-        self.assertEqual(mock_create_or_update_contact.call_count, 1)
+        self.assertEqual(mock_create_or_update_contact.call_count, 2)
         self.assertEqual(mock_delete_contact.call_count, 0)
-        mock_create_or_update_contact.assert_any_call(self.member)
-        mock_create_or_update_contact.assert_any_call(self.member5)
+        mock_create_or_update_contact.assert_any_call(self.member)  # Address changed.
+        mock_create_or_update_contact.assert_any_call(
+            self.member5
+        )  # No contact was made.
 
         mock_create_or_update_contact.reset_mock()
+        MoneybirdContact.objects.create(
+            member=self.member5, needs_synchronization=False
+        )
+        self.member.moneybird_contact.needs_synchronization = False
+        self.member.moneybird_contact.save()
 
-        # moneybird contact is deleted if someone is minimized
+        # Moneybird contact is deleted (archived) if a profile is minimized.
         self.member.profile.is_minimized = True
         self.member.profile.save()
 
