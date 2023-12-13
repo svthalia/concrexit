@@ -321,19 +321,22 @@ class GSuiteSyncService:
         except HttpError:
             logger.exception(f"Could not remove a list member from {group.name}")
 
-        batch = self._directory_api.new_batch_http_request()
-        for insert_member in insert_list:
-            batch.add(
-                self._directory_api.members().insert(
-                    groupKey=f"{group.name}@{settings.GSUITE_DOMAIN}",
-                    body={"email": insert_member, "role": "MEMBER"},
+        while insert_list:
+            insert_batch = insert_list[:900]
+            insert_list = insert_list[900:]
+            batch = self._directory_api.new_batch_http_request()
+            for insert_member in insert_batch:
+                batch.add(
+                    self._directory_api.members().insert(
+                        groupKey=f"{group.name}@{settings.GSUITE_DOMAIN}",
+                        body={"email": insert_member, "role": "MEMBER"},
+                    )
                 )
-            )
 
-        try:
-            batch.execute()
-        except HttpError:
-            logger.exception(f"Could not insert a list member in {group.name}")
+            try:
+                batch.execute()
+            except HttpError:
+                logger.exception(f"Could not insert a list member in {group.name}")
 
         logger.info(f"List {group.name} members updated")
 
