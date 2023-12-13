@@ -150,7 +150,7 @@ def send_queue_notification(sender, event, user, **kwargs):
     """Send a notification when a registration is cancelled and a new user can participate."""
     message = Message.objects.create(
         title=event.title,
-        body="Someone cancelled, and can now participate.",
+        body="Someone cancelled, so you can now participate!",
         url=settings.BASE_URL + event.get_absolute_url(),
         category=Category.objects.get(key=Category.EVENT),
     )
