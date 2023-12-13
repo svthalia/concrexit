@@ -47,6 +47,7 @@ def create_or_update_contact(member: Member):
         )
 
     moneybird_contact.moneybird_sepa_mandate_id = response["sepa_mandate_id"] or None
+    moneybird_contact.needs_synchronization = False
     moneybird_contact.save()
     return moneybird_contact
 
@@ -172,8 +173,7 @@ def synchronize_moneybird():
 
     logger.info("Starting moneybird synchronization.")
 
-    # First make sure all moneybird contacts' SEPA mandates are up to date.
-    _sync_contacts_with_outdated_mandates()
+    _sync_contacts()
 
     # Push all payments to moneybird. This needs to be done before the invoices,
     # as creating/updating invoices will link the payments to the invoices if they
@@ -233,6 +233,36 @@ def _sync_outdated_invoices():
                 send_sync_error(e, instance)
             except ObjectDoesNotExist:
                 logger.exception("Payable object for outdated invoice does not exist.")
+
+
+def _sync_contacts():
+    # make moneybird contacts for people that dont have it
+    for member in Member.objects.filter(
+        moneybird_contact__isnull=True, profile__is_minimized=False
+    ):
+        try:
+            create_or_update_contact(member)
+        except Administration.Error as e:
+            logger.exception("Moneybird synchronization error: %s", e)
+            send_sync_error(e, member)
+
+    # update moneybird contacts that need synchronization
+    for contact in MoneybirdContact.objects.filter(needs_synchronization=True):
+        try:
+            create_or_update_contact(contact.member)
+        except Administration.Error as e:
+            logger.exception("Moneybird synchronization error: %s", e)
+            send_sync_error(e, contact.member)
+
+    # archive moneybrid contacts where mb contact has not been archived but user was minimized
+    for minimized in Member.objects.filter(profile__is_minimized=True):
+        try:
+            delete_contact(minimized)
+        except Administration.Error as e:
+            logger.exception("Moneybird synchronization error: %s", e)
+            send_sync_error(e, minimized)
+
+    _sync_contacts_with_outdated_mandates()
 
 
 def _sync_contacts_with_outdated_mandates():

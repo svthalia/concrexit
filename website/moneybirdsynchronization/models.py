@@ -135,6 +135,11 @@ class MoneybirdContact(models.Model):
         unique=True,
     )
 
+    needs_synchronization = models.BooleanField(
+        default=True,  # The field is set False only when it has been successfully synchronized.
+        help_text="Indicates that the contact has to be synchronized (again).",
+    )
+
     def to_moneybird(self):
         if self.member.profile is None:
             return None
@@ -257,17 +262,9 @@ class MoneybirdExternalInvoice(models.Model):
         if self.payable.payment_payer is None:
             contact_id = settings.MONEYBIRD_UNKNOWN_PAYER_CONTACT_ID
         else:
-            moneybird_contact, __ = MoneybirdContact.objects.get_or_create(
+            moneybird_contact = MoneybirdContact.objects.get(
                 member=self.payable.payment_payer
             )
-            # If the contact is not yet in Moneybird, create it
-            # This should not happen in practice, but it is a nice fallback
-            if moneybird_contact.moneybird_id is None:
-                # I know this is ugly, but I don't want to totally refactor the app.
-                from moneybirdsynchronization.services import create_or_update_contact
-
-                moneybird_contact = create_or_update_contact(moneybird_contact.member)
-
             contact_id = moneybird_contact.moneybird_id
 
         invoice_date = date_for_payable_model(self.payable_object).strftime("%Y-%m-%d")

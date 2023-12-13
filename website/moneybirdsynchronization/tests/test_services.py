@@ -47,6 +47,7 @@ class ServicesTest(TestCase):
         cls.member2 = Member.objects.get(pk=2)
         cls.member3 = Member.objects.get(pk=3)
         cls.member4 = Member.objects.get(pk=4)
+        cls.member5 = Member.objects.get(pk=5)
         cls.bank_account = cls.member.bank_accounts.first()
 
     def test_create_or_update_contact_with_mandate(self, mock_api):
@@ -58,10 +59,10 @@ class ServicesTest(TestCase):
         # Drop the fixtures, we create our own bank account here.
         BankAccount.objects.all().delete()
 
-        mock_create_contact = mock_api.return_value.create_contact
+        mock_create_or_update_contact = mock_api.return_value.create_contact
         mock_update_contact = mock_api.return_value.update_contact
 
-        mock_create_contact.return_value = {"id": "1", "sepa_mandate_id": ""}
+        mock_create_or_update_contact.return_value = {"id": "1", "sepa_mandate_id": ""}
         mock_update_contact.return_value = {"id": "1", "sepa_mandate_id": ""}
 
         # Bank account is valid from 2016-07-07.
@@ -78,21 +79,21 @@ class ServicesTest(TestCase):
 
             with self.subTest("Creating a contact does not push today's SEPA mandate."):
                 services.create_or_update_contact(self.member)
-                mock_create_contact.assert_called_once()
+                mock_create_or_update_contact.assert_called_once()
                 mock_update_contact.assert_not_called()
 
-                data = mock_create_contact.call_args[0][0]
+                data = mock_create_or_update_contact.call_args[0][0]
                 self.assertNotIn("sepa_mandate_id", data["contact"])
 
                 moneybird_contact = self.member.moneybird_contact
                 self.assertEqual(moneybird_contact.moneybird_sepa_mandate_id, None)
 
-            mock_create_contact.reset_mock()
+            mock_create_or_update_contact.reset_mock()
             mock_update_contact.reset_mock()
 
             with self.subTest("Updating a contact does not push today's SEPA mandate."):
                 services.create_or_update_contact(self.member)
-                mock_create_contact.assert_not_called()
+                mock_create_or_update_contact.assert_not_called()
                 mock_update_contact.assert_called_once()
 
                 data = mock_update_contact.call_args[0][1]
@@ -103,29 +104,32 @@ class ServicesTest(TestCase):
                 self.assertEqual(moneybird_contact.moneybird_sepa_mandate_id, None)
 
         moneybird_contact.delete()
-        mock_create_contact.reset_mock()
+        mock_create_or_update_contact.reset_mock()
         mock_update_contact.reset_mock()
-        mock_create_contact.return_value = {"id": "1", "sepa_mandate_id": "1-1"}
+        mock_create_or_update_contact.return_value = {
+            "id": "1",
+            "sepa_mandate_id": "1-1",
+        }
         mock_update_contact.return_value = {"id": "1", "sepa_mandate_id": "1-1"}
 
         with freeze_time("2016-07-08"):
             with self.subTest("Creating a contact pushes past SEPA mandate."):
                 services.create_or_update_contact(self.member)
-                mock_create_contact.assert_called_once()
+                mock_create_or_update_contact.assert_called_once()
                 mock_update_contact.assert_not_called()
 
-                data = mock_create_contact.call_args[0][0]
+                data = mock_create_or_update_contact.call_args[0][0]
                 self.assertEqual(data["contact"]["sepa_mandate_id"], "1-1")
 
                 moneybird_contact = self.member.moneybird_contact
                 self.assertEqual(moneybird_contact.moneybird_sepa_mandate_id, "1-1")
 
-            mock_create_contact.reset_mock()
+            mock_create_or_update_contact.reset_mock()
             mock_update_contact.reset_mock()
 
             with self.subTest("Updating a contact pushes past SEPA mandate."):
                 services.create_or_update_contact(self.member)
-                mock_create_contact.assert_not_called()
+                mock_create_or_update_contact.assert_not_called()
                 mock_update_contact.assert_called_once()
 
                 data = mock_update_contact.call_args[0][1]
@@ -511,3 +515,71 @@ class ServicesTest(TestCase):
         self.assertEqual(mock_delete_invoice.call_count, 2)
         mock_delete_invoice.assert_any_call(r2)
         mock_delete_invoice.assert_any_call(r3)
+
+    @mock.patch("moneybirdsynchronization.services.delete_contact")
+    @mock.patch("moneybirdsynchronization.services.create_or_update_contact")
+    @mock.patch(
+        "moneybirdsynchronization.services._sync_contacts_with_outdated_mandates"
+    )  # this is to prevent sync_contacts from actaully calling the function, since it is testet in another test
+    def test_sync_contacts(
+        self,
+        mock_sync_contacts_with_outdated_mandates,
+        mock_create_or_update_contact,
+        mock_delete_contact,
+        mock_api,
+    ):
+        # test moneyboard contact is made for users without moneybird contact (and not minimized), in this case only for self.member
+        services._sync_contacts()
+
+        self.assertEqual(mock_create_or_update_contact.call_count, 5)
+        self.assertEqual(mock_delete_contact.call_count, 0)
+        mock_create_or_update_contact.assert_any_call(self.member)
+        mock_create_or_update_contact.assert_any_call(self.member2)
+        mock_create_or_update_contact.assert_any_call(self.member3)
+        mock_create_or_update_contact.assert_any_call(self.member4)
+        mock_create_or_update_contact.assert_any_call(self.member5)
+
+        mock_create_or_update_contact.reset_mock()
+
+        # create contacs so that mock_create_or_update_contact is not called again
+        MoneybirdContact.objects.create(
+            member=self.member2, needs_synchronization=False
+        )
+        MoneybirdContact.objects.create(
+            member=self.member3, needs_synchronization=False
+        )
+        MoneybirdContact.objects.create(
+            member=self.member4, needs_synchronization=False
+        )
+        MoneybirdContact.objects.create(member=self.member, needs_synchronization=False)
+
+        with override_settings(SUSPEND_SIGNALS=False):
+            # MoneybirdContact is marked for resynchronization if address changes.
+            self.member.profile.address_line1 = "foo"
+            self.member.profile.save()
+
+        services._sync_contacts()
+
+        self.assertEqual(mock_create_or_update_contact.call_count, 2)
+        self.assertEqual(mock_delete_contact.call_count, 0)
+        mock_create_or_update_contact.assert_any_call(self.member)  # Address changed.
+        mock_create_or_update_contact.assert_any_call(
+            self.member5
+        )  # No contact was made.
+
+        mock_create_or_update_contact.reset_mock()
+        MoneybirdContact.objects.create(
+            member=self.member5, needs_synchronization=False
+        )
+        self.member.moneybird_contact.needs_synchronization = False
+        self.member.moneybird_contact.save()
+
+        # Moneybird contact is deleted (archived) if a profile is minimized.
+        self.member.profile.is_minimized = True
+        self.member.profile.save()
+
+        services._sync_contacts()
+
+        self.assertEqual(mock_create_or_update_contact.call_count, 0)
+        self.assertEqual(mock_delete_contact.call_count, 1)
+        mock_delete_contact.assert_any_call(self.member)
