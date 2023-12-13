@@ -156,13 +156,13 @@ class MoneybirdContact(models.Model):
             }
         }
         bank_account = BankAccount.objects.filter(owner=self.member).last()
-        if bank_account and bank_account.valid_from < timezone.now().date():
+        if bank_account:
             data["contact"]["sepa_iban"] = bank_account.iban
             data["contact"]["sepa_bic"] = bank_account.bic or ""
             data["contact"][
                 "sepa_iban_account_name"
             ] = f"{bank_account.initials} {bank_account.last_name}"
-            if bank_account.valid:
+            if bank_account.valid and bank_account.valid_from < timezone.now().date():
                 data["contact"]["sepa_active"] = True
                 data["contact"]["sepa_mandate_id"] = bank_account.mandate_no
                 data["contact"]["sepa_mandate_date"] = bank_account.valid_from.strftime(
