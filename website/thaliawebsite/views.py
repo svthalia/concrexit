@@ -31,6 +31,7 @@ class PagedView(ListView):
 
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
+        print(kwargs)
         page = context["page_obj"].number
         paginator = context["paginator"]
 
@@ -48,9 +49,19 @@ class PagedView(ListView):
 
         page_range = range(page_range_start, page_range_stop)
 
+        # generates the string of keywords, and applies these to the base_url
+        keyword_string = ""
+
+        for keyword in self.keywords:
+            if keyword_string == "":
+                keyword_string += f"{keyword}"
+            else:
+                keyword_string += f"+{keyword}"
+
         context.update(
             {
                 "page_range": page_range,
+                "base_url": self.request.path + f"?keywords={keyword_string}",
             }
         )
 
