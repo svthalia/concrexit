@@ -62,7 +62,6 @@ def get_automatic_lists():
             m.current_membership is None
             or m.current_membership.type != Membership.MEMBER
         )
-        and m.has_been_member()
     ]
 
     lists = [
