@@ -264,7 +264,15 @@ class ServicesTest(TestCase):
         perms_mock.return_value["cancel_registration"] = True
 
         services.cancel_registration(self.member, self.event)
-        notify_first_mock.assert_called_once_with(self.event)
+        notify_first_mock.assert_not_called()
+
+        registration.date_cancelled = None
+        registration.save()
+        registration2 = EventRegistration.objects.create(
+            event=self.event, member=Member.objects.filter(username="testuser2").first()
+        )
+        services.cancel_registration(self.member, self.event)
+        notify_first_mock.assert_called_once_with(self.event, registration2)
 
         self.event.send_cancel_email = True
         self.event.save()
