@@ -4,38 +4,25 @@ from django.conf import settings
 from utils.snippets import send_email
 
 
-def notify_first_waiting(event):
-    """Send an email to the first person on the waiting list when someone cancels their registration.
+def notify_first_waiting(event, first_waiting):
+    """Send an email to the first person on the waiting list when someone cancels their registration."""
+    organiser_emails = [
+        organiser.contact_address for organiser in event.organisers.all()
+    ]
 
-    :param event: the event
-    """
-    if (
-        event.max_participants is not None
-        and event.eventregistration_set.filter(date_cancelled=None).count()
-        > event.max_participants
-    ):
-        # Prepare email to send to the first person on the waiting list
-        first_waiting = event.eventregistration_set.filter(
-            date_cancelled=None
-        ).order_by("date")[event.max_participants]
-
-        organiser_emails = [
-            organiser.contact_address for organiser in event.organisers.all()
-        ]
-
-        send_email(
-            to=[first_waiting.email],
-            subject=f"Notification about your registration for '{event.title}'",
-            txt_template="events/email/member_email.txt",
-            html_template="events/email/member_email.html",
-            context={
-                "event": event,
-                "registration": first_waiting,
-                "name": first_waiting.name or first_waiting.member.first_name,
-                "base_url": settings.BASE_URL,
-                "organisers": organiser_emails,
-            },
-        )
+    send_email(
+        to=[first_waiting.email],
+        subject=f"Notification about your registration for '{event.title}'",
+        txt_template="events/email/member_email.txt",
+        html_template="events/email/member_email.html",
+        context={
+            "event": event,
+            "registration": first_waiting,
+            "name": first_waiting.name or first_waiting.member.first_name,
+            "base_url": settings.BASE_URL,
+            "organisers": organiser_emails,
+        },
+    )
 
 
 def notify_organiser(event, registration):

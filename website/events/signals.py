@@ -1,5 +1,6 @@
 from django.db import transaction
 from django.db.models.signals import post_save
+from django.dispatch import Signal
 
 from events.models import EventRegistration
 from events.tasks import send_registration_confirmation_email
@@ -31,3 +32,6 @@ def send_event_registration_confirmation(
                 (instance.pk,), expires=600
             )
         )
+
+
+user_left_queue = Signal()

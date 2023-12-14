@@ -6,7 +6,7 @@ from django.utils.datetime_safe import date
 from django.utils.formats import localize
 from django.utils.translation import gettext_lazy as _
 
-from events import emails
+from events import emails, signals
 from events.exceptions import RegistrationError
 from events.models import (
     Event,
@@ -315,7 +315,18 @@ def cancel_registration(member, event):
 
     if event_permissions(member, event)["cancel_registration"] and registration:
         if not registration.queue_position:
-            emails.notify_first_waiting(event)
+            if (
+                event.max_participants is not None
+                and event.eventregistration_set.filter(date_cancelled=None).count()
+                > event.max_participants
+            ):
+                first_waiting = event.eventregistration_set.filter(
+                    date_cancelled=None
+                ).order_by("date")[event.max_participants]
+                emails.notify_first_waiting(event, first_waiting)
+                signals.user_left_queue.send(
+                    sender=None, event=event, user=first_waiting
+                )
 
             if event.send_cancel_email and event.after_cancel_deadline:
                 emails.notify_organiser(event, registration)
