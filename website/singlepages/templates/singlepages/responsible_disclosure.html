@@ -1,72 +1,71 @@
 {% extends "simple_page.html" %}
 {% load i18n static %}
 
-{% block title %}{% trans "responsible disclosure policy"|capfirst %} — {{ block.super }}{% endblock %}
-{% block opengraph_title %}{% trans "responsible disclosure policy"|capfirst %} — {{ block.super }}{% endblock %}
+{% block title %}Responsible disclosure policy — {{ block.super }}{% endblock %}
+{% block opengraph_title %}Responsible disclosure policy — {{ block.super }}{% endblock %}
 
-{% block page_title %}{% trans "responsible disclosure policy"|capfirst %}{% endblock %}
+{% block page_title %}Responsible disclosure policy{% endblock %}
 
 {% block page_content %}
-    <h3>{% trans "Version" %} 1.1, 16-11-2020</h3>
+    <h3>Version 1.2, 2023-12-16</h3>
     <p>
-        {% blocktrans trimmed %}
-            At Thalia, we take security of our infrastructure and digital systems seriously.
-            We develop, build and deploy all systems with security in mind.
-            However, we can never be 100% secure and vulnerabilities will, unfortunately, present themselves.
-            If you find a (potential) vulnerability or security issue, we would appreciate it if you inform us as soon as possible.
-            Please note that we do not pay out money for found vulnerabilities.
-        {% endblocktrans %}
+        At Thalia, we take security of our infrastructure and digital systems seriously.
+        We develop, build and deploy all systems with security in mind.
+        However, we can never be 100% secure and vulnerabilities will, unfortunately, present themselves.
+        If you find a (potential) vulnerability or security issue, we would appreciate it if you inform us as soon as possible.
+        Please note that we <i> do not</i> pay out money for found vulnerabilities.
     </p>
-    <h4>{% trans "How to notify us" %}</h4>
+    <h4>How to notify us</h4>
     <ul>
-        <li>{% trans "Send us any and all reports about potential security issues to <a href='https://github.com/svthalia/concrexit/security/advisories/new'>https://github.com/svthalia/concrexit/security/advisories/new</a> (in either English or Dutch)." %}</li>
-        <li>{% trans "Please also consider" %} <a href="/.well-known/security.txt" target="_blank">https://thalia.nu/.well-known/security.txt</a>.</li>
+        <li>You can report about potential security issues on <a href='https://github.com/svthalia/concrexit/security/advisories/new'>https://github.com/svthalia/concrexit/security/advisories/new</a></li>
+        <li>Alternatively, you can also reach us at <a href='mailto:www@thalia.nu'>www@thalia.nu</a> (in either English or Dutch).</li>
+        <li>Also consider <a href="/.well-known/security.txt" target="_blank">https://thalia.nu/.well-known/security.txt</a>.</li>
     </ul>
-    <h4>{% trans "We ask you to" %}</h4>
+    <h4>We ask you to</h4>
     <ul>
-        <li>{% trans "give detailed reports of your findings to help us identify the underlying problem." %}</li>
-        <li>{% trans "only exploit vulnerabilities to confirm their presence." %}</li>
-        <li>{% trans "not share your report with anybody else until the problem has been fixed." %}</li>
-        <li>{% trans "involve us if you want to publish your report once it has been fixed." %}</li>
-        <li>{% trans "respect the privacy of our members." %}</li>
+        <li>only exploit vulnerabilities to confirm their presence.</li>
+        <li>give detailed reports of your findings to help us identify the underlying problem.</li>
+        <li>not share your report with anybody else until the problem has been fixed.</li>
+        <li>involve us if you want to publish your report once it has been fixed.</li>
+        <li>respect the privacy of our members.</li>
     </ul>
-    <h4>{% trans "We promise you to" %}</h4>
+    <h4>We promise you to</h4>
     <ul>
-        <li>{% trans "take your reports seriously." %}</li>
-        <li>{% trans "respond to your reports as soon as possible." %}</li>
-        <li>{% trans "solve the issue as soon as possible." %}</li>
-        <li>{% trans "respect your privacy and treat your reports confidentially." %}</li>
-        <li>{% trans "keep you up to date and work with you to solve the underlying problem." %}</li>
-        <li>{% trans "credit you in any internal and external announcements (with your permission)." %}</li>
-        <li>{% trans "not take any legal action if you followed the above guidelines." %}</li>
+        <li>take your reports seriously.</li>
+        <li>respond to your reports as soon as possible.</li>
+        <li>solve the issue as soon as possible.</li>
+        <li>respect your privacy and treat your reports confidentially.</li>
+        <li>keep you up to date and work with you to solve the underlying problem.</li>
+        <li>credit you in any internal and external announcements (with your permission).</li>
+        <li>not take any legal action if you followed the above guidelines.</li>
     </ul>
-    <h4>{% trans "What is the scope" %}</h4>
+    <h4>What is the scope</h4>
     <ul>
-        <li>{% trans "You may try to exploit: https://thalia.nu/*" %}</li>
-        <li>{% trans "Any resource that is not listed here is also prohibited." %}</li>
+        <li>You may try to exploit: https://thalia.nu/*</li>
+        <li>Any resource that is not listed here is also prohibited.</li>
     </ul>
-    <p>{% trans "If you happen to find something on an unlisted resource, please let us know." %}</p>
-    <h4>{% trans "Which attacks are disallowed" %}</h4>
-    <p>{% trans "Because we are a small organisation we ask you to not use the following attack methods:" %}</p>
+    <p>If you happen to find something on an unlisted resource, please let us know.</p>
+    <h4>Which attacks are disallowed</h4>
+    <p>Because we are a small organisation we ask you to not use the following attack methods:</p>
     <ul>
-        <li>{% trans "social engineering" %}</li>
-        <li>{% trans "physical attacks" %}</li>
-        <li>{% trans "(distributed) denial of service" %}</li>
-        <li>{% trans "spam attacks" %}</li>
-        <li>{% trans "automated scanners" %}</li>
+        <li>social engineering</li>
+        <li>physical attacks</li>
+        <li>(distributed) denial of service</li>
+        <li>spam attacks</li>
+        <li>automated scanners</li>
     </ul>
-    <h4>{% trans "Exceptions" %}</h4>
-    <p>{% trans "The following reports will not be taken into consideration:" %}</p>
+    <h4>Exceptions</h4>
+    <p>The following reports will not be taken into consideration:</p>
     <ul>
-        <li>{% trans "the policy of SPF / DKIM / DMARC" %}</li>
-        <li>{% trans "the policy of CSP" %}</li>
+        <li>the policy of SPF / DKIM / DMARC</li>
+        <li>the policy of CSP</li>
     </ul>
-    <p>{% trans "Thank you for your concern but we are already aware of these issues." %}</p>
+    <p>Thank you for your concern, but we are already aware of these issues.</p>
     <hr class="my-4">
-    <h2 class="section-title">{% trans "Hall of fame" %}</h2>
-    <p>{% trans "On this list, we thank the people that followed our responsible disclosure policy!" %}</p>
+    <h2 class="section-title">Hall of fame</h2>
+    <p>On this list, we thank the people that followed our responsible disclosure policy!</p>
     <ul>
-        <li><a href="https://www.linkedin.com/in/rhonny" target="_blank">Raju Basak</a> {% trans "for informing us about a rate limiting problem on our password-reset form." %}</li>
-        <li><a href="https://www.linkedin.com/in/ryh04x" target="_blank">Rhythm</a> {% trans "for informing us about rate limitting and input validation that could be improved on the member registration form." %}</li>
+        <li><a href="https://www.linkedin.com/in/rhonny" target="_blank">Raju Basak</a> for informing us about a rate limiting problem on our password-reset form.</li>
+        <li><a href="https://www.linkedin.com/in/ryh04x" target="_blank">Rhythm</a> for informing us about rate limiting and input validation that could be improved on the member registration form.</li>
     </ul>
 {% endblock %}
