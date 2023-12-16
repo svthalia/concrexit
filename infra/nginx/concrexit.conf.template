@@ -139,11 +139,6 @@ server {
         internal;
     }
 
-    location = /pgp-key.txt {
-        alias /resources/pgp-key.txt;
-        default_type text/plain;
-    }
-
     error_page 502 /maintenance.html;
 }
 
