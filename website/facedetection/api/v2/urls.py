@@ -1,16 +1,16 @@
 """Events app calendarjs API urls."""
 from django.urls import path
 
-from .views import ReferenceFaceDeleteView, ReferenceFaceListView
+from .views import ReferenceFaceDeleteView, ReferenceFaceListView, YourPhotosView
 
 app_name = "facedetection"
 
 urlpatterns = [
-    # path(
-    #     "photos/facedetection/matches/",
-    #     FaceDetectionListView.as_view(),
-    #     name="matches",
-    # ),
+    path(
+        "photos/facedetection/matches/",
+        YourPhotosView.as_view(),
+        name="your-photos",
+    ),
     path(
         "photos/facedetection/reference-faces/",
         ReferenceFaceListView.as_view(),
