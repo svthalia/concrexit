@@ -41,8 +41,8 @@
         "--profile",
         "black"
     ],
-    "ruff.args": [
-        "--extend-ignore",
+    "ruff.lint.args": [
+        "--extend-exclude",
         ".pyenv"
     ],
 }
