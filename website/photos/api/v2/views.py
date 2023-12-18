@@ -175,7 +175,7 @@ class PhotoLikeView(APIView):
 
         try:
             like = Like.objects.filter(
-                photo__album__hidden=False, photo___album__is_processing=False
+                photo__album__hidden=False, photo__album__is_processing=False
             ).get(member=request.member, photo__pk=photo_id)
         except Like.DoesNotExist:
             return Response(
