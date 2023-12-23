@@ -199,13 +199,9 @@ def synchronize_moneybird():
 def _delete_invoices():
     """Delete the invoices that have been marked for deletion from moneybird."""
     invoices = MoneybirdExternalInvoice.objects.filter(needs_deletion=True)
-
-    if not invoices.exists():
-        return
-
     logger.info("Deleting %d invoices.", invoices.count())
-    moneybird = get_moneybird_api_service()
 
+    moneybird = get_moneybird_api_service()
     for invoice in invoices:
         try:
             if invoice.moneybird_invoice_id is not None:
@@ -222,17 +218,16 @@ def _sync_outdated_invoices():
         needs_synchronization=True, needs_deletion=False
     ).order_by("payable_model", "object_id")
 
-    if invoices.exists():
-        logger.info("Resynchronizing %d invoices.", invoices.count())
-        for invoice in invoices:
-            try:
-                instance = invoice.payable_object
-                create_or_update_external_invoice(instance)
-            except Administration.Error as e:
-                logger.exception("Moneybird synchronization error: %s", e)
-                send_sync_error(e, instance)
-            except ObjectDoesNotExist:
-                logger.exception("Payable object for outdated invoice does not exist.")
+    logger.info("Resynchronizing %d invoices.", invoices.count())
+    for invoice in invoices:
+        try:
+            instance = invoice.payable_object
+            create_or_update_external_invoice(instance)
+        except Administration.Error as e:
+            logger.exception("Moneybird synchronization error: %s", e)
+            send_sync_error(e, instance)
+        except ObjectDoesNotExist:
+            logger.exception("Payable object for outdated invoice does not exist.")
 
 
 def _sync_contacts():
@@ -302,9 +297,6 @@ def _sync_contacts_with_outdated_mandates():
 
 
 def _try_create_or_update_external_invoices(queryset):
-    if not queryset.exists():
-        return
-
     logger.info(
         "Pushing %d %s to Moneybird.",
         queryset.count(),
@@ -432,18 +424,17 @@ def _sync_event_registrations():
         )
     )
 
-    if to_remove.exists():
-        logger.info(
-            "Removing invoices for %d event registrations from Moneybird.",
-            to_remove.count(),
-        )
+    logger.info(
+        "Removing invoices for %d event registrations from Moneybird.",
+        to_remove.count(),
+    )
 
-        for instance in to_remove:
-            try:
-                delete_external_invoice(instance)
-            except Administration.Error as e:
-                logger.exception("Moneybird synchronization error: %s", e)
-                send_sync_error(e, instance)
+    for instance in to_remove:
+        try:
+            delete_external_invoice(instance)
+        except Administration.Error as e:
+            logger.exception("Moneybird synchronization error: %s", e)
+            send_sync_error(e, instance)
 
 
 def _sync_moneybird_payments():
