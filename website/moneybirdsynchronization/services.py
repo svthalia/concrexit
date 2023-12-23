@@ -231,6 +231,7 @@ def _sync_outdated_invoices():
 
 
 def _sync_contacts():
+    logger.info("Synchronizing contacts...")
     # make moneybird contacts for people that dont have it
     for member in Member.objects.filter(
         moneybird_contact__isnull=True, profile__is_minimized=False
@@ -282,11 +283,9 @@ def _sync_contacts_with_outdated_mandates():
         .exclude(sepa_mandate_id=None, moneybird_sepa_mandate_id=None)
     )
 
-    if contacts.exists():
-        logger.info(
-            "Pushing %d contacts with outdated mandates to Moneybird.",
-            contacts.count(),
-        )
+    logger.info(
+        "Pushing %d contacts with outdated mandates to Moneybird.", contacts.count()
+    )
 
     for contact in contacts:
         try:
@@ -298,9 +297,7 @@ def _sync_contacts_with_outdated_mandates():
 
 def _try_create_or_update_external_invoices(queryset):
     logger.info(
-        "Pushing %d %s to Moneybird.",
-        queryset.count(),
-        model_ngettext(queryset),
+        "Pushing %d %s to Moneybird.", queryset.count(), model_ngettext(queryset)
     )
 
     for instance in queryset:
@@ -313,6 +310,7 @@ def _try_create_or_update_external_invoices(queryset):
 
 def _sync_food_orders():
     """Create invoices for new food orders."""
+    logger.info("Synchronizing food orders...")
     food_orders = FoodOrder.objects.filter(
         food_event__event__start__date__gte=settings.MONEYBIRD_START_DATE,
     ).exclude(
@@ -329,6 +327,7 @@ def _sync_food_orders():
 
 def _sync_sales_orders():
     """Create invoices for new sales orders."""
+    logger.info("Synchronizing sales orders...")
     sales_orders = Order.objects.filter(
         shift__start__date__gte=settings.MONEYBIRD_START_DATE,
         payment__isnull=False,
@@ -346,6 +345,7 @@ def _sync_sales_orders():
 
 def _sync_registrations():
     """Create invoices for new, paid registrations."""
+    logger.info("Synchronizing registrations...")
     registrations = Registration.objects.filter(
         created_at__date__gte=settings.MONEYBIRD_START_DATE,
         payment__isnull=False,
@@ -363,6 +363,7 @@ def _sync_registrations():
 
 def _sync_renewals():
     """Create invoices for new, paid renewals."""
+    logger.info("Synchronizing renewals...")
     renewals = Renewal.objects.filter(
         created_at__date__gte=settings.MONEYBIRD_START_DATE,
         payment__isnull=False,
@@ -386,6 +387,7 @@ def _sync_event_registrations():
     However, some changes to the event or registrations for  the same event might not trigger saving
     the event registration, but still change its queue position or payment amount.
     """
+    logger.info("Synchronizing event registrations...")
     event_registrations = (
         EventRegistration.objects.select_properties("queue_position", "payment_amount")
         .filter(
@@ -444,6 +446,8 @@ def _sync_moneybird_payments():
     """
     if not settings.MONEYBIRD_SYNC_ENABLED:
         return
+
+    logger.info("Synchronizing payments...")
 
     for payment_type in [Payment.CASH, Payment.CARD, Payment.TPAY]:
         payments = Payment.objects.filter(
