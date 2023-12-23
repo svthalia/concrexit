@@ -1,0 +1,8 @@
+Contact: https://github.com/svthalia/concrexit/security/advisories/new
+Contact: mailto:www@thalia.nu
+Contact: https://thalia.nu/contact/
+Expires: 2024-01-08T23:00:00.000Z
+Acknowledgments: https://thalia.nu/responsible-disclosure/
+Preferred-Languages: en, nl
+Canonical: https://thalia.nu/.well-known/security.txt
+Policy: https://thalia.nu/responsible-disclosure/

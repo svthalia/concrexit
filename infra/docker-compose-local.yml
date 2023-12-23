@@ -1,0 +1,67 @@
+name: concrexit
+
+services:
+  concrexit:
+    image: thalia/concrexit-dev:latest
+    env_file:
+      - env.public.local
+      - env.secret.local
+    volumes:
+      - concrexit-media:/volumes/media:rw
+      - concrexit-static:/volumes/static:rw
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    cpuset: "0"
+
+  nginx:
+    image: thalia/nginx-local:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    env_file:
+      - env.public.local
+    volumes:
+      - letsencrypt:/etc/letsencrypt:rw
+      - concrexit-media:/volumes/media:ro
+      - concrexit-static:/volumes/static:ro
+    restart: always
+    depends_on:
+      concrexit:
+        condition: service_started
+
+  postgres:
+    image: postgres:15.4-alpine
+    env_file:
+      - env.public.local
+    volumes:
+      - /volumes/postgres/data:/var/lib/postgresql/data:rw
+    restart: always
+    healthcheck:
+      test: [ "CMD", "pg_isready", "--username", "concrexit" ]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+    cpuset: "0"
+
+  redis:
+    image: redis:7.2-alpine
+    command: redis-server --save 120 1
+    volumes:
+      - redis-snapshot:/data/:rw
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli ping | grep PONG" ]
+      interval: 2s
+      timeout: 2s
+      retries: 10
+
+volumes:
+  concrexit-media:
+  concrexit-static:
+  letsencrypt:
+  celery-beat-db:
+  redis-snapshot:

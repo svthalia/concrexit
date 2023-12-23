@@ -291,6 +291,12 @@ graphs: ## Generate model graphs
 .PHONY: docker
 docker: .make/docker
 
+.PHONY: rundocker
+rundocker: .make
+	docker build --file infra/concrexit/Dockerfile --build-arg "DJANGO_ENV=development" --tag "thalia/concrexit-dev" .
+	cd infra/nginx-local && docker build $(DOCKER_FLAGS) --tag "thalia/nginx-local" .
+	docker-compose -f infra/docker-compose-local.yml up
+
 .PHONY: lint
 lint: isortcheck blackcheck ruff ## Run all linters
 
