@@ -101,7 +101,6 @@ ifdef CI
 # flags.
 	POETRY_FLAGS := $(POETRY_FLAGS) --no-interaction --with postgres
 	BLACK_FLAGS := $(BLACK_FLAGS) --quiet
-	DOCKER_FLAGS := $(DOCKER_FLAGS) --quiet
 endif
 
 # This help recipe might look very confusing, depending on how familiar you are
@@ -285,17 +284,17 @@ graphs: ## Generate model graphs
 	@echo "Generating partial models graph"
 	@poetry run website/manage.py graph_models --pydot -X LogEntry,ContentType,Permission,PermissionsMixin,AbstractUser,AbstractBaseUser,Group -o partial_models_graph.png
 
-.make/docker: .make
-	docker build $(DOCKER_FLAGS) --build-arg "source_commit=$$(git rev-parse HEAD)" --tag "thalia/concrexit:$$(git rev-parse HEAD)" .
-
-.PHONY: docker
-docker: .make/docker
-
 .PHONY: rundocker
-rundocker: .make
-	docker build --file infra/concrexit/Dockerfile --build-arg "DJANGO_ENV=development" --tag "thalia/concrexit-dev" .
-	cd infra/nginx-local && docker build $(DOCKER_FLAGS) --tag "thalia/nginx-local" .
-	docker-compose -f infra/docker-compose-local.yml up
+rundocker:
+	ENV_FILE_SUFFIX=.local docker compose -f infra/docker-compose.yml -f infra/docker-compose.local.yml up --build -d
+
+.PHONY: stopdocker
+stopdocker:
+	ENV_FILE_SUFFIX=.local docker compose -f infra/docker-compose.yml -f infra/docker-compose.local.yml down
+
+.PHONY: removedocker
+removedocker:
+	ENV_FILE_SUFFIX=.local docker compose -f infra/docker-compose.yml -f infra/docker-compose.local.yml down -v
 
 .PHONY: lint
 lint: isortcheck blackcheck ruff ## Run all linters

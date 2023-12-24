@@ -4,8 +4,8 @@ services:
   concrexit:
     image: ghcr.io/svthalia/concrexit:${TAG:-development}
     env_file:
-      - ${ENV_PUBLIC_FILE:-env.public}
-      - ${ENV_SECRET_FILE:-env.secret}
+      - env.public${ENV_FILE_SUFFIX:-}
+      - env.secret${ENV_FILE_SUFFIX:-}
     volumes:
       - concrexit-media:/volumes/media:rw
       - concrexit-static:/volumes/static:rw
@@ -22,7 +22,7 @@ services:
       - "80:80"
       - "443:443"
     env_file:
-      - ${ENV_PUBLIC_FILE:-env.public}
+      - env.public${ENV_FILE_SUFFIX:-}
     volumes:
       - letsencrypt:/etc/letsencrypt:rw
       - concrexit-media:/volumes/media:ro
@@ -35,7 +35,7 @@ services:
   postgres:
     image: postgres:15.4-alpine
     env_file:
-      - ${ENV_PUBLIC_FILE:-env.public}
+      - env.public${ENV_FILE_SUFFIX:-}
     volumes:
       - /volumes/postgres/data:/var/lib/postgresql/data:rw
     restart: always
@@ -58,11 +58,11 @@ services:
       retries: 10
 
   worker:
-    image: ghcr.io/svthalia/concrexit:${TAG}
+    image: ghcr.io/svthalia/concrexit:${TAG:-development}
     command: /app/worker-entrypoint.sh
     env_file:
-      - ${ENV_PUBLIC_FILE:-env.public}
-      - ${ENV_SECRET_FILE:-env.secret}
+      - env.public${ENV_FILE_SUFFIX:-}
+      - env.secret${ENV_FILE_SUFFIX:-}
     volumes:
       - celery-beat-db:/volumes/worker:rw
       - concrexit-media:/volumes/media:rw

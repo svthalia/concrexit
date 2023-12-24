@@ -176,7 +176,7 @@ FACEDETECTION_MAX_NUM_REFERENCE_FACES = 5
 
 # ARN of the concrexit-facedetection-lambda function.
 # See https://github.com/svthalia/concrexit-facedetection-lambda.
-FACEDETECTION_LAMBDA_ARN = from_env("FACEDETECTION_LAMBDA_ARN")
+FACEDETECTION_LAMBDA_ARN = os.environ.get("FACEDETECTION_LAMBDA_ARN")
 
 FACEDETECTION_LAMBDA_BATCH_SIZE = int(
     os.environ.get("FACEDETECTION_LAMBDA_BATCH_SIZE", 20)

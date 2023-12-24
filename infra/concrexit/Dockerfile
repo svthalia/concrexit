@@ -1,9 +1,8 @@
 FROM python:3.11-slim-bullseye AS base
 
-ARG DJANGO_ENV
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    DJANGO_ENV=${DJANGO_ENV} \
+    DJANGO_ENV=production \
     TZ=Europe/Amsterdam
 
 WORKDIR /app
@@ -27,15 +26,16 @@ ENV PATH=/venv/bin:$PATH \
 
 COPY pyproject.toml poetry.lock ./
 
-RUN echo $DJANGO_ENV
-RUN if [ $DJANGO_ENV="development" ]; then echo "_$DJANGO_ENV"; else echo "success!!"; fi
-RUN if [ $DJANGO_ENV="development" ]; then poetry install --only main --only postgreslocal; else poetry install --only main --only postgres; fi
+RUN poetry install --only main --only postgres
+
+ARG WITH_DEV
+RUN if [ "$WITH_DEV" = "1" ]; then poetry install --only dev; fi
 
 
 FROM build-venv as build-scss
 # This stage builds the SASS, using dependencies that are not needed in the final image.
 
-RUN if [ $DJANGO_ENV="development" ]; then poetry install --only main --only postgreslocal --only scss; else poetry install --only main --only postgres --only scss; fi
+RUN poetry install --only main --only postgres --only scss
 
 COPY website /app/website
 

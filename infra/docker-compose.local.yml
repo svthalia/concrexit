@@ -5,17 +5,22 @@ services:
       dockerfile: infra/concrexit/Dockerfile
       args:
         SOURCE_COMMIT: development
+        WITH_DEV: 1
     cpu_count: 1
 
   nginx:
-    build:
-      context: ..
-      dockerfile: infra/nginx/Dockerfile
+    build: nginx
     environment:
-      - USE_LOCAL_CA=1
+      # See https://github.com/JonasAlfredsson/docker-nginx-certbot/blob/v4.3.0/docs/advanced_usage.md#local-ca
+      USE_LOCAL_CA: 1
+    volumes:
+      - nginx-local-ca:/etc/local_ca:rw
 
   postgres:
     cpu_count: 1
+    volumes:
+      # Override the original mount point with a named volume.
+      - postgres-data:/var/lib/postgresql/data:rw
 
   worker:
     build:
@@ -23,3 +28,8 @@ services:
       dockerfile: infra/concrexit/Dockerfile
       args:
         SOURCE_COMMIT: development
+        WITH_DEV: 1
+
+volumes:
+  postgres-data:
+  nginx-local-ca:
