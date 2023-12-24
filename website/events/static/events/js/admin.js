@@ -80,7 +80,7 @@ django.jQuery(function () {
             return false;
         },
         format: function(s, t, node) {
-            const val = node.firstElementChild.value;
+            const val = node.firstElementChild?.value;
             if (val === 'no_payment') {
                 return 'z';
             }
