@@ -2,10 +2,10 @@ name: concrexit
 
 services:
   concrexit:
-    image: ghcr.io/svthalia/concrexit:${TAG}
+    image: ghcr.io/svthalia/concrexit:${TAG:-development}
     env_file:
-      - env.public
-      - env.secret
+      - ${ENV_PUBLIC_FILE:-env.public}
+      - ${ENV_SECRET_FILE:-env.secret}
     volumes:
       - concrexit-media:/volumes/media:rw
       - concrexit-static:/volumes/static:rw
@@ -17,12 +17,12 @@ services:
         condition: service_healthy
 
   nginx:
-    image: ghcr.io/svthalia/concrexit-nginx:${TAG}
+    image: ghcr.io/svthalia/concrexit-nginx:${TAG:-development}
     ports:
       - "80:80"
       - "443:443"
     env_file:
-      - env.public
+      - ${ENV_PUBLIC_FILE:-env.public}
     volumes:
       - letsencrypt:/etc/letsencrypt:rw
       - concrexit-media:/volumes/media:ro
@@ -35,7 +35,7 @@ services:
   postgres:
     image: postgres:15.4-alpine
     env_file:
-      - env.public
+      - ${ENV_PUBLIC_FILE:-env.public}
     volumes:
       - /volumes/postgres/data:/var/lib/postgresql/data:rw
     restart: always
@@ -61,8 +61,8 @@ services:
     image: ghcr.io/svthalia/concrexit:${TAG}
     command: /app/worker-entrypoint.sh
     env_file:
-      - env.public
-      - env.secret
+      - ${ENV_PUBLIC_FILE:-env.public}
+      - ${ENV_SECRET_FILE:-env.secret}
     volumes:
       - celery-beat-db:/volumes/worker:rw
       - concrexit-media:/volumes/media:rw

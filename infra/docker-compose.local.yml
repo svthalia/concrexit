@@ -1,0 +1,25 @@
+services:
+  concrexit:
+    build:
+      context: ..
+      dockerfile: infra/concrexit/Dockerfile
+      args:
+        SOURCE_COMMIT: development
+    cpu_count: 1
+
+  nginx:
+    build:
+      context: ..
+      dockerfile: infra/nginx/Dockerfile
+    environment:
+      - USE_LOCAL_CA=1
+
+  postgres:
+    cpu_count: 1
+
+  worker:
+    build:
+      context: ..
+      dockerfile: infra/concrexit/Dockerfile
+      args:
+        SOURCE_COMMIT: development
