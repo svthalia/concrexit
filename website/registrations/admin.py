@@ -204,14 +204,18 @@ class RegistrationAdmin(admin.ModelAdmin):
         can_revert = False
         if object_id is not None and request.user.has_perm(
             "registrations.review_entries"
-        ):
-            obj = Entry.objects.get(id=object_id)
+        ):  # pragma: no cover
+            obj = self.get_object(request, object_id)
+            if obj is None:
+                return self._get_obj_does_not_exist_redirect(
+                    request, self.opts, object_id
+                )
             can_review = obj.status == Entry.STATUS_REVIEW
             can_revert = obj.status in [Entry.STATUS_ACCEPTED, Entry.STATUS_REJECTED]
-            try:
-                can_resend = obj.registration.status == Entry.STATUS_CONFIRM
-            except Registration.DoesNotExist:
-                pass
+            can_resend = obj.status == Entry.STATUS_CONFIRM and isinstance(
+                obj, Registration
+            )
+
         return super().changeform_view(
             request,
             object_id,
