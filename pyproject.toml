@@ -53,18 +53,6 @@ optional = true
 [tool.poetry.group.postgres.dependencies]
 psycopg2 = "2.9.9"
 
-[tool.poetry.group.postgreslocal]
-optional = true
-
-[tool.poetry.group.postgreslocal.dependencies]
-psycopg2 = "2.9.9"
-django-template-check = "0.4.0"
-django-extensions = "^3.2.1"
-libsass = "0.22.0"
-Faker = "18.13.0"
-factory_boy = "3.3.0"
-pydenticon = "0.3.1"
-
 [tool.poetry.group.docs]
 optional = true
 
