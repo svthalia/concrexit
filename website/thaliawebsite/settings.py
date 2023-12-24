@@ -218,23 +218,8 @@ ALLOWED_HOSTS = [
     SITE_DOMAIN,
     *from_env("ALLOWED_HOSTS", development="*", production="").split(","),
 ]
-
-if DJANGO_ENV == "development":
-    CSRF_TRUSTED_ORIGINS = ["http://localhost:443"]
-
 # https://docs.djangoproject.com/en/dev/ref/settings/#internal-ips
 INTERNAL_IPS = setting(development=["127.0.0.1", "172.17.0.1"], production=[])
-
-if DJANGO_ENV == "development":
-    # the ip code is for getting it to work from docker
-    import socket  # only if you haven't already imported this
-
-    hostname, _2, ips = socket.gethostbyname_ex(socket.gethostname())
-    INTERNAL_IPS = setting(
-        development=[ip[: ip.rfind(".")] + ".5" for ip in ips]
-        + ["127.0.0.1", "172.17.0.1"],
-        production=[],
-    )
 
 DJANGO_DRF_FILEPOND_UPLOAD_TMP = from_env(
     "DJANGO_DRF_FILEPOND_UPLOAD_TMP",
