@@ -28,6 +28,9 @@ COPY pyproject.toml poetry.lock ./
 
 RUN poetry install --only main --only postgres
 
+ARG WITH_DEV
+RUN if [ "$WITH_DEV" = "1" ]; then poetry install --only dev --only scss; fi
+
 
 FROM build-venv as build-scss
 # This stage builds the SASS, using dependencies that are not needed in the final image.

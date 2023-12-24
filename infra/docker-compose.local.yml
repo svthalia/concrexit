@@ -1,0 +1,53 @@
+services:
+  concrexit:
+    build:
+      context: ..
+      dockerfile: infra/concrexit/Dockerfile
+      args:
+        SOURCE_COMMIT: development
+        WITH_DEV: 1
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+
+  nginx:
+    build: nginx
+    environment:
+      # See https://github.com/JonasAlfredsson/docker-nginx-certbot/blob/v4.3.0/docs/advanced_usage.md#local-ca
+      USE_LOCAL_CA: 1
+    volumes:
+      - nginx-local-ca:/etc/local_ca:rw
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+  postgres:
+    volumes:
+      # Override the original mount point with a named volume.
+      - postgres-data:/var/lib/postgresql/data:rw
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+
+  redis:
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+  worker:
+    build:
+      context: ..
+      dockerfile: infra/concrexit/Dockerfile
+      args:
+        SOURCE_COMMIT: development
+        WITH_DEV: 1
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+
+volumes:
+  postgres-data:
+  nginx-local-ca:

@@ -176,7 +176,7 @@ FACEDETECTION_MAX_NUM_REFERENCE_FACES = 5
 
 # ARN of the concrexit-facedetection-lambda function.
 # See https://github.com/svthalia/concrexit-facedetection-lambda.
-FACEDETECTION_LAMBDA_ARN = from_env("FACEDETECTION_LAMBDA_ARN")
+FACEDETECTION_LAMBDA_ARN = os.environ.get("FACEDETECTION_LAMBDA_ARN")
 
 FACEDETECTION_LAMBDA_BATCH_SIZE = int(
     os.environ.get("FACEDETECTION_LAMBDA_BATCH_SIZE", 20)
@@ -218,8 +218,6 @@ ALLOWED_HOSTS = [
     SITE_DOMAIN,
     *from_env("ALLOWED_HOSTS", development="*", production="").split(","),
 ]
-# https://docs.djangoproject.com/en/dev/ref/settings/#internal-ips
-INTERNAL_IPS = setting(development=["127.0.0.1", "172.17.0.1"], production=[])
 
 DJANGO_DRF_FILEPOND_UPLOAD_TMP = from_env(
     "DJANGO_DRF_FILEPOND_UPLOAD_TMP",
@@ -318,7 +316,18 @@ CONN_MAX_AGE = int(from_env("CONN_MAX_AGE", development="0", production="60"))
 DATA_UPLOAD_MAX_NUMBER_FIELDS = os.environ.get("DATA_UPLOAD_MAX_NUMBER_FIELDS", 10000)
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
-DEBUG = setting(development=True, production=False, testing=False)
+DEBUG = bool(
+    from_env("DJANGO_DEBUG", development=True, production=False, testing=False)
+)
+# https://docs.djangoproject.com/en/dev/ref/settings/#internal-ips
+INTERNAL_IPS = ["127.0.0.1", "172.17.0.1"] if DEBUG else []
+
+
+def show_toolbar(request):
+    return DEBUG
+
+
+DEBUG_TOOLBAR_CONFIG = {"SHOW_TOOLBAR_CALLBACK": show_toolbar}
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#session-cookie-secure
 SESSION_COOKIE_SECURE = setting(development=False, production=True)
