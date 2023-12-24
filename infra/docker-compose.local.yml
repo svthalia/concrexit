@@ -6,7 +6,10 @@ services:
       args:
         SOURCE_COMMIT: development
         WITH_DEV: 1
-    cpu_count: 1
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
 
   nginx:
     build: nginx
@@ -15,13 +18,24 @@ services:
       USE_LOCAL_CA: 1
     volumes:
       - nginx-local-ca:/etc/local_ca:rw
-
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
   postgres:
-    cpu_count: 1
     volumes:
       # Override the original mount point with a named volume.
       - postgres-data:/var/lib/postgresql/data:rw
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
 
+  redis:
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
   worker:
     build:
       context: ..
@@ -29,6 +43,10 @@ services:
       args:
         SOURCE_COMMIT: development
         WITH_DEV: 1
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
 
 volumes:
   postgres-data:
