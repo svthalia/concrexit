@@ -2,7 +2,7 @@ from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Case, Count, F, Q, When
-from django.db.models.functions import Greatest, NullIf
+from django.db.models.functions import Coalesce, Greatest, NullIf
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
@@ -183,10 +183,7 @@ class EventRegistration(models.Model):
     @payment_amount.annotater
     @classmethod
     def payment_amount(cls):
-        return Case(
-            When(Q(special_price__isnull=False), then=F("special_price")),
-            default=F("event__price"),
-        )
+        return Coalesce("special_price", "event__price")
 
     def would_cancel_after_deadline(self):
         now = timezone.now()
