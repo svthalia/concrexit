@@ -425,13 +425,11 @@ class BankAccount(models.Model):
         super().clean()
         errors = {}
 
-        if self.bic is None and self.iban[0:2] != "NL":
-            errors.update(
-                {"bic": _("This field is required for foreign bank accounts.")}
-            )
+        if self.iban[0:2] != "NL" and not self.bic:
+            errors["bic"] = _("This field is required for foreign bank accounts.")
 
         if not self.owner:
-            errors.update({"owner": _("This field is required.")})
+            errors["owner"] = _("This field is required.")
 
         mandate_fields = [
             ("valid_from", self.valid_from),
