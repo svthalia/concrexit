@@ -1,4 +1,4 @@
-{% load i18n static %}
+{% load i18n static baseurl %}
 {% if payable.payment_amount > 0 %}
     {% if member.tpay_allowed and payable.tpay_allowed %}
         <form name="tpay-payment-form" action="{% url 'payments:payment-process' %}" method="post">
@@ -30,7 +30,7 @@
             />
             {% if not member.tpay_enabled %}
                 <span data-bs-toggle="tooltip" data-bs-placement="right" data-bs-delay='{"show":"100", "hide":"2000"}' tabindex="0" data-bs-trigger="hover focus" style="display: inline-block"
-                     data-bs-html="true" title="To start using Thalia Pay, you need to <a href='{% url 'payments:bankaccount-add' %}' target='_blank'>sign a direct debit mandate</a>."
+                     data-bs-html="true" title="To start using Thalia Pay, you need to sign a direct debit mandate at {% baseurl %}{% url 'payments:bankaccount-add' %}."
                 >
                     <input
                         id="tpay-submit-button"
