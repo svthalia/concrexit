@@ -31,7 +31,11 @@ class MemberGroupBackend:
                     member = Member.objects.get(pk=user.pk)
                 except Member.DoesNotExist:
                     return set()
+
             now = timezone.now()
+            if not member.has_active_membership():
+                return set()
+
             groups = member.membergroup_set.filter(
                 Q(membergroupmembership__until=None)
                 | Q(

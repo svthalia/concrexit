@@ -8,6 +8,7 @@ from django.utils import timezone
 from activemembers.models import Board, Committee, MemberGroupMembership
 from mailinglists.models import MailingList
 from members.models import Member
+from members.models.membership import Membership
 
 
 @override_settings(SUSPEND_SIGNALS=True)
@@ -163,12 +164,25 @@ class PermissionsBackendTest(TestCase):
             until=timezone.now().replace(year=1900),
         )
 
+        for member in [cls.u2, cls.u3, cls.u4, cls.u5]:
+            Membership.objects.create(
+                user=member, type=Membership.MEMBER, since="2000-01-01"
+            )
+
     def test_permissions(self):
         self.assertEqual(3, len(self.u1.get_all_permissions()))
         self.assertEqual(set(), self.u2.get_all_permissions())
         self.assertEqual(set(), self.u3.get_all_permissions())
         self.assertEqual(4, len(self.u4.get_all_permissions()))
         self.assertEqual(set(), self.u5.get_all_permissions())
+
+    def test_committee_member_without_membership(self):
+        self.u1.latest_membership.until = (
+            timezone.now() - timezone.timedelta(days=2)
+        ).date()
+        self.u1.save()
+
+        self.assertEqual(set(), self.u1.get_all_permissions())
 
     def test_nonmember_user(self):
         u = get_user_model().objects.create(username="foo")
