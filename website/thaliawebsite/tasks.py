@@ -49,8 +49,7 @@ def data_minimisation():
         logger.info(f"Removed reference faces: {p}")
 
     processed = minimise_logentries_data()
-    for p in processed:
-        logger.info(f"Removed user from logentries for {p}")
+    logger.info(f"Removed {processed} log entries")
 
 
 @shared_task

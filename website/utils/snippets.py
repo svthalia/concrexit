@@ -240,9 +240,9 @@ def minimise_logentries_data(dry_run=False):
     # Sometimes years are 366 days of course, but better delete 1 or 2 days early than late
     deletion_period = timezone.now().date() - timezone.timedelta(days=365 * 7)
 
-    queryset = LogEntry.objects.filter(action_time__lte=deletion_period).exclude(
-        user__isnull=True
-    )
+    qs = LogEntry.objects.filter(action_time__lte=deletion_period)
     if not dry_run:
-        queryset.update(user=None)
-    return queryset
+        count, _ = qs.delete()
+    else:
+        count = qs.count()
+    return count
