@@ -1,4 +1,6 @@
 """Models for the promotion requests database tables."""
+import datetime
+
 from django.db import models
 from django.dispatch import Signal
 from django.utils import timezone
@@ -51,7 +53,7 @@ class PromotionRequest(models.Model):
     )
     publish_date = models.DateField(
         verbose_name=_("Publish date"),
-        default=timezone.now,
+        default=datetime.date.today,
         null=False,
         blank=False,
     )
