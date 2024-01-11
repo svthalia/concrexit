@@ -49,7 +49,7 @@ class CurrentMemberManager(MemberManager):
             .get_queryset()
             .exclude(membership=None)
             .filter(
-                Q(membership__until__isnull=True)
+                Q(membership____isnull=True)
                 | Q(membership__until__gt=timezone.now().date())
             )
             .distinct()
