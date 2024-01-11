@@ -226,7 +226,7 @@ class ServicesTest(TestCase):
 
             mock_mails.assert_called_once()
             ba.refresh_from_db()
-            self.assertEqual(b.withdrawal_date.date(), ba.last_used)
+            self.assertEqual(b.withdrawal_date, ba.last_used)
 
     def test_data_minimisation(self):
         with self.subTest("Payments that are 7 years old must be minimised"):
