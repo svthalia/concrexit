@@ -2,7 +2,6 @@
 import logging
 from random import random
 from time import sleep
-from typing import Optional
 
 from django.conf import settings
 from django.utils.datastructures import ImmutableList
@@ -376,7 +375,7 @@ class GSuiteSyncService:
             self._automatic_to_group(ml) for ml in get_automatic_lists()
         ]
 
-    def sync_mailing_lists(self, lists: Optional[list[GroupData]] = None):
+    def sync_mailing_lists(self, lists: list[GroupData] | None = None):
         """Sync mailing lists with GSuite. Lists are only deleted if all lists are synced and thus no lists are passed to this function.
 
         :param lists: optional parameter to determine which lists to sync

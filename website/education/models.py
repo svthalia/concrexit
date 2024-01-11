@@ -1,7 +1,8 @@
 """The models defined by the education package."""
+import datetime
+
 from django.db import models
 from django.urls import reverse
-from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from members.models import Member
@@ -88,9 +89,7 @@ class Exam(models.Model):
         null=True,
     )
 
-    uploader_date = models.DateField(
-        default=timezone.now,
-    )
+    uploader_date = models.DateField(default=datetime.date.today)
 
     accepted = models.BooleanField(
         verbose_name=_("accepted"),
@@ -157,9 +156,7 @@ class Summary(models.Model):
         null=True,
     )
 
-    uploader_date = models.DateField(
-        default=timezone.now,
-    )
+    uploader_date = models.DateField(default=datetime.date.today)
 
     year = models.IntegerField()
 

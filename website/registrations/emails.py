@@ -1,5 +1,4 @@
 """The emails defined by the registrations package."""
-from typing import Union
 
 from django.conf import settings
 from django.template.defaultfilters import floatformat
@@ -154,7 +153,7 @@ def send_new_renewal_board_message(renewal: Renewal) -> None:
     )
 
 
-def send_references_information_message(entry: Union[Registration, Renewal]) -> None:
+def send_references_information_message(entry: Registration | Renewal) -> None:
     """Send a notification to the user with information about references.
 
     These are required for benefactors who have not been a Thalia member

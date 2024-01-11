@@ -272,7 +272,9 @@ def _default_batch_description():
 
 
 def _default_withdrawal_date():
-    return timezone.now() + settings.PAYMENT_BATCH_DEFAULT_WITHDRAWAL_DATE_OFFSET
+    return (
+        timezone.now() + settings.PAYMENT_BATCH_DEFAULT_WITHDRAWAL_DATE_OFFSET
+    ).date()
 
 
 class Batch(models.Model):
