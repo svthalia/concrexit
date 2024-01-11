@@ -1,5 +1,4 @@
 from decimal import Decimal
-from typing import Union
 
 from django.conf import settings
 
@@ -58,7 +57,7 @@ class MoneybirdAPIService:
         self,
         mutation_id: int,
         booking_id: int,
-        price_base: Union[Decimal, str],
+        price_base: Decimal | str,
         booking_type: str = "ExternalSalesInvoice",
     ):
         return self._administration.patch(

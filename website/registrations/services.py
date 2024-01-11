@@ -1,5 +1,4 @@
 """The services defined by the registrations package."""
-from typing import Optional
 
 from django.contrib.admin.models import CHANGE, LogEntry
 from django.contrib.admin.options import get_content_type_for_model
@@ -61,7 +60,7 @@ def reject_registration(registration: Registration, actor: Member) -> None:
 
 
 def revert_registration(
-    registration: Registration, actor: Optional[Member] = None
+    registration: Registration, actor: Member | None = None
 ) -> None:
     """Undo the review of a registration."""
     registration.refresh_from_db()
@@ -131,7 +130,7 @@ def accept_registration(registration: Registration, actor: Member) -> None:
         emails.send_registration_accepted_message(registration)
 
 
-def revert_renewal(renewal: Renewal, actor: Optional[Member] = None) -> None:
+def revert_renewal(renewal: Renewal, actor: Member | None = None) -> None:
     """Undo the review of a registration."""
     renewal.refresh_from_db()
     if renewal.status not in (

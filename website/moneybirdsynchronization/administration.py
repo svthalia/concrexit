@@ -11,7 +11,6 @@ import time
 from abc import ABC, abstractmethod
 from datetime import datetime
 from functools import reduce
-from typing import Optional, Union
 from urllib.parse import urljoin
 
 from django.conf import settings
@@ -30,7 +29,7 @@ class Administration(ABC):
         self.administration_id = administration_id
 
     @abstractmethod
-    def get(self, resource_path: str, params: Optional[dict] = None):
+    def get(self, resource_path: str, params: dict | None = None):
         """Do a GET on the Moneybird administration."""
 
     @abstractmethod
@@ -51,7 +50,7 @@ class Administration(ABC):
     class Error(Exception):
         """An exception that can be thrown while using the administration."""
 
-        def __init__(self, status_code: int, description: Optional[str] = None):
+        def __init__(self, status_code: int, description: str | None = None):
             """Create a new administration error."""
             msg = f"API error {status_code}"
             if description:
@@ -94,7 +93,7 @@ class Administration(ABC):
         ]
         return reduce(urljoin, url_parts)
 
-    def _process_response(self, response: requests.Response) -> Union[dict, None]:
+    def _process_response(self, response: requests.Response) -> dict | None:
         logger.debug(f"Response {response.status_code}: {response.text}")
 
         if response.next:
@@ -194,7 +193,7 @@ class HttpsAdministration(Administration):
         return session
 
     @_retry_if_throttled()
-    def get(self, resource_path: str, params: Optional[dict] = None):
+    def get(self, resource_path: str, params: dict | None = None):
         """Do a GET on the Moneybird administration."""
         url = self._build_url(resource_path)
         logger.debug(f"GET {url} {params}")
@@ -220,7 +219,7 @@ class HttpsAdministration(Administration):
         return self._process_response(response)
 
     @_retry_if_throttled()
-    def delete(self, resource_path: str, data: Optional[dict] = None):
+    def delete(self, resource_path: str, data: dict | None = None):
         """Do a DELETE on the Moneybird administration."""
         url = self._build_url(resource_path)
         logger.debug(f"DELETE {url}")

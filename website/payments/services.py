@@ -1,6 +1,5 @@
 """The services defined by the payments package."""
 import datetime
-from typing import Optional, Union
 
 from django.conf import settings
 from django.core import mail
@@ -20,10 +19,10 @@ from .signals import processed_batch
 
 
 def create_payment(
-    model_payable: Union[Model, Payable],
+    model_payable: Model | Payable,
     processed_by: Member,
-    pay_type: Union[Payment.CASH, Payment.CARD, Payment.WIRE, Payment.TPAY],
-) -> Optional[Payment]:
+    pay_type: Payment.CASH | (Payment.CARD | (Payment.WIRE | Payment.TPAY)),
+) -> Payment | None:
     """Create a new payment from a payable object.
 
     The payable model is saved with the new payment set on it.
@@ -138,7 +137,7 @@ def delete_payment(model: Model, member: Member = None, ignore_change_window=Fal
         payable.model.save()
 
 
-def update_last_used(queryset: QuerySet, date: Optional[datetime.date] = None) -> int:
+def update_last_used(queryset: QuerySet, date: datetime.date | None = None) -> int:
     """Update the last used field of a BankAccount queryset.
 
     :param queryset: Queryset of BankAccounts

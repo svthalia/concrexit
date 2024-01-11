@@ -11,7 +11,6 @@ import base64
 import json
 import logging
 import os
-from typing import Optional
 
 from django.core.management.commands import makemessages
 from django.utils import timezone
@@ -1129,7 +1128,7 @@ GRAPH_MODELS = {
 
 MONEYBIRD_START_DATE = os.environ.get("MONEYBIRD_START_DATE", "2023-09-01")
 
-MONEYBIRD_ADMINISTRATION_ID: Optional[int] = (
+MONEYBIRD_ADMINISTRATION_ID: int | None = (
     int(os.environ.get("MONEYBIRD_ADMINISTRATION_ID"))
     if os.environ.get("MONEYBIRD_ADMINISTRATION_ID")
     else None
@@ -1139,39 +1138,39 @@ MONEYBIRD_API_KEY = os.environ.get("MONEYBIRD_API_KEY")
 
 MONEYBIRD_SYNC_ENABLED = MONEYBIRD_ADMINISTRATION_ID and MONEYBIRD_API_KEY
 
-MONEYBIRD_MEMBER_PK_CUSTOM_FIELD_ID: Optional[int] = (
+MONEYBIRD_MEMBER_PK_CUSTOM_FIELD_ID: int | None = (
     int(os.environ.get("MONEYBIRD_MEMBER_PK_CUSTOM_FIELD_ID"))
     if os.environ.get("MONEYBIRD_MEMBER_PK_CUSTOM_FIELD_ID")
     else None
 )
-MONEYBIRD_UNKNOWN_PAYER_CONTACT_ID: Optional[int] = (
+MONEYBIRD_UNKNOWN_PAYER_CONTACT_ID: int | None = (
     int(os.environ.get("MONEYBIRD_UNKNOWN_PAYER_CONTACT_ID"))
     if os.environ.get("MONEYBIRD_UNKNOWN_PAYER_CONTACT_ID")
     else None
 )
-MONEYBIRD_CONTRIBUTION_LEDGER_ID: Optional[int] = (
+MONEYBIRD_CONTRIBUTION_LEDGER_ID: int | None = (
     int(os.environ.get("MONEYBIRD_CONTRIBUTION_LEDGER_ID"))
     if os.environ.get("MONEYBIRD_CONTRIBUTION_LEDGER_ID")
     else None
 )
 
-MONEYBIRD_TPAY_FINANCIAL_ACCOUNT_ID: Optional[int] = (
+MONEYBIRD_TPAY_FINANCIAL_ACCOUNT_ID: int | None = (
     int(os.environ.get("MONEYBIRD_TPAY_FINANCIAL_ACCOUNT_ID"))
     if os.environ.get("MONEYBIRD_TPAY_FINANCIAL_ACCOUNT_ID")
     else None
 )
-MONEYBIRD_CASH_FINANCIAL_ACCOUNT_ID: Optional[int] = (
+MONEYBIRD_CASH_FINANCIAL_ACCOUNT_ID: int | None = (
     int(os.environ.get("MONEYBIRD_CASH_FINANCIAL_ACCOUNT_ID"))
     if os.environ.get("MONEYBIRD_CASH_FINANCIAL_ACCOUNT_ID")
     else None
 )
-MONEYBIRD_CARD_FINANCIAL_ACCOUNT_ID: Optional[int] = (
+MONEYBIRD_CARD_FINANCIAL_ACCOUNT_ID: int | None = (
     int(os.environ.get("MONEYBIRD_CARD_FINANCIAL_ACCOUNT_ID"))
     if os.environ.get("MONEYBIRD_CARD_FINANCIAL_ACCOUNT_ID")
     else None
 )
 
-MONEYBIRD_ZERO_TAX_RATE_ID: Optional[int] = (
+MONEYBIRD_ZERO_TAX_RATE_ID: int | None = (
     int(os.environ.get("MONEYBIRD_ZERO_TAX_RATE_ID"))
     if os.environ.get("MONEYBIRD_ZERO_TAX_RATE_ID")
     else None
