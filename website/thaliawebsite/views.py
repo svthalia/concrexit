@@ -49,19 +49,17 @@ class PagedView(ListView):
 
         page_range = range(page_range_start, page_range_stop)
 
-        # generates the string of keywords, and applies these to the base_url
-        keyword_string = ""
+        querydict = self.request.GET.copy()
 
-        for keyword in self.keywords:
-            if keyword_string == "":
-                keyword_string += f"{keyword}"
-            else:
-                keyword_string += f"+{keyword}"
+        if "page" in querydict:
+            del querydict["page"]
 
         context.update(
             {
                 "page_range": page_range,
-                "base_url": self.request.path + f"?keywords={keyword_string}",
+                "base_url": f"{self.request.path}?{querydict.urlencode()}&"
+                if querydict
+                else f"{self.request.path}?",
             }
         )
 
