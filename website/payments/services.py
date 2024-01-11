@@ -21,7 +21,7 @@ from .signals import processed_batch
 def create_payment(
     model_payable: Model | Payable,
     processed_by: Member,
-    pay_type: Payment.CASH | (Payment.CARD | (Payment.WIRE | Payment.TPAY)),
+    pay_type: str,
 ) -> Payment | None:
     """Create a new payment from a payable object.
 
