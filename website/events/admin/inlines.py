@@ -39,5 +39,19 @@ class PromotionRequestInline(admin.StackedInline):
         "assigned_to",
         "status",
         "drive_folder",
+        "status_updated",
     )
+
+    def has_add_permission(self, request, obj=None):
+        return True
+
+    def has_view_permission(self, request, obj=None):
+        return True
+
+    def has_change_permission(self, request, obj=None):
+        return True
+
+    def has_delete_permission(self, request, obj=None):
+        return True
+
     extra = 0
