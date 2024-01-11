@@ -78,4 +78,5 @@ class Membership(models.Model):
             raise ValidationError(errors)
 
     def is_active(self):
-        return not self.until or self.until > timezone.now().date()
+        today = timezone.now().date()
+        return self.since <= today and (not self.until or self.until > today)

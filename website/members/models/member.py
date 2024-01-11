@@ -11,6 +11,7 @@ from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 
 from activemembers.models import MemberGroup, MemberGroupMembership
+from members.models.membership import Membership
 
 logger = logging.getLogger(__name__)
 
@@ -107,7 +108,7 @@ class Member(User):
         return super().refresh_from_db(**kwargs)
 
     @property
-    def current_membership(self):
+    def current_membership(self) -> Membership | None:
         """Return the currently active membership of the user, None if not active.
 
         Warning: this property uses the *cached* `latest_membership`.
@@ -119,7 +120,7 @@ class Member(User):
         return membership
 
     @cached_property
-    def latest_membership(self):
+    def latest_membership(self) -> Membership | None:
         """Get the most recent membership of this user.
 
         Warning: this property is cached.
@@ -134,21 +135,21 @@ class Member(User):
         return self.membership_set.latest("since")
 
     @property
-    def earliest_membership(self):
+    def earliest_membership(self) -> Membership | None:
         """Get the earliest membership of this user."""
         if not self.membership_set.exists():
             return None
         return self.membership_set.earliest("since")
 
-    def has_been_member(self):
+    def has_been_member(self) -> bool:
         """Has this user ever been a member?."""
         return self.membership_set.filter(type="member").exists()
 
-    def has_been_honorary_member(self):
+    def has_been_honorary_member(self) -> bool:
         """Has this user ever been an honorary member?."""
         return self.membership_set.filter(type="honorary").exists()
 
-    def has_active_membership(self):
+    def has_active_membership(self) -> bool:
         """Is this member currently active.
 
         Tested by checking if the expiration date has passed.
