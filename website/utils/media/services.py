@@ -1,7 +1,6 @@
 import os
 from functools import partial
 from secrets import token_hex
-from typing import Optional
 
 from django.conf import settings
 from django.core.files.storage import DefaultStorage
@@ -35,7 +34,7 @@ def get_media_url(
     file,
     attachment=False,
     absolute_url: bool = False,
-    expire_seconds: Optional[int] = None,
+    expire_seconds: int | None = None,
 ):
     """Get the url of the provided media file to serve in a browser.
 
@@ -49,7 +48,7 @@ def get_media_url(
     """
     storage = DefaultStorage()
     file_name = file
-    if isinstance(file, (ImageFieldFile, FieldFile, Thumbnail)):
+    if isinstance(file, ImageFieldFile | FieldFile | Thumbnail):
         storage = file.storage
         file_name = file.name
 
@@ -66,10 +65,10 @@ def get_thumbnail_url(
     file,
     size: str,
     absolute_url: bool = False,
-    expire_seconds: Optional[int] = None,
+    expire_seconds: int | None = None,
 ):
     name = file
-    if isinstance(file, (ImageFieldFile, FieldFile)):
+    if isinstance(file, ImageFieldFile | FieldFile):
         name = file.name
 
     if isinstance(file, ThumbnailedImageFile):

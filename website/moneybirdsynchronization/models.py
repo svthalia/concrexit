@@ -1,5 +1,4 @@
 import datetime
-from typing import Optional, Union
 
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -19,7 +18,7 @@ from registrations.models import Registration, Renewal
 from sales.models.order import Order
 
 
-def financial_account_id_for_payment_type(payment_type) -> Optional[int]:
+def financial_account_id_for_payment_type(payment_type) -> int | None:
     if payment_type == Payment.CARD:
         return settings.MONEYBIRD_CARD_FINANCIAL_ACCOUNT_ID
     if payment_type == Payment.CASH:
@@ -29,7 +28,7 @@ def financial_account_id_for_payment_type(payment_type) -> Optional[int]:
     return None
 
 
-def project_name_for_payable_model(obj) -> Optional[str]:
+def project_name_for_payable_model(obj) -> str | None:
     if isinstance(obj, EventRegistration):
         start_date = obj.event.start.strftime("%Y-%m-%d")
         return f"{obj.event.title} [{start_date}]"
@@ -39,27 +38,27 @@ def project_name_for_payable_model(obj) -> Optional[str]:
     if isinstance(obj, Order):
         start_date = obj.shift.start.strftime("%Y-%m-%d")
         return f"{obj.shift} [{start_date}]"
-    if isinstance(obj, (Registration, Renewal)):
+    if isinstance(obj, Registration | Renewal):
         return None
 
     raise ValueError(f"Unknown payable model {obj}")
 
 
-def date_for_payable_model(obj) -> Union[datetime.datetime, datetime.date]:
+def date_for_payable_model(obj) -> datetime.datetime | datetime.date:
     if isinstance(obj, EventRegistration):
         return obj.date.date()
     if isinstance(obj, FoodOrder):
         return obj.food_event.event.start
     if isinstance(obj, Order):
         return obj.shift.start
-    if isinstance(obj, (Registration, Renewal)):
+    if isinstance(obj, Registration | Renewal):
         return obj.created_at.date()
 
     raise ValueError(f"Unknown payable model {obj}")
 
 
-def period_for_payable_model(obj) -> Optional[str]:
-    if isinstance(obj, (Registration, Renewal)):
+def period_for_payable_model(obj) -> str | None:
+    if isinstance(obj, Registration | Renewal):
         if obj.membership is not None:
             # Only bill for the start date, ignore the until date.
             date = obj.membership.since
@@ -67,14 +66,14 @@ def period_for_payable_model(obj) -> Optional[str]:
     return None
 
 
-def tax_rate_for_payable_model(obj) -> Optional[int]:
-    if isinstance(obj, (Registration, Renewal)):
+def tax_rate_for_payable_model(obj) -> int | None:
+    if isinstance(obj, Registration | Renewal):
         return settings.MONEYBIRD_ZERO_TAX_RATE_ID
     return None
 
 
-def ledger_id_for_payable_model(obj) -> Optional[int]:
-    if isinstance(obj, (Registration, Renewal)):
+def ledger_id_for_payable_model(obj) -> int | None:
+    if isinstance(obj, Registration | Renewal):
         return settings.MONEYBIRD_CONTRIBUTION_LEDGER_ID
     return None
 

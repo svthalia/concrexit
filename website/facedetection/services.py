@@ -1,6 +1,5 @@
 import json
 import logging
-from typing import Union
 
 from django.conf import settings
 from django.db.models import Q
@@ -40,7 +39,7 @@ def execute_data_minimisation(dry_run=False):
     return queryset
 
 
-def _serialize_lambda_source(source: Union[ReferenceFace, FaceDetectionPhoto]):
+def _serialize_lambda_source(source: ReferenceFace | FaceDetectionPhoto):
     """Serialize a source object to be sent to the lambda function."""
     if isinstance(source, ReferenceFace):
         return {
@@ -70,7 +69,7 @@ def _serialize_lambda_source(source: Union[ReferenceFace, FaceDetectionPhoto]):
 
 
 def _trigger_facedetection_lambda_batch(
-    sources: list[Union[ReferenceFace, FaceDetectionPhoto]]
+    sources: list[ReferenceFace | FaceDetectionPhoto],
 ):
     """Submit a batch of sources to the facedetection lambda function.
 
@@ -109,9 +108,7 @@ def _trigger_facedetection_lambda_batch(
         capture_exception(e)
 
 
-def trigger_facedetection_lambda(
-    sources: list[Union[ReferenceFace, FaceDetectionPhoto]]
-):
+def trigger_facedetection_lambda(sources: list[ReferenceFace | FaceDetectionPhoto]):
     """Submit a sources to the facedetection lambda function for processing.
 
     This function will check if the sources are valid and, if a lambda function has

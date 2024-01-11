@@ -4,7 +4,6 @@ import hmac
 from base64 import urlsafe_b64decode, urlsafe_b64encode
 from collections import namedtuple
 from hashlib import sha1
-from typing import Optional
 
 from django.conf import settings
 from django.contrib.admin.models import LogEntry
@@ -214,9 +213,9 @@ def send_email(
     subject: str,
     txt_template: str,
     context: dict,
-    html_template: Optional[str] = None,
-    bcc: Optional[list[str]] = None,
-    from_email: Optional[str] = None,
+    html_template: str | None = None,
+    bcc: list[str] | None = None,
+    from_email: str | None = None,
     connection=None,
 ) -> None:
     txt_message = loader.render_to_string(txt_template, context)

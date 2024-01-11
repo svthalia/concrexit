@@ -1,7 +1,6 @@
 """Registers admin interfaces for the payments module."""
 import csv
 from collections import OrderedDict
-from typing import Optional
 
 from django.contrib import admin, messages
 from django.contrib.admin import ModelAdmin
@@ -435,9 +434,9 @@ class BatchAdmin(admin.ModelAdmin):
     def changeform_view(
         self,
         request: HttpRequest,
-        object_id: Optional[str] = None,
+        object_id: str | None = None,
         form_url: str = "",
-        extra_context: Optional[dict] = None,
+        extra_context: dict | None = None,
     ) -> HttpResponse:
         """Render the change formview.
 
