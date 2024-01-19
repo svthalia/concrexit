@@ -29,6 +29,7 @@ from django.conf import settings
 from django.conf.urls import include
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 from django.contrib.sitemaps.views import sitemap
 from django.urls import path, re_path
 from django.views.i18n import JavaScriptCatalog
@@ -42,6 +43,7 @@ from oauth2_provider.views import (
     JwksInfoView,
     UserInfoView,
 )
+from two_factor.urls import urlpatterns as tf_urls
 
 from activemembers.sitemaps import sitemap as activemembers_sitemap
 from documents.sitemaps import sitemap as documents_sitemap
@@ -51,7 +53,6 @@ from members.sitemaps import sitemap as members_sitemap
 from partners.sitemaps import sitemap as partners_sitemap
 from singlepages.sitemaps import sitemap as singlepages_sitemap
 from thabloid.sitemaps import sitemap as thabloid_sitemap
-from thaliawebsite.forms import AuthenticationForm
 from thaliawebsite.views import (
     IndexView,
     LogoutView,
@@ -135,12 +136,40 @@ urlpatterns = [
         "user/",
         include(
             [
+                path("logout/", auth_views.LogoutView.as_view(), name="logout"),
+                path(
+                    "password_change/",
+                    auth_views.PasswordChangeView.as_view(),
+                    name="password_change",
+                ),
+                path(
+                    "password_change/done/",
+                    auth_views.PasswordChangeDoneView.as_view(),
+                    name="password_change_done",
+                ),
+                path(
+                    "password_reset/",
+                    auth_views.PasswordResetView.as_view(),
+                    name="password_reset",
+                ),
+                path(
+                    "password_reset/done/",
+                    auth_views.PasswordResetDoneView.as_view(),
+                    name="password_reset_done",
+                ),
+                path(
+                    "reset/<uidb64>/<token>/",
+                    auth_views.PasswordResetConfirmView.as_view(),
+                    name="password_reset_confirm",
+                ),
+                path(
+                    "reset/done/",
+                    auth_views.PasswordResetCompleteView.as_view(),
+                    name="password_reset_complete",
+                ),
                 path(
                     "login/",
-                    RateLimitedLoginView.as_view(
-                        authentication_form=AuthenticationForm,
-                        redirect_authenticated_user=True,
-                    ),
+                    RateLimitedLoginView.as_view(),
                     name="login",
                 ),
                 path(
@@ -153,7 +182,7 @@ urlpatterns = [
                     RateLimitedPasswordResetView.as_view(),
                     name="password_reset",
                 ),
-                path("", include("django.contrib.auth.urls")),
+                path("", include(tf_urls)),
             ]
         ),
     ),

@@ -577,6 +577,12 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sitemaps",
     # Dependencies
+    "django_otp",
+    "django_otp.plugins.otp_static",
+    "django_otp.plugins.otp_totp",
+    "formtools",
+    "two_factor",
+    "two_factor.plugins.webauthn",
     "oauth2_provider",
     "corsheaders",
     "django_bootstrap5",
@@ -631,6 +637,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django_otp.middleware.OTPMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "thaliawebsite.middleware.RealIPMiddleware",
     "django_ratelimit.middleware.RatelimitMiddleware",
@@ -762,7 +769,7 @@ SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 WSGI_APPLICATION = "thaliawebsite.wsgi.application"
 
 # Login pages
-LOGIN_URL = "/user/login/"
+LOGIN_URL = "two_factor:login"
 LOGIN_REDIRECT_URL = "/"
 
 # Cors configuration
@@ -1170,3 +1177,5 @@ MONEYBIRD_ZERO_TAX_RATE_ID: int | None = (
     if os.environ.get("MONEYBIRD_ZERO_TAX_RATE_ID")
     else None
 )
+
+TWO_FACTOR_WEBAUTHN_RP_NAME = "Thalia Website"
