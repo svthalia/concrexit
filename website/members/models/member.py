@@ -128,6 +128,8 @@ class Member(User):
         """
         # Use membership from a Prefetch object if available.
         if hasattr(self, "_latest_membership"):
+            if not self._latest_membership:
+                return None
             return self._latest_membership[0]
 
         if not self.membership_set.exists():
