@@ -16,8 +16,8 @@ ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
 
 RUN pip install "poetry==1.3.1" && pip install --upgrade setuptools
 
-RUN apk update && \
-    apk add  \
+RUN --mount=type=cache,target=/var/cache/apk \
+    apk update && apk add  \
     build-base libpq-dev jpeg-dev zlib-dev libwebp-dev libmagic
 
 RUN  python -m venv /venv
@@ -47,8 +47,8 @@ ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
 RUN pip install "poetry==1.3.1" && pip install --upgrade setuptools
 
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends  \
+RUN --mount=type=cache,target=/var/cache/apt \
+    apt-get update && apt-get install -y --no-install-recommends  \
     build-essential libpq-dev libmagic1
 
 RUN  python -m venv /venv
@@ -77,10 +77,9 @@ ENV PATH=/venv/bin:$PATH \
     SENDFILE_ROOT="/volumes/media"
 
 # Install runtime dependencies.
-RUN apk update && \
-    apk add \
-    postgresql-client jpeg-dev zlib-dev libwebp-dev libmagic runuser && \
-    rm -rf /var/lib/apt/lists/*
+RUN --mount=type=cache,target=/var/cache/apk\
+    apk update && apk add \
+    postgresql-client jpeg-dev zlib-dev libwebp-dev libmagic runuser
 
 
 COPY infra/concrexit/server-entrypoint.sh /app/server-entrypoint.sh
