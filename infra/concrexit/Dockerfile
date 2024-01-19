@@ -1,4 +1,4 @@
-FROM python:3.11-slim-bullseye AS base
+FROM python:3.11-alpine AS base
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
@@ -16,9 +16,9 @@ ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
 
 RUN pip install "poetry==1.3.1" && pip install --upgrade setuptools
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    build-essential libpq-dev libjpeg-dev zlib1g-dev libwebp-dev libmagic1
+RUN --mount=type=cache,target=/var/cache/apk \
+    apk update && apk add  \
+    build-base libpq-dev jpeg-dev zlib-dev libwebp-dev libmagic
 
 RUN  python -m venv /venv
 ENV PATH=/venv/bin:$PATH \
@@ -32,10 +32,32 @@ ARG WITH_DEV
 RUN if [ "$WITH_DEV" = "1" ]; then poetry install --only dev --only scss; fi
 
 
-FROM build-venv as build-scss
+FROM python:3.11-slim-bookworm as build-scss
 # This stage builds the SASS, using dependencies that are not needed in the final image.
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    DJANGO_ENV=production \
+    TZ=Europe/Amsterdam
 
-RUN poetry install --only main --only postgres --only scss
+WORKDIR /app
+
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_NO_CACHE_DIR=1
+
+RUN pip install "poetry==1.3.1" && pip install --upgrade setuptools
+
+
+RUN --mount=type=cache,target=/var/cache/apt \
+    apt-get update && apt-get install -y --no-install-recommends  \
+    build-essential libpq-dev libmagic1
+
+RUN  python -m venv /venv
+ENV PATH=/venv/bin:$PATH \
+    VIRTUAL_ENV=/venv
+
+COPY pyproject.toml poetry.lock ./
+
+RUN poetry install --only main  --only postgres --only scss
 
 COPY website /app/website
 
@@ -55,10 +77,9 @@ ENV PATH=/venv/bin:$PATH \
     SENDFILE_ROOT="/volumes/media"
 
 # Install runtime dependencies.
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    postgresql-client libjpeg-dev zlib1g-dev libwebp-dev libmagic1 && \
-    rm -rf /var/lib/apt/lists/*
+RUN --mount=type=cache,target=/var/cache/apk\
+    apk update && apk add \
+    postgresql-client jpeg-dev zlib-dev libwebp-dev libmagic runuser
 
 
 COPY infra/concrexit/server-entrypoint.sh /app/server-entrypoint.sh
