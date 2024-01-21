@@ -1,6 +1,7 @@
+from datetime import date
+
 from django.contrib import admin
 from django.db.models import Max, Min
-from django.utils.datetime_safe import date
 from django.utils.translation import gettext_lazy as _
 
 from utils.snippets import datetime_to_lectureyear
