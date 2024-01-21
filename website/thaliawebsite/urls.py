@@ -54,6 +54,7 @@ from thabloid.sitemaps import sitemap as thabloid_sitemap
 from thaliawebsite.forms import AuthenticationForm
 from thaliawebsite.views import (
     IndexView,
+    LogoutView,
     RateLimitedLoginView,
     RateLimitedPasswordResetView,
     TestCrashView,
@@ -141,6 +142,11 @@ urlpatterns = [
                         redirect_authenticated_user=True,
                     ),
                     name="login",
+                ),
+                path(
+                    "logout/",
+                    LogoutView.as_view(),
+                    name="logout",
                 ),
                 path(
                     "password_reset/",

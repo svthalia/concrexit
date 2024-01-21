@@ -1,4 +1,5 @@
 import logging
+import secrets
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -13,6 +14,8 @@ except ImportError as error:
 
 _faker = FakerFactory.create("nl_NL")
 logger = logging.getLogger(__name__)
+
+_PASSWORD_CHARS = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789"
 
 
 class Command(BaseCommand):
@@ -45,7 +48,7 @@ class Command(BaseCommand):
         if username is None:
             username = _faker.user_name()
         if password is None:
-            password = get_user_model().objects.make_random_password(length=15)
+            password = "".join(secrets.choice(_PASSWORD_CHARS) for _ in range(15))
 
         get_user_model().objects.create_superuser(
             username=username,
