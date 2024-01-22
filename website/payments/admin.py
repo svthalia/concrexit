@@ -274,7 +274,7 @@ class PaymentAdmin(admin.ModelAdmin):
 
 
 class ValidAccountFilter(admin.SimpleListFilter):
-    """Filter the memberships by whether they are active or not."""
+    """Filter the bank accounts by whether they are active or not."""
 
     title = _("mandates")
     parameter_name = "active"
@@ -287,15 +287,19 @@ class ValidAccountFilter(admin.SimpleListFilter):
         )
 
     def queryset(self, request, queryset) -> QuerySet:
-        now = timezone.now()
+        today = timezone.now().date()
 
         if self.value() == "valid":
             return queryset.filter(
-                Q(valid_from__lte=now) & Q(valid_until=None) | Q(valid_until__lt=now)
+                Q(valid_from__lte=today)
+                & (Q(valid_until=None) | Q(valid_until__gt=today))
             )
 
         if self.value() == "invalid":
-            return queryset.filter(valid_until__gte=now)
+            return queryset.filter(
+                Q(valid_from__isnull=False)
+                & (Q(valid_from__gt=today) | Q(valid_until__lte=today))
+            )
 
         if self.value() == "none":
             return queryset.filter(valid_from=None)
