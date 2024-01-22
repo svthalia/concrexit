@@ -24,7 +24,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Restore any cached Poetry dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pypoetry/virtualenvs
           key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
@@ -71,7 +71,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Restore any cached Poetry dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pypoetry/virtualenvs
           key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
@@ -124,7 +124,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Restore any cached Poetry dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pypoetry/virtualenvs
           key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
@@ -154,7 +154,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Restore any cached Poetry dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pypoetry/virtualenvs
           key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
