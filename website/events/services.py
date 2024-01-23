@@ -185,6 +185,7 @@ def event_permissions(member, event, name=None, registration_prefetch=False):
     """
     perms = {
         "create_registration": False,
+        "create_registration_when_open": False,
         "cancel_registration": False,
         "update_registration": False,
         "manage_event": is_organiser(member, event),
