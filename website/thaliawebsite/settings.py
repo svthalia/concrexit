@@ -1179,3 +1179,4 @@ MONEYBIRD_ZERO_TAX_RATE_ID: int | None = (
 )
 
 TWO_FACTOR_WEBAUTHN_RP_NAME = "Thalia Website"
+TWO_FACTOR_WEBAUTHN_RP_ID = "thalia.nu"
