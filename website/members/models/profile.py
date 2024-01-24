@@ -338,7 +338,6 @@ class Profile(models.Model):
             raise ValidationError(errors)
 
     def save(self, **kwargs):
-        super().save(**kwargs)
         storage = self.photo.storage
 
         if any(
@@ -356,6 +355,7 @@ class Profile(models.Model):
             ]
         ):
             self.is_minimized = False
+        super().save(**kwargs)
 
         if self._orig_image and not self.photo:
             storage.delete(self._orig_image)
