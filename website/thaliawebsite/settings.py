@@ -932,7 +932,7 @@ THUMBNAILS = {
                 {
                     "PATH": "utils.media.processors.thumbnail",
                     "size": (300, 300),
-                    "cover": True,
+                    "mode": "cover",
                 },
             ],
         },
@@ -942,7 +942,7 @@ THUMBNAILS = {
                 {
                     "PATH": "utils.media.processors.thumbnail",
                     "size": (600, 600),
-                    "cover": True,
+                    "mode": "cover",
                 },
             ],
         },
@@ -952,7 +952,7 @@ THUMBNAILS = {
                 {
                     "PATH": "utils.media.processors.thumbnail",
                     "size": (1200, 900),
-                    "cover": True,
+                    "mode": "cover",
                 },
             ],
         },
@@ -980,7 +980,7 @@ THUMBNAILS = {
                 {
                     "PATH": "utils.media.processors.thumbnail",
                     "size": (900, 900),
-                    "cover": True,
+                    "mode": "cover",
                 },
             ],
         },
@@ -990,7 +990,7 @@ THUMBNAILS = {
                 {
                     "PATH": "utils.media.processors.thumbnail",
                     "size": (500, 108),
-                    "cover": True,
+                    "mode": "cover",
                 },
             ],
         },
@@ -1000,7 +1000,7 @@ THUMBNAILS = {
                 {
                     "PATH": "utils.media.processors.thumbnail",
                     "size": (1000, 215),
-                    "cover": True,
+                    "mode": "cover",
                 },
             ],
         },
@@ -1010,7 +1010,7 @@ THUMBNAILS = {
                 {
                     "PATH": "utils.media.processors.thumbnail",
                     "size": (2000, 430),
-                    "cover": True,
+                    "mode": "cover",
                 },
             ],
         },

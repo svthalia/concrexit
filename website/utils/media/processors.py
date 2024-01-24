@@ -42,8 +42,14 @@ def process_upload(image: DaVinciImage, **kwargs):
 def thumbnail(image: DaVinciImage, **kwargs):
     """Thumbnail an image to at most the given size.
 
-    If `kwargs["cover"]`, the image is cropped to the aspect ratio of the given size.
+    If `mode="contain"` (the default), the image is resized to fit within the given size.
+    The original aspect ratio is preserved, so the image may be smaller than specified.
+
+    If `mode="cover"`, the image is cropped to the aspect ratio of the given size.
     The thumbnails are saved to WebP format with lossy compression.
+
+    If `mode="pad"`, the image is resized to fit within the given size.
+    Padding is added to the edges to make the image the exact size specified.
 
     Warning: for django-thumbnails to save the image with the right filename,
     the '<size>.FORMAT' key in settings.THUMBNAILS_SIZES must be set to 'webp'.
@@ -52,12 +58,16 @@ def thumbnail(image: DaVinciImage, **kwargs):
     pil_image = image.get_pil_image()
 
     size = kwargs["size"]
-    if not kwargs.get("cover", False):
-        ratio = min(a / b for a, b in zip(size, pil_image.size))
-        size = tuple(int(ratio * x) for x in pil_image.size)
+    mode = kwargs.get("mode", "contain")
 
-    if size[0] != pil_image.size[0] and size[1] != pil_image.size[1]:
-        pil_image = ImageOps.fit(pil_image, size, Image.Resampling.LANCZOS)
+    match mode:
+        case "contain":
+            pil_image = ImageOps.contain(pil_image, size, Image.Resampling.LANCZOS)
+        case "cover":
+            pil_image = ImageOps.fit(pil_image, size, Image.Resampling.LANCZOS)
+        case "pad":
+            pil_image = pil_image.convert("RGBA")
+            pil_image = ImageOps.pad(pil_image, size, Image.Resampling.LANCZOS)
 
     image.set_pil_image(pil_image)
     image.format = "WEBP"
