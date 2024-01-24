@@ -37,14 +37,26 @@ def create_or_update_contact(member: Member):
     moneybird = get_moneybird_api_service()
 
     if moneybird_contact.moneybird_id is None:
-        # Push the contact to Moneybird.
-        response = moneybird.create_contact(moneybird_contact.to_moneybird())
+        try:
+            response = moneybird.create_contact(moneybird_contact.to_moneybird())
+        except Administration.InvalidData:
+            logger.info("Retrying to create contact without email...")
+            contact = moneybird_contact.to_moneybird()
+            del contact["send_invoices_to_email"]
+            response = moneybird.create_contact(contact)
+
         moneybird_contact.moneybird_id = response["id"]
     else:
         # Update the contact data (right now we always do this, but we could use the version to check if it's needed)
-        response = moneybird.update_contact(
-            moneybird_contact.moneybird_id, moneybird_contact.to_moneybird()
-        )
+        try:
+            response = moneybird.update_contact(
+                moneybird_contact.moneybird_id, moneybird_contact.to_moneybird()
+            )
+        except Administration.InvalidData:
+            logger.info("Retrying to update contact without email...")
+            contact = moneybird_contact.to_moneybird()
+            del contact["send_invoices_to_email"]
+            response = moneybird.update_contact(moneybird_contact.moneybird_id, contact)
 
     moneybird_contact.moneybird_sepa_mandate_id = response["sepa_mandate_id"] or None
     moneybird_contact.needs_synchronization = False
