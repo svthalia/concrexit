@@ -345,15 +345,15 @@ class Command(BaseCommand):
         event.save()
 
     @maintain_integrity
-    def create_partner(self):
+    def create_partner(self, type="normal"):
         """Create a new random partner."""
         self.stdout.write("Creating a partner")
         partner = Partner()
 
-        partner.is_active = random.random() < 0.75
         partner.name = f"{_faker.company()} {_faker.company_suffix()}"
         partner.slug = _faker.slug()
         partner.link = _faker.uri()
+        partner.company_profile = _faker.paragraph(nb_sentences=10)
         igen = IconGenerator(5, 5)  # 5x5 blocks
         icon = igen.generate(
             partner.name,
@@ -364,9 +364,19 @@ class Command(BaseCommand):
         )  # 620x620 pixels, with 10 pixels padding on each side
         partner.logo = SimpleUploadedFile(partner.name + ".jpg", icon, "image/jpeg")
 
-        partner.address = _faker.street_address()
+        partner.address = _faker.street_name() + " " + str(_faker.random_int(1, 200))
         partner.zip_code = _faker.postcode()
         partner.city = _faker.city()
+
+        match type:
+            case "normal":
+                pass
+            case "main":
+                partner.is_main_partner = True
+            case "local":
+                partner.is_local_partner = True
+            case "inactive":
+                partner.is_active = False
 
         partner.clean()
         partner.save()
@@ -756,17 +766,21 @@ class Command(BaseCommand):
 
         # Partners need to be generated before vacancies
         if options["partner"]:
-            for __ in range(options["partner"]):
+            local_partners = options["partner"] // 3
+            for __ in range(local_partners):
+                self.create_partner("local")
+            other_partners = options["partner"] - local_partners
+            for __ in range(other_partners):
                 self.create_partner()
+            inactive_partners = options["partner"] // 5
+            for __ in range(inactive_partners):
+                self.create_partner("inactive")
 
             # Make one of the partners the main partner
             try:
                 Partner.objects.get(is_main_partner=True)
             except Partner.DoesNotExist:
-                main_partner = random.choice(Partner.objects.all())
-                main_partner.is_active = True
-                main_partner.is_main_partner = True
-                main_partner.save()
+                self.create_partner("main")
 
         if options["vacancy"]:
             categories = VacancyCategory.objects.all()
