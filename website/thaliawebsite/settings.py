@@ -582,7 +582,6 @@ INSTALLED_APPS = [
     "django_otp.plugins.otp_totp",
     "formtools",
     "two_factor",
-    "two_factor.plugins.webauthn",
     "oauth2_provider",
     "corsheaders",
     "django_bootstrap5",
@@ -1177,6 +1176,3 @@ MONEYBIRD_ZERO_TAX_RATE_ID: int | None = (
     if os.environ.get("MONEYBIRD_ZERO_TAX_RATE_ID")
     else None
 )
-
-TWO_FACTOR_WEBAUTHN_RP_NAME = "Thalia Website"
-TWO_FACTOR_WEBAUTHN_RP_ID = "thalia.nu"
