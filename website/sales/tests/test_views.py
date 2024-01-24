@@ -125,7 +125,7 @@ class SalesOrderPaymentView(TestCase):
         self.assertEqual(
             [
                 (
-                    "/user/login/?next="
+                    "/user/account/login/?next="
                     + reverse("sales:order-pay", kwargs={"pk": self.o1.pk}),
                     302,
                 )

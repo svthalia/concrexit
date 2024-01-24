@@ -168,7 +168,7 @@ urlpatterns = [
                     name="password_reset_complete",
                 ),
                 path(
-                    "login/",
+                    "account/login/",
                     RateLimitedLoginView.as_view(),
                     name="login",
                 ),

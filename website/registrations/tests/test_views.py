@@ -636,7 +636,7 @@ class ReferenceCreateViewTest(TestCase):
         self.assertEqual(
             [
                 (
-                    "/user/login/?next="
+                    "/user/account/login/?next="
                     + reverse("registrations:reference", args=(self.registration.pk,)),
                     302,
                 )

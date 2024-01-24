@@ -54,7 +54,7 @@ class BankAccountCreateViewTest(TestCase):
         response = self.client.get(reverse("payments:bankaccount-add"), follow=True)
         self.assertEqual(200, response.status_code)
         self.assertEqual(
-            [("/user/login/?next=" + reverse("payments:bankaccount-add"), 302)],
+            [("/user/account/login/?next=" + reverse("payments:bankaccount-add"), 302)],
             response.redirect_chain,
         )
 
@@ -227,7 +227,7 @@ class BankAccountRevokeViewTest(TestCase):
         self.assertEqual(
             [
                 (
-                    "/user/login/?next="
+                    "/user/account/login/?next="
                     + reverse("payments:bankaccount-revoke", args=(self.account1.pk,)),
                     302,
                 )
@@ -363,7 +363,7 @@ class BankAccountListViewTest(TestCase):
         self.assertEqual(
             [
                 (
-                    "/user/login/?next=" + reverse("payments:bankaccount-list"),
+                    "/user/account/login/?next=" + reverse("payments:bankaccount-list"),
                     302,
                 )
             ],
@@ -430,7 +430,7 @@ class PaymentListViewTest(TestCase):
         self.assertEqual(
             [
                 (
-                    "/user/login/?next=" + reverse("payments:payment-list"),
+                    "/user/account/login/?next=" + reverse("payments:payment-list"),
                     302,
                 )
             ],
@@ -517,7 +517,7 @@ class PaymentProcessViewTest(TestCase):
         self.assertEqual(
             [
                 (
-                    "/user/login/?next=" + reverse("payments:payment-process"),
+                    "/user/account/login/?next=" + reverse("payments:payment-process"),
                     302,
                 )
             ],

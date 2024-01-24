@@ -91,7 +91,7 @@ def rate_limited_view(request, *args, **kwargs):
 
 def admin_unauthorized_view(request):
     if not request.member:
-        url = "/user/login"
+        url = "/user/account/login"
         args = request.META.get("QUERY_STRING", "")
         if args:
             url = f"{url}?{args}"

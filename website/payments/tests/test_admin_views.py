@@ -241,7 +241,7 @@ class BatchProcessAdminViewTest(TestCase):
         url = f"/admin/payments/batch/{self.batch.id}/process/"
         response = self.client.post(url)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, f"/user/login/?next={url}")
+        self.assertEqual(response.url, f"/user/account/login/?next={url}")
 
         self._give_user_permissions()
 
