@@ -668,38 +668,52 @@ class BatchNewFilledAdminViewTest(TestCase):
                 Payment(
                     amount=1,
                     type=Payment.TPAY,
-                    created_at=timezone.datetime(2020, 1, 31, tzinfo=timezone.utc),
+                    created_at=timezone.datetime(
+                        2020, 1, 31, tzinfo=timezone.timezone.utc
+                    ),
                 ),
                 Payment(
                     amount=2,
                     type=Payment.TPAY,
-                    created_at=timezone.datetime(2020, 2, 1, tzinfo=timezone.utc),
+                    created_at=timezone.datetime(
+                        2020, 2, 1, tzinfo=timezone.timezone.utc
+                    ),
                 ),
                 Payment(
                     amount=3,
                     type=Payment.TPAY,
-                    created_at=timezone.datetime(2020, 2, 10, tzinfo=timezone.utc),
+                    created_at=timezone.datetime(
+                        2020, 2, 10, tzinfo=timezone.timezone.utc
+                    ),
                     batch=self.batch,
                 ),
                 Payment(
                     amount=4,
                     type=Payment.TPAY,
-                    created_at=timezone.datetime(2020, 2, 28, tzinfo=timezone.utc),
+                    created_at=timezone.datetime(
+                        2020, 2, 28, tzinfo=timezone.timezone.utc
+                    ),
                 ),
                 Payment(
                     amount=5,
                     type=Payment.TPAY,
-                    created_at=timezone.datetime(2020, 2, 29, tzinfo=timezone.utc),
+                    created_at=timezone.datetime(
+                        2020, 2, 29, tzinfo=timezone.timezone.utc
+                    ),
                 ),
                 Payment(
                     amount=6,
                     type=Payment.TPAY,
-                    created_at=timezone.datetime(2020, 3, 1, tzinfo=timezone.utc),
+                    created_at=timezone.datetime(
+                        2020, 3, 1, tzinfo=timezone.timezone.utc
+                    ),
                 ),
                 Payment(
                     amount=7,
                     type=Payment.WIRE,
-                    created_at=timezone.datetime(2020, 1, 1, tzinfo=timezone.utc),
+                    created_at=timezone.datetime(
+                        2020, 1, 1, tzinfo=timezone.timezone.utc
+                    ),
                 ),
             ]
         )

@@ -529,7 +529,7 @@ class ValidAccountFilterTest(TestCase):
                 account_filter = ValidAccountFilter(
                     model=BankAccount,
                     model_admin=self.admin,
-                    params={"active": param},
+                    params={"active": [param]},
                     request=None,
                 )
 
@@ -542,7 +542,7 @@ class ValidAccountFilterTest(TestCase):
             account_filter = ValidAccountFilter(
                 model=BankAccount,
                 model_admin=self.admin,
-                params={"active": "bla"},
+                params={"active": ["bla"]},
                 request=None,
             )
 

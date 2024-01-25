@@ -1,5 +1,5 @@
 from django.test import RequestFactory, TestCase, override_settings
-from django.utils.datetime_safe import datetime
+from django.utils.timezone import datetime
 
 from freezegun import freeze_time
 

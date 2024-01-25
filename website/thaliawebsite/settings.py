@@ -633,7 +633,6 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.locale.LocaleMiddleware",
     "thaliawebsite.middleware.RealIPMiddleware",
     "django_ratelimit.middleware.RatelimitMiddleware",
     "members.middleware.MemberMiddleware",
@@ -877,16 +876,15 @@ RATELIMIT_VIEW = "thaliawebsite.views.rate_limited_view"
 
 # Internationalization
 # https://docs.djangoproject.com/en/dev/topics/i18n/
-DATETIME_FORMAT = "j M, Y, H:i"
-SHORT_DATETIME_FORMAT = "d-m-Y, H:i"
-
+USE_I18N = True
+LANGUAGES = [("en", _("English"))]
 LANGUAGE_CODE = "en"
 TIME_ZONE = "Europe/Amsterdam"
-USE_I18N = True
-USE_L10N = False
-USE_TZ = True
-LANGUAGES = [("en", _("English"))]
-LOCALE_PATHS = ("locale",)
+
+# We provide formatting overrides in the `thaliawebsite.en.formats`, because Django
+# no longer supports running without localization. This works to enforce the same format
+# regardless of the user's language/locale, because `en` is the only enabled language.
+FORMAT_MODULE_PATH = ["thaliawebsite.locale"]
 
 # Static files
 STATICFILES_FINDERS = (
@@ -921,7 +919,7 @@ THUMBNAILS_METADATA = (
 THUMBNAILS = {
     "METADATA": THUMBNAILS_METADATA,
     "STORAGE": {
-        # django-thumbs does not use the Django 4.2 `storages` API yet,
+        # django-thumbnails does not use the Django 4.2 `storages` API yet,
         # but we can simply give it the path as we would with the new API.
         "BACKEND": _DEFAULT_FILE_STORAGE,
     },

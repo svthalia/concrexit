@@ -1,5 +1,7 @@
 """The services defined by the registrations package."""
 
+import secrets
+
 from django.contrib.admin.models import CHANGE, LogEntry
 from django.contrib.admin.options import get_content_type_for_model
 from django.contrib.auth import get_user_model
@@ -306,10 +308,13 @@ def calculate_membership_since() -> timezone.datetime:
     return since
 
 
+_PASSWORD_CHARS = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+
+
 def _create_member(registration: Registration) -> Member:
     """Create a member and profile from a Registration."""
     # Generate random password for user that we can send to the new user.
-    password = get_user_model().objects.make_random_password(length=15)
+    password = "".join(secrets.choice(_PASSWORD_CHARS) for _ in range(15))
 
     # Make sure the username and email are unique
     if not registration.check_user_is_unique():

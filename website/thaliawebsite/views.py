@@ -1,7 +1,9 @@
 """General views for the website."""
 
 from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth.views import LoginView, PasswordResetView
+from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LogoutView as BaseLogoutView
+from django.contrib.auth.views import PasswordResetView
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import redirect
@@ -77,6 +79,11 @@ class RateLimitedLoginView(LoginView):
     @method_decorator(ratelimit(key="post:username", rate="30/h"))
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
+
+
+class LogoutView(BaseLogoutView):
+    # Allow GET logout still (this was deprecated in Django 5.0).
+    http_method_names = ["get", "head", "post", "options"]
 
 
 def rate_limited_view(request, *args, **kwargs):
