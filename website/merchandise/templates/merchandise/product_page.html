@@ -4,37 +4,22 @@
 {% block title %}{% trans "Product" %} — {{ block.super }}{% endblock %}
 {% block opengraph_title %}{% trans "Merchandise" %} — {{ block.super }}{% endblock %}
 
-{% block page_title %}{{product.name}}{% endblock %}
-{% block css_head %}
-    {{ block.super }}
-    <link href="{% static 'merchandise/css/product.css' %}" rel="stylesheet" type="text/css">
+{% block page_title %}
+    {{product.name}}
+    <div class="first-right">
+        {% if product.price == 0 %}FREE{% else %}€ {{ product.price }}{%endif%}
+    </div>
 {% endblock %}
+
 {% block page_content %}
-
-
-
-
-    <div class="product-page-image">
-        <img class="product-page-centre-image" src="{% thumbnail product.image "medium" %}" id="image" alt="{{ product.name }}" /> </a>
+    <div class="row">
+        <div class="pb-4 pb-lg-0 col-12 col-lg-7">
+            <img src="{{ product.image.url }}" alt="{{ product.name }}"/>
+        </div>
+        <div class="col-12 col-lg-5">
+            <h4>{{ product.name }}</h4>
+            <hr class="separator">
+            <p>{{ product.description }}</p>
+        </div>
     </div>
-
-    <div class="product-page-price">
-        <p>
-            <b>
-                {%if product.price == 0.00%}
-                    FREE
-                {%else%}
-                    € {{ product.price }}
-                {%endif%}
-            </b>
-        <p>
-    </div>
-
-    <div class="produt-page-item-description">
-        <p>
-            {{ product.description }}
-        </p>
-    </div>
-
-
 {% endblock %}
