@@ -4,6 +4,7 @@ import math
 import random
 import string
 from datetime import date, datetime, timedelta
+from decimal import Decimal
 from secrets import token_hex
 
 from django.contrib.auth import get_user_model
@@ -42,6 +43,7 @@ from pizzas.models import Product
 from utils.snippets import datetime_to_lectureyear
 
 _faker = Faker(["en_US"])
+_local_faker = Faker(["nl_NL"])
 _pizza_name_faker = Faker("it_IT")
 _current_tz = timezone.get_current_timezone()
 
@@ -75,7 +77,7 @@ class _ProfileFactory(factory.Factory):
         lambda x: random.randint(1990, date.today().year)
     )
 
-    address_street = factory.LazyAttribute(lambda x: _faker.street_address())
+    address_street = factory.LazyAttribute(lambda x: _local_faker.street_address())
     address_postal_code = factory.LazyAttribute(lambda x: _faker.postcode())
     address_city = factory.LazyAttribute(lambda x: _faker.city())
     address_country = random.choice(["NL", "DE", "BE"])
@@ -185,7 +187,7 @@ class Command(BaseCommand):
         board.active = True
         board.contact_email = _faker.safe_email()
 
-        board.clean()
+        board.full_clean()
         board.save()
 
         # Add members
@@ -198,7 +200,7 @@ class Command(BaseCommand):
         chair.until = None
         chair.chair = True
 
-        chair.clean()
+        chair.full_clean()
         chair.save()
 
     @maintain_integrity
@@ -241,7 +243,7 @@ class Command(BaseCommand):
         member_group.active = random.random() < 0.9
         member_group.contact_email = _faker.safe_email()
 
-        member_group.clean()
+        member_group.full_clean()
         member_group.save()
 
         # Add members
@@ -254,7 +256,7 @@ class Command(BaseCommand):
         chair.until = None
         chair.chair = True
 
-        chair.clean()
+        chair.full_clean()
         chair.save()
 
     def create_member_group_membership(self, member, group):
@@ -279,7 +281,7 @@ class Command(BaseCommand):
                 membership.since, group.until
             ).date()
 
-        membership.clean()
+        membership.full_clean()
         membership.save()
 
     @maintain_integrity
@@ -295,6 +297,7 @@ class Command(BaseCommand):
         event = Event()
 
         event.description = _faker.paragraph()
+        event.caption = _faker.sentence()
         event.title = _generate_title()
         event.start = _faker.date_time_between("-30d", "+120d", _current_tz)
         duration = math.ceil(random.expovariate(0.2))
@@ -324,16 +327,18 @@ class Command(BaseCommand):
             )
             event.optional_registrations = False
 
-        event.location_en = _faker.street_address()
-        event.map_location = event.location_en
+        event.location = _local_faker.street_address()
+        event.map_location = event.location
         event.send_cancel_email = False
 
         if random.random() < 0.5:
-            event.price = random.randint(100, 2500) / 100
+            event.price = Decimal(random.randint(100, 2500)) / Decimal(100)
             event.fine = max(
                 5.0,
-                random.randint(round(100 * event.price), round(500 * event.price))
-                / 100,
+                Decimal(
+                    random.randint(round(100 * event.price), round(500 * event.price))
+                )
+                / Decimal(100),
             )
 
         if random.random() < 0.5:
@@ -341,19 +346,19 @@ class Command(BaseCommand):
 
         event.published = random.random() < 0.9
 
-        event.clean()
+        event.full_clean()
         event.save()
 
     @maintain_integrity
-    def create_partner(self):
+    def create_partner(self, type="normal"):
         """Create a new random partner."""
         self.stdout.write("Creating a partner")
         partner = Partner()
 
-        partner.is_active = random.random() < 0.75
         partner.name = f"{_faker.company()} {_faker.company_suffix()}"
         partner.slug = _faker.slug()
         partner.link = _faker.uri()
+        partner.company_profile = _faker.paragraph(nb_sentences=10)
         igen = IconGenerator(5, 5)  # 5x5 blocks
         icon = igen.generate(
             partner.name,
@@ -364,11 +369,22 @@ class Command(BaseCommand):
         )  # 620x620 pixels, with 10 pixels padding on each side
         partner.logo = SimpleUploadedFile(partner.name + ".jpg", icon, "image/jpeg")
 
-        partner.address = _faker.street_address()
-        partner.zip_code = _faker.postcode()
-        partner.city = _faker.city()
+        partner.address = _local_faker.street_name() + " " + str(random.randint(1, 300))
+        partner.zip_code = _local_faker.postcode()
+        partner.city = _local_faker.city()
+        partner.country = random.choice(["NL", "DE", "BE", "GB"])
 
-        partner.clean()
+        match type:
+            case "normal":
+                pass
+            case "main":
+                partner.is_main_partner = True
+            case "local":
+                partner.is_local_partner = True
+            case "inactive":
+                partner.is_active = False
+
+        partner.full_clean()
         partner.save()
 
     def create_pizza(self):
@@ -378,10 +394,11 @@ class Command(BaseCommand):
         product = Product()
 
         product.name = f"Pizza {_pizza_name_faker.last_name()}"
-        product.price = random.randint(250, 1000) / 100
+        product.description = _faker.sentence()
+        product.price = Decimal(random.randint(250, 1000)) / Decimal(100)
         product.available = random.random() < 0.9
 
-        product.clean()
+        product.full_clean()
         product.save()
 
     @maintain_integrity
@@ -434,11 +451,11 @@ class Command(BaseCommand):
         )
         membership.type = random.choice([t[0] for t in Membership.MEMBERSHIP_TYPES])
 
-        user.clean()
+        user.full_clean()
         user.save()
-        profile.clean()
+        profile.full_clean()
         profile.save()
-        membership.clean()
+        membership.full_clean()
         membership.save()
 
     def create_vacancy(self, partners, categories):
@@ -470,7 +487,7 @@ class Command(BaseCommand):
                 vacancy.company_name + ".jpg", icon, "image/jpeg"
             )
 
-        vacancy.clean()
+        vacancy.full_clean()
         vacancy.save()
 
         vacancy.categories.set(random.sample(list(categories), random.randint(0, 3)))
@@ -480,10 +497,10 @@ class Command(BaseCommand):
         self.stdout.write("Creating a new vacancy category")
         category = VacancyCategory()
 
-        category.name_en = _faker.text(max_nb_chars=30)
+        category.name = _faker.text(max_nb_chars=30)
         category.slug = _faker.slug()
 
-        category.clean()
+        category.full_clean()
         category.save()
 
     def create_document(self):
@@ -497,7 +514,7 @@ class Command(BaseCommand):
         doc.file = SimpleUploadedFile(
             f"{doc.name}.txt", _faker.text(max_nb_chars=120).encode()
         )
-        doc.clean()
+        doc.full_clean()
         doc.save()
 
     def create_newsletter(self):
@@ -508,7 +525,7 @@ class Command(BaseCommand):
         newsletter.description = _faker.paragraph()
         newsletter.date = _faker.date_time_between("-3m", "+3m", _current_tz)
 
-        newsletter.clean()
+        newsletter.clean()  # full_clean does not work because of rendered_file
         newsletter.save()
 
         for _ in range(random.randint(1, 5)):
@@ -516,6 +533,7 @@ class Command(BaseCommand):
             item.title = _generate_title()
             item.description = _faker.paragraph()
             item.newsletter = newsletter
+            item.full_clean()
             item.save()
 
         for _ in range(random.randint(1, 5)):
@@ -532,13 +550,15 @@ class Command(BaseCommand):
 
             if random.random() < 0.5:
                 item.show_costs_warning = True
-                item.price = random.randint(100, 2500) / 100
+                item.price = Decimal(random.randint(100, 2500)) / Decimal(100)
                 item.penalty_costs = max(
                     5.0,
-                    random.randint(round(100 * item.price), round(500 * item.price))
-                    / 100,
+                    Decimal(
+                        random.randint(round(100 * item.price), round(500 * item.price))
+                    )
+                    / Decimal(100),
                 )
-            item.clean()
+            item.full_clean()
             item.save()
 
     def create_course(self):
@@ -560,7 +580,7 @@ class Command(BaseCommand):
         for category in Category.objects.order_by("?")[: random.randint(1, 3)]:
             course.categories.add(category)
 
-        course.clean()
+        course.full_clean()
         course.save()
 
     def create_event_registration(self, event_to_register_for=None):
@@ -590,7 +610,7 @@ class Command(BaseCommand):
 
         registration.date = registration.event.registration_start
 
-        registration.clean()
+        registration.full_clean()
         registration.save()
 
         return registration
@@ -639,7 +659,7 @@ class Command(BaseCommand):
             random.choice([Payment.CASH, Payment.CARD, Payment.WIRE]),
         )
 
-        payment.clean()
+        payment.full_clean()
 
     @maintain_integrity
     def create_photo_album(self):
@@ -652,12 +672,15 @@ class Command(BaseCommand):
 
         album.slug = slugify("-".join([str(album.date), album.title]))
 
+        # normally this is set in save(), but required for validation
+        album.dirname = album.slug
+
         if random.random() < 0.25:
             album.hidden = True
         if random.random() < 0.5:
             album.shareable = True
 
-        album.clean()
+        album.full_clean()
         album.save()
 
         for _ in range(random.randint(20, 30)):
@@ -681,7 +704,7 @@ class Command(BaseCommand):
         )  # 620x620 pixels, with 10 pixels padding on each side
         photo.file = SimpleUploadedFile(f"{name}.jpg", icon, "image/jpeg")
 
-        photo.clean()
+        photo.full_clean()
         photo.save()
 
     def handle(self, *args, **options):
@@ -756,17 +779,21 @@ class Command(BaseCommand):
 
         # Partners need to be generated before vacancies
         if options["partner"]:
-            for __ in range(options["partner"]):
+            local_partners = options["partner"] // 3
+            for __ in range(local_partners):
+                self.create_partner("local")
+            other_partners = options["partner"] - local_partners
+            for __ in range(other_partners):
                 self.create_partner()
+            inactive_partners = options["partner"] // 5
+            for __ in range(inactive_partners):
+                self.create_partner("inactive")
 
             # Make one of the partners the main partner
             try:
                 Partner.objects.get(is_main_partner=True)
             except Partner.DoesNotExist:
-                main_partner = random.choice(Partner.objects.all())
-                main_partner.is_active = True
-                main_partner.is_main_partner = True
-                main_partner.save()
+                self.create_partner("main")
 
         if options["vacancy"]:
             categories = VacancyCategory.objects.all()
