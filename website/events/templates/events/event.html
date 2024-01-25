@@ -181,48 +181,27 @@
                                         <input type="submit" class="btn btn-primary" id="register-button"
                                                 value="{% trans "Register" %}"
                                                 disabled />
-                                        <i id="countdown">Registration will open in ...</i>
+                                        <i id="countdown">Opens in ...</i>
                                     </form>
                                     <script>
-                                        function FormatSecondsAsDurationString(seconds) {
-                                            var s = "";
-
-                                            var days = Math.floor( ( seconds / 3600 ) / 24 );
-                                            if ( days >= 1 )
-                                            {
-                                                s += days.toString() + " day" + ( ( days == 1 ) ? "" : "s" ) + " + ";
-                                                seconds -= days * 24 * 3600;
-                                            }
-
+                                        function formatDuration(seconds) {
                                             var hours = Math.floor( seconds / 3600 );
-                                            s += GetPaddedIntString( hours.toString(), 2 ) + ":";
                                             seconds -= hours * 3600;
-
                                             var minutes = Math.floor( seconds / 60 );
-                                            s += GetPaddedIntString( minutes.toString(), 2 ) + ":";
                                             seconds -= minutes * 60;
 
-                                            s += GetPaddedIntString( Math.floor( seconds ).toString(), 2 );
-
-                                            return s;
+                                            return pad2(hours) + ":" + pad2(minutes) + ":" + pad2(Math.floor(seconds));
                                         }
 
-                                        function GetPaddedIntString( n, numDigits )
-                                        {
-                                            var nPadded = n;
-                                            for ( ; nPadded.length < numDigits ; )
-                                            {
-                                                nPadded = "0" + nPadded;
-                                            }
-
-                                            return nPadded;
+                                        function pad2(x) {
+                                            return x < 10 ? "0" + x.toString() : x.toString();
                                         }
 
                                         let open_datetime = new Date("{{ event.registration_start.isoformat }}");
                                         function updateCountdown() {
                                             const diff = (open_datetime - new Date()) / 1000;
                                             let elem = document.getElementById("countdown");
-                                            elem.innerText = "Will open in " + FormatSecondsAsDurationString(diff);
+                                            elem.innerText = "Opens in " + formatDuration(diff);
                                         }
                                         updateCountdown()
                                         var updater = setInterval(updateCountdown, 1000);
