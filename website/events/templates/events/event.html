@@ -167,6 +167,50 @@
                                                    value="{% trans "Register" %}"/>
                                         {% endif %}
                                     </form>
+                                {% elif permissions.create_registration_when_open %}
+                                    <p>
+                                        {% url 'singlepages:event-registration-terms' as terms_url %}
+                                        {% blocktrans trimmed %}
+                                            By registering,
+                                            you confirm that you have read the
+                                            <a target="_blank" href="{{ terms_url }}">terms and conditions</a>,
+                                            that you understand them and that you agree to be bound by them.
+                                        {% endblocktrans %}
+                                    </p>
+                                    <form id="registration-info" action="{% url 'events:register' event.id %}" method="post">{% csrf_token %}
+                                        <input type="submit" class="btn btn-primary" id="register-button"
+                                                value="{% trans "Register" %}"
+                                                disabled />
+                                        <i id="countdown">Opens in ...</i>
+                                    </form>
+                                    <script>
+                                        function formatDuration(seconds) {
+                                            var hours = Math.floor( seconds / 3600 );
+                                            seconds -= hours * 3600;
+                                            var minutes = Math.floor( seconds / 60 );
+                                            seconds -= minutes * 60;
+
+                                            return pad2(hours) + ":" + pad2(minutes) + ":" + pad2(Math.floor(seconds));
+                                        }
+
+                                        function pad2(x) {
+                                            return x < 10 ? "0" + x.toString() : x.toString();
+                                        }
+
+                                        let open_datetime = new Date("{{ event.registration_start.isoformat }}");
+                                        function updateCountdown() {
+                                            const diff = (open_datetime - new Date()) / 1000;
+                                            let elem = document.getElementById("countdown");
+                                            elem.innerText = "Opens in " + formatDuration(diff);
+                                        }
+                                        updateCountdown()
+                                        var updater = setInterval(updateCountdown, 1000);
+                                        var finalizer = setTimeout(function() {
+                                            document.getElementById("countdown").style.display = "none";
+                                            document.getElementById("register-button").removeAttribute("disabled");
+                                            clearInterval(updater);
+                                        }, open_datetime - new Date());
+                                    </script>
                                 {% elif permissions.cancel_registration %}
                                     {# Special message to accept costs when cancelling after the deadline, unless member is on the waiting list #}
                                     <form action="{% url 'events:cancel' event.id %}" method="post">{% csrf_token %}

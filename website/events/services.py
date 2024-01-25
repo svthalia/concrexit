@@ -4,6 +4,7 @@ from django.db.models import Q
 from django.utils import timezone
 from django.utils.datetime_safe import date
 from django.utils.formats import localize
+from django.utils.timezone import timedelta
 from django.utils.translation import gettext_lazy as _
 
 from events import emails, signals
@@ -185,6 +186,7 @@ def event_permissions(member, event, name=None, registration_prefetch=False):
     """
     perms = {
         "create_registration": False,
+        "create_registration_when_open": False,
         "cancel_registration": False,
         "update_registration": False,
         "manage_event": is_organiser(member, event),
@@ -206,11 +208,31 @@ def event_permissions(member, event, name=None, registration_prefetch=False):
         except EventRegistration.DoesNotExist:
             pass
 
+    now = timezone.now()
+
     perms["create_registration"] = (
         (registration is None or registration.date_cancelled is not None)
         and (
             event.registration_allowed
             or (event.optional_registration_allowed and not event.registration_required)
+        )
+        and (
+            name
+            or member.can_attend_events
+            or (
+                event.registration_without_membership
+                and member.can_attend_events_without_membership
+            )
+        )
+    )
+    perms["create_registration_when_open"] = (
+        (registration is None or registration.date_cancelled is not None)
+        and (
+            event.registration_start is not None
+            and (
+                now < event.registration_start
+                and now > event.registration_start - timedelta(hours=2)
+            )
         )
         and (
             name

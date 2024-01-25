@@ -87,6 +87,7 @@ class ServicesTest(TestCase):
         self.assertEqual(
             {
                 "create_registration": False,
+                "create_registration_when_open": False,
                 "cancel_registration": False,
                 "update_registration": False,
                 "manage_event": False,
@@ -99,6 +100,7 @@ class ServicesTest(TestCase):
         self.assertEqual(
             {
                 "create_registration": False,
+                "create_registration_when_open": False,
                 "cancel_registration": False,
                 "update_registration": False,
                 "manage_event": False,
@@ -111,6 +113,7 @@ class ServicesTest(TestCase):
         self.assertEqual(
             {
                 "create_registration": True,
+                "create_registration_when_open": False,
                 "cancel_registration": False,
                 "update_registration": False,
                 "manage_event": False,
@@ -125,6 +128,7 @@ class ServicesTest(TestCase):
         self.assertEqual(
             {
                 "create_registration": False,
+                "create_registration_when_open": False,
                 "cancel_registration": True,
                 "update_registration": False,
                 "manage_event": False,
@@ -142,6 +146,7 @@ class ServicesTest(TestCase):
         self.assertEqual(
             {
                 "create_registration": False,
+                "create_registration_when_open": False,
                 "cancel_registration": True,
                 "update_registration": True,
                 "manage_event": False,
@@ -155,6 +160,7 @@ class ServicesTest(TestCase):
         self.assertEqual(
             {
                 "create_registration": True,
+                "create_registration_when_open": False,
                 "cancel_registration": False,
                 "update_registration": False,
                 "manage_event": False,
