@@ -37,6 +37,9 @@ def create_or_update_contact(member: Member):
     moneybird = get_moneybird_api_service()
 
     if moneybird_contact.moneybird_id is None:
+        # Push contact to moneybird. This may fail with 422 when moneybird rejects an
+        # email address. In that case, we try once more leaving out the email address,
+        # as moneybird does not require that we set one at all.
         try:
             response = moneybird.create_contact(moneybird_contact.to_moneybird())
         except Administration.InvalidData:
@@ -47,7 +50,7 @@ def create_or_update_contact(member: Member):
 
         moneybird_contact.moneybird_id = response["id"]
     else:
-        # Update the contact data (right now we always do this, but we could use the version to check if it's needed)
+        # Update the contact data (right now we always do this, but we could use the version to check if it's needed).
         try:
             response = moneybird.update_contact(
                 moneybird_contact.moneybird_id, moneybird_contact.to_moneybird()
