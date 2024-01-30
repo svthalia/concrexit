@@ -897,10 +897,6 @@ STATICFILES_FINDERS = (
 # See https://github.com/jrief/django-sass-processor
 SASS_PROCESSOR_INCLUDE_FILE_PATTERN = r"^.+\.scss$"
 
-# django-sass-processor does not use the Django 4.2 `storages` API yet,
-# but we can simply give it the path as we would with the new API.
-SASS_PROCESSOR_STORAGE = _STATICFILES_STORAGE
-
 # See utils/model/signals.py for explanation
 SUSPEND_SIGNALS = False
 
