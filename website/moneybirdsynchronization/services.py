@@ -45,7 +45,7 @@ def create_or_update_contact(member: Member):
         except Administration.InvalidData:
             logger.info("Retrying to create contact without email...")
             contact = moneybird_contact.to_moneybird()
-            del contact["send_invoices_to_email"]
+            del contact["contact"]["send_invoices_to_email"]
             response = moneybird.create_contact(contact)
 
         moneybird_contact.moneybird_id = response["id"]
@@ -58,7 +58,7 @@ def create_or_update_contact(member: Member):
         except Administration.InvalidData:
             logger.info("Retrying to update contact without email...")
             contact = moneybird_contact.to_moneybird()
-            del contact["send_invoices_to_email"]
+            del contact["contact"]["send_invoices_to_email"]
             response = moneybird.update_contact(moneybird_contact.moneybird_id, contact)
 
     moneybird_contact.moneybird_sepa_mandate_id = response["sepa_mandate_id"] or None

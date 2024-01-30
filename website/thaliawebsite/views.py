@@ -33,7 +33,6 @@ class PagedView(ListView):
 
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
-        print(kwargs)
         page = context["page_obj"].number
         paginator = context["paginator"]
 
