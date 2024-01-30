@@ -187,7 +187,7 @@
 
                         You have a minimized profile. You can't renew your
                         membership until you have filled in all the required
-                        fields.<a href="{% url "members:edit-profile"  %}"> Click here</a> to complete your profile.
+                        fields.<a href="{% url "members:edit-profile"  %}?next={% url "registrations:renew" %}"> Click here</a> to complete your profile.
                 </p>
             {% endif %}
         </div>

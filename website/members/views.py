@@ -3,6 +3,7 @@ import json
 from datetime import date, datetime
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import RedirectURLMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q, QuerySet
@@ -169,13 +170,13 @@ class ProfileDetailView(DetailView):
 
 
 @method_decorator(login_required, "dispatch")
-class UserProfileUpdateView(SuccessMessageMixin, UpdateView):
+class UserProfileUpdateView(RedirectURLMixin, SuccessMessageMixin, UpdateView):
     """View that allows a user to update their profile."""
 
     template_name = "members/user/edit_profile.html"
     model = Profile
     form_class = ProfileForm
-    success_url = reverse_lazy("members:edit-profile")
+    next_page = reverse_lazy("members:edit-profile")
     success_message = _("Your profile has been updated successfully.")
 
     def get_object(self, queryset=None) -> Profile:
