@@ -5,6 +5,7 @@ from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.http import Http404, HttpResponse
 from django.shortcuts import redirect
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
 from django.views.generic import DetailView, TemplateView
@@ -67,7 +68,7 @@ class DocumentDownloadView(DetailView):
         document = response.context_data["document"]
 
         if document.members_only and not request.user.is_authenticated:
-            return redirect(f"{settings.LOGIN_URL}?next={request.path}")
+            return redirect(reverse(settings.LOGIN_URL) + f"?next={request.path}")
         if document.members_only and not request.member.has_active_membership():
             raise PermissionDenied
 
