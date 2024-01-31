@@ -53,10 +53,10 @@ class GetDocumentTest(TestCase):
 
         response = self.client.post("/association/documents/document/1", follow=True)
         template_names = [template.name for template in response.templates]
-        self.assertIn("registration/login.html", template_names)
+        self.assertIn("two_factor/core/login.html", template_names)
 
         self.client.force_login(self.member)
 
         response = self.client.post("/association/documents/document/1", follow=True)
         template_names = [template.name for template in response.templates]
-        self.assertNotIn("registration/login.html", template_names)
+        self.assertNotIn("two_factor/core/login.html", template_names)
