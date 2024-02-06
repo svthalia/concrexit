@@ -154,5 +154,5 @@ def send_queue_notification(sender, event, user, **kwargs):
         url=settings.BASE_URL + event.get_absolute_url(),
         category=Category.objects.get(key=Category.EVENT),
     )
-    message.users.set(user)
+    message.users.set([user])
     message.send()
