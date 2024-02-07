@@ -149,7 +149,12 @@ class Profile(models.Model):
 
     # ---- Personal information ------
 
-    birthday = models.DateField(verbose_name=_("Birthday"), null=True, blank=True)
+    birthday = models.DateField(
+        verbose_name=_("Birthday"),
+        help_text=("Please use the following format: dd/mm/yyyy"),
+        null=True,
+        blank=True,
+    )
 
     show_birthday = models.BooleanField(
         verbose_name=_("Display birthday"),

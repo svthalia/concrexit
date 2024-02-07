@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.forms import ValidationError
 from django.test import TestCase, override_settings
 from django.utils import timezone
 
@@ -121,6 +122,7 @@ class RenewalFormTest(TestCase):
         self.member.membership_set.all().delete()
         self.data = {
             "member": self.member.pk,
+            "minimized": self.member.profile.is_minimized,
             "length": Entry.MEMBERSHIP_STUDY,
             "contribution": 8,
             "membership_type": Membership.MEMBER,
@@ -135,6 +137,9 @@ class RenewalFormTest(TestCase):
             self.data["privacy_policy"] = 0
             form = forms.RenewalForm(self.data)
             self.assertFalse(form.is_valid(), msg=dict(form.errors))
+        with self.subTest("User is minimized"):
+            self.data["minimized"] = True
+            self.assertRaises(ValidationError)
 
     def test_has_privacy_policy_field(self):
         form = forms.RenewalForm(self.data)

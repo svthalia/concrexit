@@ -219,7 +219,10 @@ def execute_data_minimisation(dry_run=False, members=None) -> list[Member]:
         .exclude(
             Exists(
                 Renewal.objects.filter(member__id=OuterRef("pk")).exclude(
-                    status__in=(Renewal.STATUS_REJECTED, Renewal.STATUS_ACCEPTED)
+                    status__in=(
+                        Renewal.STATUS_ACCEPTED,
+                        Renewal.STATUS_REJECTED,
+                    )
                 )
             )
         )

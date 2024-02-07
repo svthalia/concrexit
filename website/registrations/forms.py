@@ -212,6 +212,10 @@ class RenewalForm(forms.ModelForm):
 
     def clean(self):
         super().clean()
+        if self.cleaned_data["member"].profile.is_minimized:
+            raise ValidationError(
+                "It's not possible to renew a membership useing an incomplete profile."
+            )
 
         if self.cleaned_data["length"] == Renewal.MEMBERSHIP_STUDY:
             now = timezone.now()
