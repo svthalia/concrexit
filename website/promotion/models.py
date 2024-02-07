@@ -1,5 +1,4 @@
 """Models for the promotion requests database tables."""
-import datetime
 
 from django.db import models
 from django.dispatch import Signal
@@ -9,7 +8,6 @@ from django.utils.translation import gettext_lazy as _
 from tinymce.models import HTMLField
 
 from events.models import Event
-from thaliawebsite.settings import PROMO_PUBLISH_DATE_TIMEDELTA
 
 updated_status = Signal()
 
@@ -21,6 +19,10 @@ class PromotionChannel(models.Model):
         blank=True,
         null=True,
     )
+    publish_deadline = models.DurationField(
+        verbose_name="Minimum time between request and publish",
+        default=timezone.timedelta(weeks=2),
+    )
 
     def __str__(self):
         return str(self.name)
@@ -29,14 +31,14 @@ class PromotionChannel(models.Model):
 class UpcomingRequestManager(models.Manager):
     def get_queryset(self):
         end_date = timezone.localdate()
-        start_date = end_date - PROMO_PUBLISH_DATE_TIMEDELTA
+        start_date = end_date - timezone.timedelta(weeks=1)
         return super().get_queryset().filter(created_at__range=(start_date, end_date))
 
 
 class NewRequestManager(models.Manager):
     def get_queryset(self):
         start_date = timezone.localtime()
-        end_date = start_date + PROMO_PUBLISH_DATE_TIMEDELTA
+        end_date = start_date + timezone.timedelta(weeks=1)
         return super().get_queryset().filter(publish_date__range=(start_date, end_date))
 
 
@@ -53,7 +55,6 @@ class PromotionRequest(models.Model):
     )
     publish_date = models.DateField(
         verbose_name=_("Publish date"),
-        default=datetime.date.today,
         null=False,
         blank=False,
     )
