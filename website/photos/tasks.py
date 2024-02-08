@@ -3,7 +3,6 @@ from django.dispatch import Signal
 
 from celery import shared_task
 from django_drf_filepond.models import TemporaryUpload
-from django_filepond_widget.fields import FilePondFile
 
 from photos.models import Album
 
@@ -19,7 +18,8 @@ def process_album_upload(archive_upload_id: str, album_id: int):
     except Album.DoesNotExist:
         return
 
-    archive = TemporaryUpload.objects.get(upload_id=archive_upload_id).file
+    upload = TemporaryUpload.objects.get(upload_id=archive_upload_id)
+    archive = upload.file
     try:
         with transaction.atomic():
             # We make the upload atomic separately, so we can keep using the db if it fails.
@@ -32,5 +32,5 @@ def process_album_upload(archive_upload_id: str, album_id: int):
             # by facedetection, and possibly in the future to notify the uploader.
             album_uploaded.send(sender=None, album=album)
     finally:
-        if isinstance(archive, FilePondFile):
-            archive.remove()
+        archive.delete()
+        upload.delete()
