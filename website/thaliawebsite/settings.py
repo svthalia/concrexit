@@ -165,7 +165,6 @@ TREASURER_NOTIFICATION_ADDRESS = (
     f"{os.environ.get('ADDRESS_TREASURER', 'treasurer')}@{SITE_DOMAIN}"
 )
 
-PROMO_PUBLISH_DATE_TIMEDELTA = timezone.timedelta(weeks=1)
 
 # How many days to keep reference faces after a user marks them for deletion
 FACEDETECTION_REFERENCE_FACE_STORAGE_PERIOD_AFTER_DELETE_DAYS = 180
@@ -745,15 +744,17 @@ REDIS_CACHE_URL = (
 )
 
 CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": REDIS_CACHE_URL,
-    }
-    if REDIS_CACHE_URL is not None
-    else {
-        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
-        "LOCATION": "django_default_db_cache",
-    },
+    "default": (
+        {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": REDIS_CACHE_URL,
+        }
+        if REDIS_CACHE_URL is not None
+        else {
+            "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+            "LOCATION": "django_default_db_cache",
+        }
+    ),
 }
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
