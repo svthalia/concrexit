@@ -52,14 +52,16 @@ def embed_linked_html_images(html_input):
     images = bs.findAll("img")
 
     for image in images:
+        source = image["src"]
+        if not "source".startswith(("http://", "https://")):
+            continue
         try:
-            source = image["src"]
             response = requests.get(source, timeout=30.0)
             image = Image.open(BytesIO(response.content))
             buffer = BytesIO()
             image.save(buffer, format="png")
             base64_image = base64.b64encode(buffer.getvalue()).decode("utf-8")
-            encoded_image = "data:image/png;base64, " + base64_image
+            encoded_image = "data:image/png;base64," + base64_image
             output = output.replace(source, encoded_image)
         except OSError:
             logger.warning(f"Image could not be found: {image}")
