@@ -1,7 +1,6 @@
 """General views for the website."""
 
 from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth.views import LoginView
 from django.contrib.auth.views import LogoutView as BaseLogoutView
 from django.contrib.auth.views import PasswordResetView
 from django.core.exceptions import PermissionDenied
@@ -12,6 +11,7 @@ from django.views.generic import ListView, TemplateView
 from django.views.generic.base import View
 
 from django_ratelimit.decorators import ratelimit
+from two_factor.views import LoginView
 
 
 class IndexView(TemplateView):
@@ -91,7 +91,7 @@ def rate_limited_view(request, *args, **kwargs):
 
 def admin_unauthorized_view(request):
     if not request.member:
-        url = "/user/login"
+        url = "/user/account/login"
         args = request.META.get("QUERY_STRING", "")
         if args:
             url = f"{url}?{args}"

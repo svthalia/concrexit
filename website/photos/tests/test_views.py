@@ -296,7 +296,7 @@ class DownloadTest(TestCase):
             )
         )
         self.assertEqual(response.status_code, 302)
-        self.assertIn("/user/login", response.headers["Location"])
+        self.assertIn("/user/account/login", response.headers["Location"])
 
 
 class _DownloadBaseTestCase(TestCase):

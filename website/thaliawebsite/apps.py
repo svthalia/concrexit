@@ -37,5 +37,11 @@ class ThaliaWebsiteConfig(AppConfig):
                     "url": reverse("password_change"),
                     "key": 4,
                 },
+                {
+                    "section": "profile",
+                    "title": "Manage 2FA",
+                    "url": reverse("two_factor:profile"),
+                    "key": 5,
+                },
             ],
         }
