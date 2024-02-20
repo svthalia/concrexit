@@ -1,6 +1,5 @@
 import base64
 import logging
-import math
 from io import BytesIO
 
 from django.core.files.base import ContentFile
@@ -92,10 +91,12 @@ def send_newsletter(newsletter):
 
 
 def split_local_partners():
-    all_local_partners = Partner.objects.filter(is_local_partner=True).order_by("?")
+    all_local_partners = Partner.objects.filter(
+        is_local_partner=True, is_active=True
+    ).order_by("?")
     local_partner_count = len(all_local_partners)
     local_partners = []
-    for i in range(math.floor(local_partner_count / 2)):
+    for i in range(local_partner_count // 2):
         local_partners.append(
             [all_local_partners[i * 2], all_local_partners[i * 2 + 1]]
         )

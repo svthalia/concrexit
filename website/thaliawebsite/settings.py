@@ -1043,6 +1043,16 @@ THUMBNAILS = {
                 },
             ],
         },
+        "fit_small_pad": {
+            "FORMAT": "webp",
+            "PROCESSORS": [
+                {
+                    "PATH": "utils.media.processors.thumbnail",
+                    "size": (360, 150),
+                    "mode": "pad",
+                },
+            ],
+        },
         "fit_large": {
             "FORMAT": "webp",
             "PROCESSORS": [
