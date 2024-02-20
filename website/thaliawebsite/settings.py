@@ -1038,7 +1038,7 @@ THUMBNAILS = {
             "PROCESSORS": [
                 {
                     "PATH": "utils.media.processors.thumbnail",
-                    "size": (750, 300),
+                    "size": (600, 250),
                     "mode": "pad",
                 },
             ],
@@ -1048,7 +1048,7 @@ THUMBNAILS = {
             "PROCESSORS": [
                 {
                     "PATH": "utils.media.processors.thumbnail",
-                    "size": (500, 200),
+                    "size": (360, 150),
                     "mode": "pad",
                 },
             ],
