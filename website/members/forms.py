@@ -15,6 +15,8 @@ from .models import Profile
 class ProfileForm(forms.ModelForm):
     """Form with all the user editable fields of a Profile model."""
 
+    birthday = forms.DateField()
+
     class Meta:
         fields = [
             "birthday",
@@ -69,6 +71,7 @@ class ProfileForm(forms.ModelForm):
                 "<a href='mailto:info@thalia.nu'>info@thalia.nu</a> if you want to receive alumni emails."
             )
 
+        self.fields["birthday"].widget.input_type = "date"
         if not Member.objects.get(pk=kwargs["instance"].user_id).profile.is_minimized:
             self.fields["birthday"].disabled = True
 

@@ -214,7 +214,7 @@ class RenewalForm(forms.ModelForm):
         super().clean()
         if self.cleaned_data["member"].profile.is_minimized:
             raise ValidationError(
-                "It's not possible to renew a membership useing an incomplete profile."
+                "It's not possible to renew a membership using an incomplete profile."
             )
 
         if self.cleaned_data["length"] == Renewal.MEMBERSHIP_STUDY:

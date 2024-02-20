@@ -46,6 +46,5 @@ class Command(BaseCommand):
         for p in processed:
             self.stdout.write(f"Removed reference faces: {p}")
 
-        processed = minimise_logentries_data(options["dry-run"])
-        for p in processed:
-            self.stdout.write(f"Removed user from logentries for {p}")
+        count = minimise_logentries_data(options["dry-run"])
+        self.stdout.write(f"Removed {count} log entries")
