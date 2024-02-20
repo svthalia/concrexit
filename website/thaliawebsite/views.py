@@ -82,7 +82,10 @@ class RateLimitedLoginView(LoginView):
 
 class LogoutView(BaseLogoutView):
     # Allow GET logout still (this was deprecated in Django 5.0).
-    http_method_names = ["get", "head", "post", "options"]
+    http_method_names = ["get", "post", "options"]
+
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
 
 
 def rate_limited_view(request, *args, **kwargs):
