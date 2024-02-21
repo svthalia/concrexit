@@ -4,11 +4,12 @@ from datetime import date
 from typing import Any
 
 from django.conf import settings
-from django.db.models import Count, Q
+from django.db.models import Count, Exists, OuterRef, Q
 from django.utils import timezone
 
 from members import emails
 from members.models import Member, Membership
+from registrations.models import Renewal
 from utils.snippets import datetime_to_lectureyear
 
 
@@ -214,6 +215,16 @@ def execute_data_minimisation(dry_run=False, members=None) -> list[Member]:
                 | Q(membership__until__gt=timezone.now().date())
             )
             & Q(membership_count__gt=0)
+        )
+        .exclude(
+            Exists(
+                Renewal.objects.filter(member__id=OuterRef("pk")).exclude(
+                    status__in=(
+                        Renewal.STATUS_ACCEPTED,
+                        Renewal.STATUS_REJECTED,
+                    )
+                )
+            )
         )
         .distinct()
         .prefetch_related("membership_set", "profile")

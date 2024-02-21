@@ -15,8 +15,11 @@ from .models import Profile
 class ProfileForm(forms.ModelForm):
     """Form with all the user editable fields of a Profile model."""
 
+    birthday = forms.DateField()
+
     class Meta:
         fields = [
+            "birthday",
             "show_birthday",
             "address_street",
             "address_street2",
@@ -43,6 +46,7 @@ class ProfileForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in [
+            "birthday",
             "address_street",
             "address_city",
             "address_postal_code",
@@ -66,6 +70,10 @@ class ProfileForm(forms.ModelForm):
                 "(a long time ago, we didn't keep track of this yet). Contact "
                 "<a href='mailto:info@thalia.nu'>info@thalia.nu</a> if you want to receive alumni emails."
             )
+
+        self.fields["birthday"].widget.input_type = "date"
+        if not Member.objects.get(pk=kwargs["instance"].user_id).profile.is_minimized:
+            self.fields["birthday"].disabled = True
 
         self.render_app_specific_profile_form_fields()
 

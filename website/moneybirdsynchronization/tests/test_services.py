@@ -538,9 +538,7 @@ class ServicesTest(TestCase):
         mock_create_or_update_contact.assert_any_call(self.member3)
         mock_create_or_update_contact.assert_any_call(self.member4)
         mock_create_or_update_contact.assert_any_call(self.member5)
-
         mock_create_or_update_contact.reset_mock()
-
         # create contacs so that mock_create_or_update_contact is not called again
         MoneybirdContact.objects.create(
             member=self.member2, needs_synchronization=False
@@ -575,8 +573,19 @@ class ServicesTest(TestCase):
         self.member.moneybird_contact.save()
 
         # Moneybird contact is deleted (archived) if a profile is minimized.
-        self.member.profile.is_minimized = True
-        self.member.profile.save()
+        profile = self.member.profile
+        profile.student_number = None
+        profile.phone_number = None
+        profile.address_street = None
+        profile.address_street2 = None
+        profile.address_postal_code = None
+        profile.address_city = None
+        profile.address_country = None
+        profile.birthday = None
+        profile.emergency_contact_phone_number = None
+        profile.emergency_contact = None
+        profile.is_minimized = True
+        profile.save()
 
         services._sync_contacts()
 

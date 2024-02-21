@@ -135,6 +135,21 @@ class RenewalFormTest(TestCase):
             self.data["privacy_policy"] = 0
             form = forms.RenewalForm(self.data)
             self.assertFalse(form.is_valid(), msg=dict(form.errors))
+        with self.subTest("User is minimized"):
+            profile = self.member.profile
+            profile.student_number = None
+            profile.phone_number = None
+            profile.address_street = None
+            profile.address_street2 = None
+            profile.address_postal_code = None
+            profile.address_city = None
+            profile.address_country = None
+            profile.birthday = None
+            profile.emergency_contact_phone_number = None
+            profile.emergency_contact = None
+            profile.is_minimized = True
+            profile.save()
+            self.assertFalse(forms.RenewalForm(self.data).is_valid())
 
     def test_has_privacy_policy_field(self):
         form = forms.RenewalForm(self.data)

@@ -34,20 +34,15 @@
                     </a>
                 </span>
             </div>
-            <div class="form-row">
-                <label>{% trans "Birthday" %}</label>
-                <input type="text" class="form-control" readonly="readonly"
-                       value="{{ request.member.profile.birthday }}"/>
-            </div>
             {% for field in form %}
-                {% if forloop.counter < 9 %}
+                {% if forloop.counter <= 10 %}
                     {% bootstrap_field field %}
                 {% endif %}
             {% endfor %}
         </fieldset>
         <fieldset class="col-12 col-lg-6">
             {% for field in form %}
-                {% if forloop.counter > 8 %}
+                {% if forloop.counter > 10 %}
                     {% bootstrap_field field %}
                 {% endif %}
             {% endfor %}
