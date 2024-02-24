@@ -184,6 +184,9 @@ class UserAdmin(BaseUserAdmin):
         ),
     )
 
+    # Facet counts would crash for this admin. See #3584.
+    show_facets = admin.ShowFacets.NEVER
+
     def email_csv_export(self, request, queryset):
         response = HttpResponse(content_type="text/csv")
         response["Content-Disposition"] = 'attachment;filename="email.csv"'

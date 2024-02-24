@@ -200,6 +200,9 @@ class MemberGroupMembershipAdmin(admin.ModelAdmin):
     date_hierarchy = "since"
     actions = ("export",)
 
+    # Facet counts would crash for this admin.
+    show_facets = admin.ShowFacets.NEVER
+
     def changelist_view(self, request, extra_context=None):
         self.message_user(
             request,
