@@ -258,13 +258,16 @@ class MoneybirdExternalInvoice(models.Model):
     def to_moneybird(self):
         moneybird = get_moneybird_api_service()
 
-        if self.payable.payment_payer is None:
-            contact_id = settings.MONEYBIRD_UNKNOWN_PAYER_CONTACT_ID
-        else:
-            moneybird_contact = MoneybirdContact.objects.get(
-                member=self.payable.payment_payer
-            )
-            contact_id = moneybird_contact.moneybird_id
+        contact_id = settings.MONEYBIRD_UNKNOWN_PAYER_CONTACT_ID
+
+        if self.payable.payment_payer is not None:
+            try:
+                moneybird_contact = MoneybirdContact.objects.get(
+                    member=self.payable.payment_payer
+                )
+                contact_id = moneybird_contact.moneybird_id
+            except MoneybirdContact.DoesNotExist:
+                pass
 
         invoice_date = date_for_payable_model(self.payable_object).strftime("%Y-%m-%d")
 
