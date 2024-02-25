@@ -684,6 +684,9 @@ class PaymentUserAdmin(admin.ModelAdmin):
         "email",
     )
 
+    # Facet counts would crash for this admin.
+    show_facets = admin.ShowFacets.NEVER
+
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
         queryset = queryset.prefetch_related("bank_accounts", "paid_payment_set")

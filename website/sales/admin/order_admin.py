@@ -217,6 +217,9 @@ class OrderAdmin(admin.ModelAdmin):
         "payment_url",
     )
 
+    # Facet counts would crash for this admin. See #3585.
+    show_facets = admin.ShowFacets.NEVER
+
     def get_readonly_fields(self, request: HttpRequest, obj: Order = None):
         """Disallow changing shift when selected."""
         default_fields = self.readonly_fields
