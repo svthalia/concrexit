@@ -386,7 +386,7 @@ CELERY_BEAT_SCHEDULE = {
     },
     "inforequest": {
         "task": "members.tasks.info_request",
-        "schedule": crontab(minute=0, hour=6, day_of_month=15, month_of_year=10),
+        "schedule": crontab(minute=0, hour=6, day_of_month=15, month_of_year=2),
     },
     "expirationannouncement": {
         "task": "members.tasks.expiration_announcement",
