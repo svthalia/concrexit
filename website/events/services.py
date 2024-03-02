@@ -1,9 +1,9 @@
 from collections import OrderedDict
+from datetime import date, timedelta
 
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.formats import localize
-from django.utils.timezone import timedelta
 from django.utils.translation import gettext_lazy as _
 
 from events import emails, signals
@@ -509,8 +509,8 @@ def generate_category_statistics() -> dict:
 
     for index, (key, category) in enumerate(categories.EVENT_CATEGORIES):
         for i in range(5):
-            year_start = timezone.date(year=current_year - 4 + i, month=9, day=1)
-            year_end = timezone.date(year=current_year - 3 + i, month=9, day=1)
+            year_start = date(year=current_year - 4 + i, month=9, day=1)
+            year_end = date(year=current_year - 3 + i, month=9, day=1)
 
             data["datasets"][index]["data"].append(
                 Event.objects.filter(
