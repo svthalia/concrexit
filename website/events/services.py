@@ -341,12 +341,12 @@ def cancel_registration(member, event):
                 and event.eventregistration_set.filter(date_cancelled=None).count()
                 > event.max_participants
             ):
-                first_waiting = event.eventregistration_set.filter(
+                first_waiting: EventRegistration = event.eventregistration_set.filter(
                     date_cancelled=None
                 ).order_by("date")[event.max_participants]
                 emails.notify_first_waiting(event, first_waiting)
                 signals.user_left_queue.send(
-                    sender=None, event=event, user=first_waiting
+                    sender=None, event=event, first_waiting=first_waiting
                 )
 
             if event.send_cancel_email and event.after_cancel_deadline:
