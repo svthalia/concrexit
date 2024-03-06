@@ -41,9 +41,9 @@ services:
     restart: always
     healthcheck:
       test: [ "CMD", "pg_isready", "--username", "concrexit" ]
-      interval: 2s
-      timeout: 2s
-      retries: 30
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   redis:
     image: redis:7.2-alpine
@@ -53,9 +53,9 @@ services:
     restart: always
     healthcheck:
       test: [ "CMD-SHELL", "redis-cli ping | grep PONG" ]
-      interval: 2s
-      timeout: 2s
-      retries: 10
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   worker:
     image: ghcr.io/svthalia/concrexit:${TAG:-development}
@@ -75,10 +75,12 @@ services:
       concrexit:
         condition: service_started
     healthcheck:
-      test: [ "CMD", "celery", "--app", "thaliawebsite", "status" ]
-      interval: 10s
-      timeout: 3s
-      retries: 10
+      # The celery status timeout needs to be smaller than docker's timeout.
+      # Otherwise, celery will fail to clean up after itself on redis.
+      test: [ "CMD", "celery", "--app", "thaliawebsite", "status", "--timeout=5" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
 volumes:
   concrexit-media:
