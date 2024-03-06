@@ -1,7 +1,7 @@
 {% extends "small_page.html" %}
 {% load i18n alert two_factor_tags %}
 
-{% block extra_media %}
+{% block js_head %}
   {{ form.media }}
 {% endblock %}
 
@@ -33,7 +33,6 @@
         {% include "two_factor/_wizard_forms.html" %}
     {% endif %}
 
-
     {# hidden submit button to enable [enter] key #}
     <input type="submit" value="" hidden />
 
@@ -48,7 +47,6 @@
         {% endfor %}</p>
     {% endif %}
 
-
     {% if wizard.steps.current == 'auth' %}
         <div class="form-row">
             <input type="submit" value="{% trans "Login" %}" class="btn btn-primary float-end">
@@ -57,23 +55,21 @@
     {% else %}
         {% include "two_factor/_wizard_actions.html" %}
     {% endif %}
-
-
   </form>
 
   {% block 'backup_tokens' %}
     {% if backup_tokens %}
-       <hr>
-       <div class="backup_tokens_form">
-       <form action="" method="post">
-           {% csrf_token %}
-            <p>{% trans "As a last resort, you can use a backup token:" %}</p>
-            <p>
-                <button name="wizard_goto_step" type="submit" value="backup"
-                    class="btn btn-sm btn-secondary btn-block">{% trans "Use Backup Token" %}</button>
-            </p>
-       </form>
-       </div>
+      <hr>
+      <div class="backup_tokens_form">
+      <form action="" method="post">
+          {% csrf_token %}
+          <p>{% trans "As a last resort, you can use a backup token:" %}</p>
+          <p>
+              <button name="wizard_goto_step" type="submit" value="backup"
+                  class="btn btn-sm btn-secondary btn-block">{% trans "Use Backup Token" %}</button>
+          </p>
+      </form>
+      </div>
     {% endif %}
   {% endblock %}
 {% endblock %}

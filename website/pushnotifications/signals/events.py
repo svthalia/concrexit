@@ -146,13 +146,15 @@ def update_event_start_reminder_users_on_registration_delete(
     user_left_queue,
     dispatch_uid="send_queue_notification_when_user_left_queue",
 )
-def send_queue_notification(sender, event, user, **kwargs):
+def send_queue_notification(sender, event, first_waiting: EventRegistration, **kwargs):
     """Send a notification when a registration is cancelled and a new user can participate."""
+    if first_waiting.member is None:
+        return
     message = Message.objects.create(
         title=event.title,
         body="Someone cancelled, so you can now participate!",
         url=settings.BASE_URL + event.get_absolute_url(),
         category=Category.objects.get(key=Category.EVENT),
     )
-    message.users.set([user])
+    message.users.set([first_waiting.member])
     message.send()

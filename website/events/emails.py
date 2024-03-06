@@ -1,10 +1,11 @@
 """The emails defined by the events package."""
 from django.conf import settings
 
+from events.models.event_registration import EventRegistration
 from utils.snippets import send_email
 
 
-def notify_first_waiting(event, first_waiting):
+def notify_first_waiting(event, first_waiting: EventRegistration):
     """Send an email to the first person on the waiting list when someone cancels their registration."""
     organiser_emails = [
         organiser.contact_address for organiser in event.organisers.all()

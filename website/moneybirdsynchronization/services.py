@@ -237,12 +237,16 @@ def _sync_outdated_invoices():
     for invoice in invoices:
         try:
             instance = invoice.payable_object
+        except ObjectDoesNotExist:
+            logger.exception("Payable object for outdated invoice does not exist.")
+        if instance is None:
+            logger.exception("Payable object for outdated invoice does not exist.")
+
+        try:
             create_or_update_external_invoice(instance)
         except Administration.Error as e:
             logger.exception("Moneybird synchronization error: %s", e)
             send_sync_error(e, instance)
-        except ObjectDoesNotExist:
-            logger.exception("Payable object for outdated invoice does not exist.")
 
 
 def _sync_contacts():

@@ -1,7 +1,12 @@
 from django.contrib import admin
 from django.contrib.admin import RelatedOnlyFieldListFilter
 
-from .models import MoneybirdContact, MoneybirdExternalInvoice, MoneybirdPayment
+from .models import (
+    MoneybirdContact,
+    MoneybirdExternalInvoice,
+    MoneybirdPayment,
+    MoneybirdProject,
+)
 
 
 @admin.register(MoneybirdContact)
@@ -12,12 +17,16 @@ class MoneybirdContactAdmin(admin.ModelAdmin):
         "member",
         "moneybird_id",
         "moneybird_sepa_mandate_id",
+        "needs_synchronization",
     )
+
+    list_filter = ("needs_synchronization",)
 
     fields = (
         "member",
         "moneybird_id",
         "moneybird_sepa_mandate_id",
+        "needs_synchronization",
     )
 
     raw_id_fields = ("member",)
@@ -27,6 +36,7 @@ class MoneybirdContactAdmin(admin.ModelAdmin):
         "member__last_name",
         "member__username",
         "member__email",
+        "member__id",
         "moneybird_id",
     )
 
@@ -77,7 +87,10 @@ class MoneybirdPaymentAdmin(admin.ModelAdmin):
     """Manage moneybird payments."""
 
     list_display = (
-        "payment",
+        "payment_topic",
+        "amount",
+        "paid_by",
+        "payment_type",
         "moneybird_financial_statement_id",
         "moneybird_financial_mutation_id",
     )
@@ -92,6 +105,8 @@ class MoneybirdPaymentAdmin(admin.ModelAdmin):
 
     search_fields = (
         "payment__amount",
+        "payment__topic",
+        "payment__paid_by__username",
         "moneybird_financial_mutation_id",
         "moneybird_financial_statement_id",
     )
@@ -100,3 +115,25 @@ class MoneybirdPaymentAdmin(admin.ModelAdmin):
         if not obj:
             return ()
         return ("payment",)
+
+    def payment_type(self, obj):
+        return obj.payment.type
+
+    def payment_topic(self, obj):
+        return obj.payment.topic
+
+    def paid_by(self, obj):
+        return obj.payment.paid_by
+
+    def amount(self, obj):
+        return obj.payment.amount
+
+
+@admin.register(MoneybirdProject)
+class MoneybirdProjectAdmin(admin.ModelAdmin):
+    list_display = (
+        "name",
+        "moneybird_id",
+    )
+
+    search_fields = ("name", "moneybird_id")
