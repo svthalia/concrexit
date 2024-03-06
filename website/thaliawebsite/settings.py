@@ -172,6 +172,10 @@ FACEDETECTION_REFERENCE_FACE_STORAGE_PERIOD_AFTER_DELETE_DAYS = 180
 # How many reference faces a user can have at the same time
 FACEDETECTION_MAX_NUM_REFERENCE_FACES = 5
 
+# webauthn settings
+TWO_FACTOR_WEBAUTHN_RP_NAME = "Thalia"
+TWO_FACTOR_WEBAUTHN_RP_ID = SITE_DOMAIN
+
 # ARN of the concrexit-facedetection-lambda function.
 # See https://github.com/svthalia/concrexit-facedetection-lambda.
 FACEDETECTION_LAMBDA_ARN = os.environ.get("FACEDETECTION_LAMBDA_ARN")
@@ -623,6 +627,7 @@ INSTALLED_APPS = [
     "shortlinks.apps.ShortLinkConfig",
     "sales.apps.SalesConfig",
     "moneybirdsynchronization.apps.MoneybirdsynchronizationConfig",
+    "two_factor.plugins.webauthn",
 ]
 
 MIDDLEWARE = [
