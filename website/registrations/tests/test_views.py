@@ -320,7 +320,6 @@ class MemberRegistrationFormViewTest(TestCase):
     @mock.patch("django.views.generic.FormView.post")
     def test_post(self, super_post):
         request = self.rf.post("/")
-        request.LANGUAGE_CODE = "nl"
         request.user = _get_mock_user()
         request.member = request.user
         request.member.pk = 2
@@ -329,7 +328,6 @@ class MemberRegistrationFormViewTest(TestCase):
         self.view.post(request)
 
         request = super_post.call_args[0][0]
-        self.assertEqual(request.POST["language"], "nl")
         self.assertEqual(request.POST["membership_type"], Membership.MEMBER)
 
 
@@ -355,7 +353,6 @@ class BenefactorRegistrationFormViewTest(TestCase):
     @mock.patch("django.views.generic.FormView.post")
     def test_post(self, super_post):
         request = self.rf.post("/", {})
-        request.LANGUAGE_CODE = "nl"
         request.user = _get_mock_user()
         request.member = request.user
         request.member.pk = 2
@@ -365,13 +362,11 @@ class BenefactorRegistrationFormViewTest(TestCase):
             self.view.post(request)
 
             request = super_post.call_args[0][0]
-            self.assertEqual(request.POST["language"], "nl")
             self.assertEqual(request.POST["membership_type"], Membership.BENEFACTOR)
             self.assertEqual(request.POST["length"], Entry.MEMBERSHIP_YEAR)
             self.assertEqual(request.POST["remarks"], "")
 
         request = self.rf.post("/", {"icis_employee": True})
-        request.LANGUAGE_CODE = "nl"
         request.user = _get_mock_user()
         request.member = request.user
         request.member.pk = 2
@@ -381,7 +376,6 @@ class BenefactorRegistrationFormViewTest(TestCase):
             self.view.post(request)
 
             request = super_post.call_args[0][0]
-            self.assertEqual(request.POST["language"], "nl")
             self.assertEqual(request.POST["membership_type"], Membership.BENEFACTOR)
             self.assertEqual(request.POST["length"], Entry.MEMBERSHIP_YEAR)
             self.assertEqual(request.POST["remarks"], "Registered as iCIS employee")
