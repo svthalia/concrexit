@@ -155,7 +155,6 @@ class MemberRegistrationFormView(BaseRegistrationFormView):
 
     def post(self, request, *args, **kwargs):
         request.POST = request.POST.dict()
-        request.POST["language"] = request.LANGUAGE_CODE
         request.POST["membership_type"] = Membership.MEMBER
         return super().post(request, *args, **kwargs)
 
@@ -176,7 +175,6 @@ class BenefactorRegistrationFormView(BaseRegistrationFormView):
 
     def post(self, request, *args, **kwargs):
         request.POST = request.POST.dict()
-        request.POST["language"] = request.LANGUAGE_CODE
         request.POST["membership_type"] = Membership.BENEFACTOR
         request.POST["length"] = Entry.MEMBERSHIP_YEAR
         request.POST["remarks"] = (
