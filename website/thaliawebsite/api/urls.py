@@ -9,7 +9,6 @@ urlpatterns = [
         "",
         include(
             [
-                path("v1/", include("thaliawebsite.api.v1.urls", namespace="v1")),
                 path("v2/", include("thaliawebsite.api.v2.urls", namespace="v2")),
                 path(
                     "calendarjs/",
@@ -28,9 +27,7 @@ urlpatterns = [
                     "docs",
                     TemplateView.as_view(
                         template_name="swagger/index.html",
-                        extra_context={
-                            "schema_urls": ["api:v2:schema", "api:v1:schema"]
-                        },
+                        extra_context={"schema_urls": ["api:v2:schema"]},
                     ),
                     name="swagger",
                 ),
