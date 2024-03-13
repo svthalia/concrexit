@@ -47,6 +47,7 @@ class BaseRegistrationForm(forms.ModelForm):
             )
         )
         self.fields["birthday"].widget.input_type = "date"
+        self.fields["length"].help_text = None
 
     def clean(self):
         if self.cleaned_data.get("phone_number") is not None:  # pragma: no cover
