@@ -13,7 +13,11 @@ from .models import Profile
 
 
 class ProfileForm(forms.ModelForm):
-    """Form with all the user editable fields of a Profile model."""
+    """Form with all the user editable fields of a Profile model.
+
+    If the profile is minimised no fields are required, unless the extra parameter
+    require_address parameter was passed when opening the form.
+    """
 
     birthday = forms.DateField()
 
@@ -43,8 +47,9 @@ class ProfileForm(forms.ModelForm):
         ]
         model = Profile
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, require_address=False, **kwargs):
         super().__init__(*args, **kwargs)
+        user = Member.objects.get(pk=kwargs["instance"].user_id)
         for field in [
             "birthday",
             "address_street",
@@ -53,16 +58,17 @@ class ProfileForm(forms.ModelForm):
             "address_city",
             "address_country",
         ]:
-            self.fields[field].required = True
+            if require_address or not user.profile.is_minimized:
+                self.fields[field].required = True
+            else:
+                self.fields[field].required = False
+
         if not kwargs["instance"].user.is_staff:
             self.fields["email_gsuite_only"].widget = self.fields[
                 "email_gsuite_only"
             ].hidden_widget()
 
-        if (
-            not Member.objects.get(pk=kwargs["instance"].user_id).has_been_member()
-            and not kwargs["instance"].receive_oldmembers
-        ):
+        if not user.has_been_member() and not kwargs["instance"].receive_oldmembers:
             self.fields["receive_oldmembers"].disabled = True
             self.fields["receive_oldmembers"].help_text = (
                 "If you are a past member, receive emails about Thalia events aimed at alumni. "
@@ -72,7 +78,7 @@ class ProfileForm(forms.ModelForm):
             )
 
         self.fields["birthday"].widget.input_type = "date"
-        if not Member.objects.get(pk=kwargs["instance"].user_id).profile.is_minimized:
+        if not user.profile.is_minimized:
             self.fields["birthday"].disabled = True
 
         self.render_app_specific_profile_form_fields()
