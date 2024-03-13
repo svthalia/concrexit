@@ -15,8 +15,9 @@ from .models import Profile
 class ProfileForm(forms.ModelForm):
     """Form with all the user editable fields of a Profile model.
 
-    If the profile is minimised no fields are required, unless the extra parameter
-    require_address parameter was passed when opening the form.
+    If the profile is minimized, no fields are required, unless the `require_address`
+    keyword argument is True, which is set if a user is filling a minimized profile
+    in order to be able to create a Renewal.
     """
 
     birthday = forms.DateField()
