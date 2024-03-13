@@ -182,6 +182,11 @@ class UserProfileUpdateView(RedirectURLMixin, SuccessMessageMixin, UpdateView):
     def get_object(self, queryset=None) -> Profile:
         return get_object_or_404(models.Profile, user=self.request.user)
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["require_address"] = bool(self.request.GET.get("require_address", False))
+        return kwargs
+
 
 @method_decorator(login_required, "dispatch")
 class StatisticsView(TemplateView):
