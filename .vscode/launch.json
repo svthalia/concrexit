@@ -3,7 +3,7 @@
     "configurations": [
         {
             "name": "Django: manage.py runserver",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/website/manage.py",
             "args": [
@@ -14,17 +14,25 @@
         },
         {
             "name": "Django: manage.py test",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/website/manage.py",
             "args": [
                 "test",
                 "--noinput",
                 "--buffer",
+                "${input:tests}",
             ],
             "cwd": "${workspaceFolder}/website",
             "justMyCode": false,
             "django": true,
+        }
+    ],
+    "inputs": [
+        {
+            "id": "tests",
+            "type": "promptString",
+            "description": "An optional dotted path to select tests. E.g.: \"registrations.tests.test_forms\"",
         }
     ]
 }
