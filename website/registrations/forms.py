@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django import forms
 from django.conf import settings
 from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
@@ -223,7 +225,7 @@ class RenewalForm(forms.ModelForm):
             if Membership.objects.filter(
                 user=self.cleaned_data["member"],
                 type=Membership.MEMBER,
-                until__gte=now,
+                until__gte=now - timedelta(days=366),
                 since__lte=now,
             ).exists():
                 # The membership upgrade discount applies if, at the time a Renewal is
