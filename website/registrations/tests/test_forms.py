@@ -177,6 +177,21 @@ class RenewalFormTest(TestCase):
                 )
                 renewal.delete()
 
+        with self.subTest("Member, membership upgrade discount (last year)"):
+            with freeze_time("2024-10-20"):
+                # The user had a membership last year, but still should get a discount.
+                self.data["length"] = Entry.MEMBERSHIP_STUDY
+                self.data["membership_type"] = Membership.MEMBER
+                form = forms.RenewalForm(self.data)
+                self.assertTrue(form.is_valid())
+                renewal = form.save()
+                self.assertEqual(
+                    renewal.contribution,
+                    settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_STUDY]
+                    - settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_YEAR],
+                )
+                renewal.delete()
+
         with self.subTest("Member, new year membership before expiry"):
             with freeze_time("2024-08-20"):
                 self.data["length"] = Entry.MEMBERSHIP_YEAR
@@ -203,8 +218,9 @@ class RenewalFormTest(TestCase):
                 )
                 renewal.delete()
 
-        with self.subTest("Member, study membership after expiry"):
-            with freeze_time("2024-09-10"):
+        with self.subTest("Member, study membership after more than a year"):
+            with freeze_time("2025-09-10"):
+                # The membership discount applies up to 1 year after the user last had a membership.
                 self.data["length"] = Entry.MEMBERSHIP_STUDY
                 self.data["membership_type"] = Membership.MEMBER
                 form = forms.RenewalForm(self.data)
