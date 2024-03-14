@@ -83,6 +83,14 @@
             {% bootstrap_field form.programme %}
             {% bootstrap_field form.starting_year %}
             {% bootstrap_field form.privacy_policy %}
+            <div class="form-row">
+                <div class="form-check">
+                    <input name="optin_thabloid" class="form-check-input" id="id_optin_thabloid"
+                           type="checkbox">
+                    <label class="form-check-label"
+                           for="id_optin_thabloid">{% trans "Receive thabloid" %}</label>
+                </div>
+            </div>
         </fieldset>
         {% if tpay_enabled %}
             <hr/>

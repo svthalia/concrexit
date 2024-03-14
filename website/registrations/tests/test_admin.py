@@ -84,6 +84,7 @@ class RegistrationAdminTest(TestCase):
                 "iban",
                 "bic",
                 "signature",
+                "optin_thabloid",
             ],
         )
 
@@ -123,6 +124,7 @@ class RegistrationAdminTest(TestCase):
                 "iban",
                 "bic",
                 "signature",
+                "optin_thabloid",
             ],
         )
 
@@ -162,6 +164,7 @@ class RegistrationAdminTest(TestCase):
                 "iban",
                 "bic",
                 "signature",
+                "optin_thabloid",
             ],
         )
 

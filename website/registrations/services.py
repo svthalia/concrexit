@@ -15,6 +15,7 @@ from payments.models import BankAccount, Payment, PaymentUser
 from payments.services import create_payment
 from registrations import emails
 from registrations.models import Entry, Registration, Renewal
+from thabloid.models.thabloid_user import ThabloidUser
 from utils.snippets import datetime_to_lectureyear
 
 
@@ -328,6 +329,11 @@ def _create_member(registration: Registration) -> Member:
         first_name=registration.first_name,
         last_name=registration.last_name,
     )
+
+    if registration.optin_thabloid:
+        ThabloidUser.objects.get(pk=user.pk).allow_thabloid()
+    else:
+        ThabloidUser.objects.get(pk=user.pk).disallow_thabloid()
 
     # Add profile to created user.
     Profile.objects.create(
