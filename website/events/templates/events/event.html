@@ -236,9 +236,9 @@
                             <td>
                                 <em>
                                     {% if show_cancel_status %}
-                                        <p>{{ registration_status }} {{cancel_info}}</p>
+                                        <p>{{ registration_status | bleach }} {{cancel_info}}</p>
                                     {% else %}
-                                        <p>{{ registration_status }}</p>
+                                        <p>{{ registration_status | bleach }}</p>
                                     {% endif %}
                                 </em>
                             </td>

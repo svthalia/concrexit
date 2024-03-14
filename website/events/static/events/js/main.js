@@ -50,6 +50,11 @@ function checkViewState(calendar) {
     }
 }
 
+function strip(html){
+   let doc = new DOMParser().parseFromString(html, 'text/html');
+   return doc.body.textContent || "";
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     let lastKnownWidth = window.innerWidth;
     const calendarEl = document.getElementById('calendar');
@@ -131,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const regInfoElem = document.createElement('div');
                 regInfoElem.classList.add('mt-2', 'fc-title');
                 regInfoElem.title = event.extendedProps.registration_info;
-                regInfoElem.textContent = event.extendedProps.registration_info;
+                regInfoElem.textContent = strip(event.extendedProps.registration_info);
                 el.children[0].appendChild(regInfoElem);
             }
         },
