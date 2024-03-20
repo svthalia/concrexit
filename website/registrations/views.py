@@ -14,6 +14,8 @@ from django.views import View
 from django.views.generic import CreateView, FormView
 from django.views.generic.base import TemplateResponseMixin, TemplateView
 
+from django_ratelimit.decorators import ratelimit
+
 from members.decorators import membership_required
 from members.models import Membership
 
@@ -137,6 +139,10 @@ class BaseRegistrationFormView(FormView):
         form.save()
         emails.send_registration_email_confirmation(form.instance)
         return redirect("registrations:register-success")
+
+    @method_decorator(ratelimit(key="ip", rate="10/d"))
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
 
 
 class MemberRegistrationFormView(BaseRegistrationFormView):
