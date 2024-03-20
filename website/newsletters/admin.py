@@ -1,9 +1,12 @@
 """Registers admin interfaces for the newsletters module."""
+
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 from django.shortcuts import redirect
+from django.urls import path
 
 from newsletters.models import Newsletter, NewsletterEvent, NewsletterItem
+from newsletters.views import ImportEventView
 
 from .forms import NewsletterEventForm
 
@@ -76,3 +79,14 @@ class NewsletterAdmin(ModelAdmin):
         actions = super().get_actions(request)
         del actions["delete_selected"]
         return actions
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path(
+                "<int:pk>/import/",
+                self.admin_site.admin_view(ImportEventView.as_view(admin=self)),
+                name="newsletters_newsletter_import_events",
+            ),
+        ]
+        return custom_urls + urls
