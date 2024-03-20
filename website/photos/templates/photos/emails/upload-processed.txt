@@ -1,0 +1,16 @@
+Hi {{ name }},
+
+You have recently uploaded an archive ('{{ upload_name }}') to this album: {{ album }}
+You can see it here: {% url "photos:album" album.slug %}
+
+{{ num_processed }} photos were successfully processed.
+{% if warnings %}
+The following warnings occurred while processing the upload:{% for file, warning in warnings%}
+{{ file }}: {{ warning }}
+{% endfor %}{% else %}
+There were no issues while processing the upload.</p>
+{% endif %}
+
+Kisses,
+
+The website
