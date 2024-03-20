@@ -89,6 +89,9 @@ def fetch_thumbnails(images: list, sizes=None):
     :param sizes: A list of sizes to prefetch. If None, all sizes will be prefetched.
     :return: None
     """
+    # Filter out empty ImageFieldFiles.
+    images = list(filter(bool, images))
+
     if not images:
         return
 
