@@ -64,18 +64,23 @@ def get_annotated_accessible_albums(request, albums):
     return albums
 
 
-def extract_archive(album, archive):
+def extract_archive(album, archive) -> tuple[dict[str, str], int]:
     """Extract zip and tar files."""
+    warnings, count = {}, 0
     if is_zipfile(archive):
         archive.seek(0)
         with ZipFile(archive) as zip_file:
             for photo in sorted(zip_file.namelist()):
                 if not _has_photo_extension(photo):
+                    warnings[photo] = "has an unknown extension."
                     continue
 
                 with zip_file.open(photo) as file:
-                    _try_save_photo(album, file, photo)
-        return
+                    if warning := _try_save_photo(album, file, photo):
+                        warnings[photo] = warning
+                    else:
+                        count += 1
+        return warnings, count
 
     archive.seek(0)
     # is_tarfile only supports filenames, so we cannot use that
@@ -83,12 +88,18 @@ def extract_archive(album, archive):
         with tarfile.open(fileobj=archive) as tar_file:
             for photo in sorted(tar_file.getnames()):
                 if not _has_photo_extension(photo):
+                    warnings[photo] = "has an unknown extension."
                     continue
 
                 with tar_file.extractfile(photo) as file:
-                    _try_save_photo(album, file, photo)
+                    if warning := _try_save_photo(album, file, photo):
+                        warnings[photo] = warning
+                    else:
+                        count += 1
     except tarfile.ReadError as e:
         raise ValueError(_("The uploaded file is not a zip or tar file.")) from e
+
+    return warnings, count
 
 
 def _has_photo_extension(filename):
@@ -97,15 +108,23 @@ def _has_photo_extension(filename):
     return extension.lower() in (".jpg", ".jpeg", ".png", ".webp")
 
 
-def _try_save_photo(album, file, filename):
-    """Try to save a photo to an album."""
+def _try_save_photo(album, file, filename) -> str | None:
+    """Try to save a photo to an album.
+
+    Returns None, or a string describing a reason for failure.
+    """
     instance = Photo(album=album)
     instance.file = File(file, filename)
     try:
         with transaction.atomic():
             instance.full_clean()
             instance.save()
-    except ValidationError:
-        pass
-    except UnidentifiedImageError:
-        pass
+    except ValidationError as e:
+        logger.warning(f"Photo '{filename}' could not be read: {e}", exc_info=e)
+        return "could not be read."
+    except UnidentifiedImageError as e:
+        logger.warning(f"Photo '{filename}' could not be read: {e}", exc_info=e)
+        return "could not be read."
+    except OSError as e:
+        logger.warning(f"Photo '{filename}' could not be read: {e}", exc_info=e)
+        return "could not be read."
