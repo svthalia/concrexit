@@ -6,7 +6,7 @@ from django.shortcuts import redirect
 from django.urls import path
 
 from newsletters.models import Newsletter, NewsletterEvent, NewsletterItem
-from newsletters.views import ImportEventView
+from newsletters.views import ImportEventView, admin_send
 
 from .forms import NewsletterEventForm
 
@@ -83,6 +83,7 @@ class NewsletterAdmin(ModelAdmin):
     def get_urls(self):
         urls = super().get_urls()
         custom_urls = [
+            path("<int:pk>/send", admin_send, name="newsletters_newsletter_send"),
             path(
                 "<int:pk>/import/",
                 self.admin_site.admin_view(ImportEventView.as_view(admin=self)),

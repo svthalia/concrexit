@@ -11,7 +11,7 @@
 
     {% if newsletter %}
     <div class="submit-row newsletters-row">
-        <a href="{% url 'newsletters:admin-send' pk=newsletter.pk %}" class="default button">{% trans "Send newsletter to members" %}</a>
+        <a href="{% url 'admin:newsletters_newsletter_send' pk=newsletter.pk %}" class="default button">{% trans "Send newsletter to members" %}</a>
         <a href="{% url 'admin:newsletters_newsletter_import_events' pk=newsletter.pk %}" class="button">{% trans "Import events" %}</a>
         <a target="_blank" href="{% url 'newsletters:preview' pk=newsletter.pk %}" class="button">{% trans "Show preview" %}</a>
     </div>
@@ -23,7 +23,7 @@
 
     {% if newsletter %}
     <div class="submit-row newsletters-row">
-        <a href="{% url 'newsletters:admin-send' pk=newsletter.pk %}" class="default button">{% trans "Send newsletter to members" %}</a>
+        <a href="{% url 'admin:newsletters_newsletter_send' pk=newsletter.pk %}" class="default button">{% trans "Send newsletter to members" %}</a>
         <a href="{% url 'admin:newsletters_newsletter_import_events' pk=newsletter.pk %}" class="button">{% trans "Import events" %}</a>
         <a target="_blank" href="{% url 'newsletters:preview' pk=newsletter.pk %}" class="button">{% trans "Show preview" %}</a>
     </div>
