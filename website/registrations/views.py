@@ -1,4 +1,5 @@
 """Views provided by the registrations package."""
+
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
@@ -155,7 +156,6 @@ class MemberRegistrationFormView(BaseRegistrationFormView):
 
     def post(self, request, *args, **kwargs):
         request.POST = request.POST.dict()
-        request.POST["language"] = request.LANGUAGE_CODE
         request.POST["membership_type"] = Membership.MEMBER
         return super().post(request, *args, **kwargs)
 
@@ -176,7 +176,6 @@ class BenefactorRegistrationFormView(BaseRegistrationFormView):
 
     def post(self, request, *args, **kwargs):
         request.POST = request.POST.dict()
-        request.POST["language"] = request.LANGUAGE_CODE
         request.POST["membership_type"] = Membership.BENEFACTOR
         request.POST["length"] = Entry.MEMBERSHIP_YEAR
         request.POST["remarks"] = (
