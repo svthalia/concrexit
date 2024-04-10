@@ -119,6 +119,7 @@ class MemberRegistrationForm(BaseRegistrationForm):
             "iban",
             "bic",
             "signature",
+            "optin_thabloid",
         )
 
     def clean(self):
@@ -170,6 +171,7 @@ class BenefactorRegistrationForm(BaseRegistrationForm):
             "iban",
             "bic",
             "signature",
+            "optin_thabloid",
         )
 
 
