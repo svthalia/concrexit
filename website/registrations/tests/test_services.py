@@ -48,6 +48,7 @@ class ServicesTest(TestCase):
             contribution=7.5,
             membership_type=Membership.MEMBER,
             status=Entry.STATUS_CONFIRM,
+            optin_thabloid=True,
         )
 
         cls.benefactor_registration = Registration.objects.create(
@@ -68,6 +69,7 @@ class ServicesTest(TestCase):
             contribution=7.5,
             membership_type=Membership.BENEFACTOR,
             status=Entry.STATUS_CONFIRM,
+            optin_thabloid=False,
         )
 
         cls.study_time_member_registration = Registration.objects.create(
