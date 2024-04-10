@@ -8,7 +8,7 @@ from thaliawebsite.api.openapi import OAuthSchemaGenerator
 app_name = "thaliawebsite"
 
 urlpatterns = [
-    path("", include("activemembers.api.v1.urls")),
+    path("", include("activemembers.api.v2.urls")),
     path("", include("announcements.api.v1.urls")),
     path("", include("events.api.v1.urls")),
     path("", include("members.api.v1.urls")),
