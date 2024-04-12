@@ -350,8 +350,9 @@ class MemberGroupMembership(models.Model):
     def validate_unique(self, **kwargs):
         try:
             super().validate_unique(**kwargs)
-            # Check if a group has more than one chair
+            # Skip checks if group hasn't been saved yet.
             if self.group.id is not None:
+                # Check if a group has more than one chair
                 if self.chair:
                     chairs = MemberGroupMembership.objects.filter(
                         group=self.group, chair=True
@@ -365,13 +366,11 @@ class MemberGroupMembership(models.Model):
                             }
                         )
 
-            # check if this member is already in the group in this period
-            if self.group.id is not None:
+                # check if this member is already in the group in this period
                 memberships = MemberGroupMembership.objects.filter(
                     group=self.group, member=self.member
                 )
 
-            if self.group.id is not None:
                 if overlaps(self, memberships):
                     raise ValidationError(
                         {
