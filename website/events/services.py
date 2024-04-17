@@ -15,7 +15,7 @@ from events.models import (
     categories,
     status,
 )
-from payments.api.v1.fields import PaymentTypeField
+from payments.api.v2.fields import PaymentTypeField
 from payments.services import create_payment, delete_payment
 from utils.snippets import datetime_to_lectureyear
 
