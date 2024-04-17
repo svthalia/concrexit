@@ -776,7 +776,7 @@ LOGIN_REDIRECT_URL = "/"
 
 # Cors configuration
 CORS_ORIGIN_ALLOW_ALL = True
-CORS_URLS_REGEX = r"^/(?:api/v1|api/v2|user/oauth)/.*"
+CORS_URLS_REGEX = r"^/(?:api/v2|user/oauth)/.*"
 
 # OAuth configuration
 OIDC_RSA_PRIVATE_KEY = from_env("OIDC_RSA_PRIVATE_KEY", testing=None)
@@ -862,12 +862,11 @@ AUTHENTICATION_BACKENDS = [
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.SessionAuthentication",
-        "thaliawebsite.api.authentication.APIv1TokenAuthentication",
         "oauth2_provider.contrib.rest_framework.OAuth2Authentication",
     ),
-    "DEFAULT_PAGINATION_CLASS": "thaliawebsite.api.pagination.APIv2LimitOffsetPagination",
-    "PAGE_SIZE": 50,  # Only for API v2
-    "ALLOWED_VERSIONS": ["v1", "v2", "calendarjs", "facedetection"],
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 50,
+    "ALLOWED_VERSIONS": ["v2", "calendarjs", "facedetection"],
     "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.NamespaceVersioning",
     "DEFAULT_SCHEMA_CLASS": "thaliawebsite.api.openapi.OAuthAutoSchema",
     "DEFAULT_THROTTLE_CLASSES": [

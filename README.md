@@ -93,23 +93,22 @@ In the future we should register this method in the `apps.py` file of the app, b
 
 #### Versions
 We currently have 2 versions of the API.
-The first version is the `v1` API, which is the old API.
+The first version is the `v1` API, which is not used and already removed.
 The second version is the `v2` API, which is the new API that is actively being developed.
-The `v1` API is deprecated and will be removed in the future.
 
 #### Swagger documentation
 The API has automatic documentation using Swager / OpenAPI.
 This documentation is available at `/api/docs/`.
 
 #### Authentication
-`v1` uses token authentication. `v2` uses OAuth2 authentication, which is the new standard for authentication.
+`v1` used to have token authentication. `v2` uses OAuth2 authentication, which is the new standard for authentication.
 The OAuth2 authentication is implemented using the `django-oauth-toolkit` package.
 
 #### Throttling
 The API has throttling enabled.
 
 #### Other (internal) APIs
-Apart from the main versions (`v1` and `v2`), we also have a few specific mini-APIs that are used for specific purposes and are not really open to the public.
+Apart from the main version (`v2`), we also have a few specific mini-APIs that are used for specific purposes and are not really open to the public.
 These are the `calendarjs` and `facedetection` APIs. The `calendarjs` API is only used by the calendar on the website (to query events) and the `facedetection` API is used by the face detection service to post face encodings.
 
 

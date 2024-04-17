@@ -27,9 +27,7 @@ urlpatterns = [
                     "docs",
                     TemplateView.as_view(
                         template_name="swagger/index.html",
-                        extra_context={
-                            "schema_urls": ["api:v2:schema", "api:v1:schema"]
-                        },
+                        extra_context={"schema_urls": ["api:v2:schema"]},
                     ),
                     name="swagger",
                 ),

@@ -13,5 +13,4 @@ Subpackages
    :maxdepth: 4
 
    members.api.calendarjs
-   members.api.v1
    members.api.v2
