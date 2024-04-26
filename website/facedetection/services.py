@@ -47,7 +47,7 @@ def _serialize_lambda_source(source: ReferenceFace | FaceDetectionPhoto):
             "pk": source.pk,
             "token": source.token,
             "photo_url": get_media_url(
-                source.file,
+                source.file.thumbnails.large,
                 absolute_url=True,
                 # Lambda calls can be queued for up to 6 hours by default, so
                 # we make sure the url it uses is valid for at least that long.
@@ -60,7 +60,7 @@ def _serialize_lambda_source(source: ReferenceFace | FaceDetectionPhoto):
             "pk": source.pk,
             "token": source.token,
             "photo_url": get_media_url(
-                source.photo.file,
+                source.photo.file.thumbnails.photo_large,
                 absolute_url=True,
                 expire_seconds=60 * 60 * 7,
             ),
