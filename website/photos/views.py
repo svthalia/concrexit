@@ -77,7 +77,9 @@ class AlbumDetailView(LoginRequiredMixin, _BaseAlbumView):
 
     def get_album(self, **kwargs):
         slug = kwargs.get("slug")
-        album = get_object_or_404(Album, slug=slug)
+        album = get_object_or_404(
+            Album.objects.filter(hidden=False, is_processing=False), slug=slug
+        )
 
         if not is_album_accessible(self.request, album):
             raise Http404("Sorry, you're not allowed to view this album")
@@ -91,7 +93,9 @@ class SharedAlbumView(_BaseAlbumView):
     def get_album(self, **kwargs):
         slug = kwargs.get("slug")
         token = kwargs.get("token")
-        album = get_object_or_404(Album, slug=slug)
+        album = get_object_or_404(
+            Album.objects.filter(hidden=False, is_processing=False), slug=slug
+        )
 
         check_shared_album_token(album, token)
 
