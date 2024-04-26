@@ -4,6 +4,7 @@ version = "0.0.dev"
 description = "New new Thalia website, now with extra Django."
 authors = ["Thalia Technicie <www@thalia.nu>"]
 license = "AGPL-3.0-or-later"
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.11"
