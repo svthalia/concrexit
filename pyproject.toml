@@ -79,7 +79,7 @@ pydot = "^1.4.2"
 django-extensions = "^3.2.1"
 
 [build-system]
-requires = ["poetry>=1.2.0"]
+requires = ["poetry>=1.8.2"]
 build-backend = "poetry.masonry.api"
 
 [tool.coverage.run]
