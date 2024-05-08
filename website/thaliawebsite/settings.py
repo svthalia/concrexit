@@ -400,6 +400,10 @@ CELERY_BEAT_SCHEDULE = {
         "task": "registrations.tasks.minimise_registrations",
         "schedule": crontab(minute=0, hour=3, day_of_month=1),
     },
+    "notifyoldentries": {
+        "task": "registrations.tasks.notify_old_entries",
+        "schedule": crontab(minute=0, hour=8, day_of_week=1),
+    },
     "sendscheduledmessages": {
         "task": "pushnotifications.tasks.send_scheduled_messages",
         "schedule": crontab(minute="*/2"),

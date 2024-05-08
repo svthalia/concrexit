@@ -180,3 +180,20 @@ def send_references_information_message(entry: Registration | Renewal) -> None:
             ),
         },
     )
+
+
+def send_reminder_open_registration(registration: Registration) -> None:
+    """Send a notification to the board that a registration has been open for more than one month.
+
+    :param registration: the registration entry
+    """
+    send_email(
+        to=[settings.BOARD_NOTIFICATION_ADDRESS],
+        subject="Open registration for more than one month",
+        txt_template="registrations/email/reminder_open_registration.txt",
+        html_template="registrations/email/reminder_open_registration.html",
+        context={
+            "name": registration.get_full_name(),
+            "created_at": registration.created_at,
+        },
+    )
