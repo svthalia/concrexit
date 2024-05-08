@@ -442,24 +442,25 @@ class Event(models.Model):
                             )
                         }
                     )
-                if self.update_deadline < self.registration_end:
-                    errors.update(
-                        {
-                            "update_deadline": _(
-                                "The update deadline should be "
-                                "after the registration deadline."
-                            )
-                        }
-                    )
-                if self.update_deadline > self.start:
-                    errors.update(
-                        {
-                            "update_deadline": _(
-                                "The update deadline should be "
-                                "before the start of the event."
-                            )
-                        }
-                    )
+                if self.update_deadline is not None:
+                    if self.update_deadline < self.registration_end:
+                        errors.update(
+                            {
+                                "update_deadline": _(
+                                    "The update deadline should be "
+                                    "after the registration deadline."
+                                )
+                            }
+                        )
+                    if self.update_deadline > self.start:
+                        errors.update(
+                            {
+                                "update_deadline": _(
+                                    "The update deadline should be "
+                                    "before the start of the event."
+                                )
+                            }
+                        )
                 if (
                     self.registration_start
                     and self.registration_end
