@@ -21,15 +21,18 @@ album_uploaded = Signal()
 def process_album_upload(
     archive_upload_id: str, album_id: int, uploader_id: int | None = None
 ):
+    upload = TemporaryUpload.objects.get(upload_id=archive_upload_id)
+    archive = upload.file
+
     try:
         album = Album.objects.get(id=album_id)
     except Album.DoesNotExist:
-        return
+        logger.exception("Album %s does not exist", album_id)
+        archive.delete()
+        upload.delete()
 
     uploader = Member.objects.get(id=uploader_id) if uploader_id is not None else None
 
-    upload = TemporaryUpload.objects.get(upload_id=archive_upload_id)
-    archive = upload.file
     try:
         with transaction.atomic():
             # We make the upload atomic separately, so we can keep using the db if it fails.
