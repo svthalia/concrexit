@@ -442,6 +442,24 @@ class Event(models.Model):
                             )
                         }
                     )
+                if self.update_deadline < self.registration_end:
+                    errors.update(
+                        {
+                            "update_deadline": _(
+                                "The update deadline should be "
+                                "after the registration deadline."
+                            )
+                        }
+                    )
+                if self.update_deadline > self.start:
+                    errors.update(
+                        {
+                            "update_deadline": _(
+                                "The update deadline should be "
+                                "before the start of the event."
+                            )
+                        }
+                    )
                 if (
                     self.registration_start
                     and self.registration_end
@@ -450,6 +468,25 @@ class Event(models.Model):
                     message = _("Registration start should be before registration end")
                     errors.update(
                         {"registration_start": message, "registration_end": message}
+                    )
+            else:
+                if self.cancel_deadline:
+                    errors.update(
+                        {
+                            "cancel_deadline": _(
+                                "There can be no cancellation deadline"
+                                " when no registration is required."
+                            )
+                        }
+                    )
+                if self.update_deadline:
+                    errors.update(
+                        {
+                            "update_deadline": _(
+                                "There can be no update deadline "
+                                "when no registration is required."
+                            )
+                        }
                     )
 
         if errors:
