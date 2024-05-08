@@ -95,6 +95,7 @@ class EventAdmin(DoNextModelAdmin):
                     "registration_without_membership",
                     "registration_start",
                     "registration_end",
+                    "update_deadline",
                     "cancel_deadline",
                     "send_cancel_email",
                     "optional_registrations",

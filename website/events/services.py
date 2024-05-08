@@ -174,7 +174,7 @@ def is_user_present(member, event):
     ).exists()
 
 
-def event_permissions(member, event, name=None, registration_prefetch=False):
+def event_permissions(member, event: Event, name=None, registration_prefetch=False):
     """Return a dictionary with the available event permissions of the user.
 
     :param member: the user
@@ -259,6 +259,7 @@ def event_permissions(member, event, name=None, registration_prefetch=False):
         and (
             event.registration_allowed
             or (event.optional_registration_allowed and not event.registration_required)
+            or (event.update_deadline is not None and event.update_deadline >= now)
         )
         and (
             name

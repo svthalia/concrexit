@@ -81,6 +81,10 @@
             <dt>{% trans "registration period"|capfirst %}</dt>
             <dd>{{ event.registration_start }} <br>— {{ event.registration_end }}</dd>
             {% endif %}
+            {% if event.update_deadline %}
+            <dt>{% trans "update deadline"|capfirst %}</dt>
+            <dd>{{ event.update_deadline }}</dd>
+            {% endif %}
             {% if event.cancel_deadline %}
             <dt>{% trans "cancel deadline"|capfirst %}</dt>
             <dd>{{ event.cancel_deadline }}</dd>

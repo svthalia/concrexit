@@ -102,6 +102,17 @@ class Event(models.Model):
         ),
     )
 
+    update_deadline = models.DateTimeField(
+        _("registration update deadline"),
+        null=True,
+        blank=True,
+        help_text=_(
+            "Deadline for participants to update their registration. "
+            "Updating is always allowed until registration closes, "
+            "so this field can only be used to extend this.",
+        ),
+    )
+
     cancel_deadline = models.DateTimeField(_("cancel deadline"), null=True, blank=True)
 
     send_cancel_email = models.BooleanField(
