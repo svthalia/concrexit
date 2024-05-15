@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.db.models import Count, Q
 from django.utils import timezone
 
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
@@ -7,8 +6,8 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import DestroyAPIView, ListAPIView, ListCreateAPIView
 from rest_framework.schemas.openapi import AutoSchema
 
+from facedetection.services import get_user_photos
 from photos.api.v2.serializers.photo import PhotoListSerializer
-from photos.models import Photo
 from thaliawebsite.api.v2.permissions import IsAuthenticatedOrTokenHasScopeForMethod
 from utils.media.services import fetch_thumbnails
 
@@ -36,35 +35,7 @@ class YourPhotosView(ListAPIView):
         return super().get_serializer(*args, **kwargs)
 
     def get_queryset(self):
-        member = self.request.member
-
-        reference_faces = member.reference_faces.filter(
-            marked_for_deletion_at__isnull=True,
-        )
-
-        # Filter out matches from long before the member's first membership.
-        albums_since = member.earliest_membership.since - timezone.timedelta(days=31)
-        photos = Photo.objects.select_related("album").filter(
-            album__date__gte=albums_since
-        )
-
-        # Filter out matches from after the member's last membership.
-        if member.latest_membership.until is not None:
-            photos = photos.filter(album__date__lte=member.latest_membership.until)
-
-        # Actually match the reference faces.
-        photos = photos.filter(album__hidden=False, album__is_processing=False).filter(
-            facedetectionphoto__encodings__matches__reference__in=reference_faces,
-        )
-
-        return (
-            photos.annotate(
-                member_likes=Count("likes", filter=Q(likes__member=self.request.member))
-            )
-            .select_properties("num_likes")
-            .select_properties("num_likes")
-            .order_by("-album__date", "-pk")
-        )
+        return get_user_photos(self.request.member)
 
 
 class ReferenceFaceListView(ListCreateAPIView):
