@@ -1,6 +1,5 @@
 """General views for the website."""
 
-from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.views import LogoutView as BaseLogoutView
 from django.contrib.auth.views import PasswordResetView
