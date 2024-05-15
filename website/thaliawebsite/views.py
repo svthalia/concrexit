@@ -77,12 +77,7 @@ class RateLimitedLoginView(LoginView):
     @method_decorator(ratelimit(key="ip", rate="30/h"))
     @method_decorator(ratelimit(key="post:username", rate="30/h"))
     def post(self, request, *args, **kwargs):
-        response = super().post(request, *args, **kwargs)
-
-        if request.member:
-            return redirect(self.get_success_url())
-        else:
-            return response
+        return super().post(request, *args, **kwargs)
 
 
 class LogoutView(BaseLogoutView):
