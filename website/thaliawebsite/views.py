@@ -1,5 +1,6 @@
 """General views for the website."""
 
+from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.views import LogoutView as BaseLogoutView
 from django.contrib.auth.views import PasswordResetView
@@ -77,7 +78,12 @@ class RateLimitedLoginView(LoginView):
     @method_decorator(ratelimit(key="ip", rate="30/h"))
     @method_decorator(ratelimit(key="post:username", rate="30/h"))
     def post(self, request, *args, **kwargs):
-        return super().post(request, *args, **kwargs)
+        response = super().post(request, *args, **kwargs)
+
+        if request.member:
+            return redirect(request.GET.get("next", settings.LOGIN_REDIRECT_URL))
+        else:
+            return response
 
 
 class LogoutView(BaseLogoutView):
