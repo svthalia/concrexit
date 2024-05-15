@@ -81,7 +81,7 @@ class RateLimitedLoginView(LoginView):
         response = super().post(request, *args, **kwargs)
 
         if request.member:
-            return redirect(request.GET.get("next", settings.LOGIN_REDIRECT_URL))
+            return redirect(self.get_success_url())
         else:
             return response
 
