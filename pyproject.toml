@@ -48,7 +48,7 @@ celery = {version = "^5.3.6", extras = ["redis"]}
 [tool.poetry.group.scss.dependencies]
 # These dependencies are only needed to compile SASS, which can be done
 # offline during a build. So these are not needed in production.
-libsass = "0.22.0"
+libsass = "0.23.0"
 django-compressor = "4.4"
 
 [tool.poetry.group.postgres]
