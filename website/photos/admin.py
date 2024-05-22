@@ -74,7 +74,11 @@ class AlbumAdmin(admin.ModelAdmin):
             # function call. In a real deployment, it has to be called only when the current db
             # transaction is committed,
             transaction.on_commit(
-                process_album_upload.s(archive.temporary_upload.upload_id, obj.id).delay
+                process_album_upload.s(
+                    archive.temporary_upload.upload_id,
+                    obj.id,
+                    uploader_id=request.user.id,
+                ).delay
             )
 
             self.message_user(
