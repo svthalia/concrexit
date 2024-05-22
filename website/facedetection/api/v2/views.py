@@ -56,7 +56,9 @@ class ReferenceFaceListView(ListCreateAPIView):
 
     def create(self, request, *args, **kwargs):
         if request.member.current_membership is None:
-            raise PermissionDenied(detail="You need to be a member to use this feaure.")
+            raise PermissionDenied(
+                detail="You need to be a member to use this feature."
+            )
         if (
             request.member.reference_faces.filter(
                 marked_for_deletion_at__isnull=True,
