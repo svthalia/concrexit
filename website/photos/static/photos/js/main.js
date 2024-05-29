@@ -71,9 +71,9 @@ Fancybox.Plugins.Toolbar.defaults.items.like = {
     },
 };
 
-
 Fancybox.bind('[data-fancybox="gallery"]',
     {
+        Hash: false,
         Toolbar: {
             display: [
                 { id: "like", position: "center" },
