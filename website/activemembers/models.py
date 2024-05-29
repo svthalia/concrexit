@@ -1,4 +1,5 @@
 """The models defined by the activemembers package."""
+
 import datetime
 import logging
 
@@ -349,28 +350,35 @@ class MemberGroupMembership(models.Model):
     def validate_unique(self, **kwargs):
         try:
             super().validate_unique(**kwargs)
-            # Check if a group has more than one chair
-            if self.chair:
-                chairs = MemberGroupMembership.objects.filter(
-                    group=self.group, chair=True
+            # Skip checks if group hasn't been saved yet.
+            if self.group.id is not None:
+                # Check if a group has more than one chair
+                if self.chair:
+                    chairs = MemberGroupMembership.objects.filter(
+                        group=self.group, chair=True
+                    )
+                    if overlaps(self, chairs):
+                        raise ValidationError(
+                            {
+                                NON_FIELD_ERRORS: _(
+                                    "There already is a chair for this time period"
+                                )
+                            }
+                        )
+
+                # check if this member is already in the group in this period
+                memberships = MemberGroupMembership.objects.filter(
+                    group=self.group, member=self.member
                 )
-                if overlaps(self, chairs):
+
+                if overlaps(self, memberships):
                     raise ValidationError(
                         {
-                            NON_FIELD_ERRORS: _(
-                                "There already is a chair for this time period"
+                            "member": _(
+                                "This member is already in the group for this period"
                             )
                         }
                     )
-
-            # check if this member is already in the group in this period
-            memberships = MemberGroupMembership.objects.filter(
-                group=self.group, member=self.member
-            )
-            if overlaps(self, memberships):
-                raise ValidationError(
-                    {"member": _("This member is already in the group for this period")}
-                )
 
         except (
             MemberGroupMembership.member.RelatedObjectDoesNotExist,

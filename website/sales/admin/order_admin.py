@@ -95,6 +95,7 @@ class OrderShiftFilter(AutocompleteFilter):
     title = _("shift")
     field_name = "shift"
     rel_model = Order
+    use_pk_exact = False
 
     def queryset(self, request, queryset):
         if self.value():
@@ -106,6 +107,7 @@ class OrderMemberFilter(AutocompleteFilter):
     title = _("member")
     field_name = "payer"
     rel_model = Order
+    use_pk_exact = False
 
     def queryset(self, request, queryset):
         if self.value():

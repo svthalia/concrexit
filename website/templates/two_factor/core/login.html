@@ -18,7 +18,11 @@
   <form action="" method="post">{% csrf_token %}
     {% if wizard.steps.current == 'auth' %}
         {{ wizard.management_form }}
-        <input type="hidden" name="next" value="{{ next }}">
+
+        {% if form.errors %}
+          {% trans "Invalid username or password." as error_text %}
+          {% alert 'danger' error_text dismissible=True %}
+        {% endif %}
 
         <div class="form-row">
             <input name="{{ wizard.form.username.html_name }}" autofocus class="form-control"

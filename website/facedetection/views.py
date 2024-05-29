@@ -14,6 +14,7 @@ from thaliawebsite.views import PagedView
 
 from .forms import ReferenceFaceUploadForm
 from .models import ReferenceFace
+from .services import get_user_photos
 
 
 class YourPhotosView(LoginRequiredMixin, PagedView):
@@ -30,28 +31,7 @@ class YourPhotosView(LoginRequiredMixin, PagedView):
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
-        member = self.request.member
-
-        reference_faces = member.reference_faces.filter(
-            marked_for_deletion_at__isnull=True,
-        )
-
-        # Filter out matches from long before the member's first membership.
-        albums_since = member.earliest_membership.since - timezone.timedelta(days=31)
-        photos = Photo.objects.select_related("album").filter(
-            album__date__gte=albums_since
-        )
-
-        # Filter out matches from after the member's last membership.
-        if member.latest_membership.until is not None:
-            photos = photos.filter(album__date__lte=member.latest_membership.until)
-
-        # Actually match the reference faces.
-        photos = photos.filter(album__hidden=False, album__is_processing=False).filter(
-            facedetectionphoto__encodings__matches__reference__in=reference_faces,
-        )
-
-        return photos.select_properties("num_likes").order_by("-album__date", "-pk")
+        return get_user_photos(self.request.member)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
