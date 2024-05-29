@@ -232,7 +232,10 @@ class EmailsTest(TestCase):
             subject="Open registration for more than one month",
             txt_template="registrations/email/reminder_open_registration.txt",
             html_template="registrations/email/reminder_open_registration.html",
-            context={"name": registration.get_full_name()},
+            context={
+                "name": registration.get_full_name(),
+                "created_at": registration.created_at,
+            },
         )
 
     @mock.patch("registrations.emails.send_email")
