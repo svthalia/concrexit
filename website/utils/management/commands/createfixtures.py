@@ -49,7 +49,7 @@ _current_tz = timezone.get_current_timezone()
 
 
 def _generate_title():
-    words = _faker.words(random.randint(1, 3))
+    words = _faker.words(random.randint(2, 4))
     return " ".join([word.capitalize() for word in words])
 
 
@@ -237,7 +237,7 @@ class Command(BaseCommand):
         if random.random() < 0.1:
             month = timedelta(days=30)
             member_group.until = _faker.date_time_between_dates(
-                member_group.since, member_group.since + 30 * month
+                member_group.since + 12 * month, member_group.since + 60 * month
             ).date()
 
         member_group.active = random.random() < 0.9
@@ -273,12 +273,16 @@ class Command(BaseCommand):
 
         today = date.today()
         membership.since = _faker.date_time_between_dates(
-            group.since, group.until
+            group.since,
+            group.until - timedelta(days=3)
+            if group.until
+            else group.since + timedelta(days=365),
         ).date()
 
         if random.random() < 0.2 and membership.since < today:
             membership.until = _faker.date_time_between_dates(
-                membership.since, group.until
+                membership.since,
+                group.until if group.until else group.since + timedelta(days=2 * 365),
             ).date()
 
         membership.full_clean()
