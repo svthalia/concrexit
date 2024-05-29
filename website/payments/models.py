@@ -1,4 +1,5 @@
 """The models defined by the payments package."""
+
 import datetime
 import uuid
 from decimal import Decimal
@@ -493,14 +494,16 @@ class PaymentRequest(models.Model):
 
     payment = models.OneToOneField(
         Payment,
+        null=True,
+        editable=False,
         on_delete=models.PROTECT,
         related_name="related_payment",
     )
 
     required_paid_date = models.DateTimeField(
         verbose_name=_("required paid date"),
-        blank=False,
-        null=False,
+        blank=True,
+        null=True,
     )
 
     amount = models.FloatField(
@@ -525,7 +528,7 @@ class PaymentRequest(models.Model):
 
     @property
     def status(self):
-        if self.paid_payment_set.exists():
+        if self.payment is not None:
             return "paid"
         if self.required_paid_date and self.required_paid_date < timezone.now():
             return "overdue"
