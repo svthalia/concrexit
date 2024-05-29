@@ -26,7 +26,7 @@ django-filepond-widget = "0.9.0"
 django-thumbnails = "0.7.0"
 django-ratelimit = "4.1.0"
 django-sass-processor = "1.4.1"
-django-otp = "1.3.0"
+django-otp = "1.5.0"
 django-formtools = "2.5.1"
 django-two-factor-auth = {extras = ["webauthn", "phonenumbers"], version = "^1.16.0"}
 bleach = {extras = ["css"], version = "6.1.0"}
