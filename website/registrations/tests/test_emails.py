@@ -1,4 +1,5 @@
 import uuid
+from datetime import timedelta
 from unittest import mock
 
 from django.conf import settings
@@ -7,7 +8,7 @@ from django.template import loader
 from django.template.defaultfilters import floatformat
 from django.test import TestCase
 from django.urls import reverse
-from django.utils import translation
+from django.utils import timezone, translation
 
 from members.models import Member, Profile
 from registrations import emails
@@ -212,6 +213,26 @@ class EmailsTest(TestCase):
                     + reverse("admin:registrations_renewal_change", args=[renewal.pk])
                 ),
             },
+        )
+
+    @mock.patch("registrations.emails.send_email")
+    def test_send_reminder_open_registration(self, send_email):
+        registration = Registration(
+            email="test@example.org",
+            first_name="John",
+            last_name="Doe",
+            pk=0,
+        )
+        registration.created_at = timezone.now() - timedelta(days=31)
+
+        emails.send_reminder_open_registration(registration)
+
+        send_email.assert_called_once_with(
+            to=[settings.BOARD_NOTIFICATION_ADDRESS],
+            subject="Open registration for more than one month",
+            txt_template="registrations/email/reminder_open_registration.txt",
+            html_template="registrations/email/reminder_open_registration.html",
+            context={"name": registration.get_full_name()},
         )
 
     @mock.patch("registrations.emails.send_email")
