@@ -21,6 +21,7 @@ class Category(models.Model):
     PARTNER = "partner"
     PHOTO = "photo"
     BOARD = "board"
+    THABLOID = "thabloid"
 
     key = models.CharField(max_length=16, primary_key=True)
 
