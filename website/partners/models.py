@@ -53,12 +53,8 @@ class Partner(models.Model):
         max_length=100,
         validators=[
             RegexValidator(
-                regex=(
-                    r"^([1-9][e][\s])*([ëéÉËa-zA-Z]"
-                    r"+(([\.][\s])|([\s]))?)+[1-9][0-9]"
-                    r"*(([-][1-9][0-9]*)|([\s]?[ëéÉËa-zA-Z]+))?$"
-                ),
-                message=_("Enter a valid address"),
+                regex=r"^([^/@:;%_]+) \d+([^/@:;%_]*)",
+                message="Enter a valid address",
             )
         ],
     )
