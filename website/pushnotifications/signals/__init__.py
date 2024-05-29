@@ -1,1 +1,1 @@
-from . import events, newsletters, photos, pizzas  # noqa: F401
+from . import events, newsletters, photos, pizzas, thabloid  # noqa: F401
