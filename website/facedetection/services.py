@@ -2,12 +2,13 @@ import json
 import logging
 
 from django.conf import settings
-from django.db.models import Q
+from django.db.models import Count, Q
 from django.utils import timezone
 
 import boto3
 from sentry_sdk import capture_exception
 
+from members.models.member import Member
 from photos.models import Photo
 from utils.media.services import get_media_url
 
@@ -47,7 +48,7 @@ def _serialize_lambda_source(source: ReferenceFace | FaceDetectionPhoto):
             "pk": source.pk,
             "token": source.token,
             "photo_url": get_media_url(
-                source.file,
+                source.file.thumbnails.large,
                 absolute_url=True,
                 # Lambda calls can be queued for up to 6 hours by default, so
                 # we make sure the url it uses is valid for at least that long.
@@ -60,7 +61,7 @@ def _serialize_lambda_source(source: ReferenceFace | FaceDetectionPhoto):
             "pk": source.pk,
             "token": source.token,
             "photo_url": get_media_url(
-                source.photo.file,
+                source.photo.file.thumbnails.photo_large,
                 absolute_url=True,
                 expire_seconds=60 * 60 * 7,
             ),
@@ -193,3 +194,28 @@ def submit_new_photos() -> int:
         count += len(photos)
 
     return count
+
+
+def get_user_photos(member: Member):
+    reference_faces = member.reference_faces.filter(
+        marked_for_deletion_at__isnull=True,
+    )
+
+    # Filter out matches from long before the member's first membership.
+    albums_since = member.earliest_membership.since - timezone.timedelta(days=31)
+    photos = Photo.objects.select_related("album").filter(album__date__gte=albums_since)
+
+    # Filter out matches from after the member's last membership.
+    if member.latest_membership.until is not None:
+        photos = photos.filter(album__date__lte=member.latest_membership.until)
+
+    # Actually match the reference faces.
+    photos = photos.filter(album__hidden=False, album__is_processing=False).filter(
+        facedetectionphoto__encodings__matches__reference__in=reference_faces,
+    )
+
+    return (
+        photos.annotate(member_likes=Count("likes", filter=Q(likes__member=member)))
+        .select_properties("num_likes")
+        .order_by("-album__date", "-pk")
+    )

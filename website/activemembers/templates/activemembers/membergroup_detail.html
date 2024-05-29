@@ -54,8 +54,13 @@
 							{% membergroup_member_card member %}
 						</div>
 					{% empty %}
-						{% trans "This group doesn't have any members?" as empty %}
-						{% alert 'danger' empty extra_classes='col-10 offset-1' %}
+                        {% if membergroup.active %}
+                            {% trans "This group doesn't have any members." as empty %}
+                            {% alert 'danger' empty extra_classes='col-10 offset-1' %}
+                        {% else %}
+                            {% trans "This group is inactive." as empty %}
+                            {% alert 'warning' empty extra_classes='col-10 offset-1' %}
+                        {% endif %}
 					{% endfor %}
 				</div>
 			</div>

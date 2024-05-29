@@ -74,6 +74,15 @@
             {% bootstrap_field form.icis_employee %}
             {% bootstrap_field form.contribution %}
             {% bootstrap_field form.privacy_policy %}
+            <div class="form-row">
+                <div class="form-check">
+                    <input name="optin_thabloid" class="form-check-input" id="id_optin_thabloid"
+                           type="checkbox" checked>
+                    <label class="form-check-label"
+                           for="id_optin_thabloid">{% trans "Receive paper version of Thabloid." %}</label>
+                </div>
+                <small class="text-muted">{% trans "The Thabloid is a quarterly booklet with puzzles, news, and tips. You can always find the digital version of the Thabloid on the website" %}</small>
+            </div>
         </fieldset>
         {% if tpay_enabled %}
             <hr/>

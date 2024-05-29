@@ -307,6 +307,10 @@ class Registration(Entry):
         verbose_name=_("mailinglist opt-in"), default=False
     )
 
+    optin_thabloid = models.BooleanField(
+        verbose_name=_("Thabloid opt-in"), default=True
+    )
+
     optin_birthday = models.BooleanField(
         verbose_name=_("birthday calendar opt-in"), default=False
     )

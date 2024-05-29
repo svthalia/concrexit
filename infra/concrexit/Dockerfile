@@ -14,7 +14,7 @@ FROM base as build-venv
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
     PIP_NO_CACHE_DIR=1
 
-RUN pip install "poetry==1.3.1" && pip install --upgrade setuptools
+RUN pip install "poetry==1.8.2" && pip install --upgrade setuptools
 
 RUN --mount=type=cache,target=/var/cache/apk \
     apk update && apk add  \
@@ -44,7 +44,7 @@ WORKDIR /app
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
     PIP_NO_CACHE_DIR=1
 
-RUN pip install "poetry==1.3.1" && pip install --upgrade setuptools
+RUN pip install "poetry==1.8.2" && pip install --upgrade setuptools
 
 
 RUN --mount=type=cache,target=/var/cache/apt \
