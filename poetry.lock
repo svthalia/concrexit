@@ -1067,13 +1067,13 @@ requests = ">=2.13.0"
 
 [[package]]
 name = "django-otp"
-version = "1.3.0"
+version = "1.5.0"
 description = "A pluggable framework for adding two-factor authentication to Django using one-time passwords."
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "django_otp-1.3.0-py3-none-any.whl", hash = "sha256:5277731bc05b6cdbf96aa84ac46018e30ed5fb248086053b0146f925de059060"},
-    {file = "django_otp-1.3.0.tar.gz", hash = "sha256:8f4156a3c14ce2aaa31379385eadf388925cd50fc4b5d20a3b944f454c98ff7c"},
+    {file = "django_otp-1.5.0-py3-none-any.whl", hash = "sha256:e88871d2d3b333a86c2cd0cb721be8098d4d6344cb220315a500e5a5c8254295"},
+    {file = "django_otp-1.5.0.tar.gz", hash = "sha256:e7142139f1e9686be5f396669a3d3d61178cd9b3e9de9de5933888668908b46b"},
 ]
 
 [package.dependencies]
@@ -1081,6 +1081,7 @@ django = ">=3.2"
 
 [package.extras]
 qrcode = ["qrcode"]
+segno = ["segno"]
 
 [[package]]
 name = "django-phonenumber-field"
@@ -3142,4 +3143,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "d32f23b38dc638df0569ffcd0f85f01207ec23efdee5ee47a6b3ca9d16ef55dc"
+content-hash = "cb416bfcb4b52b6cbeb9ccabfeedd0410e9b9bee0f5200eae5eb060dd7867265"
