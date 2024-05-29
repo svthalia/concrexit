@@ -199,17 +199,17 @@
 
                                         let open_datetime = new Date("{{ event.registration_start.isoformat }}");
                                         function updateCountdown() {
+                                            if (new Date() >= open_datetime) {
+                                                document.getElementById("countdown").style.display = "none";
+                                                document.getElementById("register-button").removeAttribute("disabled");
+                                                return;
+                                            }
                                             const diff = (open_datetime - new Date()) / 1000;
                                             let elem = document.getElementById("countdown");
                                             elem.innerText = "Opens in " + formatDuration(diff);
                                         }
                                         updateCountdown()
                                         var updater = setInterval(updateCountdown, 1000);
-                                        var finalizer = setTimeout(function() {
-                                            document.getElementById("countdown").style.display = "none";
-                                            document.getElementById("register-button").removeAttribute("disabled");
-                                            clearInterval(updater);
-                                        }, open_datetime - new Date());
                                     </script>
                                 {% elif permissions.cancel_registration %}
                                     {# Special message to accept costs when cancelling after the deadline, unless member is on the waiting list #}
