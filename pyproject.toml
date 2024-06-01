@@ -30,7 +30,7 @@ django-otp = "1.5.0"
 django-formtools = "2.5.1"
 django-two-factor-auth = {extras = ["webauthn", "phonenumbers"], version = "^1.16.0"}
 bleach = {extras = ["css"], version = "6.1.0"}
-Pillow = "9.5.0"
+Pillow = "10.3.0"
 python-magic = "0.4.27"
 bcrypt = "4.0.1"
 argon2_cffi = "21.3.0"
