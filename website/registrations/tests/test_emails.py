@@ -7,11 +7,15 @@ from django.template import loader
 from django.template.defaultfilters import floatformat
 from django.test import TestCase
 from django.urls import reverse
-from django.utils import translation
+from django.utils import timezone, translation
+
+from freezegun import freeze_time
 
 from members.models import Member, Profile
+from members.models.membership import Membership
 from registrations import emails
-from registrations.models import Registration, Renewal
+from registrations.models import Entry, Registration, Renewal
+from registrations.tasks import notify_old_entries
 from utils.snippets import send_email
 
 
@@ -211,6 +215,41 @@ class EmailsTest(TestCase):
                     "http://localhost:8000"
                     + reverse("admin:registrations_renewal_change", args=[renewal.pk])
                 ),
+            },
+        )
+
+    @mock.patch("registrations.emails.send_email")
+    def test_send_reminder_open_registration(self, send_email):
+        with freeze_time("2024-01-01"):
+            registration = Registration.objects.create(
+                first_name="John",
+                last_name="Doe",
+                email="johndoe@example.com",
+                programme="computingscience",
+                starting_year=2014,
+                address_street="Heyendaalseweg 135",
+                address_street2="",
+                address_postal_code="6525AJ",
+                address_city="Nijmegen",
+                address_country="NL",
+                phone_number="06123456789",
+                birthday=timezone.now().replace(year=1990),
+                length=Entry.MEMBERSHIP_YEAR,
+                membership_type=Membership.MEMBER,
+                status=Entry.STATUS_CONFIRM,
+            )
+
+        with freeze_time("2024-02-10"):
+            notify_old_entries()
+
+        send_email.assert_called_once_with(
+            to=[settings.BOARD_NOTIFICATION_ADDRESS],
+            subject="Open registration for more than one month",
+            txt_template="registrations/email/reminder_open_registration.txt",
+            html_template="registrations/email/reminder_open_registration.html",
+            context={
+                "name": registration.get_full_name(),
+                "created_at": registration.created_at,
             },
         )
 
