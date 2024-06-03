@@ -2,7 +2,9 @@ Dear board,
 
 {{ name }} has an open registration for more then a month. The registration was created at {{ created_at }}.
 
-If {{ name }} does not pay for their registration, the registration will automatically be removed three months after {{ created_at }}
+If {{ name }} does not complete their registration, the registration will automatically be removed three months after {{ created_at }}.
+
+You may want to reach out to them.
 
 Kisses,
 
