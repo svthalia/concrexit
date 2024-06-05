@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_http_methods
 
@@ -50,8 +51,22 @@ def cancel_order(request):
 def place_order(request):
     """View that shows the detail of the current order."""
     event = FoodEvent.current()
+
     if not event:
         return redirect("pizzas:index")
+
+    if event.start < timezone.now:
+        return redirect("pizzas:index")
+
+    if event.has_ended:
+        return redirect("pizzas:index")
+
+    if event.event.registration_required:
+        registration = event.event.registrations.filter(
+            member=request.member, date_cancelled=None
+        ).first()
+        if registration is None or not registration.is_invited:
+            return redirect("pizzas:index")
 
     try:
         obj = FoodOrder.objects.get(food_event=event, member=request.member)

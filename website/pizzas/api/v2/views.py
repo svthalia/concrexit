@@ -1,8 +1,10 @@
 from django.db.models import Prefetch
+from django.utils import timezone
 
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework import filters as framework_filters
 from rest_framework import status
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import (
     CreateAPIView,
     DestroyAPIView,
@@ -141,7 +143,8 @@ class FoodEventOrderDetailView(
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
-
+        if instance.event.has_ended:
+            raise PermissionDenied
         if instance.payment:
             delete_payment(instance, member=request.member, ignore_change_window=True)
 
@@ -152,6 +155,19 @@ class FoodEventOrderDetailView(
         )
 
     def create(self, request, *args, **kwargs):
+        if self.food_event.start > timezone.now():
+            raise PermissionDenied("You cannot order food yet")
+        if self.food_event.has_ended:
+            raise PermissionDenied("Event has ended")
+
+        event = self.food_event.event
+        if event.registration_required:
+            registration = event.registrations.filter(
+                member=request.member, date_cancelled=None
+            ).first()
+            if registration is None or not registration.is_invited:
+                raise PermissionDenied("You are not registered for this event")
+
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
