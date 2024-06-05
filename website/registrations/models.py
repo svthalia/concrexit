@@ -303,6 +303,16 @@ class Registration(Entry):
 
     # ---- Opt-ins -----
 
+    optin_sharing = models.CharField(
+        max_length=3,
+        choices=(("yes", _("Yes")), ("no", _("No"))),
+        verbose_name=_("Opt-in sharing photos on social media"),
+        help_text=_(
+            "Do you give permission to post photos that you are on of events on social media?"
+        ),
+        null=True,
+    )
+
     optin_mailinglist = models.BooleanField(
         verbose_name=_("mailinglist opt-in"), default=False
     )

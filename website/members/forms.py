@@ -45,6 +45,7 @@ class ProfileForm(forms.ModelForm):
             "receive_registration_confirmation",
             "receive_oldmembers",
             "email_gsuite_only",
+            "optin_sharing",
         ]
         model = Profile
 

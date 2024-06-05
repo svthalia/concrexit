@@ -85,6 +85,7 @@ class RegistrationAdminTest(TestCase):
                 "bic",
                 "signature",
                 "optin_thabloid",
+                "optin_sharing",
             ],
         )
 
@@ -125,6 +126,7 @@ class RegistrationAdminTest(TestCase):
                 "bic",
                 "signature",
                 "optin_thabloid",
+                "optin_sharing",
             ],
         )
 
@@ -165,6 +167,7 @@ class RegistrationAdminTest(TestCase):
                 "bic",
                 "signature",
                 "optin_thabloid",
+                "optin_sharing",
             ],
         )
 

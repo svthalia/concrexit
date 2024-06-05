@@ -48,6 +48,7 @@ class ProfileInline(admin.StackedInline):
         "emergency_contact",
         "emergency_contact_phone_number",
         "event_permissions",
+        "optin_sharing",
     ]
     classes = ["collapse"]
     model = models.Profile

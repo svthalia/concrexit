@@ -427,6 +427,7 @@ class Command(BaseCommand):
         profile.user_id = user.id
         profile.birthday = fakeprofile["birthdate"]
         profile.website = fakeprofile["website"][0]
+        profile.optin_sharing = random.random() < 0.5
 
         igen = IconGenerator(5, 5)  # 5x5 blocks
         icon = igen.generate(

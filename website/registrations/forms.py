@@ -120,6 +120,7 @@ class MemberRegistrationForm(BaseRegistrationForm):
             "bic",
             "signature",
             "optin_thabloid",
+            "optin_sharing",
         )
 
     def clean(self):
@@ -172,6 +173,7 @@ class BenefactorRegistrationForm(BaseRegistrationForm):
             "bic",
             "signature",
             "optin_thabloid",
+            "optin_sharing",
         )
 
 

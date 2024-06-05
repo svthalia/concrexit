@@ -273,6 +273,16 @@ class Profile(models.Model):
         verbose_name="The data from this profile has been minimized", default=False
     )
 
+    # ---- Opt-ins -----
+
+    optin_sharing = models.BooleanField(
+        verbose_name=_("Opt-in sharing photos on social media"),
+        help_text=_(
+            "Do you give permission to post photos that you are on of events on social media?"
+        ),
+        null=True,
+    )
+
     def display_name(self):
         pref = self.display_name_preference
         if pref == "nickname" and self.nickname is not None:
