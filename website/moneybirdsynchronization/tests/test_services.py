@@ -520,7 +520,7 @@ class ServicesTest(TestCase):
     @mock.patch("moneybirdsynchronization.services.create_or_update_contact")
     @mock.patch(
         "moneybirdsynchronization.services._sync_contacts_with_outdated_mandates"
-    )  # this is to prevent sync_contacts from actaully calling the function, since it is testet in another test
+    )  # Prevent sync_contacts from actaully calling the function, since it is tested separately.
     def test_sync_contacts(
         self,
         mock_sync_contacts_with_outdated_mandates,
@@ -591,4 +591,4 @@ class ServicesTest(TestCase):
 
         self.assertEqual(mock_create_or_update_contact.call_count, 0)
         self.assertEqual(mock_delete_contact.call_count, 1)
-        mock_delete_contact.assert_any_call(self.member)
+        mock_delete_contact.assert_any_call(self.member.moneybird_contact)

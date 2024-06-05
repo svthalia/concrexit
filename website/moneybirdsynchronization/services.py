@@ -67,23 +67,30 @@ def create_or_update_contact(member: Member):
     return moneybird_contact
 
 
-def delete_contact(member):
-    """Delete a Django user/member from Moneybird."""
+def delete_contact(contact: MoneybirdContact):
+    """Delete or archive a contact on Moneybird, and delete our record of it."""
     if not settings.MONEYBIRD_SYNC_ENABLED:
         return
 
-    try:
-        moneybird_contact = MoneybirdContact.objects.get(member=member)
-    except MoneybirdContact.DoesNotExist:
-        return
-
-    if moneybird_contact.moneybird_id is None:
-        moneybird_contact.delete()
+    if contact.moneybird_id is None:
+        contact.delete()
         return
 
     moneybird = get_moneybird_api_service()
-    moneybird.delete_contact(moneybird_contact.moneybird_id)
-    moneybird_contact.delete()
+    try:
+        moneybird.delete_contact(contact.moneybird_id)
+        contact.delete()
+    except Administration.InvalidData as e:
+        if e.status_code == 400 and e.description == "Contact can not be archived":
+            # Contact is most likely already archived, so we can delete it.
+            logger.warning(
+                "Contact %s for member %s could not be archived.",
+                contact.moneybird_id,
+                contact.member,
+            )
+            contact.delete()
+        else:
+            raise
 
 
 def create_or_update_external_invoice(obj):
@@ -262,7 +269,7 @@ def _sync_outdated_invoices():
 
 def _sync_contacts():
     logger.info("Synchronizing contacts...")
-    # make moneybird contacts for people that dont have it
+    # Make moneybird contacts for people that dont have.
     for member in Member.objects.filter(
         moneybird_contact__isnull=True, profile__is_minimized=False
     ):
@@ -272,7 +279,7 @@ def _sync_contacts():
             logger.exception("Moneybird synchronization error: %s", e)
             send_sync_error(e, member)
 
-    # update moneybird contacts that need synchronization
+    # Update moneybird contacts that need synchronization.
     for contact in MoneybirdContact.objects.filter(needs_synchronization=True):
         try:
             create_or_update_contact(contact.member)
@@ -280,13 +287,13 @@ def _sync_contacts():
             logger.exception("Moneybird synchronization error: %s", e)
             send_sync_error(e, contact.member)
 
-    # archive moneybrid contacts where mb contact has not been archived but user was minimized
-    for minimized in Member.objects.filter(profile__is_minimized=True):
+    # Archive moneybrid contacts where mb contact has not been archived but user was minimized.
+    for contact in MoneybirdContact.objects.filter(member__profile__is_minimized=True):
         try:
-            delete_contact(minimized)
+            delete_contact(contact)
         except Administration.Error as e:
             logger.exception("Moneybird synchronization error: %s", e)
-            send_sync_error(e, minimized)
+            send_sync_error(e, contact)
 
     _sync_contacts_with_outdated_mandates()
 

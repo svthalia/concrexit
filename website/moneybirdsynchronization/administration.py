@@ -56,6 +56,9 @@ class Administration(ABC):
             if description:
                 msg += f": {description}"
 
+            self.status_code = status_code
+            self.description = description
+
             super().__init__(msg)
 
     class Unauthorized(Error):
