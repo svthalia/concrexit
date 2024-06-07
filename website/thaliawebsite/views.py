@@ -1,5 +1,6 @@
 """General views for the website."""
 
+from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.views import LogoutView as BaseLogoutView
 from django.contrib.auth.views import PasswordResetView
@@ -10,6 +11,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import ListView, TemplateView
 from django.views.generic.base import View
 
+from django_otp import user_has_device
 from django_ratelimit.decorators import ratelimit
 from two_factor.views import LoginView
 
@@ -58,9 +60,11 @@ class PagedView(ListView):
         context.update(
             {
                 "page_range": page_range,
-                "base_url": f"{self.request.path}?{querydict.urlencode()}&"
-                if querydict
-                else f"{self.request.path}?",
+                "base_url": (
+                    f"{self.request.path}?{querydict.urlencode()}&"
+                    if querydict
+                    else f"{self.request.path}?"
+                ),
             }
         )
 
@@ -101,5 +105,11 @@ def admin_unauthorized_view(request):
         return redirect(url)
     elif not request.member.is_staff and not request.member.is_superuser:
         raise PermissionDenied("You are not allowed to access the administration page.")
+    elif not user_has_device(request.member):
+        messages.error(
+            request,
+            "You need to set up two-factor authentication to access the administration page.",
+        )
+        return redirect("two_factor:setup")
     else:
         return redirect(request.GET.get("next", "/"))
