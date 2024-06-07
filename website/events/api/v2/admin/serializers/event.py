@@ -55,6 +55,7 @@ class EventListAdminSerializer(serializers.ModelSerializer):
             "published",
             "registration_start",
             "registration_end",
+            "update_deadline",
             "cancel_deadline",
             "optional_registrations",
             "location",
