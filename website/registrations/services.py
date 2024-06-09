@@ -269,7 +269,10 @@ def complete_renewal(renewal: Renewal):
                     # If a membership exists that was still valid when the renewal was created, the
                     # original membership can be upgraded. This is defined in the Huishoudelijk
                     # Reglement (article 2.8 in the version of 2022-07-22).
-                    latest_membership.until = None
+                    latest_membership.until = timezone.datetime(
+                        year=lecture_year + 1, month=9, day=1
+                    ).date()
+                    latest_membership.study_long = True
                     latest_membership.save()
                     renewal.membership = latest_membership
 
@@ -383,10 +386,10 @@ def _create_membership_from_registration(
 
     if registration.membership_type == Membership.BENEFACTOR:
         until = timezone.datetime(year=lecture_year + 1, month=9, day=1).date()
-    elif registration.length == Registration.MEMBERSHIP_YEAR:
-        until = timezone.datetime(year=lecture_year + 1, month=9, day=1).date()
-    else:
+    elif registration.membership_type == Membership.HONORARY:
         until = None
+    else:
+        until = timezone.datetime(year=lecture_year + 1, month=9, day=1).date()
 
     return Membership.objects.create(
         user=member, since=since, until=until, type=registration.membership_type
