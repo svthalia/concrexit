@@ -127,9 +127,6 @@ def send_expiration_announcement(dry_run=False):
                     connection=connection,
                     context={
                         "name": member.get_full_name(),
-                        "membership_price": floatformat(
-                            settings.MEMBERSHIP_PRICES["year"], 2
-                        ),
                         "renewal_url": settings.BASE_URL
                         + reverse("registrations:renew"),
                     },
@@ -157,8 +154,32 @@ def send_expiration_study_long(dry_run=False):
     )
     with mail.get_connection() as connection:
         for member in members:
-            raise NotImplementedError(
-                f"This function is not implemented yet. {connection}"
+            logger.info("Sent email to %s (%s)", member.get_full_name(), member.email)
+            if not dry_run:
+                send_email(
+                    to=[member.email],
+                    subject="Membership expiration warning",
+                    txt_template="members/email/expiration_warning.txt",
+                    html_template="members/email/expiration_warning.html",
+                    connection=connection,
+                    context={
+                        "name": member.get_full_name(),
+                        "membership_price": floatformat(
+                            settings.MEMBERSHIP_PRICES["year"], 2
+                        ),
+                        "renewal_url": settings.BASE_URL
+                        + reverse("registrations:renew"),
+                    },
+                )
+
+        if not dry_run:
+            send_email(
+                to=[settings.BOARD_NOTIFICATION_ADDRESS],
+                subject="Membership expiration announcement sent",
+                txt_template="members/email/expiration_announcement_warning.txt",
+                html_template="members/email/expiration_announcement_warning.html",
+                connection=connection,
+                context={"members": members},
             )
 
 
