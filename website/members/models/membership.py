@@ -43,7 +43,13 @@ class Membership(models.Model):
         verbose_name=_("Membership until"),
         help_text=_("The date the member stops holding this membership."),
         blank=True,
-        null=True,
+        null=True,  # This is only for honorary members
+    )
+
+    study_long = models.BooleanField(
+        verbose_name=_("Study long"),
+        help_text=_("Whether the member is studying long."),
+        default=False,
     )
 
     def __str__(self):
