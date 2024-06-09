@@ -110,6 +110,7 @@ def send_expiration_announcement(dry_run=False):
     members = (
         Member.current_members.filter(membership__until__lte=expiry_date)
         .exclude(membership__until__isnull=True)
+        .exclude(membership__study_long=True)
         .exclude(email="")
         .distinct()
     )
@@ -142,6 +143,22 @@ def send_expiration_announcement(dry_run=False):
                 html_template="members/email/expiration_announcement_notification.html",
                 connection=connection,
                 context={"members": members},
+            )
+
+
+def send_expiration_study_long(dry_run=False):
+    expiry_date = timezone.now() + timedelta(days=31)
+    members = (
+        Member.current_members.filter(membership__until__lte=expiry_date)
+        .exclude(membership__until__isnull=True)
+        .exclude(membership__study_long=False)
+        .exclude(email="")
+        .distinct()
+    )
+    with mail.get_connection() as connection:
+        for member in members:
+            raise NotImplementedError(
+                f"This function is not implemented yet. {connection}"
             )
 
 
