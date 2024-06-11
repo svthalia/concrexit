@@ -64,7 +64,8 @@ def cancel_info_string(event: Event, cancel_status, reg_status):
             "Cancellation while on the waiting list will not result in a fine. However, you will not be able to re-register."
         ),
     }
-    return infos[cancel_status].format(fine=event.fine)
+    # No str.format(), see https://github.com/svthalia/concrexit/security/advisories/GHSA-vf8w-xr57-hw87.
+    return infos[cancel_status].replace("{fine}", str(event.fine))
 
 
 def registration_status(event: Event, registration: EventRegistration, member):
@@ -135,10 +136,13 @@ def registration_status_string(status, event: Event, registration: EventRegistra
     else:
         queue_pos = None
 
-    return status_msg.format(
-        fine=event.fine,
-        pos=queue_pos,
-        regstart=localize(timezone.localtime(event.registration_start)),
+    # Replace placeholders in the status message, but not using str.format(),
+    # which is vulnerable to injection attacks that could leak secrets.
+    # See https://github.com/svthalia/concrexit/security/advisories/GHSA-vf8w-xr57-hw87.
+    return (
+        status_msg.replace("{fine}", str(event.fine))
+        .replace("{pos}", str(queue_pos))
+        .replace("{regstart}", localize(timezone.localtime(event.registration_start)))
     )
 
 
