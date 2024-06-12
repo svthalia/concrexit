@@ -10,7 +10,7 @@
 {% block opengraph %}
     {% if event %}
         <meta property="og:description"
-              content="{% blocktrans with title=event.title %}Order food for {{ title }}{% endblocktrans %}"/>
+                content="{% blocktrans with title=event.title %}Order food for {{ title }}{% endblocktrans %}"/>
     {% else %}
         <meta property="og:description"
               content="{% trans "There is no current event for which you can order food" %}"/>
@@ -42,7 +42,17 @@
 {% block section_tags %}id="pizzas-index"{% endblock %}
 
 {% block page_content %}
-    {% if event %}
+    {% if event and not_registered or not event %}
+        {% if not event %}
+            <p>
+                {% trans "There are no current events for which you can order food" %}
+            </p>
+        {% else %}
+            <p>
+                {% trans "You are not registered for the current food event" %}
+            </p>
+        {% endif %}
+    {% else %}
         <div class="mb-3 row">
             {% if perms.pizzas.change_product %}
                 <div class="col-12 col-md-4 my-1">
@@ -201,9 +211,5 @@
                 {% endif %}
             {% endif %}
         {% endif %}
-    {% else %}
-        <p>
-            {% trans "There is no current event for which you can order food" %}l
-        </p>
     {% endif %}
 {% endblock %}
