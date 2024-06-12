@@ -75,7 +75,7 @@ def place_order(request):
     if not event:
         return redirect("pizzas:index")
 
-    if event.start < timezone.now:
+    if event.start > timezone.now():
         return redirect("pizzas:index")
 
     if event.has_ended:
