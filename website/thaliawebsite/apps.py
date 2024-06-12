@@ -1,4 +1,5 @@
 from django.apps import AppConfig
+from django.contrib.admin.apps import AdminConfig
 from django.urls import reverse
 
 
@@ -45,3 +46,7 @@ class ThaliaWebsiteConfig(AppConfig):
                 },
             ],
         }
+
+
+class ThaliaAdminConfig(AdminConfig):
+    default_site = "thaliawebsite.admin.ThaliaAdminSite"
