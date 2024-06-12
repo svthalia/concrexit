@@ -24,7 +24,27 @@ def index(request):
         obj = FoodOrder.objects.get(food_event=event, member=request.member)
     except FoodOrder.DoesNotExist:
         obj = None
-    context = {"event": event, "products": products, "order": obj}
+
+    registrated_required = (
+        event is not None
+        and event.event is not None
+        and event.event.registration_required
+    )
+    not_registered = False
+    if registrated_required:
+        registration = event.event.registrations.filter(
+            member=request.member, date_cancelled=None
+        ).first()
+
+        if registration is None or not registration.is_invited:
+            not_registered = True
+
+    context = {
+        "event": event,
+        "products": products,
+        "order": obj,
+        "not_registered": not_registered,
+    }
     return render(request, "pizzas/index.html", context)
 
 
