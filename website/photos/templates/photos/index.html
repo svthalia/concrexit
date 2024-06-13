@@ -12,22 +12,20 @@
 {% block content %}
     {% with keys=keywords|join:" " %}
         <div class="row mb-4">
-            <div class="col-12 col-lg-6">
-                {% trans 'Interested in a full resolution version of a photo? Send your request to <a href="mailto:media@thalia.nu">media@thalia.nu</a>.' %}
-            </div>
-            <div class="d-flex flex-wrap col-12 col-lg-6 mt-3 mt-lg-0 search-form form-inline d-flex align-items-center justify-content-space-between">
+            <div class="d-flex flex-wrap col-12 col-lg-12 mt-3 mt-lg-0 search-form form-inline d-flex align-items-center justify-content-space-between">
             {% block search_form %}
-                <form class="col-12 col-md-9 d-flex align-items-center justify-content-center flex-grow-1" method="get"
+                <form class="col-12 col-md-6 d-flex align-items-center justify-content-center flex-grow-1" method="get"
                   action="{% url 'photos:index' %}#photos-albums">
                     <div class="input-group">
                         <input class="form-control col-12 col-md-9 flex-grow-1" style="width: available" name="keywords" type="search" value="{{ keys|default_if_none:'' }}"
                             placeholder="{% trans "What are you looking for?" %}" aria-label="{% trans "Search the Thalia's photo albums" %}" aria-describedby="photoalbums-search-button">
-                        <input id="photoalbums-search-button" class="btn btn-lg btn-primary col-12 mt-2 mt-md-0 col-md-3 ms-0" type="submit"
-                            value="{% trans "Search" %}"/>
+                        <button id="photoalbums-search-button" class="btn btn-lg btn-primary mt-0 ms-0 d-flex align-items-center justify-content-center" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
                     </div>
                 </form>
-                <a href="{% url 'photos:liked-photos' %}" class="btn btn-lg btn-primary col-6 mt-2 mt-md-0 col-md-1 ms-0 ms-md-2 d-flex align-items-center justify-content-center">
-                    <i class="fas fa-heart me-2 me-md-0"></i><span class="d-md-none">Liked photos</span>
+                <a href="{% url 'photos:liked-photos' %}" class="btn btn-lg btn-primary col-6 mt-2 mt-md-0 col-md-2 ms-0 ms-md-2 d-flex align-items-center justify-content-center">
+                    <i class="fas fa-heart me-2 me-md-2"></i><span>Liked photos</span>
                 </a>
             {% endblock search_form %}
             </div>
