@@ -43,5 +43,11 @@ class ThaliaWebsiteConfig(AppConfig):
                     "url": reverse("two_factor:profile"),
                     "key": 5,
                 },
+                {
+                    "section": "profile",
+                    "title": "Manage face detection",
+                    "url": reverse("facedetection:reference-faces"),
+                    "key": 6,
+                },
             ],
         }
