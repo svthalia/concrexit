@@ -1206,3 +1206,5 @@ MONEYBIRD_ZERO_TAX_RATE_ID: int | None = (
     if os.environ.get("MONEYBIRD_ZERO_TAX_RATE_ID")
     else None
 )
+
+ADMIN_REQUIRE_2FA = setting(development=False, production=True)
