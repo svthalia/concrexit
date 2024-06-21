@@ -3,6 +3,7 @@ from decimal import Decimal
 from functools import lru_cache
 from typing import Generic, TypeVar
 
+from django.apps import apps
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Model
 from django.db.models.signals import pre_save
@@ -125,6 +126,10 @@ class Payables:
         if self._get_key(model) not in self._registry:
             raise NotRegistered(f"No Payable registered for {self._get_key(model)}")
         return self._registry[self._get_key(model)](model)
+
+    def get_payable_models(self) -> list[type[Model]]:
+        """Return all registered models."""
+        return [apps.get_model(key) for key in self._registry]
 
     def register(self, model: type[Model], payable_class: type[Payable]):
         """Register a payable class for a model.
