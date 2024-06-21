@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from rest_framework import serializers
 
 from payments.api.v2.serializers.payment_amount import PaymentAmountSerializer
@@ -42,8 +44,8 @@ class ShiftSerializer(serializers.ModelSerializer):
             "product_sales",
         )
 
-    total_revenue = PaymentAmountSerializer(min_value=0, read_only=True)
-    total_revenue_paid = PaymentAmountSerializer(min_value=0, read_only=True)
+    total_revenue = PaymentAmountSerializer(min_value=Decimal(0), read_only=True)
+    total_revenue_paid = PaymentAmountSerializer(min_value=Decimal(0), read_only=True)
 
     products = ProductListItemSerializer(
         source="product_list.product_items", many=True, read_only=True
