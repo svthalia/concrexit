@@ -184,6 +184,14 @@ class Payment(models.Model):
 
     @classmethod
     def get_payable_prefetches(cls):
+        """Return all (OneToOneField reverse relation) fields from payables to `Payment`.
+
+        This can be used to prefetch all payable models related to a payment, which makes
+        the `Payment.payable_object` property much faster when called on multiple payments.
+
+        Usage:
+        >>> Payment.objects.prefetch_related(*Payment.get_payable_prefetches())
+        """
         return [
             model._meta.get_field("payment").related_query_name()
             for model in payables.payables.get_payable_models()
