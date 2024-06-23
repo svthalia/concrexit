@@ -55,7 +55,7 @@ class RegistrationApiTest(TestCase):
         self.client.force_login(self.member)
 
     def test_registration_register_not_required(self):
-        response = self.client.post("/api/v1/events/1/registrations/", follow=True)
+        response = self.client.post("/api/v2/events/1/registrations/", follow=True)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(self.event.participants.count(), 1)
 
@@ -64,7 +64,7 @@ class RegistrationApiTest(TestCase):
         self.event.registration_end = timezone.now() + datetime.timedelta(hours=1)
         self.event.cancel_deadline = timezone.now() + datetime.timedelta(hours=1)
         self.event.save()
-        response = self.client.post("/api/v1/events/1/registrations/", follow=True)
+        response = self.client.post("/api/v2/events/1/registrations/", follow=True)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data["member"], self.member.pk)
         self.assertEqual(self.event.participants.count(), 1)
@@ -75,10 +75,10 @@ class RegistrationApiTest(TestCase):
         self.event.registration_end = timezone.now() + datetime.timedelta(hours=1)
         self.event.cancel_deadline = timezone.now() + datetime.timedelta(hours=1)
         self.event.save()
-        response = self.client.post("/api/v1/events/1/registrations/", follow=True)
+        response = self.client.post("/api/v2/events/1/registrations/", follow=True)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data["member"], self.member.pk)
-        response = self.client.post("/api/v1/events/1/registrations/", follow=True)
+        response = self.client.post("/api/v2/events/1/registrations/", follow=True)
         self.assertEqual(response.status_code, 403)
         self.assertEqual(self.event.participants.count(), 1)
 
@@ -87,7 +87,7 @@ class RegistrationApiTest(TestCase):
         self.event.registration_end = timezone.now() - datetime.timedelta(hours=1)
         self.event.cancel_deadline = timezone.now() + datetime.timedelta(hours=1)
         self.event.save()
-        response = self.client.post("/api/v1/events/1/registrations/", follow=True)
+        response = self.client.post("/api/v2/events/1/registrations/", follow=True)
         self.assertEqual(response.status_code, 403)
         self.assertEqual(self.event.participants.count(), 0)
 
@@ -97,7 +97,7 @@ class RegistrationApiTest(TestCase):
         self.event.cancel_deadline = timezone.now() + datetime.timedelta(hours=1)
         self.event.save()
         reg = EventRegistration.objects.create(event=self.event, member=self.member)
-        response = self.client.delete(f"/api/v1/registrations/{reg.pk}/", follow=True)
+        response = self.client.delete(f"/api/v2/registrations/{reg.pk}/", follow=True)
         self.assertEqual(response.status_code, 204)
         self.assertEqual(self.event.participants.count(), 0)
 
@@ -132,7 +132,7 @@ class RegistrationApiTest(TestCase):
         )
 
         response = self.client.post(
-            "/api/v1/events/1/registrations/",
+            "/api/v2/events/1/registrations/",
             {"info_field_1": True, "info_field_2": 42, "info_field_3": "text"},
             follow=True,
         )
@@ -175,7 +175,7 @@ class RegistrationApiTest(TestCase):
             required=False,
         )
 
-        response = self.client.post("/api/v1/events/1/registrations/", follow=True)
+        response = self.client.post("/api/v2/events/1/registrations/", follow=True)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data["member"], self.member.pk)
         self.assertEqual(self.event.participants.count(), 1)
@@ -193,7 +193,7 @@ class RegistrationApiTest(TestCase):
             required=True,
         )
 
-        response = self.client.post("/api/v1/events/1/registrations/", follow=True)
+        response = self.client.post("/api/v2/events/1/registrations/", follow=True)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data["member"], self.member.pk)
         self.assertEqual(self.event.participants.count(), 1)
@@ -243,7 +243,7 @@ class RegistrationApiTest(TestCase):
 
         # as if there is a csrf token
         response = self.client.get(
-            f"/api/v1/registrations/{registration.pk}/", follow=True
+            f"/api/v2/registrations/{registration.pk}/", follow=True
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["member"], self.member.pk)
@@ -284,10 +284,10 @@ class RegistrationApiTest(TestCase):
         )
 
         response = self.client.post(
-            "/api/v1/events/1/registrations/",
+            "/api/v2/events/1/registrations/",
             {
                 "fields[info_field_1]": False,
-                "fields[info_field_2": 42,
+                "fields[info_field_2]": 42,
                 "fields[info_field_3]": "text",
                 "csrf": "random",
             },
@@ -304,7 +304,7 @@ class RegistrationApiTest(TestCase):
         self.assertEqual(field3.get_value_for(registration), None)
 
         response = self.client.patch(
-            f"/api/v1/registrations/{registration.pk}/",
+            f"/api/v2/registrations/{registration.pk}/",
             {
                 "fields[info_field_1]": True,
                 "fields[info_field_2]": 1337,
@@ -331,7 +331,7 @@ class RegistrationApiTest(TestCase):
         self.member.save()
 
         response = self.client.patch(
-            f"/api/v1/registrations/{reg0.pk}/",
+            f"/api/v2/registrations/{reg0.pk}/",
             {"csrf": "random", "present": True, "payment": "cash_payment"},
             follow=True,
         )
@@ -342,7 +342,7 @@ class RegistrationApiTest(TestCase):
         self.assertTrue(reg0.present)
 
         response = self.client.patch(
-            f"/api/v1/registrations/{reg1.pk}/",
+            f"/api/v2/registrations/{reg1.pk}/",
             {"csrf": "random", "present": True, "payment": "card_payment"},
             follow=True,
         )
@@ -354,7 +354,7 @@ class RegistrationApiTest(TestCase):
         self.assertTrue(reg1.present)
 
         response = self.client.patch(
-            f"/api/v1/registrations/{reg2.pk}/",
+            f"/api/v2/registrations/{reg2.pk}/",
             {"csrf": "random", "present": False, "payment": "cash_payment"},
             follow=True,
         )
