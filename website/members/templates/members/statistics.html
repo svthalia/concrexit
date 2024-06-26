@@ -20,7 +20,7 @@
         <div class="col-6 ">
             <canvas id="total-year-chart"
                     data-data="{{ cohort_sizes }}"
-                    data-title="Membership Types (previous cohorts)"
+                    data-title="Membership Types per year"
                     data-chart-type="bar">
             </canvas>
         </div>
@@ -46,9 +46,15 @@
         <div class="col-6">
             <canvas id="pizza-total-type-chart"
                     data-data="{{ total_pizza_orders }}"
-                    data-title="Pizza Orders"
+                    data-title="Top 10 Pizza Orders"
                     data-chart-type="pie">
             </canvas>
+        </div>
+        <div class="col-6">
+            <canvas id="borrel-total-type-chart"
+                    data-data="{{ total_sales_orders }}"
+                    data-title="Top 10 Borrel Orders"
+                    data-chart-type="pie">
         </div>
         <div class="col-6">
             <canvas id="active-members-chart"
