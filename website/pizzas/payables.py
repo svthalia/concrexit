@@ -6,7 +6,7 @@ from pizzas.models import FoodOrder
 from pizzas.services import can_change_order
 
 
-class FoodOrderPayable(Payable):
+class FoodOrderPayable(Payable[FoodOrder]):
     @property
     def payment_amount(self):
         return self.model.product.price

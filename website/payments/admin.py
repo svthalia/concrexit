@@ -4,6 +4,7 @@ from collections import OrderedDict
 
 from django.contrib import admin, messages
 from django.contrib.admin import ModelAdmin
+from django.contrib.admin.options import IncorrectLookupParameters
 from django.contrib.admin.utils import model_ngettext
 from django.db.models import QuerySet
 from django.db.models.query_utils import Q
@@ -14,7 +15,7 @@ from django.utils.html import format_html
 from django.utils.text import capfirst
 from django.utils.translation import gettext_lazy as _
 
-from payments import admin_views, services
+from payments import admin_views, payables, services
 from payments.forms import BankAccountAdminForm, BatchPaymentInlineAdminForm
 
 from .models import BankAccount, Batch, Payment, PaymentUser
@@ -33,6 +34,38 @@ def _show_message(
         )
 
 
+class PayableModelListFilter(admin.SimpleListFilter):
+    title = _("payable model")
+    parameter_name = "payable_model"
+
+    def lookups(self, request, model_admin):
+        return [
+            (
+                model._meta.get_field("payment").related_query_name(),
+                f"{model._meta.app_label} | {model._meta.verbose_name}",
+            )
+            for model in payables.payables.get_payable_models()
+        ] + [("none", _("None"))]
+
+    def queryset(self, request, queryset):
+        value = self.value()
+        if not value:
+            return queryset
+        if value == "none":
+            return queryset.filter(
+                **{
+                    model._meta.get_field("payment").related_query_name(): None
+                    for model in payables.payables.get_payable_models()
+                }
+            )
+        if value not in (
+            model._meta.get_field("payment").related_query_name()
+            for model in payables.payables.get_payable_models()
+        ):
+            raise IncorrectLookupParameters(_("Invalid payable model"))
+        return queryset.filter(**{value + "__isnull": False})
+
+
 @admin.register(Payment)
 class PaymentAdmin(admin.ModelAdmin):
     """Manage the payments."""
@@ -46,7 +79,7 @@ class PaymentAdmin(admin.ModelAdmin):
         "batch_link",
         "topic",
     )
-    list_filter = ("type", "batch")
+    list_filter = ("type", "batch", PayableModelListFilter)
     list_select_related = ("paid_by", "processed_by", "batch")
     date_hierarchy = "created_at"
     fields = (
@@ -58,6 +91,7 @@ class PaymentAdmin(admin.ModelAdmin):
         "topic",
         "notes",
         "batch",
+        "payable_object",
     )
     readonly_fields = (
         "created_at",
@@ -68,6 +102,7 @@ class PaymentAdmin(admin.ModelAdmin):
         "topic",
         "notes",
         "batch",
+        "payable_object",
     )
     search_fields = (
         "topic",
@@ -87,6 +122,19 @@ class PaymentAdmin(admin.ModelAdmin):
         "add_to_last_batch",
         "export_csv",
     ]
+
+    def payable_object(self, obj: Payment) -> str:
+        payable_object = obj.payable_object
+        if payable_object:
+            return format_html(
+                "<a href='{}'>{}</a>",
+                reverse(
+                    f"admin:{payable_object._meta.app_label}_{payable_object._meta.model_name}_change",
+                    args=[payable_object.pk],
+                ),
+                payable_object,
+            )
+        return "None"
 
     @staticmethod
     def _member_link(member: PaymentUser) -> str:

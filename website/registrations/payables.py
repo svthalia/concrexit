@@ -1,11 +1,11 @@
 from django.template.defaultfilters import date
 from django.utils.functional import classproperty
 
-from payments.payables import Payable, payables
+from payments.payables import Payable, PayableModel, payables
 from registrations.models import Registration, Renewal
 
 
-class _EntryPayable(Payable):
+class _EntryPayable(Payable[PayableModel]):
     """Abstract parent class for Registration- and RenewalPayables."""
 
     @property
@@ -31,7 +31,7 @@ class _EntryPayable(Payable):
         return ["length", "contribution"]
 
 
-class RegistrationPayable(_EntryPayable):
+class RegistrationPayable(_EntryPayable[Registration]):
     @property
     def payment_topic(self):
         return f"Membership registration {self.model.membership_type} ({self.model.length})"
@@ -40,7 +40,7 @@ class RegistrationPayable(_EntryPayable):
         return member and member.has_perm("registrations.change_registration")
 
 
-class RenewalPayable(_EntryPayable):
+class RenewalPayable(_EntryPayable[Renewal]):
     @property
     def payment_payer(self):
         return self.model.member

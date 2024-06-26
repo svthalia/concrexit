@@ -21,6 +21,8 @@ from queryable_properties.properties import AggregateProperty, queryable_propert
 
 from members.models import Member
 
+from . import payables
+
 
 def validate_not_zero(value):
     if value == 0:
@@ -179,6 +181,40 @@ class Payment(models.Model):
 
     notes = models.TextField(verbose_name=_("notes"), blank=True, null=True)
     topic = models.CharField(verbose_name=_("topic"), max_length=255, default="Unknown")
+
+    @classmethod
+    def get_payable_prefetches(cls):
+        """Return all (OneToOneField reverse relation) fields from payables to `Payment`.
+
+        This can be used to prefetch all payable models related to a payment, which makes
+        the `Payment.payable_object` property much faster when called on multiple payments.
+
+        Usage:
+        >>> Payment.objects.prefetch_related(*Payment.get_payable_prefetches())
+        """
+        return [
+            model._meta.get_field("payment").related_query_name()
+            for model in payables.payables.get_payable_models()
+        ]
+
+    @property
+    def payable_object(self) -> models.Model | None:
+        """Return the payable model instance associated with this payment.
+
+        This is based on the reverse relations of the OneToOneFields from all
+        payable models to `Payment`.
+
+        This property will perform many queries if the related payable models
+        have not been prefetched. Prefetch them with:
+
+        >>> Payment.objects.prefetch_related(*Payment.get_payable_prefetches())
+        """
+        for model in payables.payables.get_payable_models():
+            if hasattr(self, model._meta.get_field("payment").related_query_name()):
+                return getattr(
+                    self, model._meta.get_field("payment").related_query_name()
+                )
+        return None
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
