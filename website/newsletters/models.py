@@ -1,4 +1,5 @@
 """The models defined by the newsletters package."""
+
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
@@ -184,7 +185,7 @@ class NewsletterEvent(NewsletterContent):
     )
 
     penalty_costs = models.DecimalField(
-        verbose_name=_("Costs (in Euro)"),
+        verbose_name=_("Fine (in Euro)"),
         max_digits=8,
         decimal_places=2,
         blank=True,

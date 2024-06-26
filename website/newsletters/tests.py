@@ -1,4 +1,5 @@
 """Defines tests for the newsletters package."""
+
 import doctest
 
 from django.contrib.auth import get_user_model
@@ -104,7 +105,7 @@ class NewslettersTest(TestCase):
 
     def test_sent_confirm_redirect(self):
         response = self.client.get(
-            reverse("newsletters:admin-send", args=[self.testletter_sent.pk])
+            reverse("admin:newsletters_newsletter_send", args=[self.testletter_sent.pk])
         )
         self.assertRedirects(response, self.testletter_sent.get_absolute_url())
 
@@ -118,7 +119,9 @@ class NewslettersTest(TestCase):
 
     def test_concept_confirm_no_redirect(self):
         response = self.client.get(
-            reverse("newsletters:admin-send", args=[self.testletter_concept.pk])
+            reverse(
+                "admin:newsletters_newsletter_send", args=[self.testletter_concept.pk]
+            )
         )
         self.assertEqual(response.status_code, 200)
 
@@ -130,7 +133,8 @@ class NewslettersTest(TestCase):
         )
 
         self.client.post(
-            reverse("newsletters:admin-send", args=[testletter.pk]), {"post": "yes"}
+            reverse("admin:newsletters_newsletter_send", args=[testletter.pk]),
+            {"post": "yes"},
         )
         self.assertEqual(len(mail.outbox), 1)
 
@@ -142,7 +146,8 @@ class NewslettersTest(TestCase):
         )
 
         self.client.post(
-            reverse("newsletters:admin-send", args=[testletter.pk]), {"post": "yes"}
+            reverse("admin:newsletters_newsletter_send", args=[testletter.pk]),
+            {"post": "yes"},
         )
 
         for message in mail.outbox:
@@ -158,7 +163,8 @@ class NewslettersTest(TestCase):
         )
 
         self.client.post(
-            reverse("newsletters:admin-send", args=[testletter.pk]), {"post": "yes"}
+            reverse("admin:newsletters_newsletter_send", args=[testletter.pk]),
+            {"post": "yes"},
         )
 
         testletter.refresh_from_db()
@@ -173,7 +179,8 @@ class NewslettersTest(TestCase):
         )
 
         response = self.client.post(
-            reverse("newsletters:admin-send", args=[testletter.pk]), {"post": "yes"}
+            reverse("admin:newsletters_newsletter_send", args=[testletter.pk]),
+            {"post": "yes"},
         )
 
         testletter.refresh_from_db()
