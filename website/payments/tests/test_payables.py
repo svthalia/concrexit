@@ -1,13 +1,16 @@
 from unittest.mock import MagicMock
 
+from django.contrib.auth.models import Permission
 from django.core.exceptions import ObjectDoesNotExist
 from django.test import TestCase
 
-from payments.models import Payment
+from members.models.member import Member
+from payments.models import Payment, PaymentRequest, PaymentUser
 from payments.payables import (
     NotRegistered,
     Payable,
     PaymentError,
+    PaymentRequestPayable,
     payables,
     prevent_saving,
     prevent_saving_related,
@@ -196,3 +199,40 @@ class ImmutablePayablesTest(TestCase):
                 MockModel2,
                 related_model_after,
             )
+
+
+class PaymentRequestPayableTest(TestCase):
+    fixtures = ["members.json"]
+
+    def setUp(self):
+        payables.register(PaymentRequest, PaymentRequestPayable)
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.admin = Member.objects.get(pk=2)
+        cls.model = PaymentRequest.objects.create(
+            amount=2.0,
+            notes="test payment",
+            topic="test topic",
+            requester=cls.admin,
+            payer=PaymentUser.objects.get(pk=1),
+        )
+
+    def test_board_member_can_manage(self):
+        payable = payables.get_payable(self.model)
+        self.assertFalse(payable.can_manage_payment(self.admin))
+        self.admin.user_permissions.add(
+            Permission.objects.get(codename="change_paymentrequest")
+        )
+        self.model.refresh_from_db()
+        self.admin = Member.objects.get(pk=2)
+        payable = payables.get_payable(self.model)
+        self.assertTrue(payable.can_manage_payment(self.admin))
+
+    def test_fields(self):
+        payable = payables.get_payable(self.model)
+        self.assertEqual(2.0, payable.payment_amount)
+        self.assertEqual("test topic", payable.payment_topic)
+        self.assertEqual("test payment", payable.payment_notes)
+        self.assertEqual(self.model.payer, payable.payment_payer)
+        self.assertEqual(self.model, payable.model)
