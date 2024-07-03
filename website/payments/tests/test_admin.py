@@ -393,7 +393,9 @@ class PaymentAdminTest(TestCase):
         """Test that the custom urls are added to the admin."""
         with self.subTest("No object"):
             urls = self.admin.get_readonly_fields(HttpRequest(), None)
-            self.assertEqual(urls, ("created_at", "processed_by", "batch"))
+            self.assertEqual(
+                urls, ("created_at", "processed_by", "payable_object", "batch")
+            )
 
         with self.subTest("With object"):
             urls = self.admin.get_readonly_fields(HttpRequest(), Payment())
@@ -401,9 +403,10 @@ class PaymentAdminTest(TestCase):
                 urls,
                 (
                     "created_at",
+                    "processed_by",
+                    "payable_object",
                     "amount",
                     "paid_by",
-                    "processed_by",
                     "type",
                     "topic",
                     "notes",

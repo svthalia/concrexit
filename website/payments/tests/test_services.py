@@ -23,8 +23,13 @@ class ServicesTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        payables.register(MockModel, MockPayable)
         cls.member = PaymentUser.objects.filter(last_name="Wiggers").first()
+
+    def setUp(self):
+        payables.register(MockModel, MockPayable)
+
+    def tearDown(self):
+        payables._unregister(MockModel)
 
     def test_create_payment(self):
         with self.subTest("Creates new payment with right payment type"):

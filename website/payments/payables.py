@@ -84,7 +84,7 @@ class Payable(ABC, Generic[PayableModel]):
     @property
     @abstractmethod
     def payment_payer(self) -> Member | None:
-        pass
+        """The member who paid or should pay for this model."""
 
     @property
     def tpay_allowed(self) -> bool:
@@ -96,7 +96,7 @@ class Payable(ABC, Generic[PayableModel]):
 
     @abstractmethod
     def can_manage_payment(self, member: Member) -> bool:
-        pass
+        """Return whether the given member can manage the payment for this payable."""
 
     @classproperty
     def immutable_after_payment(cls) -> bool:  # noqa: N805
@@ -139,15 +139,33 @@ class Payables:
         """
         self._registry[self._get_key(model)] = payable_class
         if payable_class.immutable_after_payment:
-            pre_save.connect(prevent_saving, sender=model)
+            pre_save.connect(
+                prevent_saving, sender=model, dispatch_uid=f"prevent_saving_{model}"
+            )
 
             for foreign_model in payable_class.immutable_foreign_key_models:
                 foreign_key_field = payable_class.immutable_foreign_key_models[
                     foreign_model
                 ]
                 pre_save.connect(
-                    prevent_saving_related(foreign_key_field), sender=foreign_model
+                    prevent_saving_related(foreign_key_field),
+                    sender=foreign_model,
+                    dispatch_uid=f"prevent_saving_related_{model}_{foreign_model}",
                 )
+
+    def _unregister(self, model: type[Model]):
+        """Unregister a payable class for a model.
+
+        This is for testing purposes only, to clean up the registry between tests.
+        """
+        payable_class = self._registry.get(self._get_key(model))
+        if payable_class.immutable_after_payment:
+            pre_save.disconnect(dispatch_uid=f"prevent_saving_{model}")
+            for foreign_model in payable_class.immutable_foreign_key_models:
+                pre_save.disconnect(
+                    dispatch_uid=f"prevent_saving_related_{model}_{foreign_model}"
+                )
+        del self._registry[self._get_key(model)]
 
 
 payables = Payables()

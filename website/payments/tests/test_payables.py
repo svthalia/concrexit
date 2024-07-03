@@ -16,14 +16,12 @@ from payments.tests.__mocks__ import MockModel, MockPayable
 
 
 class PayablesTest(TestCase):
-    def setUp(self):
-        payables.register(MockModel, MockPayable)
-
     def test_registered_payable(self):
+        payables.register(MockModel, MockPayable)
         self.assertIsInstance(payables.get_payable(MockModel), MockPayable)
+        payables._unregister(MockModel)
 
     def test_not_registered_payable(self):
-        payables._registry = {}
         with self.assertRaises(NotRegistered):
             payables.get_payable(MockModel)
 
@@ -32,11 +30,16 @@ class ImmutablePayablesTest(TestCase):
     def setUp(self):
         payables.register(MockModel, MockPayable)
 
+    def tearDown(self):
+        payables._unregister(MockModel)
+
     def test_register(self):
+        payables._unregister(MockModel)
         with self.subTest("Register not immutable"):
             MockPayable.immutable_after_payment = False
             payables.register(MockModel, MockPayable)
 
+        payables._unregister(MockModel)
         with self.subTest("Register immutable"):
             MockPayable.immutable_after_payment = True
             MockPayable.immutable_model_fields_after_payment = [

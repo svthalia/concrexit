@@ -11,41 +11,8 @@ from freezegun import freeze_time
 
 from payments import services
 from payments.models import BankAccount, Batch, Payment, PaymentUser, validate_not_zero
-from payments.payables import Payable
 from payments.tests.__mocks__ import MockModel, MockPayable
-
-
-class PayableTest(TestCase):
-    """Tests for the Payable class."""
-
-    def test_payment_amount_not_implemented(self):
-        p = Payable(None)
-        with self.assertRaises(NotImplementedError):
-            _ = p.payment_amount
-
-    def test_payment_topic_not_implemented(self):
-        p = Payable(None)
-        with self.assertRaises(NotImplementedError):
-            _ = p.payment_topic
-
-    def test_payment_notes_not_implemented(self):
-        p = Payable(None)
-        with self.assertRaises(NotImplementedError):
-            _ = p.payment_notes
-
-    def test_payment_payer_not_implemented(self):
-        p = Payable(None)
-        with self.assertRaises(NotImplementedError):
-            _ = p.payment_payer
-
-    def test_can_create_payment_not_implemented(self):
-        p = Payable(None)
-        with self.assertRaises(NotImplementedError):
-            p.can_manage_payment(None)
-
-    def test_tpay_allowed_by_default(self):
-        p = Payable(None)
-        self.assertTrue(p.tpay_allowed)
+from sales import payables
 
 
 @override_settings(SUSPEND_SIGNALS=True, THALIA_PAY_ENABLED_PAYMENT_METHOD=True)
@@ -502,6 +469,7 @@ class PaymentUserTest(TestCase):
         self.assertFalse(self.member.tpay_enabled)
 
     def test_tpay_balance(self):
+        payables.payables.register(MockModel, MockPayable)
         self.assertEqual(self.member.tpay_balance, 0)
         BankAccount.objects.create(
             owner=self.member,
@@ -536,6 +504,7 @@ class PaymentUserTest(TestCase):
         batch.save()
 
         self.assertEqual(self.member.tpay_balance, 0)
+        payables.payables._unregister(MockModel)
 
     def test_allow_disallow_tpay(self):
         self.assertTrue(self.member.tpay_allowed)

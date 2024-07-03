@@ -14,12 +14,17 @@ class PaymentWidgetTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        payables.register(MockModel, MockPayable)
         cls.member = PaymentUser.objects.filter(last_name="Wiggers").first()
         cls.payment = Payment.objects.create(
             amount=10, paid_by=cls.member, processed_by=cls.member, type=Payment.CASH
         )
         cls.obj = MockModel(payer=cls.member, payment=cls.payment)
+
+    def setUp(self):
+        payables.register(MockModel, MockPayable)
+
+    def tearDown(self):
+        payables._unregister(MockModel)
 
     def test_get_context(self):
         widget = PaymentWidget(obj=self.obj)

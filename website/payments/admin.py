@@ -93,17 +93,7 @@ class PaymentAdmin(admin.ModelAdmin):
         "batch",
         "payable_object",
     )
-    readonly_fields = (
-        "created_at",
-        "amount",
-        "paid_by",
-        "processed_by",
-        "type",
-        "topic",
-        "notes",
-        "batch",
-        "payable_object",
-    )
+
     search_fields = (
         "topic",
         "notes",
@@ -123,6 +113,7 @@ class PaymentAdmin(admin.ModelAdmin):
         "export_csv",
     ]
 
+    @admin.display(description=_("payable object"))
     def payable_object(self, obj: Payment) -> str:
         payable_object = obj.payable_object
         if payable_object:
@@ -196,19 +187,25 @@ class PaymentAdmin(admin.ModelAdmin):
         return super().get_field_queryset(db, db_field, request)
 
     def get_readonly_fields(self, request: HttpRequest, obj: Payment = None):
+        readonly_fields = "created_at", "processed_by", "payable_object"
         if not obj:
-            return "created_at", "processed_by", "batch"
+            return readonly_fields + ("batch",)
         if obj.type == Payment.TPAY and not (obj.batch and obj.batch.processed):
-            return (
-                "created_at",
+            return readonly_fields + (
                 "amount",
-                "type",
                 "paid_by",
-                "processed_by",
-                "notes",
+                "type",
                 "topic",
+                "notes",
             )
-        return super().get_readonly_fields(request, obj)
+        return readonly_fields + (
+            "amount",
+            "paid_by",
+            "type",
+            "topic",
+            "notes",
+            "batch",
+        )
 
     def get_actions(self, request: HttpRequest) -> OrderedDict:
         """Get the actions for the payments.
