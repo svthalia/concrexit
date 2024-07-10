@@ -482,10 +482,6 @@ img {
 
 @media(max-width: 991px) {
     .grid-item {
-        .ribbon-wrapper {
-            display: none;
-        }
-
         .name {
             font-size: 13px;
             padding: .8rem;
@@ -507,10 +503,6 @@ img {
 
 @media(max-width: 767px) {
     .grid-item {
-        .ribbon-wrapper {
-            display: none;
-        }
-
         .name {
             font-size: 11px;
             padding: .5rem;
