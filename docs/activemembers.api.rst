@@ -12,5 +12,4 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   activemembers.api.v1
    activemembers.api.v2

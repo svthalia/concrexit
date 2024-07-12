@@ -13,5 +13,4 @@ Subpackages
    :maxdepth: 4
 
    events.api.calendarjs
-   events.api.v1
    events.api.v2
