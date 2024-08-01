@@ -9,43 +9,11 @@ from django.utils import timezone
 
 from freezegun import freeze_time
 
+from events.models import Event, EventRegistration
 from payments import services
 from payments.models import BankAccount, Batch, Payment, PaymentUser, validate_not_zero
-from payments.payables import Payable
 from payments.tests.__mocks__ import MockModel, MockPayable
-
-
-class PayableTest(TestCase):
-    """Tests for the Payable class."""
-
-    def test_payment_amount_not_implemented(self):
-        p = Payable(None)
-        with self.assertRaises(NotImplementedError):
-            _ = p.payment_amount
-
-    def test_payment_topic_not_implemented(self):
-        p = Payable(None)
-        with self.assertRaises(NotImplementedError):
-            _ = p.payment_topic
-
-    def test_payment_notes_not_implemented(self):
-        p = Payable(None)
-        with self.assertRaises(NotImplementedError):
-            _ = p.payment_notes
-
-    def test_payment_payer_not_implemented(self):
-        p = Payable(None)
-        with self.assertRaises(NotImplementedError):
-            _ = p.payment_payer
-
-    def test_can_create_payment_not_implemented(self):
-        p = Payable(None)
-        with self.assertRaises(NotImplementedError):
-            p.can_manage_payment(None)
-
-    def test_tpay_allowed_by_default(self):
-        p = Payable(None)
-        self.assertTrue(p.tpay_allowed)
+from sales import payables
 
 
 @override_settings(SUSPEND_SIGNALS=True, THALIA_PAY_ENABLED_PAYMENT_METHOD=True)
@@ -213,6 +181,48 @@ class PaymentTest(TestCase):
         validate_not_zero(-10000000)
         with self.assertRaises(ValidationError):
             validate_not_zero(0)
+
+    def test_payable_object(self):
+        """Test that the payable object is correctly returned."""
+        event = Event.objects.create(
+            title="testevent",
+            description="desc",
+            start=timezone.now(),
+            end=(timezone.now() + datetime.timedelta(hours=1)),
+            location="test location",
+            map_location="test map location",
+            price=1.00,
+            fine=0.00,
+        )
+        registration = EventRegistration.objects.create(event=event, member=self.member)
+        services.create_payment(registration, self.member, Payment.WIRE)
+        registration.refresh_from_db()
+        payment_id = registration.payment.id
+
+        with self.subTest("payable_object property without prefetch"):
+            with self.assertNumQueries(1):
+                payment = Payment.objects.get(id=payment_id)
+
+            # This may perform multiple queries until the payable model is found.
+            # The number of queries depends on the order of the registered payables.
+            num_queries = list(Payment.get_payable_prefetches()).index(
+                "events_registration"
+            )
+            with self.assertNumQueries(num_queries + 1):
+                self.assertEqual(payment.payable_object, registration)
+
+            # Getting the property once more should not do any more queries.
+            with self.assertNumQueries(0):
+                self.assertEqual(payment.payable_object, registration)
+
+        with self.subTest("payable_object property with prefetch"):
+            payment = Payment.objects.prefetch_related(
+                *Payment.get_payable_prefetches()
+            ).get(id=payment_id)
+
+            # When the prefetch has been done, the property should not perform queries.
+            with self.assertNumQueries(0):
+                self.assertEqual(payment.payable_object, registration)
 
 
 @freeze_time("2019-01-01")
@@ -502,6 +512,7 @@ class PaymentUserTest(TestCase):
         self.assertFalse(self.member.tpay_enabled)
 
     def test_tpay_balance(self):
+        payables.payables.register(MockModel, MockPayable)
         self.assertEqual(self.member.tpay_balance, 0)
         BankAccount.objects.create(
             owner=self.member,
@@ -536,6 +547,7 @@ class PaymentUserTest(TestCase):
         batch.save()
 
         self.assertEqual(self.member.tpay_balance, 0)
+        payables.payables._unregister(MockModel)
 
     def test_allow_disallow_tpay(self):
         self.assertTrue(self.member.tpay_allowed)

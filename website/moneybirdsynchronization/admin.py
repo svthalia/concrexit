@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import RelatedOnlyFieldListFilter
+from django.urls import reverse
+from django.utils.html import format_html
 
 from .models import (
     MoneybirdContact,
@@ -80,6 +82,19 @@ class MoneybirdExternalInvoiceAdmin(admin.ModelAdmin):
         "needs_deletion",
         ("payable_model", RelatedOnlyFieldListFilter),
     )
+
+    def payable_object(self, obj: MoneybirdExternalInvoice) -> str:
+        payable_object = obj.payable_object
+        if payable_object:
+            return format_html(
+                "<a href='{}'>{}</a>",
+                reverse(
+                    f"admin:{payable_object._meta.app_label}_{payable_object._meta.model_name}_change",
+                    args=[payable_object.pk],
+                ),
+                payable_object,
+            )
+        return "None"
 
 
 @admin.register(MoneybirdPayment)

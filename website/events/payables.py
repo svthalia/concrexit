@@ -6,7 +6,7 @@ from events.services import is_organiser
 from payments.payables import Payable, payables
 
 
-class EventRegistrationPayable(Payable):
+class EventRegistrationPayable(Payable[EventRegistration]):
     @property
     def payment_amount(self):
         return self.model.payment_amount
