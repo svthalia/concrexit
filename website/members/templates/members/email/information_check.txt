@@ -3,6 +3,8 @@ Dear {{ name }},
 We currently have the following information about you in our database.
 Via this email we'd like to ask you to check the accuracy of this data.
 
+You may also wish to review some preferences, such as (un)subscribing to the printed version of the Thabloid.
+
 Username: {{ username }}
 Name: {{ full_name }}
 Address:
