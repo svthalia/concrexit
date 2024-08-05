@@ -53,7 +53,7 @@ uritemplate = "^4.1.1"
 # These dependencies are only needed to compile SASS, which can be done
 # offline during a build. So these are not needed in production.
 libsass = "0.23.0"
-django-compressor = "4.4"
+django-compressor = "4.5.1"
 
 [tool.poetry.group.postgres]
 optional = true
