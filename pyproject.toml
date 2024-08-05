@@ -32,7 +32,7 @@ django-two-factor-auth = {extras = ["webauthn", "phonenumbers"], version = "^1.1
 bleach = {extras = ["css"], version = "6.1.0"}
 Pillow = "10.3.0"
 python-magic = "0.4.27"
-bcrypt = "4.0.1"
+bcrypt = "4.2.0"
 argon2_cffi = "21.3.0"
 firebase-admin = "6.2.0"
 google-api-python-client = "2.118.0"
