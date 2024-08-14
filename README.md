@@ -19,7 +19,6 @@ The latest Thalia Website built on Django.
 
 Optional, but recommended: follow the tutorial! It can be found by going to the Wiki (top of the GitHub page) and then clicking on "Your first contribution" or by clicking [here](https://github.com/svthalia/concrexit/wiki/your-first-contribution).
 
-
 ### Useful git commands
 
 - `git push` to push your branch to github
@@ -30,7 +29,6 @@ Optional, but recommended: follow the tutorial! It can be found by going to the 
 - `git commit (-m <commit message>)` to commit your added changes possibly with a message
 - `git rebase origin/master` to get your branch up to date with all merges
 - `git status` to check the current status of your branch
-
 
 ### Pillow dependencies
 
@@ -45,7 +43,6 @@ apt-get install python3-dev build-essential libjpeg-dev zlib1g-dev libwebp-dev
 For other operating systems, see the [Pillow Documentation](https://pillow.readthedocs.io/en/latest/installation.html).
 
 On macOS you will also need to install `libmagic`, using the brew package manager by running `brew install libmagic`.
-
 
 > **Contributing**:
 > also see the [contributing guidelines](CONTRIBUTING.md) for more information on how to contribute to concrexit.
@@ -85,6 +82,7 @@ Whenever the contents of a single `.py` file would become too large, we split it
 Note that you are not restricted to the filenames above and you can create new files if you think it is necessary. However, make sure to keep the structure consistent.
 
 #### Data minimization
+
 Apps that contain personal data should implement a `execute_data_minimization` method to perform data minimization on the data in the app.
 This method should be called from the `execute_data_minimization` method in the `thaliawebsite` app.
 In the future we should register this method in the `apps.py` file of the app, but for now we do it in the `thaliawebsite` app.
@@ -92,32 +90,36 @@ In the future we should register this method in the `apps.py` file of the app, b
 ### API
 
 #### Versions
+
 We currently have 2 versions of the API.
 The first version is the `v1` API, which is the old API.
 The second version is the `v2` API, which is the new API that is actively being developed.
 The `v1` API is deprecated and will be removed in the future.
 
 #### Swagger documentation
+
 The API has automatic documentation using Swager / OpenAPI.
 This documentation is available at `/api/docs/`.
 
 #### Authentication
+
 `v1` uses token authentication. `v2` uses OAuth2 authentication, which is the new standard for authentication.
 The OAuth2 authentication is implemented using the `django-oauth-toolkit` package.
 
 #### Throttling
+
 The API has throttling enabled.
 
 #### Other (internal) APIs
+
 Apart from the main versions (`v1` and `v2`), we also have a few specific mini-APIs that are used for specific purposes and are not really open to the public.
 These are the `calendarjs` and `facedetection` APIs. The `calendarjs` API is only used by the calendar on the website (to query events) and the `facedetection` API is used by the face detection service to post face encodings.
-
 
 ## About concrexit
 
 > About the name **concrexit**:
 >
-> _In July of 2015 we moved from the archaic Thalia-system to a Concrete5-based website where a lot of work had been put into.
+> \_In July of 2015 we moved from the archaic Thalia-system to a Concrete5-based website where a lot of work had been put into.
 > However, roughly one year later we were discussing our reluctance to maintaining the system that we had build.
 > We had developed an aversion against Concrete5, its community and the horrible documentation (never mention it's maintainer, Andrew Embler).
 > The CMS was never meant to do the job we wanted it to do.
@@ -125,6 +127,7 @@ These are the `calendarjs` and `facedetection` APIs. The `calendarjs` API is onl
 > The name eventually stuck.
 
 ### Scope
+
 The purpose of this website is to provide a dedicated platform for the members of Thalia.
 All functionality should be aimed at this goal.
 This involves things like events and membership registration, event registration, photo albums, ordering food, etc.
@@ -134,6 +137,7 @@ Concrexit, however, is not a CMS (content management system) and should not be u
 Static pages are implemented because they should be integrated, but they cannot be edited through the admin interface (though this would not be hard to implement with [django-cms](https://www.django-cms.org/en/)), because this is not the purpose of concrexit.
 Also, concrexit should not be used as a platform for implementing internal tools for specific (groups of) members.
 For example:
+
 - concrexit should not be a repository for the Thabloid
 - concrexit should not implement any bookkeeping tools
 - concrexit should not implement any CRM functionality
@@ -145,6 +149,7 @@ Concrexit is an important system for the association, and it should be kept as s
 We should not try to implement everything in concrexit, but instead focus on the core functionality, and use other tools for the rest.
 
 #### Apps and dependencies
+
 We try to keep concrexit modular to improve maintainability for the future.
 So in case certain apps become unmaintainable, they can be worst-case be turned off without breaking any of the other functionality.
 Also, modular apps are easier to test, easier to understand and generally make the codebase more maintainable.
@@ -216,6 +221,7 @@ For example, the `members` app should not depend on the `activemembers` app, but
 Underlying apps should be the most robust and stable (for example, the basic functionality of the `members` app has not changed for years).
 
 ### External systems
+
 Concrexit runs standalone, but it does integrate with a number of external systems.
 
 - There is integration with [Moneybird](https://www.moneybird.nl/) for bookkeeping. This is implemented in the `moneybirdsynchronization` app. Note that concrexit only pushes data to Moneybird, it does not read any data from Moneybird.
@@ -229,3 +235,18 @@ In the future, we might want to integrate with other systems, such as:
 - Mailchimp for sending newsletters (instead of using the `newsletters` app, which is hard to maintain and not very user-friendly)
 - A more advanced integration with Moneybird
 - A more advanced integration with Google Workspace
+
+## Release procedure
+
+Releasing concrexit is quite easy if you follow the right steps. You should be careful, releasing a broken version is not something we want. It happened, that's why we have this guide.
+
+1. **Test that everything works as expected on staging.**
+2. Create a branch with the name `release/<major_version>` (e.g. `release/40`, not `release/v40`), this will be the branch that selects features for the new release and possible point releases. Base the branch of off `master` or cherry pick commits to this branch.
+3. Set the version number (e.g. `55.0`) in `pyproject.toml`, and commit this change on the release branch.
+4. Push the release branch to GitHub.
+5. Create (or if it already exists, edit) a new release draft on GitHub [here](https://github.com/svthalia/concrexit/releases).
+6. Fill in the change notes, and configure the tag `v<version>` (e.g. `v55.0`) to be created, from the release branch.
+7. Publish the release. This will trigger a workflow that builds the release and deploys it to production.
+8. You (or if you don't have permissions, at least the chair of the Technicie) will be asked by GitHub to confirm the deployment to production. Once you approve this, the workflow will finish by updating and restarting the server.
+9. Add an announcement banner on the site that the new version of concrexit was released.
+10. Notify the board and potentially other people, informing them of changes that may be relevant to them.
