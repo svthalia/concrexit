@@ -355,6 +355,23 @@ class ServicesTest(TestCase):
                 "[THALIA] Welcome to Study Association Thalia",
             )
 
+    def test_complete_registration_after_start_of_year(self):
+        self.member_registration.status = Entry.STATUS_ACCEPTED
+        self.member_registration.save()
+
+        # Signal triggers call to complete_registration.
+        with freeze_time("2023-09-10"):
+            create_payment(self.member_registration, self.admin, Payment.CASH)
+
+        self.member_registration.refresh_from_db()
+        self.assertEqual(self.member_registration.status, Entry.STATUS_COMPLETED)
+        membership = self.member_registration.membership
+        self.assertIsNotNone(membership)
+
+        # Membership starts on the day the registration is completed.
+        self.assertEqual(membership.since, date(2023, 9, 10))
+        self.assertEqual(membership.until, date(2024, 9, 1))
+
     def test_accept_renewal(self):
         services.accept_renewal(self.renewal, actor=self.admin)
 
