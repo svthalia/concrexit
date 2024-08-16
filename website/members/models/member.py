@@ -184,7 +184,7 @@ class Member(User):
 
         return (
             self.profile.event_permissions in ("all", "no_drinks")
-            and self.current_membership is not None
+            and self.has_active_membership()
         )
 
     @property
