@@ -1,7 +1,8 @@
 """API views of the activemembers app."""
 
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Q
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework import filters as framework_filters
@@ -24,18 +25,23 @@ class MemberListView(ListAPIView):
     """Returns an overview of all members."""
 
     serializer_class = MemberListSerializer
-    queryset = (
-        Member.objects.all()
-        .select_related("profile")
-        .prefetch_related(
-            "membership_set",
-            Prefetch(
+
+    def get_queryset(self):
+        today = timezone.now().date()
+        return (
+            Member.objects.all()
+            .select_related("profile")
+            .prefetch_related(
                 "membership_set",
-                queryset=Membership.objects.order_by("-since")[:1],
-                to_attr="_latest_membership",
-            ),
+                Prefetch(
+                    "membership_set",
+                    queryset=Membership.objects.filter(
+                        Q(until__isnull=True) | Q(until__gt=today), since__lte=today
+                    ).order_by("-since")[:1],
+                    to_attr="_current_membership",
+                ),
+            )
         )
-    )
 
     def get_serializer(self, *args, **kwargs):
         if len(args) > 0:
