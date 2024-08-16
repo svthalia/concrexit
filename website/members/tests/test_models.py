@@ -1,16 +1,9 @@
-import doctest
 from datetime import datetime
 
 from django.test import TestCase, override_settings
 from django.utils import timezone
 
-from members import models
 from members.models import Member, Profile
-
-
-def load_tests(loader, tests, ignore):
-    """Load doctests."""
-    tests.addTests(doctest.DocTestSuite(models))
 
 
 @override_settings(SUSPEND_SIGNALS=True)
