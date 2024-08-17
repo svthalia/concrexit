@@ -99,39 +99,47 @@ class Member(User):
         return f"{self.get_full_name()} ({self.username})"
 
     def refresh_from_db(self, **kwargs):
-        # Clear the cached latest_membership
-        if hasattr(self, "_latest_membership"):
-            del self._latest_membership
+        # Clear the cached current- and latest_membership
+        if hasattr(self, "_current_membership"):
+            del self._current_membership
+        if hasattr(self, "current_membership"):
+            del self.current_membership
         if hasattr(self, "latest_membership"):
             del self.latest_membership
 
         return super().refresh_from_db(**kwargs)
 
-    @property
+    @cached_property
     def current_membership(self) -> Membership | None:
         """Return the currently active membership of the user, None if not active.
 
-        Warning: this property uses the *cached* `latest_membership`.
-        You can use `refresh_from_db` to clear it.
-        """
-        membership = self.latest_membership
-        if membership and not membership.is_active():
-            return None
-        return membership
-
-    @cached_property
-    def latest_membership(self) -> Membership | None:
-        """Get the most recent membership of this user.
+        This might not be the latest membership, as a latest membership may be in the future.
 
         Warning: this property is cached.
         You can use `refresh_from_db` to clear it.
         """
         # Use membership from a Prefetch object if available.
-        if hasattr(self, "_latest_membership"):
-            if not self._latest_membership:
+        if hasattr(self, "_current_membership"):
+            if not self._current_membership:
                 return None
-            return self._latest_membership[0]
+            return self._current_membership[0]
 
+        today = timezone.now().date()
+        try:
+            return self.membership_set.filter(
+                Q(until__isnull=True) | Q(until__gt=today),
+                since__lte=today,
+            ).latest("since")
+        except Membership.DoesNotExist:
+            return None
+
+    @cached_property
+    def latest_membership(self) -> Membership | None:
+        """Get the most recent (potentially future) membership of this user.
+
+        Warning: this property is cached.
+        You can use `refresh_from_db` to clear it.
+        """
         if not self.membership_set.exists():
             return None
         return self.membership_set.latest("since")
@@ -184,7 +192,7 @@ class Member(User):
 
         return (
             self.profile.event_permissions in ("all", "no_drinks")
-            and self.current_membership is not None
+            and self.has_active_membership()
         )
 
     @property

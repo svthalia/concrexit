@@ -180,7 +180,7 @@ class PermissionsBackendTest(TestCase):
         self.u1.latest_membership.until = (
             timezone.now() - timezone.timedelta(days=2)
         ).date()
-        self.u1.save()
+        self.u1.latest_membership.save()
 
         self.assertEqual(set(), self.u1.get_all_permissions())
 

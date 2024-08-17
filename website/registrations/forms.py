@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import date, timedelta
 
 from django import forms
 from django.conf import settings
@@ -12,7 +12,7 @@ from django.utils.translation import gettext_lazy as _
 
 from members.models import Membership
 from payments.widgets import SignatureWidget
-from registrations import services
+from utils.snippets import datetime_to_lectureyear
 
 from .models import Reference, Registration, Renewal
 
@@ -256,10 +256,15 @@ class ReferenceForm(forms.ModelForm):
             raise ValidationError(_("Benefactors cannot give references."))
 
         membership = self.cleaned_data["member"].latest_membership
+        today = timezone.now().date()
+        lecture_year = datetime_to_lectureyear(today)
+        if today.month == 8:
+            lecture_year += 1
+
         if (
             membership
             and membership.until
-            and membership.until < services.calculate_membership_since()
+            and membership.until <= date(lecture_year, 9, 1)
         ):
             raise ValidationError(
                 "It's not possible to give references for memberships "
