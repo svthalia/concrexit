@@ -1,16 +1,12 @@
-import doctest
 from datetime import datetime
 
 from django.test import TestCase, override_settings
 from django.utils import timezone
 
-from members import models
+from freezegun import freeze_time
+
 from members.models import Member, Profile
-
-
-def load_tests(loader, tests, ignore):
-    """Load doctests."""
-    tests.addTests(doctest.DocTestSuite(models))
+from members.models.membership import Membership
 
 
 @override_settings(SUSPEND_SIGNALS=True)
@@ -85,6 +81,60 @@ class MemberTest(TestCase):
         m1.type = "honorary"
         m1.save()
         self.assertTrue(member.has_been_honorary_member())
+
+    def test_membership_properties(self):
+        member = Member.objects.get(pk=1)
+        member.membership_set.all().delete()
+
+        old_membership = Membership.objects.create(
+            user=member,
+            since="2022-09-01",
+            until="2023-09-01",
+            type=Membership.MEMBER,
+        )
+        middle_membership = Membership.objects.create(
+            user=member,
+            since="2023-09-01",
+            until="2024-09-01",
+            type=Membership.MEMBER,
+        )
+        latest_membership = Membership.objects.create(
+            user=member,
+            since="2024-09-01",
+            until="2025-09-01",
+            type=Membership.MEMBER,
+        )
+
+        with freeze_time("2022-08-25"):
+            member.refresh_from_db()
+            self.assertFalse(member.has_active_membership())
+            self.assertIsNone(member.current_membership)
+            self.assertEqual(member.latest_membership, latest_membership)
+
+        with freeze_time("2022-09-01"):
+            member.refresh_from_db()
+            self.assertTrue(member.has_active_membership())
+            self.assertEqual(member.current_membership, old_membership)
+            self.assertEqual(member.latest_membership, latest_membership)
+
+        with freeze_time("2024-08-25"):
+            # A membership has been renewed before the end of the current one.
+            member.refresh_from_db()
+            self.assertTrue(member.has_active_membership())
+            self.assertEqual(member.current_membership, middle_membership)
+            self.assertEqual(member.latest_membership, latest_membership)
+
+        with freeze_time("2024-09-01"):
+            member.refresh_from_db()
+            self.assertTrue(member.has_active_membership())
+            self.assertEqual(member.current_membership, latest_membership)
+            self.assertEqual(member.latest_membership, latest_membership)
+
+        with freeze_time("2025-09-01"):
+            member.refresh_from_db()
+            self.assertFalse(member.has_active_membership())
+            self.assertIsNone(member.current_membership)
+            self.assertEqual(member.latest_membership, latest_membership)
 
 
 class MemberDisplayNameTest(TestCase):

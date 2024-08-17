@@ -24,7 +24,7 @@ class YourPhotosView(LoginRequiredMixin, PagedView):
     context_object_name = "photos"
 
     def get(self, request, *args, **kwargs):
-        if not request.member or request.member.current_membership is None:
+        if not request.member or not request.member.has_active_membership():
             messages.error(request, _("You need to be a member to use this feature."))
             return redirect("index")
 
@@ -94,7 +94,7 @@ class ReferenceFaceUploadView(LoginRequiredMixin, FormView):
     success_url = reverse_lazy("facedetection:reference-faces")
 
     def dispatch(self, request, *args, **kwargs):
-        if not request.member or request.member.current_membership is None:
+        if not request.member or not request.member.has_active_membership():
             messages.error(request, "You need to be a member to use this feature.")
             return redirect("index")
         return super().dispatch(request, *args, **kwargs)

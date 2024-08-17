@@ -22,7 +22,7 @@ class YourPhotosView(ListAPIView):
     schema = AutoSchema(operation_id_base="FacedetectionMatches")
 
     def get(self, request, *args, **kwargs):
-        if not request.member or request.member.current_membership is None:
+        if not request.member or not request.member.has_active_membership():
             raise PermissionDenied(
                 detail="You need to be a member in order to view your facedetection photos."
             )
@@ -55,7 +55,7 @@ class ReferenceFaceListView(ListCreateAPIView):
         return super().get_serializer(*args, **kwargs)
 
     def create(self, request, *args, **kwargs):
-        if request.member.current_membership is None:
+        if not request.member.has_active_membership():
             raise PermissionDenied(
                 detail="You need to be a member to use this feature."
             )
