@@ -2,6 +2,7 @@
 import logging
 
 from django.conf import settings
+from django.db.models import Model
 from django.urls import reverse
 
 from utils.snippets import send_email
@@ -18,10 +19,14 @@ def send_sync_error(error, obj):
         context={
             "error": error,
             "obj": obj,
-            "url": settings.BASE_URL
-            + reverse(
-                f"admin:{obj._meta.app_label}_{obj._meta.model_name}_change",
-                args=(obj.pk,),
-            ),
+            "url": (
+                settings.BASE_URL
+                + reverse(
+                    f"admin:{obj._meta.app_label}_{obj._meta.model_name}_change",
+                    args=(obj.pk,),
+                )
+            )
+            if isinstance(obj, Model)
+            else None,
         },
     )
