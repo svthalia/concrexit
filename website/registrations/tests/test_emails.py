@@ -253,7 +253,7 @@ class EmailsTest(TestCase):
             },
         )
 
-    @mock.patch("registrations.email.send_email")
+    @mock.patch("registrations.emails.send_email")
     def test_send_reminder_open_renewal(self, send_email):
         with freeze_time("2024-01-01"):
             member = Member(
