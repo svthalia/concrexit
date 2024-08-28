@@ -204,7 +204,7 @@ class PaymentProcessView(SuccessMessageMixin, FormView):
         return context
 
     def _check_payment_allowed(self, request, payable_hash):
-        if (
+        if not self.payable.payment_payer or (
             self.payable.payment_payer.pk
             != PaymentUser.objects.get(pk=self.request.member.pk).pk
         ):
