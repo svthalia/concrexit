@@ -40,9 +40,9 @@ def notify_old_entries():
         registration.updated_at = timezone.now()
         registration.save()
 
-    for registration in Renewal.objects.exclude(
+    for renewal in Renewal.objects.exclude(
         status__in=(Renewal.STATUS_COMPLETED, Renewal.STATUS_REJECTED)
     ).filter(payment=None, updated_at__lt=timezone.now() - timedelta(days=30)):
-        emails.send_reminder_open_registration(registration)
-        registration.updated_at = timezone.now()
-        registration.save()
+        emails.send_reminder_open_renewal(renewal)
+        renewal.updated_at = timezone.now()
+        renewal.save()
