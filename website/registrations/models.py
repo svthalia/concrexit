@@ -451,31 +451,22 @@ class Registration(Entry):
 
         if self.direct_debit:
             if not self.iban:
-                errors.update(
-                    {
-                        "iban": _(
-                            "This field is required to add a bank account mandate for Thalia Pay."
-                        )
-                    }
+                errors["iban"] = _(
+                    "This field is required to add a bank account mandate for Thalia Pay."
                 )
 
             if not self.initials:
-                errors.update(
-                    {
-                        "initials": _(
-                            "This field is required to add a bank account mandate for Thalia Pay."
-                        )
-                    }
+                errors["initials"] = _(
+                    "This field is required to add a bank account mandate for Thalia Pay."
                 )
 
             if not self.signature:
-                errors.update(
-                    {
-                        "signature": _(
-                            "This field is required to add a bank account mandate for Thalia Pay."
-                        )
-                    }
+                errors["signature"] = _(
+                    "This field is required to add a bank account mandate for Thalia Pay."
                 )
+
+            if self.iban and self.iban[0:2] != "NL" and not self.bic:
+                errors["bic"] = _("This field is required for foreign bank accounts.")
 
         if errors:
             raise ValidationError(errors)
