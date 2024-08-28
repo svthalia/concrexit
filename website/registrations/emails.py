@@ -197,3 +197,16 @@ def send_reminder_open_registration(registration: Registration) -> None:
             "created_at": registration.created_at,
         },
     )
+
+
+def send_reminder_open_renewal(renewal: Renewal) -> None:
+    send_email(
+        to=[settings.BOARD_NOTIFICATION_ADDRESS],
+        subject="Open renewal for more than one month",
+        txt_template="registrations/email/reminder_open_renewal.txt",
+        html_template="registrations/email/reminder_open_renewal.html",
+        context={
+            "name": renewal.member.get_full_name(),
+            "created_at": renewal.created_at,
+        },
+    )
