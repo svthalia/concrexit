@@ -200,6 +200,10 @@ def send_reminder_open_registration(registration: Registration) -> None:
 
 
 def send_reminder_open_renewal(renewal: Renewal) -> None:
+    """Send a notification to the board that a renewal has been open for more than one month.
+
+    :param renewal: the renewal entry
+    """
     send_email(
         to=[settings.BOARD_NOTIFICATION_ADDRESS],
         subject="Open renewal for more than one month",
