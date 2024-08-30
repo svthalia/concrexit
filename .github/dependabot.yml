@@ -17,6 +17,9 @@ updates:
       - dependency-name: "black"
       - dependency-name: "isort"
       - dependency-name: "ruff"
+      # This dependency doesn't have the most consistent versioning,
+      # and when updating it, we need to update the settings for cache busting.
+      - dependency-name: "django-tinymce"
     labels:
       - "dependency-update"
 
