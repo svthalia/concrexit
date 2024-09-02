@@ -1,0 +1,11 @@
+Dear board,
+
+{{ name }} has an open renewal for more then a month. The renewal was created at {{ created_at }}.
+
+If {{ name }} does not complete their renewal, it will automatically be removed three months after {{ created_at }}.
+
+You may want to reach out to them.
+
+Kisses,
+
+The website
