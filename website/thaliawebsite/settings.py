@@ -437,10 +437,6 @@ CELERY_BEAT_SCHEDULE = {
         "task": "promotion.tasks.promo_update_overview_daily",
         "schedule": crontab(minute=0, hour=8),
     },
-    "cleanupfileponduploads": {
-        "task": "photos.tasks.clean_broken_uploads",
-        "schedule": crontab(minute=45),
-    },
 }
 
 ###############################################################################
