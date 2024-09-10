@@ -22,22 +22,25 @@ def process_album_upload(
     archive_upload_id: str, album_id: int, uploader_id: int | None = None
 ):
     upload = TemporaryUpload.objects.get(upload_id=archive_upload_id)
-    archive = upload.file
 
     try:
         album = Album.objects.get(id=album_id)
     except Album.DoesNotExist:
         logger.exception("Album %s does not exist", album_id)
-        archive.delete()
+        upload.file.delete()
         upload.delete()
 
-    uploader = Member.objects.get(id=uploader_id) if uploader_id is not None else None
+    uploader = (
+        Member.objects.filter(id=uploader_id).first()
+        if uploader_id is not None
+        else None
+    )
 
     try:
         with transaction.atomic():
             # We make the upload atomic separately, so we can keep using the db if it fails.
             # See https://docs.djangoproject.com/en/4.2/topics/db/transactions/#handling-exceptions-within-postgresql-transactions.
-            warnings, count = extract_archive(album, archive)
+            warnings, count = extract_archive(album, upload.file)
             album.is_processing = False
             album.save()
 
@@ -54,7 +57,7 @@ def process_album_upload(
                 context={
                     "name": uploader.first_name,
                     "album": album,
-                    "upload_name": upload.file.name,
+                    "upload_name": upload.upload_name,
                     "warnings": warnings,
                     "num_processed": count,
                 },
@@ -63,5 +66,5 @@ def process_album_upload(
         logger.exception(f"Failed to process album upload: {e}", exc_info=e)
 
     finally:
-        archive.delete()
+        upload.file.delete()
         upload.delete()
