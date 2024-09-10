@@ -41,24 +41,24 @@ def process_album_upload(
             album.is_processing = False
             album.save()
 
-            # Send signal to notify that an album has been uploaded. This is used
-            # by facedetection, and possibly in the future to notify the uploader.
-            album_uploaded.send(sender=None, album=album)
+        # Send signal to notify that an album has been uploaded. This is used
+        # by facedetection, and possibly in the future to notify the uploader.
+        album_uploaded.send(sender=None, album=album)
 
-            if uploader is not None:
-                # Notify uploader of the upload result.
-                send_email(
-                    to=get_member_email_addresses(uploader),
-                    subject=("Album upload processed completed."),
-                    txt_template="photos/email/upload-processed.txt",
-                    context={
-                        "name": uploader.first_name,
-                        "album": album,
-                        "upload_name": upload.file.name,
-                        "warnings": warnings,
-                        "num_processed": count,
-                    },
-                )
+        if uploader is not None:
+            # Notify uploader of the upload result.
+            send_email(
+                to=get_member_email_addresses(uploader),
+                subject=("Album upload processed completed."),
+                txt_template="photos/email/upload-processed.txt",
+                context={
+                    "name": uploader.first_name,
+                    "album": album,
+                    "upload_name": upload.file.name,
+                    "warnings": warnings,
+                    "num_processed": count,
+                },
+            )
     except Exception as e:
         logger.exception(f"Failed to process album upload: {e}", exc_info=e)
 
