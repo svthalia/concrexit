@@ -40,7 +40,9 @@ def save_to_disk(newsletter):
     html_message = html_template.render(context)
     html_message = embed_linked_html_images(html_message)
 
-    newsletter.rendered_file = ContentFile(html_message.encode("utf-8"))
+    newsletter.rendered_file = ContentFile(
+        html_message.encode("utf-8"), name="newsletter.html"
+    )
     newsletter.save()
 
 
