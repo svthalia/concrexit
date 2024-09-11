@@ -1,0 +1,19 @@
+{% extends 'simple_page.html' %}
+
+{% block page_content %}
+<h1>{% block title %}2FA instructions{% endblock %}</h1>
+
+<p>We require 2FA before you are able to access the administration section of the website. This way, we ensure that users who can see and modify data (including personal data) have secure accounts.</p>
+
+<p>In order to set up 2FA, our website offers a step-by-step wizard. However, the wizard can be unclear if one is not familiar with 2FA terminology, so we hope this page will provide some more clarity.</p>
+
+<h2> Method </h2>
+<p>The wizard asks what method you want to use for 2-factor authentication. If you're unsure, you should pick the default of "Token generator" here. This works via an authenticator app (such as Google Authenticator, Microsoft Authenticator, Authy, or any other TOTP app).</p>
+
+<h2> Token generator setup </h2>
+<p>The easiest way to proceed here is to use the QR code. To use this, open your 2FA app, select the option to add a new (generic) account. This should enable you to scan the QR code. You will then get an initial authentication code that you should enter into the webpage. Alternatively, you can enter the displayed secret code.</p>
+
+<h2> Backup codes </h2>
+<p>After setting up 2FA, you will also get a list of backup codes. These are useful to ensure you can still get into your account if you lose access to your 2FA app.</p>
+
+{% endblock %}
