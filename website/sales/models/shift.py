@@ -62,6 +62,16 @@ class Shift(models.Model):
         ),
     )
 
+    selforder = models.Booleanfield(
+        verbose_name=_("selforder"),
+        blank=False,
+        null=False,
+        default=False,
+        help_text=_(
+            "Allows users to place orders themselves for this shift."
+        ),
+    )
+
     def clean(self):
         super().clean()
         errors = {}
