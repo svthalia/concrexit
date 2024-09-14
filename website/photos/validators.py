@@ -2,7 +2,7 @@ from django.core.exceptions import ValidationError
 from django.utils.deconstruct import deconstructible
 from django.utils.translation import gettext_lazy as _
 
-import magic
+import puremagic as magic
 
 
 @deconstructible
@@ -21,7 +21,14 @@ class ArchiveFileTypeValidator:
 
     def __call__(self, value):
         """Validate that the input contains (or does *not* contain, if inverse_match is True) a match for the regular expression."""
-        if magic.from_buffer(value.read(1024), mime=True) not in self.types:
+        if (
+            magic.from_stream(
+                value.temporary_upload.file,
+                mime=True,
+                filename=value.temporary_upload.upload_name,
+            )
+            not in self.types
+        ):
             raise ValidationError(self.message)
 
     def __eq__(self, other):
