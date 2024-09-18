@@ -17,22 +17,32 @@ def minimise_registrations():
 
 @shared_task
 def notify_old_entries():
-    # delete entries w updated_at 1 month ago and created_at 3m ago
-    # notify (and update updated_at) entries w updated_at 1 month ago
-
-    Registration.objects.filter(
+    """Delete very old entries and send a reminder to board for less old entries."""
+    Registration.objects.exclude(
+        status__in=(Registration.STATUS_COMPLETED, Registration.STATUS_REJECTED)
+    ).filter(
+        payment=None,
         updated_at__lt=timezone.now() - timedelta(days=30),
         created_at__lt=timezone.now() - timedelta(days=90),
     ).delete()
-    Renewal.objects.filter(
+    Renewal.objects.exclude(
+        status__in=(Renewal.STATUS_COMPLETED, Renewal.STATUS_REJECTED)
+    ).filter(
+        payment=None,
         updated_at__lt=timezone.now() - timedelta(days=30),
         created_at__lt=timezone.now() - timedelta(days=90),
     ).delete()
 
-    for registration in Registration.objects.filter(
-        updated_at__lt=timezone.now() - timedelta(days=30)
-    ):
-        # send email
+    for registration in Registration.objects.exclude(
+        status__in=(Registration.STATUS_COMPLETED, Registration.STATUS_REJECTED)
+    ).filter(payment=None, updated_at__lt=timezone.now() - timedelta(days=30)):
         emails.send_reminder_open_registration(registration)
         registration.updated_at = timezone.now()
         registration.save()
+
+    for renewal in Renewal.objects.exclude(
+        status__in=(Renewal.STATUS_COMPLETED, Renewal.STATUS_REJECTED)
+    ).filter(payment=None, updated_at__lt=timezone.now() - timedelta(days=30)):
+        emails.send_reminder_open_renewal(renewal)
+        renewal.updated_at = timezone.now()
+        renewal.save()

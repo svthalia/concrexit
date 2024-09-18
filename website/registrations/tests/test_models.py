@@ -267,7 +267,7 @@ class RegistrationTest(TestCase):
         with self.assertRaises(ValidationError):
             self.registration.clean()
 
-        self.registration.iban = "NL91ABNA0417164300"
+        self.registration.iban = "BE91ABNA0417164300"
 
         with self.assertRaises(ValidationError):
             self.registration.clean()
@@ -278,6 +278,11 @@ class RegistrationTest(TestCase):
             self.registration.clean()
 
         self.registration.signature = "base64,png"
+
+        with self.assertRaises(ValidationError):
+            self.registration.clean()
+
+        self.registration.bic = "ADSGBEBZ"
 
         self.registration.clean()
 
@@ -381,6 +386,13 @@ class RegistrationTest(TestCase):
         registration.username = "unique_username"
 
         self.assertEqual(registration.check_user_is_unique(), True)
+
+    def test_foreign_bankaccount_without_bic(self):
+        self.registration.initials = "J"
+        self.registration.signature = "base64,png"
+        self.registration.iban = "XX91ABNA0123456789"
+        self.registration.bic = ""
+        self.registration.clean()
 
 
 @override_settings(SUSPEND_SIGNALS=True)

@@ -390,7 +390,7 @@ CELERY_BEAT_SCHEDULE = {
     },
     "inforequest": {
         "task": "members.tasks.info_request",
-        "schedule": crontab(minute=0, hour=6, day_of_month=15, month_of_year=10),
+        "schedule": crontab(minute=0, hour=6, day_of_month=15, month_of_year=2),
     },
     "expirationannouncement": {
         "task": "members.tasks.expiration_announcement",
@@ -603,9 +603,9 @@ INSTALLED_APPS = [
     # Our apps
     # Directly link to the app config when applicable as recommended
     # by the docs: https://docs.djangoproject.com/en/2.0/ref/applications/
-    "thaliawebsite.apps.ThaliaWebsiteConfig",  # include for admin settings
-    # Load django.contrib.admin after thaliawebsite so the admin page gets modified
-    "django.contrib.admin",
+    "thaliawebsite.apps.ThaliaWebsiteConfig",
+    # Load (customized) django.contrib.admin.
+    "thaliawebsite.apps.ThaliaAdminConfig",
     # Our apps ordered such that templates in the first
     # apps can override those used by the later apps.
     "pushnotifications.apps.PushNotificationsConfig",
@@ -1206,3 +1206,5 @@ MONEYBIRD_ZERO_TAX_RATE_ID: int | None = (
     if os.environ.get("MONEYBIRD_ZERO_TAX_RATE_ID")
     else None
 )
+
+ADMIN_REQUIRE_2FA = setting(development=False, production=True)

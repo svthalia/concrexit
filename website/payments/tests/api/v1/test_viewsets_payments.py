@@ -67,6 +67,7 @@ class PaymentProcessViewTest(TestCase):
     def tearDown(self):
         apps.get_model = self.original_get_model
         payables.get_payable = self.original_get_payable
+        payables._unregister(MockModel)
 
     def test_not_logged_in(self):
         self.client.logout()

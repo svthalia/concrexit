@@ -62,7 +62,7 @@ class MembersConfig(AppConfig):
             return []
 
         announcements = []
-        if request.member and request.member.current_membership is None:
+        if request.member and not request.member.has_active_membership():
             announcements.append(
                 {"rich_text": render_to_string("members/announcement_not_member.html")}
             )

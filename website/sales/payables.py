@@ -5,7 +5,7 @@ from sales.models.order import Order, OrderItem
 from sales.services import is_adult, is_manager
 
 
-class OrderPayable(Payable):
+class OrderPayable(Payable[Order]):
     @property
     def payment_amount(self):
         return self.model.total_amount

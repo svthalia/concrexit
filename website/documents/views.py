@@ -1,5 +1,6 @@
 """Views provided by the documents package."""
 import os
+from collections import defaultdict
 
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
@@ -28,19 +29,23 @@ class DocumentsIndexView(TemplateView):
     def get_context_data(self, **kwargs) -> dict:
         lecture_year = datetime_to_lectureyear(timezone.now())
 
-        years = {x: {} for x in reversed(range(1990, lecture_year + 1))}
-        for year in years:
-            years[year] = {
+        years = defaultdict(
+            lambda: {
                 "documents": {"policy": None, "report": None, "financial": None},
                 "general_meetings": [],
             }
+        )
 
-        for document in AnnualDocument.objects.filter(subcategory="policy"):
-            years[document.year]["documents"]["policy"] = document
-        for document in AnnualDocument.objects.filter(subcategory="report"):
-            years[document.year]["documents"]["report"] = document
-        for document in AnnualDocument.objects.filter(subcategory="financial"):
-            years[document.year]["documents"]["financial"] = document
+        # Ensure that all years up to now are in the dict, even if there are no documents.
+        # Using a defaultdict means that future years will be added automatically iff a
+        # document exists for that year, such as a policy plan for the upcoming year.
+        for year in range(1990, lecture_year + 1):
+            years[year] = years[year]
+
+        for document in AnnualDocument.objects.filter(
+            subcategory__in=("policy", "report", "financial")
+        ):
+            years[document.year]["documents"][document.subcategory] = document
 
         for obj in GeneralMeeting.objects.all():
             meeting_year = datetime_to_lectureyear(obj.datetime)
@@ -52,7 +57,7 @@ class DocumentsIndexView(TemplateView):
                 "association_documents": AssociationDocument.objects.order_by(
                     "name"
                 ).all(),
-                "years": list(years.items()),
+                "years": sorted(years.items(), reverse=True),
             }
         )
         return context

@@ -8,7 +8,7 @@ from activemembers.api.v2.serializers.member_group import (
     MemberGroupListSerializer,
     MemberGroupSerializer,
 )
-from activemembers.models import MemberGroup, MemberGroupMembership
+from activemembers.models import Board, MemberGroup, MemberGroupMembership
 
 
 class MemberGroupListView(ListAPIView):
@@ -51,6 +51,8 @@ class MemberGroupDetailView(RetrieveAPIView):
 
 class BoardDetailView(MemberGroupDetailView):
     """Returns details of a board group."""
+
+    queryset = Board.active_objects.all()
 
     def get_object(self):
         queryset = self.filter_queryset(self.get_queryset())

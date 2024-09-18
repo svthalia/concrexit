@@ -1,6 +1,7 @@
 import copy
 
-from django.db.models import Prefetch, prefetch_related_objects
+from django.db.models import Prefetch, Q, prefetch_related_objects
+from django.utils import timezone
 
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -47,12 +48,16 @@ class CalendarJSBirthdayListView(ListAPIView):
 
         all_birthdays = [self._get_birthdays(m, start, end) for m in queryset.all()]
         birthdays = [x for sublist in all_birthdays for x in sublist]
+
+        today = timezone.now().date()
         prefetch_related_objects(
             birthdays,
             Prefetch(
                 "membership_set",
-                queryset=Membership.objects.order_by("-since")[:1],
-                to_attr="_latest_membership",
+                queryset=Membership.objects.filter(
+                    Q(until__isnull=True) | Q(until__gt=today), since__lte=today
+                ).order_by("-since")[:1],
+                to_attr="_current_membership",
             ),
         )
 

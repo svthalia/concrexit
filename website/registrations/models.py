@@ -102,14 +102,6 @@ class Entry(models.Model):
         null=True,
     )
 
-    payment = models.OneToOneField(
-        "payments.Payment",
-        related_name="registrations_entry",
-        on_delete=models.SET_NULL,
-        blank=True,
-        null=True,
-    )
-
     membership = models.ForeignKey(
         "members.Membership",
         on_delete=models.SET_NULL,
@@ -158,6 +150,16 @@ class Entry(models.Model):
 
 class Registration(Entry):
     """Describes a new registration for the association."""
+
+    # Payment field is duplicated between Registration and Renewal to allow
+    # distinguishing the two separate relations backwards from Payment to the
+    # two kinds of entries. That way, we can efficiently look the right Payable.
+    payment = models.OneToOneField(
+        "payments.Payment",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
 
     # ---- Personal information -----
 
@@ -449,31 +451,22 @@ class Registration(Entry):
 
         if self.direct_debit:
             if not self.iban:
-                errors.update(
-                    {
-                        "iban": _(
-                            "This field is required to add a bank account mandate for Thalia Pay."
-                        )
-                    }
+                errors["iban"] = _(
+                    "This field is required to add a bank account mandate for Thalia Pay."
                 )
 
             if not self.initials:
-                errors.update(
-                    {
-                        "initials": _(
-                            "This field is required to add a bank account mandate for Thalia Pay."
-                        )
-                    }
+                errors["initials"] = _(
+                    "This field is required to add a bank account mandate for Thalia Pay."
                 )
 
             if not self.signature:
-                errors.update(
-                    {
-                        "signature": _(
-                            "This field is required to add a bank account mandate for Thalia Pay."
-                        )
-                    }
+                errors["signature"] = _(
+                    "This field is required to add a bank account mandate for Thalia Pay."
                 )
+
+            if self.iban and self.iban[0:2] != "NL" and not self.bic:
+                errors["bic"] = _("This field is required for foreign bank accounts.")
 
         if errors:
             raise ValidationError(errors)
@@ -488,6 +481,16 @@ class Registration(Entry):
 
 class Renewal(Entry):
     """Describes a renewal for the association membership."""
+
+    # Payment field is duplicated between Registration and Renewal to allow
+    # distinguishing the two separate relations backwards from Payment to the
+    # two kinds of entries. That way, we can efficiently look the right Payable.
+    payment = models.OneToOneField(
+        "payments.Payment",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
 
     member = models.ForeignKey(
         "members.Member",

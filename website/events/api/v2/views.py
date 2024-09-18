@@ -1,4 +1,4 @@
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Q
 from django.utils import timezone
 
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
@@ -121,14 +121,17 @@ class EventRegistrationsView(ListAPIView):
 
     def get_queryset(self):
         if self.event:
+            today = timezone.now().date()
             return (
                 EventRegistration.objects.filter(event=self.event, date_cancelled=None)
                 .select_related("member__profile")
                 .prefetch_related(
                     Prefetch(
                         "member__membership_set",
-                        queryset=Membership.objects.order_by("-since")[:1],
-                        to_attr="_latest_membership",
+                        queryset=Membership.objects.filter(
+                            Q(until__isnull=True) | Q(until__gt=today), since__lte=today
+                        ).order_by("-since")[:1],
+                        to_attr="_current_membership",
                     ),
                 )[: self.event.max_participants]
             )

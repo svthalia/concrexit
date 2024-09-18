@@ -1,4 +1,5 @@
 """The routes defined by the newsletters package."""
+
 from django.urls import include, path
 
 from . import views
@@ -11,7 +12,6 @@ urlpatterns = [
         include(
             [
                 path("<int:pk>/", views.preview, name="preview"),
-                path("admin/send/<int:pk>/", views.admin_send, name="admin-send"),
             ]
         ),
     )
