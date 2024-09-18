@@ -626,6 +626,7 @@ INSTALLED_APPS = [
     "singlepages.apps.SinglepagesConfig",
     "shortlinks.apps.ShortLinkConfig",
     "sales.apps.SalesConfig",
+    "wrapped.apps.WrappedConfig",
     "moneybirdsynchronization.apps.MoneybirdsynchronizationConfig",
     "two_factor.plugins.webauthn",
 ]
