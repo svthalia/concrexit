@@ -12,6 +12,31 @@
 {% block content %}
     {% with keys=keywords|join:" " %}
         <div class="row mb-4">
+            <div>
+                {% if not has_reference_faces %}
+                    <div class="col-md-12">
+                        <div class="alert alert-info">
+                            You need to upload at least one reference face in order for <a style="text-decoration: underline; color:white" href="{% url 'facedetection:reference-faces' %}">face recognition</a> to work.
+                        </div>
+                    </div>
+                {% endif %}
+                {% if has_rejected_reference_faces %}
+                    <div class="col-md-12">
+                        <div class="alert alert-info">
+                            Some of your reference faces have been rejected. <a style="text-decoration: underline; color:white" href="{% url 'facedetection:reference-faces' %}">Please delete them and upload new ones.</a>
+                        </div>
+                    </div>
+                {% elif has_processing_reference_faces %}
+                    <div class="col-md-12">
+                        {% alert "info" "Some of your reference faces have not been processed yet. Come back later." dismissible=False %}
+                    </div>
+                {% elif has_reference_faces and not has_processing_reference_faces and not photos %}
+                    <div class="col-md-12">
+                        {% alert "info" "You haven't been recognized on any photos (yet)." dismissible=False %}
+                    </div>
+                {% else %}
+                {% endif %}
+            </div>
             <div class="col-12 col-lg-6">
                 {% trans 'Interested in a full resolution version of a photo? Send your request to <a href="mailto:media@thalia.nu">media@thalia.nu</a>.' %}
             </div>
