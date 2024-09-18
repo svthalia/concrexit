@@ -1,0 +1,26 @@
+{% extends 'simple_page.html' %}
+{% load i18n static %}
+
+{% block title %}{% trans "Your Wrapped" %} — {{ block.super }}{% endblock %}
+{% block opengraph_title %}{% trans "Your Wrapped" %} —
+    {{ block.super }}{% endblock %}
+
+{% block page_title %}{% trans "Your Wrapped" %}{% endblock %}
+{% block section_tags %}id="wrapped-index"{% endblock %}
+
+{% block page_content %}
+    <h1>YOUR FAVORITE ORDER: {{ favorite_order.name }}, YOU ORDERED THIS {{ favorite_order.count }} TIMES!</h1>
+{% endblock %}
+
+{% block css_head %}
+    {{ block.super }}
+    <link href="{% static "css/fancybox.css" %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+
+{% block js_body %}
+    {{ block.super }}
+    <script src="{% static "js/fancybox.umd.js" %}"></script>
+    <script type="text/javascript" src="{% static 'js/mixitup.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'thabloid/js/main.js' %}"></script>
+{% endblock %}
