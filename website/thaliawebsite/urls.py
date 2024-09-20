@@ -32,6 +32,7 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.contrib.sitemaps.views import sitemap
 from django.urls import path, re_path
+from django.views.generic.base import TemplateView
 from django.views.i18n import JavaScriptCatalog
 
 import debug_toolbar
@@ -182,6 +183,10 @@ urlpatterns = [
                     name="password_reset",
                 ),
                 path("", include(tf_urls)),
+                path(
+                    "account/two_factor/help/",
+                    TemplateView.as_view(template_name="two_factor/help.html"),
+                ),
             ]
         ),
     ),
