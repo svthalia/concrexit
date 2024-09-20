@@ -5,7 +5,6 @@ licensed under the MIT license. The source code of moneybird-python
 can be found on GitHub: https://github.com/jjkester/moneybird-python.
 """
 import functools
-import json
 import logging
 import time
 from abc import ABC, abstractmethod
@@ -41,7 +40,7 @@ class Administration(ABC):
         """Do a PATCH request on the Moneybird administration."""
 
     @abstractmethod
-    def delete(self, resource_path: str):
+    def delete(self, resource_path: str, data: dict | None = None):
         """Do a DELETE request on the Moneybird administration."""
 
     class InvalidResourcePath(Exception):
@@ -207,18 +206,16 @@ class HttpsAdministration(Administration):
     def post(self, resource_path: str, data: dict):
         """Do a POST request on the Moneybird administration."""
         url = self._build_url(resource_path)
-        data = json.dumps(data)
         logger.debug(f"POST {url} with {data}")
-        response = self.session.post(url, data=data)
+        response = self.session.post(url, json=data)
         return self._process_response(response)
 
     @_retry_if_throttled()
     def patch(self, resource_path: str, data: dict):
         """Do a PATCH request on the Moneybird administration."""
         url = self._build_url(resource_path)
-        data = json.dumps(data)
         logger.debug(f"PATCH {url} with {data}")
-        response = self.session.patch(url, data=data)
+        response = self.session.patch(url, json=data)
         return self._process_response(response)
 
     @_retry_if_throttled()
@@ -226,7 +223,7 @@ class HttpsAdministration(Administration):
         """Do a DELETE on the Moneybird administration."""
         url = self._build_url(resource_path)
         logger.debug(f"DELETE {url}")
-        response = self.session.delete(url, data=data)
+        response = self.session.delete(url, json=data)
         return self._process_response(response)
 
 
