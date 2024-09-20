@@ -437,6 +437,10 @@ CELERY_BEAT_SCHEDULE = {
         "task": "promotion.tasks.promo_update_overview_daily",
         "schedule": crontab(minute=0, hour=8),
     },
+    "cleanupfileponduploads": {
+        "task": "photos.tasks.clean_broken_uploads",
+        "schedule": crontab(minute=45),
+    },
 }
 
 ###############################################################################
@@ -1101,7 +1105,7 @@ THUMBNAIL_SIZES = set(THUMBNAILS["SIZES"].keys())
 TINYMCE_DEFAULT_CONFIG = {
     "max_height": 500,
     "menubar": False,
-    "plugins": "autolink autoresize link image code media paste lists",
+    "plugins": "autolink autoresize link image code media lists",
     "toolbar": "h2 h3 | bold italic underline strikethrough | image media | link unlink "
     "| bullist numlist | undo redo | code",
     "contextmenu": "bold italic underline strikethrough | link",
@@ -1109,6 +1113,10 @@ TINYMCE_DEFAULT_CONFIG = {
     "relative_urls": False,
     "remove_script_host": False,
     "autoresize_bottom_margin": 50,
+    # Suffix for cache busting, because tinymce.min.js does not refer to the other
+    # files it loads with their hashed filenames. Change this when updating TinyMCE,
+    # to make sure everyone gets the correct version, and not a cached old one.
+    "cache_suffix": "?v=6.8.4",
 }
 TINYMCE_EXTRA_MEDIA = {
     "css": {

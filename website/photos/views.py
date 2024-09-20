@@ -3,9 +3,11 @@ import os
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
+from django.http.request import HttpRequest as HttpRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import TemplateView
 
+from facedetection.models import ReferenceFace
 from photos.models import Album, Photo
 from photos.services import (
     check_shared_album_token,
@@ -44,6 +46,24 @@ class IndexView(LoginRequiredMixin, PagedView):
         context = super().get_context_data(**kwargs)
         context["keywords"] = self.keywords
         fetch_thumbnails([x.cover.file for x in context["object_list"] if x.cover])
+
+        context[
+            "has_processing_reference_faces"
+        ] = self.request.member.reference_faces.filter(
+            status=ReferenceFace.Status.PROCESSING,
+            marked_for_deletion_at__isnull=True,
+        ).exists()
+
+        context[
+            "has_rejected_reference_faces"
+        ] = self.request.member.reference_faces.filter(
+            status=ReferenceFace.Status.REJECTED,
+            marked_for_deletion_at__isnull=True,
+        ).exists()
+
+        context["has_reference_faces"] = self.request.member.reference_faces.filter(
+            marked_for_deletion_at__isnull=True
+        ).exists()
 
         return context
 

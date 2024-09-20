@@ -31,7 +31,6 @@ django-formtools = "2.5.1"
 django-two-factor-auth = {extras = ["webauthn", "phonenumbers"], version = "^1.16.0"}
 bleach = {extras = ["css"], version = "6.1.0"}
 Pillow = "10.3.0"
-python-magic = "0.4.27"
 bcrypt = "4.0.1"
 argon2_cffi = "21.3.0"
 firebase-admin = "6.2.0"
@@ -48,6 +47,7 @@ celery = {version = "^5.3.6", extras = ["redis"]}
 PyYAML = "6.0.1"
 inflection = "^0.5.1"
 uritemplate = "^4.1.1"
+puremagic = "^1.27"
 
 [tool.poetry.group.scss.dependencies]
 # These dependencies are only needed to compile SASS, which can be done
