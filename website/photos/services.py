@@ -71,6 +71,8 @@ def extract_archive(album, archive) -> tuple[dict[str, str], int]:
         archive.seek(0)
         with ZipFile(archive) as zip_file:
             for photo in sorted(zip_file.namelist()):
+                if zip_file.getinfo(photo).is_dir():
+                    continue
                 if not _has_photo_extension(photo):
                     warnings[photo] = "has an unknown extension."
                     continue
@@ -87,6 +89,9 @@ def extract_archive(album, archive) -> tuple[dict[str, str], int]:
     try:
         with tarfile.open(fileobj=archive) as tar_file:
             for photo in sorted(tar_file.getnames()):
+                if not tar_file.getmember(photo).isfile():
+                    continue
+
                 if not _has_photo_extension(photo):
                     warnings[photo] = "has an unknown extension."
                     continue
