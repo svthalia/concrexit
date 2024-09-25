@@ -1,3 +1,4 @@
+import datetime
 from decimal import Decimal
 from unittest import mock
 from unittest.mock import MagicMock, Mock, PropertyMock, patch
@@ -22,8 +23,9 @@ from django.utils.translation import gettext_lazy as _
 
 from freezegun import freeze_time
 
+from events.models import Event, EventRegistration
 from members.models import Member, Profile
-from payments import admin
+from payments import admin, services
 from payments.admin import BankAccountInline, PaymentInline, ValidAccountFilter
 from payments.forms import BatchPaymentInlineAdminForm
 from payments.models import BankAccount, Batch, Payment, PaymentUser
@@ -393,7 +395,9 @@ class PaymentAdminTest(TestCase):
         """Test that the custom urls are added to the admin."""
         with self.subTest("No object"):
             urls = self.admin.get_readonly_fields(HttpRequest(), None)
-            self.assertEqual(urls, ("created_at", "processed_by", "batch"))
+            self.assertEqual(
+                urls, ("created_at", "processed_by", "payable_object", "batch")
+            )
 
         with self.subTest("With object"):
             urls = self.admin.get_readonly_fields(HttpRequest(), Payment())
@@ -401,9 +405,10 @@ class PaymentAdminTest(TestCase):
                 urls,
                 (
                     "created_at",
+                    "processed_by",
+                    "payable_object",
                     "amount",
                     "paid_by",
-                    "processed_by",
                     "type",
                     "topic",
                     "notes",
@@ -421,10 +426,10 @@ class PaymentAdminTest(TestCase):
         """Test that the CSV export of payments is correct."""
         Payment.objects.create(
             amount=7.5, processed_by=self.user, paid_by=self.user, type=Payment.CARD
-        ).save()
+        )
         Payment.objects.create(
             amount=17.5, processed_by=self.user, paid_by=self.user, type=Payment.CASH
-        ).save()
+        )
 
         response = self.admin.export_csv(HttpRequest(), Payment.objects.all())
 
@@ -458,6 +463,72 @@ class PaymentAdminTest(TestCase):
         )
 
         self.client.get(reverse("admin:payments_payment_add"))
+
+    def test_payable_model_filter(self):
+        # Payment with no payable object.
+        p1 = Payment.objects.create(
+            amount=7.5, processed_by=self.user, paid_by=self.user, type=Payment.CARD
+        )
+
+        event = Event.objects.create(
+            title="testevent",
+            description="desc",
+            start=timezone.now(),
+            end=(timezone.now() + datetime.timedelta(hours=1)),
+            location="test location",
+            map_location="test map location",
+            price=1.00,
+            fine=0.00,
+        )
+
+        self.user.is_superuser = True
+        self.user.save()
+
+        registration = EventRegistration.objects.create(event=event, member=self.user)
+        services.create_payment(registration, self.user, Payment.WIRE)
+        registration.refresh_from_db()
+        p2 = registration.payment
+
+        with self.subTest("EventRegistration"):
+            response = self.client.get(
+                reverse("admin:payments_payment_changelist"),
+                {"payable_model": "events_registration"},
+            )
+            self.assertNotContains(response, f"/admin/payments/payment/{p1.id}/change/")
+            self.assertContains(response, f"/admin/payments/payment/{p2.id}/change/")
+
+        with self.subTest("None"):
+            response = self.client.get(
+                reverse("admin:payments_payment_changelist"),
+                {"payable_model": "none"},
+            )
+            self.assertContains(response, f"/admin/payments/payment/{p1.id}/change/")
+            self.assertNotContains(response, f"/admin/payments/payment/{p2.id}/change/")
+
+        with self.subTest("FoodOrder"):
+            response = self.client.get(
+                reverse("admin:payments_payment_changelist"),
+                {"payable_model": "food_order"},
+            )
+            self.assertNotContains(response, f"/admin/payments/payment/{p1.id}/change/")
+            self.assertNotContains(response, f"/admin/payments/payment/{p2.id}/change/")
+
+        with self.subTest("Invalid"):
+            response = self.client.get(
+                reverse("admin:payments_payment_changelist"),
+                {"payable_model": "foo_bar_baz"},
+                follow=1,
+            )
+            self.assertContains(response, f"/admin/payments/payment/{p1.id}/change/")
+            self.assertContains(response, f"/admin/payments/payment/{p2.id}/change/")
+
+        with self.subTest("Changeview payable object"):
+            response = self.client.get(
+                reverse("admin:payments_payment_change", args=(p2.id,)),
+            )
+            self.assertContains(
+                response, f"/admin/events/eventregistration/{registration.id}/change/"
+            )
 
 
 @freeze_time("2019-01-01")

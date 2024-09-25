@@ -254,6 +254,37 @@ class EmailsTest(TestCase):
         )
 
     @mock.patch("registrations.emails.send_email")
+    def test_send_reminder_open_renewal(self, send_email):
+        with freeze_time("2024-01-01"):
+            member = Member.objects.create(
+                email="test@example.org",
+                first_name="John",
+                last_name="Doe",
+            )
+
+            renewal = Renewal.objects.create(
+                pk=0,
+                member=member,
+                length=Entry.MEMBERSHIP_YEAR,
+                membership_type=Membership.MEMBER,
+                status=Entry.STATUS_CONFIRM,
+            )
+
+        with freeze_time("2024-02-10"):
+            notify_old_entries()
+
+        send_email.assert_called_once_with(
+            to=[settings.BOARD_NOTIFICATION_ADDRESS],
+            subject="Open renewal for more than one month",
+            txt_template="registrations/email/reminder_open_renewal.txt",
+            html_template="registrations/email/reminder_open_renewal.html",
+            context={
+                "name": renewal.member.get_full_name(),
+                "created_at": renewal.created_at,
+            },
+        )
+
+    @mock.patch("registrations.emails.send_email")
     def test_send_references_information_message(self, send_email):
         with self.subTest("Registrations"):
             registration = Registration(

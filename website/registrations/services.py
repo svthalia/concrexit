@@ -249,11 +249,10 @@ def complete_renewal(renewal: Renewal):
 
     since = timezone.now().date()
     lecture_year = datetime_to_lectureyear(since)
+    if since.month == 8:
+        lecture_year += 1
 
     latest_membership = member.latest_membership
-    # Not that currently, Member. current_membership can be a future membership if a new
-    # membership has been created but it's not yet september. This does not matter here,
-    # but it is kind of incorrect.
     current_membership = member.current_membership
     if current_membership is not None and current_membership.until is None:
         raise ValueError("This member already has a never ending membership")
@@ -282,6 +281,18 @@ def complete_renewal(renewal: Renewal):
         renewal.save()
 
     emails.send_renewal_complete_message(renewal)
+
+
+def calculate_membership_since() -> timezone.datetime:
+    """Calculate the start date of a membership.
+
+    If it's August we act as if it's the next lecture year
+    already and we start new memberships in September.
+    """
+    since = timezone.now().date()
+    if timezone.now().month == 8:
+        since = since.replace(month=9, day=1)
+    return since
 
 
 _PASSWORD_CHARS = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789"

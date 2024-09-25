@@ -67,7 +67,7 @@ def period_for_payable_model(obj) -> str | None:
 
 
 def tax_rate_for_payable_model(obj) -> int | None:
-    if isinstance(obj, Registration | Renewal):
+    if isinstance(obj, Registration | Renewal | FoodOrder):
         return settings.MONEYBIRD_ZERO_TAX_RATE_ID
     return None
 

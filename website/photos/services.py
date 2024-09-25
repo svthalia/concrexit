@@ -25,9 +25,9 @@ def check_shared_album_token(album, token):
 
 def is_album_accessible(request, album):
     """Check if the request user can access an album."""
-    if request.member and request.member.current_membership is not None:
+    if request.member and request.member.has_active_membership():
         return True
-    if request.member and request.member.current_membership is None:
+    if request.member and not request.member.has_active_membership():
         # This user is currently not a member, so need to check if he/she
         # can view this album by checking the membership
         return request.member.membership_set.filter(
@@ -38,11 +38,11 @@ def is_album_accessible(request, album):
 
 def get_annotated_accessible_albums(request, albums):
     """Annotate the albums which are accessible by the user."""
-    if request.member and request.member.current_membership is not None:
+    if request.member and request.member.has_active_membership():
         albums = albums.annotate(
             accessible=ExpressionWrapper(Value(True), output_field=BooleanField())
         )
-    elif request.member and request.member.current_membership is None:
+    elif request.member and not request.member.has_active_membership():
         albums_filter = Q(pk__in=[])
         for membership in request.member.membership_set.all():
             albums_filter |= Q(date__gte=membership.since) & Q(
@@ -71,6 +71,8 @@ def extract_archive(album, archive) -> tuple[dict[str, str], int]:
         archive.seek(0)
         with ZipFile(archive) as zip_file:
             for photo in sorted(zip_file.namelist()):
+                if zip_file.getinfo(photo).is_dir():
+                    continue
                 if not _has_photo_extension(photo):
                     warnings[photo] = "has an unknown extension."
                     continue
@@ -87,6 +89,9 @@ def extract_archive(album, archive) -> tuple[dict[str, str], int]:
     try:
         with tarfile.open(fileobj=archive) as tar_file:
             for photo in sorted(tar_file.getnames()):
+                if not tar_file.getmember(photo).isfile():
+                    continue
+
                 if not _has_photo_extension(photo):
                     warnings[photo] = "has an unknown extension."
                     continue

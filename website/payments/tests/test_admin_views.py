@@ -43,6 +43,9 @@ class PaymentAdminViewTest(TestCase):
         self.client.force_login(self.user)
         self.view = admin_views.PaymentAdminView()
 
+    def tearDown(self):
+        payables._unregister(MockModel)
+
     def _give_user_permissions(self):
         content_type = ContentType.objects.get_for_model(Payment)
         permissions = Permission.objects.filter(

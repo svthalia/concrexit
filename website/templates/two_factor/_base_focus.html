@@ -3,7 +3,7 @@
 
 
 {% block content_wrapper %}
-<div class="container">
+ <div class="container">
     <div class="col-12">
         {% bootstrap_messages %}
     </div>
@@ -11,6 +11,8 @@
     <div class="row">
       <div class="col-md-5 offset-md-3">
         {% block content %}{% endblock %}
+
+        <p class="mt-2">For instructions or more information about the 2FA options see <a href="/user/account/two_factor/help/">the help page</a>.</p>
       </div>
     </div>
   </div>

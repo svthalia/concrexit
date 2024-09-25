@@ -390,7 +390,7 @@ CELERY_BEAT_SCHEDULE = {
     },
     "inforequest": {
         "task": "members.tasks.info_request",
-        "schedule": crontab(minute=0, hour=6, day_of_month=15, month_of_year=10),
+        "schedule": crontab(minute=0, hour=6, day_of_month=15, month_of_year=2),
     },
     "expirationannouncement": {
         "task": "members.tasks.expiration_announcement",
@@ -436,6 +436,10 @@ CELERY_BEAT_SCHEDULE = {
     "sendpromoupdateoverviewdaily": {
         "task": "promotion.tasks.promo_update_overview_daily",
         "schedule": crontab(minute=0, hour=8),
+    },
+    "cleanupfileponduploads": {
+        "task": "photos.tasks.clean_broken_uploads",
+        "schedule": crontab(minute=45),
     },
 }
 
@@ -603,9 +607,9 @@ INSTALLED_APPS = [
     # Our apps
     # Directly link to the app config when applicable as recommended
     # by the docs: https://docs.djangoproject.com/en/2.0/ref/applications/
-    "thaliawebsite.apps.ThaliaWebsiteConfig",  # include for admin settings
-    # Load django.contrib.admin after thaliawebsite so the admin page gets modified
-    "django.contrib.admin",
+    "thaliawebsite.apps.ThaliaWebsiteConfig",
+    # Load (customized) django.contrib.admin.
+    "thaliawebsite.apps.ThaliaAdminConfig",
     # Our apps ordered such that templates in the first
     # apps can override those used by the later apps.
     "pushnotifications.apps.PushNotificationsConfig",
@@ -1101,7 +1105,7 @@ THUMBNAIL_SIZES = set(THUMBNAILS["SIZES"].keys())
 TINYMCE_DEFAULT_CONFIG = {
     "max_height": 500,
     "menubar": False,
-    "plugins": "autolink autoresize link image code media paste lists",
+    "plugins": "autolink autoresize link image code media lists",
     "toolbar": "h2 h3 | bold italic underline strikethrough | image media | link unlink "
     "| bullist numlist | undo redo | code",
     "contextmenu": "bold italic underline strikethrough | link",
@@ -1109,6 +1113,10 @@ TINYMCE_DEFAULT_CONFIG = {
     "relative_urls": False,
     "remove_script_host": False,
     "autoresize_bottom_margin": 50,
+    # Suffix for cache busting, because tinymce.min.js does not refer to the other
+    # files it loads with their hashed filenames. Change this when updating TinyMCE,
+    # to make sure everyone gets the correct version, and not a cached old one.
+    "cache_suffix": "?v=6.8.4",
 }
 TINYMCE_EXTRA_MEDIA = {
     "css": {
@@ -1206,3 +1214,5 @@ MONEYBIRD_ZERO_TAX_RATE_ID: int | None = (
     if os.environ.get("MONEYBIRD_ZERO_TAX_RATE_ID")
     else None
 )
+
+ADMIN_REQUIRE_2FA = setting(development=False, production=True)

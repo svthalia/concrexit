@@ -256,9 +256,17 @@
                                     </th>
                                     <td>
                                     {% if event.food_event == event.food_event.current or event.food_event.just_ended %}
-                                        <a href="{% url "pizzas:index" %}" class="btn btn-primary">
-                                            {% trans "Order" context "pizzas" %}
-                                        </a>
+                                        {% if event.registration_required and not registration.is_invited %}
+                                            <div class="d-inline-block" data-bs-toggle="tooltip" data-placement="auto" title="{% trans 'You do not seem to be registered, which you need to be to order food. '%} {{event.food_event.start}}">
+                                                <a class="btn btn-primary disabled">
+                                                    {% trans "Order" context "pizzas" %}
+                                                </a>
+                                            </div>
+                                        {% else %}
+                                            <a href="{% url "pizzas:index" %}" class="btn btn-primary">
+                                                {% trans "Order" context "pizzas" %}
+                                            </a>
+                                        {% endif %}
                                     {% elif event.food_event.in_the_future %}
                                         <div class="d-inline-block" data-bs-toggle="tooltip" data-placement="auto" title="{% trans 'Ordering pizza for this event will be possible starting '%} {{event.food_event.start}}">
                                             <a class="btn btn-primary disabled">
@@ -300,7 +308,6 @@
             </div>
         </div>
     </section>
-
     {% if event.documents.exists %}
         <section class="page-section" id="events-documents">
             <div class="container">

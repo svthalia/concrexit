@@ -338,7 +338,6 @@ class ReferenceFormTest(TestCase):
         self.entry = Renewal.objects.create(
             member=self.member, length=Entry.MEMBERSHIP_YEAR
         )
-        self.member.membership_set.all().delete()
         self.data = {"member": self.member.pk, "entry": self.entry.pk}
 
     @freeze_time("2018-08-01")
@@ -379,6 +378,17 @@ class ReferenceFormTest(TestCase):
                 },
             )
             m.delete()
+        with self.subTest("Form is valid with membership for current year"):
+            with freeze_time("2018-09-01"):
+                m = Membership.objects.create(
+                    type=Membership.MEMBER,
+                    user=self.member,
+                    since="2018-09-01",
+                    until="2019-08-31",
+                )
+                form = forms.ReferenceForm(self.data)
+                self.assertTrue(form.is_valid())
+                m.delete()
         with self.subTest("Form throws error about uniqueness"):
             Reference.objects.create(member=self.member, entry=self.entry)
             form = forms.ReferenceForm(self.data)

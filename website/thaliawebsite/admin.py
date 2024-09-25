@@ -13,5 +13,5 @@ class ThaliaAdminSite(admin.AdminSite):
 
     def has_permission(self, request):
         return super().has_permission(request) and (
-            settings.DEBUG or user_has_device(request.user)
+            not settings.ADMIN_REQUIRE_2FA or user_has_device(request.user)
         )

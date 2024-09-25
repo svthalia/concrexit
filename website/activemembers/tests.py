@@ -180,7 +180,7 @@ class PermissionsBackendTest(TestCase):
         self.u1.latest_membership.until = (
             timezone.now() - timezone.timedelta(days=2)
         ).date()
-        self.u1.save()
+        self.u1.latest_membership.save()
 
         self.assertEqual(set(), self.u1.get_all_permissions())
 
@@ -285,9 +285,6 @@ class BoardTest(TestCase):
             b.full_clean()
 
         b.since = b.since.replace(year=1991, month=9, day=2)
-        b.full_clean()
-
-        b.until = None
         b.full_clean()
 
     def test_get_absolute_url(self):

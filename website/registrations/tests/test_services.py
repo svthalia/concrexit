@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.core import mail
 from django.test import TestCase, override_settings
 from django.utils import timezone
@@ -43,7 +45,7 @@ class ServicesTest(TestCase):
             address_city="Nijmegen",
             address_country="NL",
             phone_number="06123456789",
-            birthday=timezone.now().replace(year=1990, day=1).date(),
+            birthday="1990-01-01",
             length=Entry.MEMBERSHIP_YEAR,
             contribution=7.5,
             membership_type=Membership.MEMBER,
@@ -64,7 +66,7 @@ class ServicesTest(TestCase):
             address_city="Nijmegen",
             address_country="NL",
             phone_number="06123456789",
-            birthday=timezone.now().replace(year=1990, day=1).date(),
+            birthday="1990-01-01",
             length=Entry.MEMBERSHIP_YEAR,
             contribution=7.5,
             membership_type=Membership.BENEFACTOR,
@@ -85,7 +87,7 @@ class ServicesTest(TestCase):
             address_city="Nijmegen",
             address_country="NL",
             phone_number="06123456789",
-            birthday=timezone.now().replace(year=1990, day=1).date(),
+            birthday="1990-01-01",
             length=Entry.MEMBERSHIP_STUDY,
             contribution=30,
             membership_type=Membership.MEMBER,
@@ -270,14 +272,15 @@ class ServicesTest(TestCase):
             self.assertEqual(member.first_name, "John")
             self.assertEqual(member.last_name, "Doe")
             self.assertEqual(member.username, "jdoe")
-            self.assertEqual(
-                membership.since,
-                timezone.now().replace(year=2023, month=9, day=1).date(),
-            )
-            self.assertEqual(
-                membership.until,
-                timezone.now().replace(year=2024, month=9, day=1).date(),
-            )
+
+            # Membership starts on the day the registration is completed,
+            # even though this is before the start of the year (2023-09-01).
+            # This makes it possible for first-year students to become a member during
+            # the introduction week without having to wait for another week to actually
+            # be a member and use the website.
+            self.assertEqual(membership.since, date(2023, 8, 28))
+
+            self.assertEqual(membership.until, date(2024, 9, 1))
             self.assertEqual(membership.type, Membership.MEMBER)
             self.assertFalse(member.bank_accounts.all().exists())
 
@@ -351,6 +354,23 @@ class ServicesTest(TestCase):
                 mail.outbox[0].subject,
                 "[THALIA] Welcome to Study Association Thalia",
             )
+
+    def test_complete_registration_after_start_of_year(self):
+        self.member_registration.status = Entry.STATUS_ACCEPTED
+        self.member_registration.save()
+
+        # Signal triggers call to complete_registration.
+        with freeze_time("2023-09-10"):
+            create_payment(self.member_registration, self.admin, Payment.CASH)
+
+        self.member_registration.refresh_from_db()
+        self.assertEqual(self.member_registration.status, Entry.STATUS_COMPLETED)
+        membership = self.member_registration.membership
+        self.assertIsNotNone(membership)
+
+        # Membership starts on the day the registration is completed.
+        self.assertEqual(membership.since, date(2023, 9, 10))
+        self.assertEqual(membership.until, date(2024, 9, 1))
 
     def test_accept_renewal(self):
         services.accept_renewal(self.renewal, actor=self.admin)
@@ -443,14 +463,8 @@ class ServicesTest(TestCase):
             self.assertIsNotNone(membership)
             self.assertEqual(self.member.membership_set.all().count(), 2)
 
-            self.assertEqual(
-                membership.since,
-                timezone.now().replace(year=2023, month=9, day=1).date(),
-            )
-            self.assertEqual(
-                membership.until,
-                timezone.now().replace(year=2024, month=9, day=1).date(),
-            )
+            self.assertEqual(membership.since, date(2023, 9, 1))
+            self.assertEqual(membership.until, date(2024, 9, 1))
 
         # Restore data.
         with freeze_time("2023-08-25"):
@@ -475,14 +489,8 @@ class ServicesTest(TestCase):
             membership = self.renewal.membership
             self.assertIsNotNone(membership)
 
-            self.assertEqual(
-                membership.since,
-                timezone.now().replace(year=2023, month=9, day=10).date(),
-            )
-            self.assertEqual(
-                membership.until,
-                timezone.now().replace(year=2024, month=9, day=1).date(),
-            )
+            self.assertEqual(membership.since, date(2023, 9, 10))
+            self.assertEqual(membership.until, date(2024, 9, 1))
 
         # Restore data.
         with freeze_time("2023-08-25"):
@@ -611,18 +619,15 @@ class ServicesTest(TestCase):
             with self.subTest("Complete benefactor renewal."):
                 create_payment(self.renewal, self.admin, Payment.CASH)
 
-                self.renewal.refresh_from_db()
-                self.assertEqual(self.renewal.status, Entry.STATUS_COMPLETED)
-                membership = self.renewal.membership
-                self.assertIsNotNone(membership)
-                self.assertNotEqual(self.membership.pk, membership.pk)
+            self.renewal.refresh_from_db()
+            self.assertEqual(self.renewal.status, Entry.STATUS_COMPLETED)
+            membership = self.renewal.membership
+            self.assertIsNotNone(membership)
+            self.assertNotEqual(self.membership.pk, membership.pk)
 
-                self.assertEqual(membership.since, timezone.now().date())
-                self.assertEqual(
-                    membership.until,
-                    timezone.now().replace(year=2024, month=9, day=1).date(),
-                )
-                self.assertEqual(membership.type, Membership.BENEFACTOR)
+            self.assertEqual(membership.since, date(2023, 9, 10))
+            self.assertEqual(membership.until, date(2024, 9, 1))
+            self.assertEqual(membership.type, Membership.BENEFACTOR)
 
     def test_data_minimisation(self):
         with freeze_time("2025-01-01"):
