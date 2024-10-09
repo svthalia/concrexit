@@ -52,19 +52,9 @@ class PagedView(ListView):
 
         page_range = range(page_range_start, page_range_stop)
 
-        querydict = self.request.GET.copy()
-
-        if "page" in querydict:
-            del querydict["page"]
-
         context.update(
             {
                 "page_range": page_range,
-                "base_url": (
-                    f"{self.request.path}?{querydict.urlencode()}&"
-                    if querydict
-                    else f"{self.request.path}?"
-                ),
             }
         )
 

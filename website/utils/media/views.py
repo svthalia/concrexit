@@ -4,11 +4,11 @@ from datetime import timedelta
 from django.core import signing
 from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
-from django.core.files.storage import get_storage_class
 from django.core.signing import BadSignature
 from django.http import Http404
 from django.shortcuts import redirect
 from django.utils import timezone
+from django.utils.module_loading import import_string
 
 from django_sendfile import sendfile
 
@@ -46,7 +46,7 @@ def private_media(request, request_path):
     # Get image information from signature
     # raises PermissionDenied if bad signature
     sig_info = _get_signature_info(request)
-    storage = get_storage_class(sig_info["storage"])()
+    storage = import_string(sig_info["storage"])()
     serve_path = sig_info["serve_path"]
 
     if not storage.exists(serve_path) or not serve_path == request_path:
