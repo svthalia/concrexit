@@ -1,4 +1,5 @@
 """Register admin pages for the models."""
+
 import csv
 import datetime
 
@@ -10,10 +11,26 @@ from django.http import HttpResponse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from activemembers.models import MemberGroupMembership
 from members import services
 from members.models import EmailChange, Member
 
 from . import forms, models
+
+
+class ActiveMemberInline(admin.TabularInline):
+    model = MemberGroupMembership
+    classes = ["collapse"]
+    extra = 0
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 class MembershipInline(admin.StackedInline):
@@ -148,6 +165,7 @@ class UserAdmin(BaseUserAdmin):
     inlines = (
         ProfileInline,
         MembershipInline,
+        ActiveMemberInline,
     )
     list_filter = (
         MembershipTypeListFilter,
