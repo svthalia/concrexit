@@ -45,6 +45,11 @@
                                 </ul>
                             </td>
                             <td>
+                                Created: {{ token.created }} <br>
+                                Last used: {{ token.updated }} <br>
+                                Expires: {{ token.expires }}
+                            </td>
+                            <td>
                                 <a
                                     class="btn btn-secondary"
                                     href="{% url 'oauth2_provider:authorized-token-delete' token.pk %}">
