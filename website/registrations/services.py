@@ -283,18 +283,6 @@ def complete_renewal(renewal: Renewal):
     emails.send_renewal_complete_message(renewal)
 
 
-def calculate_membership_since() -> timezone.datetime:
-    """Calculate the start date of a membership.
-
-    If it's August we act as if it's the next lecture year
-    already and we start new memberships in September.
-    """
-    since = timezone.now().date()
-    if timezone.now().month == 8:
-        since = since.replace(month=9, day=1)
-    return since
-
-
 _PASSWORD_CHARS = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789"
 
 
