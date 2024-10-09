@@ -191,6 +191,33 @@ class BenefactorRegistrationFormView(BaseRegistrationFormView):
 
 
 @method_decorator(login_required, name="dispatch")
+class NewYearRenewalForm(FormView):
+    form_class = forms.NewYearRenewalForm
+    template_name = "registrations/new_year_renewal.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["was_member"] = Membership.objects.filter(
+            user=self.request.member, type=Membership.MEMBER
+        ).exists()
+        context["has_until_graduation"] = Membership.objects.filter(
+            user=self.request.member, study_long=True
+        ).exists()
+        context["latest_renewal"] = Renewal.objects.filter(
+            Q(member=self.request.member)
+            & (
+                Q(status=Registration.STATUS_ACCEPTED)
+                | Q(status=Registration.STATUS_REVIEW)
+            )
+        ).last()
+        context["benefactor_type"] = Membership.BENEFACTOR
+        return context
+
+    def get_form(self, form_class=None):
+        return super.get_form(form_class)
+
+
+@method_decorator(login_required, name="dispatch")
 class RenewalFormView(FormView):
     """View that renders the membership renewal form."""
 

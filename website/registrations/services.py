@@ -256,32 +256,25 @@ def complete_renewal(renewal: Renewal):
     current_membership = member.current_membership
     if current_membership is not None and current_membership.until is None:
         raise ValueError("This member already has a never ending membership")
-
+    until = timezone.datetime(year=lecture_year + 1, month=9, day=1).date()
     with transaction.atomic():
-        if renewal.length == Entry.MEMBERSHIP_STUDY:
-            # Handle the 'membership upgrade' case.
-            if (
-                latest_membership
-                and renewal.created_at.date() < latest_membership.until
-            ):
-                # If a membership exists that was still valid when the renewal was created, the
-                # original membership can be upgraded. This is defined in the Huishoudelijk
-                # Reglement (article 2.8 in the version of 2022-07-22).
-                latest_membership.until = None
-                latest_membership.save()
-                renewal.membership = latest_membership
-            else:
-                # Handle the 'normal' non-(discounted)-upgrade case.
-                renewal.membership = Membership.objects.create(
-                    type=renewal.membership_type, user=member, since=since, until=None
-                )
+        if renewal.membership_type == Membership.MEMBERSHIP_STUDY:
+            # Handle the 'normal' non-(discounted)-upgrade case.
+            renewal.membership = Membership.objects.create(
+                type=renewal.membership_type,
+                user=member,
+                since=since,
+                until=until,
+            )
         else:
             if current_membership:
                 since = current_membership.until
 
-            until = timezone.datetime(year=lecture_year + 1, month=9, day=1).date()
             renewal.membership = Membership.objects.create(
-                type=renewal.membership_type, user=member, since=since, until=until
+                type=renewal.membership_type,
+                user=member,
+                since=since,
+                until=until,
             )
 
         renewal.status = renewal.STATUS_COMPLETED
@@ -360,7 +353,10 @@ def _create_membership_from_registration(
 ) -> Membership:
     """Create a membership from a Registration."""
     since = timezone.now().date()
-    if registration.length == Registration.MEMBERSHIP_YEAR:
+    if (
+        registration.length == Registration.MEMBERSHIP_YEAR
+        or registration.length == Registration.MEMBERSHIP_STUDY
+    ):
         lecture_year = datetime_to_lectureyear(since)
         if since.month == 8:
             # Memberships created in august are for the next lecture year,
