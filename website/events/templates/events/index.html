@@ -40,6 +40,9 @@
 {% block section_tags %}id="events-index"{% endblock %}
 
 {% block page_content %}
+    <div class="spinner-border" role="status" id="calendar-spinner" hidden>
+        <span class="sr-only">Loading...</span>
+    </div>
     <div id="calendar" data-default-date="{% spaceless %}
             {% if upcoming_activity %}
                 {{ upcoming_activity.start|date:'Y-m-d' }}
