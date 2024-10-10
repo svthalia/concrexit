@@ -1,0 +1,73 @@
+{% extends "simple_page.html" %}
+{% load i18n static personal_feed %}
+{% get_current_language as LANGUAGE_CODE %}
+
+
+{% block title %}{% trans "Calendar synchronization"|capfirst %} —
+    {{ block.super }}{% endblock %}
+{% block opengraph_title %}{% trans "Calendar synchronization"|capfirst %} —
+    {{ block.super }}{% endblock %}
+
+{% block page_title %}
+{% trans "Calendar synchronization" %}
+{% endblock %}
+
+{% block page_content %}
+<p>
+    Our website exports an iCalendar feed, which enables you to import the event list into your own calendar! This does however require some setup.
+</p>
+
+<p>
+    To begin, in your calendar application find the button to add an (iCal) calendar via its URL. For example, in Google Calendar, this is "Other calendars" and then "Via URL". In the macOS Calendar the option is under the "File" menu and called "New calendar subscription".
+</p>
+
+<p>
+    Then, paste in the URL of the calendar variant you want. There are two versions, one with all events and one with only the events you are registered for.
+</p>
+
+<p>
+    <div class="input-group">
+        <button class="btn btn-primary btn-lg"><i class="fas fa-calendar-alt"></i> All events</button>
+        <input type="text" class="form-control" value="{% url 'events:ical-'|add:LANGUAGE_CODE %}" id="all-event" readonly>
+        <button
+            onclick="copyLink('all-event')"
+            type="button" class="btn btn-primary btn-lg">
+                <i class="fas fa-copy"></i> Copy to clipboard
+        </button>
+    </div>
+</p>
+
+{% if request.user.is_authenticated %}
+<p>
+    <div class="input-group">
+        <button class="btn btn-primary btn-lg"><i class="fas fa-calendar-check"></i> Personalised</button>
+        <input type="text" class="form-control" value="{% url 'events:ical-'|add:LANGUAGE_CODE %}?u={% personal_feed %}" id="personalised">
+        <button
+            onclick="copyLink('personalised')"
+            type="button" class="btn btn-primary btn-lg">
+            <i class="fas fa-copy"></i>Copy to clipboard
+        </button>
+    </div>
+</p>
+{% else %}
+<p>
+    <div class="input-group">
+        <button class="btn btn-primary btn-lg"> <i class="fas fa-calendar-check"></i> Personalised</button>
+    <a href="{% url 'login' %}" class="btn btn-primary"> Log in for personalised feed </a>
+    </div>
+</p>
+{% endif %}
+
+<p>
+    After this, you should be done! The events should now appear in your calendar.
+</p>
+{% endblock %}
+
+{% block js_body %}
+    {{ block.super }}
+    <script type="text/javascript">
+        function copyLink(el) {
+            navigator.clipboard.writeText(document.getElementById(el).value)
+        }
+    </script>
+{% endblock js_body %}
