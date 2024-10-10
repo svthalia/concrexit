@@ -1,5 +1,6 @@
 """Routes defined by the events package."""
 from django.urls import include, path
+from django.views.generic import TemplateView
 
 from events.feeds import EventFeed
 from events.views import (
@@ -22,6 +23,11 @@ urlpatterns = [
             [
                 path("<int:pk>/", EventDetail.as_view(), name="event"),
                 path("next/", NextEventView.as_view(), name="next"),
+                path(
+                    "sync/",
+                    TemplateView.as_view(template_name="events/synchronize.html"),
+                    name="synchronize",
+                ),
                 path("<slug:slug>/", EventDetail.as_view(), name="event"),
                 path(
                     "<int:pk>/registration/register/",
