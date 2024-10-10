@@ -58,6 +58,7 @@ function strip(html){
 document.addEventListener('DOMContentLoaded', function () {
     let lastKnownWidth = window.innerWidth;
     const calendarEl = document.getElementById('calendar');
+    const spinnerEl = document.getElementById('calendar-spinner');
 
     const showUnpublished = calendarEl.dataset.showUnpublished === 'true';
     let defaultDate = calendarEl.dataset.defaultDate;
@@ -162,6 +163,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else {
                     checkViewState(calendar);
                 }
+            }
+        },
+        loading: function (isLoading) {
+            if (isLoading) {
+                calendarEl.hidden = true;
+                spinnerEl.hidden = false;
+            } else {
+                calendarEl.hidden = false;
+                spinnerEl.hidden = true;
             }
         }
     });
