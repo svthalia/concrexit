@@ -18,7 +18,7 @@ from django.utils.translation import gettext_lazy as _
 from payments import admin_views, payables, services
 from payments.forms import BankAccountAdminForm, BatchPaymentInlineAdminForm
 
-from .models import BankAccount, Batch, Payment, PaymentUser
+from .models import BankAccount, Batch, Payment, PaymentRequest, PaymentUser
 
 
 def _show_message(
@@ -375,6 +375,26 @@ class PaymentsInline(admin.TabularInline):
         return fields
 
 
+# TODO https://code.djangoproject.com/ticket/34927
+# class PaymentRequestInline(admin.TabularInline):
+
+#     model = PaymentRequest
+#     fk_name = "payer"
+#     fields = (
+#         "amount",
+#         "required_paid_date",
+#         "status",
+#     )
+#     readonly_fields = (
+#         "amount",
+#         "required_paid_date",
+#         "status",
+#     )
+#     extra = 0
+#     max_num = 0
+#     can_delete = False
+
+
 @admin.register(Batch)
 class BatchAdmin(admin.ModelAdmin):
     """Manage payment batches."""
@@ -706,7 +726,12 @@ class PaymentUserAdmin(admin.ModelAdmin):
         ThaliaPayBalanceFilter,
     ]
 
-    inlines = [BankAccountInline, PaymentInline]
+    inlines = [
+        BankAccountInline,
+        PaymentInline,
+        # TODO https://code.djangoproject.com/ticket/34927
+        # PaymentRequestInline
+    ]
 
     fields = (
         "user_link",
@@ -803,3 +828,8 @@ class PaymentUserAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
+
+
+@admin.register(PaymentRequest)
+class PaymentRequestAdmin(admin.ModelAdmin):
+    list_display = ("payer", "required_paid_date", "status")

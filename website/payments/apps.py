@@ -28,3 +28,8 @@ class PaymentsConfig(AppConfig):
                 },
             ],
         }
+
+    def ready(self):
+        from .payables import register
+
+        register()
