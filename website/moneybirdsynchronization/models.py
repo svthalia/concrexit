@@ -52,7 +52,9 @@ def date_for_payable_model(obj) -> datetime.datetime | datetime.date:
     if isinstance(obj, Order):
         return obj.shift.start
     if isinstance(obj, Registration | Renewal):
-        return obj.created_at.date()
+        # Registrations and Renewals are only pushed to Moneybird
+        # once they've been paid,, so a obj.payment always exists.
+        return obj.payment.created_at.date()
 
     raise ValueError(f"Unknown payable model {obj}")
 
