@@ -1,0 +1,31 @@
+{% extends "simple_page.html" %}
+{% block page_title %}iCal feed instructions{% endblock %}
+
+{% block page_content %}
+    <p>This page provides information on how to use an iCal feed to stay updated with Thalia events.</p>
+    <h3>What is an iCal feed?</h3>
+    <p>
+        An iCal feed is a calendar format that allows you to subscribe to events and have them automatically appear in your calendar application.
+        We offer two different feeds: one with all Thalia events, and one that is personalized for you, with only the events that you've registered for.
+    </p>
+    <h3>How to subscribe to an iCal feed</h3>
+    <p>To subscribe to an iCal feed, follow these steps:</p>
+    <ol>
+        <li>Copy the iCal feed URL from below.</li>
+        <li>Open your calendar application (e.g., Google Calendar, Apple Calendar, Outlook).</li>
+        <li>Find the option to add a new calendar subscription by URL.</li>
+        <li>Paste the iCal feed URL into the provided field.</li>
+        <li>Save the new calendar.</li>
+    </ol>
+    <p>In some cases, simply opening the URL may navigate to your calendar application too.
+    <h3>iCal feed URLs</h3>
+    <p>There are two iCal feed URLs available:</p>
+    <ul>
+        <li>All events: <a href="{{ all_events_feed }}">{{ all_events_feed }}</a></li>
+        {% if user.is_authenticated %}
+            <li>Personal feed: <a href="{{ personal_feed }}">{{ personal_feed }}</a></li>
+        {% else %}
+            <li>Personal feed: <a href="{% url 'login' %}?next={% url 'events:ical-help' %}">Log in to access your personal iCal feed</a></li>
+        {% endif %}
+    </ul>
+{% endblock %}
