@@ -1,9 +1,9 @@
-"""Views provided by the events package."""
-
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
@@ -13,6 +13,7 @@ from django.views.generic import DetailView, FormView, TemplateView
 from events import services
 from events.exceptions import RegistrationError
 from events.models import categories
+from events.models.feed_token import FeedToken
 from events.services import is_user_registered
 from payments.models import Payment
 from utils.media.services import fetch_thumbnails
@@ -248,3 +249,20 @@ class NextEventView(View):
             raise Http404("There is no upcoming event.")
 
         return redirect(upcoming_activity)
+
+
+class ICalHelpView(TemplateView):
+    """Render the iCal feed help page."""
+
+    template_name = "events/ical_help.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["all_events_feed"] = settings.BASE_URL + reverse("events:ical-en")
+        if self.request.member:
+            token = FeedToken.objects.get_or_create(member=self.request.member)[0].token
+            context[
+                "personal_feed"
+            ] = f"{settings.BASE_URL}{reverse('events:ical-en')}?u={token}"
+
+        return context
