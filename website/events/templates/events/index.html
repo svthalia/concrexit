@@ -18,12 +18,12 @@
     {% trans "Calendar" %}
     <a href="{% url 'events:ical-help' %}"
        target="_blank"
-       class="btn btn-primary first-right align-items-center"
+       class="btn btn-primary first-right d-flex align-items-center"
        data-bs-toggle="tooltip"
        data-bs-placement="top"
        title="Configure iCal feed"
     >
-        <i class="fas fa-calendar-alt"></i>iCal feed
+        <i class="fas fa-calendar-alt me-2"></i>iCal feed
     </a>
 {% endblock %}
 {% block section_tags %}id="events-index"{% endblock %}
