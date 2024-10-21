@@ -248,3 +248,9 @@ class NextEventView(View):
             raise Http404("There is no upcoming event.")
 
         return redirect(upcoming_activity)
+
+
+class ICalHelpView(TemplateView):
+    """Render the iCal feed help page."""
+
+    template_name = "events/ical_help.html"

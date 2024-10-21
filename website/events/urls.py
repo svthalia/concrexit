@@ -11,6 +11,7 @@ from events.views import (
     MarkPresentView,
     NextEventView,
     RegistrationView,
+    ICalHelpView,  # Import the new view
 )
 
 app_name = "events"
@@ -46,6 +47,7 @@ urlpatterns = [
                 path("", EventIndex.as_view(), name="index"),
                 path("ical/nl.ics", EventFeed(), name="ical-nl"),
                 path("ical/en.ics", EventFeed(), name="ical-en"),
+                path("ical/help/", ICalHelpView.as_view(), name="ical-help"),  # Add the new route
             ]
         ),
     ),
