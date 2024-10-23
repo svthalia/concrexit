@@ -13,6 +13,12 @@ Now that you're a member, you can join the official Thalia Promotion WhatsApp gr
 Through this group you will be kept up to date with Thalia events and other matters
 in the association. You can join the group via the following link: {{ base_url }}/whatsapp/.
 
+And finally, there are some other optional next steps for you:
+- Subscribe to a personalized calendar feed to see events in your calendar app:
+  {{ base_url }}{% url "events:ical-help" %}
+- Upload a reference picture for face detection, to you get an overview of all the photos you're on:
+  {{ base_url }}{% url 'facedetection:reference-faces' %}
+
 With kind regards,
 
 The board of Study Association Thalia
