@@ -10,8 +10,9 @@
 
 {% block page_title %}{% trans "renewal" %}{% endblock %}
     {% csrf_token %}
-    <form method="post" enctype="multipart/form-data"
-                      data-benefactor-type="{{ benefactor_type }}">
+    {% for field in form %}
+        {% bootstrap_field %}
+    {% endfor %}
 
 {% block page_content %}
 {% endblock %}
