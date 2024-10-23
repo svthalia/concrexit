@@ -190,31 +190,40 @@ class BenefactorRegistrationFormView(BaseRegistrationFormView):
         return super().post(request, *args, **kwargs)
 
 
-@method_decorator(login_required, name="dispatch")
-class NewYearRenewalForm(FormView):
-    form_class = forms.NewYearRenewalForm
+class NewYearRenewalFormView(FormView):
+    form_class = forms.NewYearForm
     template_name = "registrations/new_year_renewal.html"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["was_member"] = Membership.objects.filter(
-            user=self.request.member, type=Membership.MEMBER
-        ).exists()
-        context["has_until_graduation"] = Membership.objects.filter(
-            user=self.request.member, study_long=True
-        ).exists()
-        context["latest_renewal"] = Renewal.objects.filter(
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        membership = request.member.latest_membership
+        existing_renewal = Renewal.objects.filter(
             Q(member=self.request.member)
             & (
                 Q(status=Registration.STATUS_ACCEPTED)
                 | Q(status=Registration.STATUS_REVIEW)
             )
         ).last()
-        context["benefactor_type"] = Membership.BENEFACTOR
-        return context
+
+        if (
+            existing_renewal
+            or membership is None
+            or membership.type != Membership.MEMBER
+            or not membership.study_long
+            or request.member.profile.is_minimized
+        ):
+            return redirect("registrations:renew")
+
+        return super().dispatch(request, *args, **kwargs)
 
     def get_form(self, form_class=None):
         return super.get_form(form_class)
+
+    def post(self, request, *args, **kwargs):
+        request.POST = request.POST.dict()
+        request.POST["membership_type"] = Membership.MEMBER
+        request.POST["length"] = Entry.MEMBERSHIP_STUDY
+        return super().post(request, *args, **kwargs)
 
 
 @method_decorator(login_required, name="dispatch")
