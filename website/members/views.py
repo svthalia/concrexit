@@ -19,7 +19,6 @@ from django.views.generic.base import TemplateResponseMixin, TemplateView, View
 import activemembers.services as activemembers_services
 import events.services as event_services
 import pizzas.services
-import sales
 import sales.services
 from members import emails, services
 from members.decorators import membership_required
