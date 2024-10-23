@@ -211,19 +211,20 @@ class NewYearRenewalFormView(FormView):
             or membership.type != Membership.MEMBER
             or not membership.study_long
             or request.member.profile.is_minimized
+            or membership.until is None
+            or (membership.until > timezone.now() + timezone.timedelta(month=1))
         ):
+            # TODO redirect message
             return redirect("registrations:renew")
 
         return super().dispatch(request, *args, **kwargs)
 
-    def get_form(self, form_class=None):
-        return super.get_form(form_class)
-
-    def post(self, request, *args, **kwargs):
-        request.POST = request.POST.dict()
-        request.POST["membership_type"] = Membership.MEMBER
-        request.POST["length"] = Entry.MEMBERSHIP_STUDY
-        return super().post(request, *args, **kwargs)
+    def form_valid(self, form):
+        membership = self.request.member.latest_membership
+        membership.until = timezone.datetime(
+            year=membership.until.year + 1, month=9, day=1
+        ).date()
+        return redirect("registrations:renew-success")
 
 
 @method_decorator(login_required, name="dispatch")
