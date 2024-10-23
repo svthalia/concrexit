@@ -1,0 +1,18 @@
+{% extends "simple_page.html" %}
+{% load i18n django_bootstrap5 alert static payments %}
+
+{% block title %}{% trans "renewal"|capfirst %} — {{ block.super }}{% endblock %}
+
+{% block js_body %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% static 'registrations/js/main.js' %}"></script>
+{% endblock %}
+
+{% block page_title %}{% trans "renewal" %}{% endblock %}
+    {% csrf_token %}
+    {% for field in form %}
+        {% bootstrap_field %}
+    {% endfor %}
+
+{% block page_content %}
+{% endblock %}

@@ -175,6 +175,19 @@ class BenefactorRegistrationForm(BaseRegistrationForm):
         )
 
 
+class NewYearForm(forms.Form):
+    privacy_policy = forms.BooleanField(
+        required=True,
+    )
+
+    extension = forms.BooleanField(
+        required=True,
+        label=_(
+            "I want to extend my membership until the end of the next academic year."
+        ),
+    )
+
+
 class RenewalForm(forms.ModelForm):
     """Form for membership renewals."""
 
