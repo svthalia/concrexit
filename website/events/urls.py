@@ -8,6 +8,7 @@ from events.views import (
     EventDetail,
     EventIndex,
     EventRegisterView,
+    ICalHelpView,
     MarkPresentView,
     NextEventView,
     RegistrationView,
@@ -46,6 +47,7 @@ urlpatterns = [
                 path("", EventIndex.as_view(), name="index"),
                 path("ical/nl.ics", EventFeed(), name="ical-nl"),
                 path("ical/en.ics", EventFeed(), name="ical-en"),
+                path("ical/help/", ICalHelpView.as_view(), name="ical-help"),
             ]
         ),
     ),
