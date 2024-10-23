@@ -1,3 +1,4 @@
+from django.db.models import Count
 from django.utils import timezone
 
 from events.services import is_organiser
@@ -14,12 +15,13 @@ def gen_stats_pizza_orders() -> dict:
         ],
     }
 
-    for product in Product.objects.all():
-        orders = FoodOrder.objects.filter(product=product).count()
-
-        if orders > 0:
-            data["labels"].append(product.name)
-            data["datasets"][0]["data"].append(orders)
+    for product in (
+        Product.objects.annotate(count=Count("foodorder"))
+        .filter(count__gt=0)
+        .order_by("-count")[:10]
+    ):
+        data["labels"].append(product.name)
+        data["datasets"][0]["data"].append(product.count)
 
     return data
 
