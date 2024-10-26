@@ -28,7 +28,7 @@
         {% if user.is_authenticated %}
             <li>Personal feed: <a href="{{ personal_feed }}">{{ personal_feed }}</a></li>
         {% else %}
-            <li>Personal feed: <a href="{% url 'login' %}?next={% url 'events:ical-help' %}">Log in to access your personal iCal feed</a></li>
+            <li>Personal feed: <a href="{% url 'login' %}?next={% url 'events:ical-help' %}">Log in</a> to access your personal iCal feed</li>
         {% endif %}
     </ul>
 {% endblock %}
