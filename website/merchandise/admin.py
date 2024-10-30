@@ -1,4 +1,3 @@
-"""Registers admin interfaces for the models defined in this module."""
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 

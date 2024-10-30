@@ -1,4 +1,3 @@
-"""The forms defined by the activemembers module."""
 from django import forms
 from django.contrib.auth.models import Permission
 from django.utils.translation import gettext_lazy as _

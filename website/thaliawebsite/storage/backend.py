@@ -42,9 +42,9 @@ class PublicS3Storage(S3RenameMixin, S3Boto3Storage):
             # the origin. Otherwise, it wouldn't end up at S3.
             # The `ResponseContentDisposition` parameter as used in the private storage
             # does not work if there's no signature present.
-            params[
-                "response-content-disposition"
-            ] = f'attachment; filename="{attachment}"'
+            params["response-content-disposition"] = (
+                f'attachment; filename="{attachment}"'
+            )
 
         url = super().url(name, params, expire=expire_seconds)
 
@@ -60,9 +60,9 @@ class PrivateS3Storage(S3RenameMixin, S3Boto3Storage):
         if attachment:
             # Cloudfront will add the Content-Disposition header to the response
             # if the signed URL contains the ResponseContentDisposition query parameter.
-            params[
-                "ResponseContentDisposition"
-            ] = f'attachment; filename="{attachment}"'
+            params["ResponseContentDisposition"] = (
+                f'attachment; filename="{attachment}"'
+            )
 
         return super().url(name, params, expire=expire_seconds)
 

@@ -1,4 +1,3 @@
-"""Registers admin interfaces for the activemembers module."""
 import csv
 import datetime
 

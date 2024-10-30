@@ -1,4 +1,3 @@
-"""Get the field type for a form field."""
 from django import template
 
 register = template.Library()

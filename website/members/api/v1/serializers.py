@@ -1,4 +1,3 @@
-"""DRF serializers defined by the members package."""
 from django.templatetags.static import static
 
 from rest_framework import serializers

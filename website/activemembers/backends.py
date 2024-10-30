@@ -1,4 +1,3 @@
-"""Authentication backend to check permissions."""
 from django.contrib.auth.models import Permission
 from django.db.models import Q
 from django.utils import timezone

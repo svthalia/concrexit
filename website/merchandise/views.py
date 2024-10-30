@@ -1,4 +1,3 @@
-"""The views for the merchandise package."""
 from django.http import Http404
 from django.shortcuts import render
 

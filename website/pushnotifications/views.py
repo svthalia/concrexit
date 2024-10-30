@@ -1,4 +1,3 @@
-"""Views provided by the pushnotifications package."""
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import get_object_or_404, redirect

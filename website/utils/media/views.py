@@ -1,4 +1,3 @@
-"""Utility views."""
 from datetime import timedelta
 
 from django.core import signing

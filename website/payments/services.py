@@ -1,4 +1,3 @@
-"""The services defined by the payments package."""
 import datetime
 
 from django.conf import settings

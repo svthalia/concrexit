@@ -261,8 +261,8 @@ class ICalHelpView(TemplateView):
         context["all_events_feed"] = settings.BASE_URL + reverse("events:ical-en")
         if self.request.member:
             token = FeedToken.objects.get_or_create(member=self.request.member)[0].token
-            context[
-                "personal_feed"
-            ] = f"{settings.BASE_URL}{reverse('events:ical-en')}?u={token}"
+            context["personal_feed"] = (
+                f"{settings.BASE_URL}{reverse('events:ical-en')}?u={token}"
+            )
 
         return context

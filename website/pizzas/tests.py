@@ -1,4 +1,3 @@
-"""Tests for the pizza functionality."""
 import datetime
 
 from django.contrib.auth.models import ContentType, Permission

@@ -1,4 +1,3 @@
-"""The routes defined by this package."""
 from django.urls import path
 
 from .views import ShortLinkView

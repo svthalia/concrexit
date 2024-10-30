@@ -1,4 +1,3 @@
-"""The routes defined by the thabloid package."""
 from django.urls import include, path
 
 from . import views

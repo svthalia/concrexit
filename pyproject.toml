@@ -67,9 +67,7 @@ factory_boy = "3.3.0"
 pydenticon = "0.3.1"
 Faker = "18.13.0"
 coverage = {extras = ["toml"], version = "^7.5.3"}
-isort = "5.12.0"
-black = "23.9.1"
-ruff = "0.0.291"
+ruff = "0.7.1"
 pre-commit = "3.5.0"
 pyparsing = "^3.0.9"
 pydot = "^1.4.2"
@@ -91,22 +89,22 @@ show_missing = true
 fail_under = 65.0
 
 [tool.black]
-exclude = '(/(\.eggs|\.git|\.tox)/|migrations)'
+exclude = ['migrations']
 
-[tool.isort]
-profile = "black"
-skip_glob = ["*/migrations/*"]
-sections = [
-    "FUTURE",
-    "STDLIB",
-    "DJANGO",
-    "THIRDPARTY",
-    "FIRSTPARTY",
-    "LOCALFOLDER",
+[tool.ruff.lint.isort.sections]
+django = ["django"]
+
+[tool.ruff.lint.isort]
+section-order = [
+    "future",
+    "standard-library",
+    "django",
+    "third-party",
+    "first-party",
+    "local-folder",
 ]
 
-known_django = ["django"]
-known_first_party = [
+known-first-party = [
     "website",
     "activemembers",
     "announcements",
@@ -135,8 +133,11 @@ known_first_party = [
 ]
 
 [tool.ruff]
+line-length = 88
+target-version = "py311"
 exclude = ["migrations", ".venv", ".vscode", ".pyenv"]
 
+[tool.ruff.lint]
 select = [
     "F",
     "E",
@@ -176,7 +177,6 @@ select = [
     "D419",
 ]
 
-target-version = "py311"
 
 ignore = [
     "E501",  # line too long
@@ -184,9 +184,10 @@ ignore = [
     "PLW2901",  # loop variable overwritten
     "RUF005",  # use spread operator instead of concatenation
     "RUF012",
+    "ISC001",
 ]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "test_*.py" = [
     "F841",  # unused local variable
     "D400",  # docstring first line should end with a period

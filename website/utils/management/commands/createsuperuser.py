@@ -51,7 +51,7 @@ class Command(OriginalCommand):
                         username = None
                 elif username == "":
                     raise CommandError(
-                        "%s cannot be blank." % capfirst(verbose_field_name)
+                        f"{capfirst(verbose_field_name)} cannot be blank."
                     )
                 # Prompt for username.
                 while username is None:
@@ -140,8 +140,7 @@ class Command(OriginalCommand):
                     )
                 if username is None:
                     raise CommandError(
-                        "You must use --%s with --noinput."
-                        % self.UserModel.USERNAME_FIELD
+                        f"You must use --{self.UserModel.USERNAME_FIELD} with --noinput."
                     )
                 else:
                     error_msg = self._validate_username(
@@ -156,7 +155,7 @@ class Command(OriginalCommand):
                     value = options[field_name] or os.environ.get(env_var)
                     if not value:
                         raise CommandError(
-                            "You must use --%s with --noinput." % field_name
+                            f"You must use --{field_name} with --noinput.."
                         )
                     field = self.UserModel._meta.get_field(field_name)
                     user_data[field_name] = field.clean(value, None)

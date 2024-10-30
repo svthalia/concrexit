@@ -1,4 +1,3 @@
-"""Events app calendarjs API urls."""
 from django.urls import path
 
 from events.api.calendarjs.views import (

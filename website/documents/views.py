@@ -1,4 +1,3 @@
-"""Views provided by the documents package."""
 import os
 from collections import defaultdict
 

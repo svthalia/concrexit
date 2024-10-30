@@ -160,9 +160,9 @@ class MoneybirdContact(models.Model):
         if bank_account:
             data["contact"]["sepa_iban"] = bank_account.iban
             data["contact"]["sepa_bic"] = bank_account.bic or ""
-            data["contact"][
-                "sepa_iban_account_name"
-            ] = f"{bank_account.initials} {bank_account.last_name}"
+            data["contact"]["sepa_iban_account_name"] = (
+                f"{bank_account.initials} {bank_account.last_name}"
+            )
             if bank_account.valid and bank_account.valid_from < timezone.now().date():
                 data["contact"]["sepa_active"] = True
                 data["contact"]["sepa_mandate_id"] = bank_account.mandate_no
@@ -331,9 +331,9 @@ class MoneybirdExternalInvoice(models.Model):
         if period is not None:
             data["external_sales_invoice"]["details_attributes"][0]["period"] = period
         if tax_rate_id is not None:
-            data["external_sales_invoice"]["details_attributes"][0][
-                "tax_rate_id"
-            ] = int(tax_rate_id)
+            data["external_sales_invoice"]["details_attributes"][0]["tax_rate_id"] = (
+                int(tax_rate_id)
+            )
 
         return data
 

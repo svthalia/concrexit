@@ -1,4 +1,3 @@
-"""DRF serializers defined by the activemembers package."""
 from rest_framework import serializers
 
 from activemembers.models import MemberGroup, MemberGroupMembership

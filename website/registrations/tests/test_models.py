@@ -48,7 +48,7 @@ class EntryTest(TestCase):
         entry = Entry(registration=self.registration)
         self.assertEqual(
             str(entry),
-            "{} {} ({})".format(
+            "{} {} ({})".format(  # noqa: UP032
                 self.registration.first_name,
                 self.registration.last_name,
                 self.registration.email,
@@ -145,7 +145,7 @@ class RegistrationTest(TestCase):
     def test_str(self):
         self.assertEqual(
             str(self.registration),
-            "{} {} ({})".format(
+            "{} {} ({})".format(  # noqa: UP032
                 self.registration.first_name,
                 self.registration.last_name,
                 self.registration.email,
@@ -321,7 +321,7 @@ class RegistrationTest(TestCase):
         ]
 
         for first_name, last_name, username in possibilities:
-            registration._generate_default_username(),
+            (registration._generate_default_username(),)
             self.assertEqual(
                 Registration(
                     first_name=first_name, last_name=last_name

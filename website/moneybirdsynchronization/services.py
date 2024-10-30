@@ -315,7 +315,8 @@ def _sync_contacts_with_outdated_mandates():
                 .order_by("-created_at")
                 .values("mandate_no")[:1]
             )
-        ).exclude(moneybird_sepa_mandate_id=F("sepa_mandate_id"))
+        )
+        .exclude(moneybird_sepa_mandate_id=F("sepa_mandate_id"))
         # For some reason the DB does not consider None == None in the exclude above.
         .exclude(sepa_mandate_id=None, moneybird_sepa_mandate_id=None)
     )

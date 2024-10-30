@@ -1,4 +1,3 @@
-"""Obtain the base url."""
 from django.conf import settings
 from django.template import Library
 

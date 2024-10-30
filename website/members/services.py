@@ -1,4 +1,3 @@
-"""Services defined in the members package."""
 from collections.abc import Callable
 from datetime import date
 from typing import Any

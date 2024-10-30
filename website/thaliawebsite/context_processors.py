@@ -1,4 +1,3 @@
-"""These context processors can be used to expand the context provided to views."""
 from django.conf import settings
 from django.utils import timezone
 

@@ -1,4 +1,3 @@
-"""Models for the merchandise database tables."""
 from django.core.files.storage import storages
 from django.db import models
 

@@ -1,4 +1,3 @@
-"""The forms defined by the documents package."""
 from django import forms
 from django.contrib import admin
 from django.forms import widgets

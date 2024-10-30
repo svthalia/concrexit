@@ -1,4 +1,3 @@
-"""Gives sitemaps for the merchandise package."""
 from django.contrib import sitemaps
 from django.urls import reverse
 
