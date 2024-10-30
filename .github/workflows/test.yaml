@@ -165,9 +165,6 @@ jobs:
         run: poetry install
         if: steps.cache.outputs.cache-hit != 'true'
 
-      - name: Run doctest
-        run: make doctest
-
   upload-coverage:
     name: Deploy Coverage Report
     runs-on: ubuntu-latest

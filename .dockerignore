@@ -7,7 +7,6 @@ website/db.sqlite3
 
 **/Dockerfile
 **/README.md
-docs
 
 .git
 .github

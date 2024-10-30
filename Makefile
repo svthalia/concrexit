@@ -253,30 +253,6 @@ coverage: .coverage ## Generate a coverage report after running the tests
 covhtml: .coverage ## Generate an HTML coverage report
 	poetry run coverage html --directory=covhtml --no-skip-covered --title="Coverage Report"
 
-.make/docsdeps: .make .make/deps
-	poetry install $(POETRY_FLAGS) --with docs
-	@touch .make/docsdeps
-
-.PHONY: apidocs
-apidocs: ## Generate API docs
-	cd docs && poetry run sphinx-apidoc -M -f -o . ../website ../website/*/migrations ../website/*/tests* ../website/manage.py
-
-.make/doctest: .make/docsdeps
-	cd docs && poetry run sphinx-build -M doctest . _build
-
-.PHONY: doctest
-doctest: .make/doctest ## Run doctests
-
-# This could be a recipe which checks the modification date of input files, but
-# that would be too complicated and this isn't run that often anyways.
-.PHONY: docs
-docs: ## Generate docs HTML files
-	cd docs && poetry run sphinx-build -M html . _build
-
-.PHONY: apidocscheck
-apidocscheck: apidocs # Check whether new apidocs are generated
-	@git diff --name-only | grep 'docs/' >/dev/null && (echo "WARNING: you have uncommitted apidocs changes"; exit 1) || exit 0
-
 .PHONY: graphs
 graphs: ## Generate model graphs
 	@echo "Generating full models graph"
@@ -303,7 +279,7 @@ lint: isortcheck blackcheck ruff ## Run all linters
 test: check templatecheck migrationcheck tests ## Run every kind of test
 
 .PHONY: ci
-ci: isortcheck blackcheck ruff coverage doctest docs apidocscheck ## Do all the checks the GitHub Actions CI does
+ci: isortcheck blackcheck ruff coverage ## Do all the checks the GitHub Actions CI does
 
 # Sometimes you don't want make to do the whole modification time checking thing
 # so this cleans up the whole repository and allows you to start over from
@@ -312,4 +288,4 @@ ci: isortcheck blackcheck ruff coverage doctest docs apidocscheck ## Do all the 
 .PHONY: clean
 clean: ## Remove all generated files
 	rm -f .coverage website/db.sqlite3
-	rm -rf website/media website/static docs/_build .make
+	rm -rf website/media website/static .make

@@ -61,13 +61,6 @@ optional = true
 [tool.poetry.group.postgres.dependencies]
 psycopg2 = "2.9.9"
 
-[tool.poetry.group.docs]
-optional = true
-
-[tool.poetry.group.docs.dependencies]
-recommonmark = "0.7.1"
-sphinx = "6.2.1"
-
 [tool.poetry.group.dev.dependencies]
 django-template-check = "0.4.0"
 factory_boy = "3.3.0"
@@ -142,7 +135,7 @@ known_first_party = [
 ]
 
 [tool.ruff]
-exclude = ["migrations", "docs/conf.py", ".venv", ".vscode", ".pyenv"]
+exclude = ["migrations", ".venv", ".vscode", ".pyenv"]
 
 select = [
     "F",

@@ -42,8 +42,6 @@ apt-get install python3-dev build-essential libjpeg-dev zlib1g-dev libwebp-dev
 
 For other operating systems, see the [Pillow Documentation](https://pillow.readthedocs.io/en/latest/installation.html).
 
-On macOS you will also need to install `libmagic`, using the brew package manager by running `brew install libmagic`.
-
 > **Contributing**:
 > also see the [contributing guidelines](CONTRIBUTING.md) for more information on how to contribute to concrexit.
 
