@@ -218,7 +218,7 @@ class NewYearRenewalFormView(FormView):
                 self.request,
                 "It seems you are not allowed to renew your membership as studylong member.",
             )
-            return redirect("registrations:renew")
+            return redirect(reverse("registrations:renew"))
 
         return super().dispatch(request, *args, **kwargs)
 
@@ -228,7 +228,6 @@ class NewYearRenewalFormView(FormView):
             year=membership.until.year + 1, month=9, day=1
         ).date()
         membership.save()
-        print(membership.until)
         return redirect("registrations:renew-studylong-success")
 
 
