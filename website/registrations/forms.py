@@ -187,6 +187,14 @@ class NewYearForm(forms.Form):
         ),
     )
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["privacy_policy"].label = mark_safe(
+            _('I accept the <a href="{}">privacy policy</a>.').format(
+                reverse_lazy("singlepages:privacy-policy")
+            )
+        )
+
 
 class RenewalForm(forms.ModelForm):
     """Form for membership renewals."""
