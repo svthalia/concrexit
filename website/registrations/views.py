@@ -204,7 +204,6 @@ class NewYearRenewalFormView(FormView):
                 | Q(status=Registration.STATUS_REVIEW)
             )
         ).last()
-
         if (
             existing_renewal
             or membership is None
@@ -212,12 +211,13 @@ class NewYearRenewalFormView(FormView):
             or not membership.study_long
             or request.member.profile.is_minimized
             or membership.until is None
-            or ((membership.until - timezone.now().date()).days >= 31)
+            or ((membership.until - timezone.now().date()).days > 31)
         ):
             messages.error(
                 self.request,
                 "It seems you are not allowed to renew your membership as studylong member.",
             )
+
             return redirect(reverse("registrations:renew"))
 
         return super().dispatch(request, *args, **kwargs)
