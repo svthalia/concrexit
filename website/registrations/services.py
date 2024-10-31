@@ -254,7 +254,11 @@ def complete_renewal(renewal: Renewal):
 
     latest_membership = member.latest_membership
     current_membership = member.current_membership
-    if current_membership is not None and current_membership.until is None:
+    if (latest_membership and latest_membership.study_long) or (
+        current_membership
+        and (current_membership.study_long or current_membership.until is None)
+        and not renewal.membership_type == Membership.BENEFACTOR
+    ):
         raise ValueError("This member already has a never ending membership")
     until = timezone.datetime(year=lecture_year + 1, month=9, day=1).date()
     with transaction.atomic():
