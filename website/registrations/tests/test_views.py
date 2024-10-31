@@ -10,6 +10,8 @@ from django.test import RequestFactory, TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
 
+from freezegun import freeze_time
+
 from members.models import Member, Membership, Profile
 from registrations import views
 from registrations.models import Entry, Reference, Registration, Renewal
@@ -552,6 +554,62 @@ class RenewalFormViewTest(TestCase):
 
             self.assertEqual(return_value.status_code, 302)
             self.assertEqual(return_value.url, reverse("registrations:renew-success"))
+
+
+class NewYearRenewalFormViewTest(TestCase):
+    fixtures = ["members.json"]
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.member = Member.objects.get(pk=1)
+        cls.member.profile.is_minimized = False
+        cls.member.profile.save()
+
+        cls.membership = Membership.objects.create(
+            user=cls.member,
+            type=Membership.MEMBER,
+            since=timezone.now().date(),
+            until=timezone.datetime(year=2023, month=9, day=1).date(),
+            study_long=True,
+        )
+
+    def setUp(self):
+        self.client.force_login(self.member)
+
+    @freeze_time("2023-08-01")
+    def test_prolong_membership_in_august(self):
+        response = self.client.post(reverse("registrations:renew-studylong"))
+
+        self.assertEqual(response.status_code, 302)
+
+        self.membership.refresh_from_db()
+
+        self.assertEqual(
+            self.membership.until, timezone.datetime(year=2024, month=9, day=1).date()
+        )
+
+    @freeze_time("2023-07-31")
+    def test_cannot_prolong_membership_before_august_or_when_minimized(self):
+        response = self.client.post(reverse("registrations:renew-studylong"))
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("registrations:renew"))
+
+        self.member.profile.is_minimized = True
+        self.member.profile.save()
+
+        with freeze_time("2023-08-01"):
+            response = self.client.post(reverse("registrations:renew-studylong"))
+            self.assertEqual(response.status_code, 302)
+            self.assertEqual(response.url, reverse("registrations:renew"))
+
+    @freeze_time("2023-09-01")
+    def test_prolong_membership_in_september(self):
+        response = self.client.post(reverse("registrations:renew-studylong"))
+        self.assertEqual(response.status_code, 302)
+        self.membership.refresh_from_db()
+        self.assertEqual(
+            self.membership.until, timezone.datetime(year=2024, month=9, day=1).date()
+        )
 
 
 @override_settings(SUSPEND_SIGNALS=True)
