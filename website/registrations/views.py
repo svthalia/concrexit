@@ -214,12 +214,6 @@ class NewYearRenewalFormView(FormView):
             or membership.until is None
             or ((membership.until - timezone.now().date()).days >= 31)
         ):
-            if membership.study_long:
-                messages.info(
-                    self.request,
-                    "It seems like you don't need to renew your membership right now. Come back later.",
-                )
-                return redirect("index")
             messages.error(
                 self.request,
                 "It seems you are not allowed to renew your membership as studylong member.",
@@ -234,6 +228,7 @@ class NewYearRenewalFormView(FormView):
             year=membership.until.year + 1, month=9, day=1
         ).date()
         membership.save()
+        print(membership.until)
         return redirect("registrations:renew-studylong-success")
 
 
