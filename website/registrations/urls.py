@@ -54,6 +54,13 @@ urlpatterns = [
                     name="renew-studylong",
                 ),
                 path(
+                    "studylong/success/",
+                    TemplateView.as_view(
+                        template_name="registrations/renewal_studylong_succes.html"
+                    ),
+                    name="renew-studylong-success",
+                ),
+                path(
                     "renew/success/",
                     TemplateView.as_view(
                         template_name="registrations/renewal_success.html"
