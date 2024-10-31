@@ -517,7 +517,6 @@ class ServicesTest(TestCase):
                 membership = self.renewal.membership
                 self.assertIsNotNone(membership)
                 self.assertEqual(self.membership.pk, membership.pk)
-                self.assertIsNone(membership.until)
 
         # Restore data.
         with freeze_time("2023-08-25"):
@@ -546,7 +545,7 @@ class ServicesTest(TestCase):
 
         # Restore data.
         with freeze_time("2023-08-25"):
-            self.membership.until = "2023-09-01"
+            self.membership.study_long = True
             self.membership.save()
             self.renewal.delete()
             self.renewal = Renewal.objects.create(
@@ -574,6 +573,7 @@ class ServicesTest(TestCase):
         # Restore data.
         with freeze_time("2023-09-05"):
             self.membership.until = "2023-09-01"
+            self.membership.study_long = False
             self.membership.save()
             self.renewal.delete()
             self.renewal = Renewal.objects.create(
@@ -594,8 +594,7 @@ class ServicesTest(TestCase):
                 self.assertEqual(self.renewal.status, Entry.STATUS_COMPLETED)
                 membership = self.renewal.membership
                 self.assertIsNotNone(membership)
-                self.assertNotEqual(self.membership.pk, membership.pk)
-                self.assertIsNone(membership.until)
+                self.assertEqual(self.membership.pk, membership.pk)
 
         # Restore data.
         with freeze_time("2023-09-05"):
