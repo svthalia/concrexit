@@ -129,14 +129,10 @@
                         have to renew your membership.
                     {% endblocktrans %}
                 </p>
-            {% elif latest_membership.until is None %}
+            {% elif latest_membership.study_long %}
                 <p>
-                    {% blocktrans trimmed %}
-                        You currently have an active membership for your entire
-                        study duration. Did you graduate or stop with your
-                        studies for some other reason? Please let us know by
-                        sending an email to info@thalia.nu.
-                    {% endblocktrans %}
+                    You seem to be on the wrong page for your membership type.
+                    follow <a href="{% url 'registrations:renew-studylong' %}">this link</a> to renew your membership.
                 </p>
             {% elif not request.member.profile.is_minimized %}
                 {% for error in form.errors.items %}
