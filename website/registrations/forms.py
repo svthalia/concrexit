@@ -234,7 +234,10 @@ class RenewalForm(forms.ModelForm):
             raise ValidationError(
                 "It's not possible to renew a membership using an incomplete profile."
             )
-        if self.cleaned_data["member"].latest_membership.study_long:
+        if (
+            self.cleaned_data["member"].latest_membership
+            and self.cleaned_data["member"].latest_membership.study_long
+        ):
             raise ValidationError("It's not possible to renew a study long membership.")
 
         if self.cleaned_data["length"] == Renewal.MEMBERSHIP_STUDY:
