@@ -8,11 +8,17 @@
     <script type="text/javascript" src="{% static 'registrations/js/main.js' %}"></script>
 {% endblock %}
 
+
+
 {% block page_title %}{% trans "renewal" %}{% endblock %}
-    {% csrf_token %}
-    {% for field in form %}
-        {% bootstrap_field %}
-    {% endfor %}
 
 {% block page_content %}
+    {% csrf_token %}
+    <form method="post" class="col-12">
+        {% csrf_token %}
+        {% for field in form %}
+            {% bootstrap_field field %}
+        {% endfor %}
+        <input type="submit" value="{% trans 'Save' %}" class="btn btn-primary float-end"/>
+    </form>
 {% endblock %}
