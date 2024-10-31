@@ -348,7 +348,7 @@ class ServicesTest(TestCase):
             self.assertEqual(member.last_name, "Bar")
             self.assertEqual(member.username, "fbar")
             self.assertEqual(membership.type, Membership.MEMBER)
-            self.assertIsNone(membership.until)
+            self.assertIsNotNone(membership.until)
             self.assertEqual(len(mail.outbox), 1)
             self.assertEqual(
                 mail.outbox[0].subject,
@@ -543,11 +543,10 @@ class ServicesTest(TestCase):
                 membership = self.renewal.membership
                 self.assertIsNotNone(membership)
                 self.assertEqual(self.membership.pk, membership.pk)
-                self.assertIsNone(membership.until)
 
         # Restore data.
         with freeze_time("2023-08-25"):
-            self.membership.until = None
+            self.membership.until = "2023-09-01"
             self.membership.save()
             self.renewal.delete()
             self.renewal = Renewal.objects.create(
