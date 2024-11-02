@@ -357,7 +357,7 @@ def _create_membership_from_registration(
     if (
         registration.length == Registration.MEMBERSHIP_YEAR
         or registration.length == Registration.MEMBERSHIP_STUDY
-    ):
+    ) and not registration.membership_type == Membership.HONORARY:
         lecture_year = datetime_to_lectureyear(since)
         if since.month == 8:
             # Memberships created in august are for the next lecture year,
