@@ -123,8 +123,8 @@ def gen_stats_member_type() -> dict[str, list]:
 
 
 def gen_stats_year() -> dict[str, list]:
-    """Generate statistics on how many members (and other membership types) there were in each cohort."""
-    years = range(2015, datetime_to_lectureyear(date.today()))
+    """Generate statistics on how many members (and other membership types) there were in each year."""
+    years = range(2015, datetime_to_lectureyear(date.today()) + 1)
 
     data = {
         "labels": list(years),
@@ -137,9 +137,10 @@ def gen_stats_year() -> dict[str, list]:
     for index, (key, _) in enumerate(Membership.MEMBERSHIP_TYPES):
         for year in years:
             data["datasets"][index]["data"].append(
-                Membership.objects.filter(since__lte=date(year=year, month=9, day=1))
+                Membership.objects.filter(since__lte=date(year=year, month=10, day=1))
                 .filter(
-                    Q(until__isnull=True) | Q(until__gt=date(year=year, month=9, day=1))
+                    Q(until__isnull=True)
+                    | Q(until__gt=date(year=year, month=10, day=1))
                 )
                 .filter(type=key)
                 .count()

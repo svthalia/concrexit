@@ -19,6 +19,7 @@ from django.views.generic.base import TemplateResponseMixin, TemplateView, View
 import activemembers.services as activemembers_services
 import events.services as event_services
 import pizzas.services
+import sales.services
 from members import emails, services
 from members.decorators import membership_required
 from members.models import EmailChange, Member, Membership, Profile
@@ -211,6 +212,9 @@ class StatisticsView(TemplateView):
                 ),
                 "total_pizza_orders": json.dumps(
                     pizzas.services.gen_stats_pizza_orders()
+                ),
+                "total_sales_orders": json.dumps(
+                    sales.services.gen_stats_sales_orders()
                 ),
                 "active_members": json.dumps(services.gen_stats_active_members()),
             }
