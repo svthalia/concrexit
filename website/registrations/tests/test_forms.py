@@ -327,6 +327,24 @@ class RenewalFormTest(TestCase):
                 )
                 renewal.delete()
 
+    def test_study_long_membership_cannot_be_renewed(self):
+        membership = Membership.objects.create(
+            user=self.member,
+            type=Membership.MEMBER,
+            since="2023-09-01",
+            until="2024-08-31",
+            study_long=True,
+        )
+        self.member.latest_membership = membership
+        self.member.save()
+
+        form = forms.RenewalForm(self.data)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(
+            form.errors,
+            {"__all__": ["It's not possible to renew a study long membership."]},
+        )
+
 
 class NewYearFormTest(TestCase):
     fixtures = ["members.json"]
