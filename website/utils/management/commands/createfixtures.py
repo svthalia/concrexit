@@ -445,15 +445,15 @@ class Command(BaseCommand):
         membership.since = _faker.date_time_between(
             start_date="-4y", end_date="now", tzinfo=None
         )
-        membership.until = random.choice(
-            [
-                _faker.date_time_between(
-                    start_date=membership.since, end_date="+2y", tzinfo=None
-                ),
-                None,
-            ]
+
+        membership.until = _faker.date_time_between(
+            start_date=membership.since, end_date="+2y", tzinfo=None
         )
+
         membership.type = random.choice([t[0] for t in Membership.MEMBERSHIP_TYPES])
+
+        if membership.type == Membership.HONORARY:
+            membership.until = None
 
         user.full_clean()
         user.save()
