@@ -328,6 +328,48 @@ class RenewalFormTest(TestCase):
                 renewal.delete()
 
 
+class NewYearFormTest(TestCase):
+    fixtures = ["members.json"]
+
+    def setUp(self):
+        self.member = Member.objects.filter(last_name="Wiggers").first()
+        self.data = {
+            "privacy_policy": 1,
+            "extension": 1,
+        }
+
+    def test_is_valid(self):
+        with self.subTest("Form is valid"):
+            form = forms.NewYearForm(self.data)
+            self.assertTrue(form.is_valid(), msg=dict(form.errors))
+        with self.subTest("Form is not valid"):
+            self.data["extension"] = 0
+            form = forms.NewYearForm(self.data)
+            self.assertFalse(form.is_valid(), msg=dict(form.errors))
+        with self.subTest("Form is not valid"):
+            self.data["privacy_policy"] = 0
+            form = forms.NewYearForm(self.data)
+            self.assertFalse(form.is_valid(), msg=dict(form.errors))
+        with self.subTest("User doesn't have study_long"):
+            self.member.latest_membership.study_long = False
+            self.assertFalse(forms.NewYearForm(self.data).is_valid())
+        with self.subTest("User is minimized"):
+            profile = self.member.profile
+            profile.student_number = None
+            profile.phone_number = None
+            profile.address_street = None
+            profile.address_street2 = None
+            profile.address_postal_code = None
+            profile.address_city = None
+            profile.address_country = None
+            profile.birthday = None
+            profile.emergency_contact_phone_number = None
+            profile.emergency_contact = None
+            profile.is_minimized = True
+            profile.save()
+            self.assertFalse(forms.NewYearForm(self.data).is_valid())
+
+
 @override_settings(SUSPEND_SIGNALS=True)
 class ReferenceFormTest(TestCase):
     fixtures = ["members.json"]
