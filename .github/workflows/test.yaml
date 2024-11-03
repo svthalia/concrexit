@@ -12,37 +12,25 @@ jobs:
     name: Linting
     runs-on: ubuntu-latest
     steps:
-      - name: Setup python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Setup Poetry
-        uses: snok/install-poetry@v1
-
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Restore any cached Poetry dependencies
-        uses: actions/cache@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
         with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-poetry-
+          enable-cache: true
 
-      - name: Install any new dependencies
-        run: poetry install
-        if: steps.cache.outputs.cache-hit != 'true'
+      - name: Set up Python
+        run: uv python install
 
-      - name: Run isort
-        run: make isortcheck
+      - name: Install the project
+        run: uv sync --frozen
 
-      - name: Run black
-        run: make blackcheck
+      - name: Run ruff check
+        run: uv run ruff check --output-format=github
 
-      - name: Run Ruff
-        run: make ruff
+      - name: Run ruff format
+        run: uv run ruff format --check
 
   tests:
     name: Django Tests
@@ -59,37 +47,37 @@ jobs:
     env:
       DJANGO_ENV: testing
     steps:
-      - name: Setup python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Setup Poetry
-        uses: snok/install-poetry@v1
-
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Restore any cached Poetry dependencies
-        uses: actions/cache@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
         with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-poetry-
+          enable-cache: true
 
-      - name: Install any new dependencies
-        run: poetry install --with postgres
-        if: steps.cache.outputs.cache-hit != 'true'
+      - name: Set up Python
+        run: uv python install
+
+      - name: Install the project
+        run: uv sync --frozen
+
+      - name: Run checks
+        run: |
+          uv run website/manage.py check
+          uv run website/manage.py templatecheck --project-only
+          uv run website/manage.py makemigrations --no-input --check --dry-run
 
       - name: Run tests
-        run: make test
+          uv run coverage run website/manage.py test website/
 
       - name: Report coverage
-        run: make coverage
+        run: |
+          uv run coverage report --fail-under=100 --omit "website/registrations/urls.py" website/registrations/**.py
+          uv run coverage report --fail-under=100 --omit "website/payments/urls.py" website/payments/**.py
+          uv run coverage report
 
       - name: Create coverage report
-        run: make covhtml
+        run: uv run coverage html --directory=covhtml --no-skip-covered --title="Coverage Report"
 
       - name: Save coverage report
         uses: actions/upload-artifact@v4
@@ -112,31 +100,27 @@ jobs:
     env:
       DJANGO_ENV: testing
     steps:
-      - name: Setup python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Setup Poetry
-        uses: snok/install-poetry@v1
-
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Restore any cached Poetry dependencies
-        uses: actions/cache@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
         with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-poetry-
+          enable-cache: true
 
-      - name: Install any new dependencies
-        run: poetry install --with postgres
-        if: steps.cache.outputs.cache-hit != 'true'
+      - name: Set up Python
+        run: uv python install
+
+      - name: Install the project
+        run: uv sync --frozen
+
+      - name: Migrate
+        run: |
+          uv run website/manage.py migrate
+          uv run website/manage.py createcachetable
 
       - name: Run create fixtures
-        run: make fixtures
+        run: uv run website/manage.py createfixtures -a
 
   documentation-tests:
     name: Documentation Tests
