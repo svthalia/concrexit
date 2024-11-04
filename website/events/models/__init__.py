@@ -1,5 +1,3 @@
-"""The models defined by the events package."""
-
 from .event import EVENT_CATEGORIES, Event
 from .event_registration import EventRegistration, registration_member_choices_limit
 from .external_event import ExternalEvent
