@@ -1,0 +1,13 @@
+{% extends "email/html_email.html" %}
+
+{% block content %}
+  Dear {{ name }},<br>
+
+  <p>You're a study member of Thalia. This means that you'll be a member as long as you're enrolled in either a Computing Science or an Information Sciences programme.</p>
+
+  <p>Are you still studying? Then please follow the link in this URL <a href="{{ renewal_url }}">{{ renewal_url }}</a> to make sure you stay member for another year.<br>
+  Did you graduate or stop with your studies for any other reason? Then you can simply ignore this message!</p>
+  <p>This is a reminder email ignoring this message will very soon result in the end of your thalia membership. So if you are still studying please follow the link above.</p>
+
+  <p>If you have any questions, then don't hesitate and send us an email.</p>
+{% endblock %}

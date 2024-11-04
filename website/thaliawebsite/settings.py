@@ -396,6 +396,10 @@ CELERY_BEAT_SCHEDULE = {
         "task": "members.tasks.expiration_warning",
         "schedule": crontab(minute=0, hour=6, day_of_month=1, month_of_year=8),
     },
+    "studylongexpirationreminder": {
+        "task": "members.tasks.expiration_reminder",
+        "schedule": crontab(minute=0, hour=6, day_of_month=25, month_of_year=9),
+    },
     "minimiseregistration": {
         "task": "registrations.tasks.minimise_registrations",
         "schedule": crontab(minute=0, hour=3, day_of_month=1),

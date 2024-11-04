@@ -143,6 +143,43 @@ def send_expiration_study_long(dry_run=False):
             )
 
 
+def send_expiration_study_long_reminder(dry_run=False):
+    expiry_date = timezone.now() + timedelta(days=31)
+    members = (
+        Member.current_members.filter(membership__until__lte=expiry_date)
+        .exclude(membership__until__isnull=True)
+        .exclude(membership__study_long=False)
+        .exclude(email="")
+        .distinct()
+    )
+    with mail.get_connection() as connection:
+        for member in members:
+            logger.info("Sent email to %s (%s)", member.get_full_name(), member.email)
+            if not dry_run:
+                send_email(
+                    to=[member.email],
+                    subject="Membership expiration warning",
+                    txt_template="members/email/yearly_study_check_reminder.txt",
+                    html_template="members/email/yearly_study_check_reminder.html",
+                    connection=connection,
+                    context={
+                        "name": member.get_full_name(),
+                        "renewal_url": settings.BASE_URL
+                        + reverse("registrations:renew"),
+                    },
+                )
+
+        if not dry_run:
+            send_email(
+                to=[settings.BOARD_NOTIFICATION_ADDRESS],
+                subject="Membership expiration announcement sent",
+                txt_template="members/email/yearly_study_check_reminder.txt",
+                html_template="members/email/yearly_study_check_reminder.html",
+                connection=connection,
+                context={"members": members},
+            )
+
+
 def send_welcome_message(user, password):
     """Send an email to a new user welcoming them.
 
