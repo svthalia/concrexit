@@ -216,7 +216,7 @@
             "type": "member",
             "user": 1,
             "since": "1980-01-01",
-            "until": null,
+            "until": "9999-12-31",
             "study_long": false
         }
     }
