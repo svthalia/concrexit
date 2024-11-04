@@ -10,7 +10,7 @@ def change_until(apps, schema_editor):
         year=timezone.now().year, month=9, day=1
     ) + datetime.timedelta(days=365)
 
-    Membership.objects.filter(until=None, type=Membership.MEMBER).update(
+    Membership.objects.filter(until=None, type="member").update(
         study_long=True, until=new_until.date()
     )
 
@@ -20,5 +20,5 @@ class Migration(migrations.Migration):
         ("members", "0050_membership_study_long"),
     ]
     operations = [
-        migrations.RunPython(change_until),
+        migrations.RunPython(change_until, elidable=True),
     ]
