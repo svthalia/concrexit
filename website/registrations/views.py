@@ -191,6 +191,8 @@ class BenefactorRegistrationFormView(BaseRegistrationFormView):
 
 
 class NewYearRenewalFormView(FormView):
+    """View that renders the membership extension form for studylong members."""
+
     form_class = forms.NewYearForm
     template_name = "registrations/new_year_renewal.html"
 

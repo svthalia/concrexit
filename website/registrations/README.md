@@ -55,3 +55,9 @@ If the automatically created username is not unique, the board can override it b
 2. If the user is a benefactor and not a previous 'member', the user gets an email with a link for references.
 3. The board accepts the renewal. The user gets an email telling them to pay.
 4. Once a payment is made, a membership is created or extended.
+
+
+## Studylong membership extensions
+1. The user gets an email from thalia with a link/ follows the link in the banner on the website
+2. The user accepts the privacy statement and extension thereby implying they are still studying
+3. The membership is extended by one year.
