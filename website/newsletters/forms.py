@@ -173,17 +173,6 @@ class NewsletterImportEventForm(forms.Form):
         ):
             self.add_error("registration_end", _("Range must end after it starts."))
 
-        if event_end is None:
-            self.add_error(
-                "event_end",
-                _("Please specify which events you want to add to the newsletter."),
-            )
-        if registration_end is None:
-            self.add_error(
-                "registration_end",
-                _("Please specify which events you want to add to the newsletter."),
-            )
-
         if event_start is None and registration_start is None:
             self.add_error(
                 "event_start",
