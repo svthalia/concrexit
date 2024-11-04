@@ -3,10 +3,9 @@ Dear {{ name }},
 You're a study member of Thalia. This means that you'll be a member as
 long as you're enrolled in either a Computing Science or an Information Sciences programme.
 
-Are you still studying? Then please follow the link in this URL {{ renewal_url }}
-Did you graduate or stop with your studies for any other reason?
-Then you can simply ignore this message!
-
+Are you still studying? Then please follow the link in this URL {{ renewal_url }} to make sure you stay member for another year.
+Did you graduate or stop with your studies for any other reason? Then you can simply ignore this message!
+Note: ignoring this message will result in the end of your thalia membership.
 If you have any questions, then don't hesitate and send us an email.
 
 With kind regards,
