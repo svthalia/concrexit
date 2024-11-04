@@ -160,9 +160,17 @@ class NewsletterImportEventForm(forms.Form):
                 _("This field is required if you specify an end date."),
             )
 
-        if event_start is not None and (event_start > event_end):
+        if (
+            event_start is not None
+            and event_end is not None
+            and (event_start > event_end)
+        ):
             self.add_error("event_end", _("Range must end after it starts."))
-        if registration_start is not None and (registration_start > registration_end):
+        if (
+            registration_start is not None
+            and registration_end is not None
+            and (registration_start > registration_end)
+        ):
             self.add_error("registration_end", _("Range must end after it starts."))
 
         if event_start is None and registration_start is None:
