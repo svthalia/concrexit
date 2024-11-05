@@ -48,7 +48,7 @@ class Membership(models.Model):
 
     study_long = models.BooleanField(
         verbose_name=_("Study long"),
-        help_text=_("Whether the member is studying long."),
+        help_text="Whether the member has paid to be member throughout their studies.",
         default=False,
     )
 
@@ -68,27 +68,19 @@ class Membership(models.Model):
 
         errors = {}
         if self.until and (not self.since or self.until < self.since):
-            raise ValidationError({"until": _("End date can't be before start date")})
+            raise ValidationError({"until": "End date can't be before start date"})
 
         memberships = self.user.membership_set.all()
-        if overlaps(self, memberships):
+        if self.since is not None and overlaps(self, memberships):
             errors.update(
                 {
-                    "since": _("A membership already exists for that period."),
-                    "until": _("A membership already exists for that period."),
+                    "since": "A membership already exists for that period.",
+                    "until": "A membership already exists for that period.",
                 }
             )
 
-        if self.type == self.HONORARY:
-            if self.until is not None:
-                errors.update(
-                    {"until": _("An honorary membership can't have an end date.")}
-                )
-        else:
-            if self.until is None:
-                errors.update(
-                    {"until": _("A non-honorary membership must have an end date.")}
-                )
+        if self.type != self.HONORARY and self.until is None:
+            errors.update({"until": "A non-honorary membership must have an end date."})
 
         if errors:
             raise ValidationError(errors)

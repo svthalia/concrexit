@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
             name="study_long",
             field=models.BooleanField(
                 default=False,
-                help_text="Whether the member is studying long.",
+                help_text="Whether the member has paid to be member throughout their studies.",
                 verbose_name="Study long",
             ),
         ),

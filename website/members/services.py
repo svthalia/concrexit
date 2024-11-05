@@ -1,4 +1,5 @@
 """Services defined in the members package."""
+
 from collections.abc import Callable
 from datetime import date
 from typing import Any
@@ -202,7 +203,7 @@ def process_email_change(change_request) -> None:
 
 
 def execute_data_minimisation(dry_run=False, members=None) -> list[Member]:
-    """Clean the profiles of members/users of whom the last membership ended at least 31 days ago.
+    """Clean the profiles of members/users of whom the last membership ended at least 90 days ago.
 
     :param dry_run: does not really remove data if True
     :param members: queryset of members to process, optional

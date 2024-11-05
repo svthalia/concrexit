@@ -1,4 +1,5 @@
 """Configuration for the members package."""
+
 from django.apps import AppConfig
 from django.template.loader import render_to_string
 from django.urls import reverse
@@ -64,12 +65,7 @@ class MembersConfig(AppConfig):
         announcements = []
         if request.member and not request.member.has_active_membership():
             announcements.append(
-                {
-                    "rich_text": render_to_string(
-                        "members/announcement_not_member.html",
-                        context={"member": request.member},
-                    )
-                }
+                {"rich_text": render_to_string("members/announcement_not_member.html")}
             )
         if request.member and request.member.profile.event_permissions != "all":
             announcements.append(

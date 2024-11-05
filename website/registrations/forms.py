@@ -6,6 +6,7 @@ from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
 from django.forms import HiddenInput, TypedChoiceField
 from django.urls import reverse_lazy
 from django.utils import timezone
+from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.utils.text import capfirst
 from django.utils.translation import gettext_lazy as _
@@ -43,10 +44,9 @@ class BaseRegistrationForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["privacy_policy"].label = mark_safe(
-            _('I accept the <a href="{}">privacy policy</a>.').format(
-                reverse_lazy("singlepages:privacy-policy")
-            )
+        self.fields["privacy_policy"].label = format_html(
+            'I accept the <a href="{}">privacy policy</a>.',
+            reverse_lazy("singlepages:privacy-policy"),
         )
         self.fields["birthday"].widget.input_type = "date"
         self.fields["length"].help_text = None
@@ -182,17 +182,15 @@ class NewYearForm(forms.Form):
 
     extension = forms.BooleanField(
         required=True,
-        label=_(
-            "I want to extend my membership until the end of the next academic year."
-        ),
+        label="I am still a student and I want to extend my "
+        "membership until the end of the next academic year.",
     )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["privacy_policy"].label = mark_safe(
-            _('I accept the <a href="{}">privacy policy</a>.').format(
-                reverse_lazy("singlepages:privacy-policy")
-            )
+        self.fields["privacy_policy"].label = format_html(
+            'I accept the <a href="{}">privacy policy</a>.',
+            reverse_lazy("singlepages:privacy-policy"),
         )
 
 

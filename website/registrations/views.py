@@ -1,4 +1,5 @@
 """Views provided by the registrations package."""
+
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
@@ -191,7 +192,7 @@ class BenefactorRegistrationFormView(BaseRegistrationFormView):
 
 
 class NewYearRenewalFormView(FormView):
-    """View that renders the membership extension form for studylong members."""
+    """View that renders the membership extension form for study memberships."""
 
     form_class = forms.NewYearForm
     template_name = "registrations/new_year_renewal.html"
@@ -217,7 +218,7 @@ class NewYearRenewalFormView(FormView):
         ):
             messages.error(
                 self.request,
-                "It seems you are not allowed to renew your membership as studylong member.",
+                "You cannot currently prolong a study membership.",
             )
 
             return redirect(reverse("registrations:renew"))
