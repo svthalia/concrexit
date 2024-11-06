@@ -12,10 +12,10 @@ import json
 import logging
 import os
 
-from celery.schedules import crontab
 from django.core.management.commands import makemessages
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
+
+from celery.schedules import crontab
 
 logger = logging.getLogger(__name__)
 
