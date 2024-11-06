@@ -897,7 +897,7 @@ RATELIMIT_VIEW = "thaliawebsite.views.rate_limited_view"
 
 # Internationalization
 # https://docs.djangoproject.com/en/dev/topics/i18n/
-USE_I18N = True
+USE_I18N = False
 LANGUAGES = [("en", _("English"))]
 LANGUAGE_CODE = "en"
 TIME_ZONE = "Europe/Amsterdam"

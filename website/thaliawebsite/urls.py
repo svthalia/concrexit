@@ -33,7 +33,6 @@ from django.contrib.auth import views as auth_views
 from django.contrib.sitemaps.views import sitemap
 from django.urls import path, re_path
 from django.views.generic.base import TemplateView
-from django.views.i18n import JavaScriptCatalog
 
 import debug_toolbar
 from oauth2_provider.urls import base_urlpatterns
@@ -187,15 +186,6 @@ urlpatterns = [
                     "account/two_factor/help/",
                     TemplateView.as_view(template_name="two_factor/help.html"),
                 ),
-            ]
-        ),
-    ),
-    path(
-        "i18n/",
-        include(
-            [
-                path("", include("django.conf.urls.i18n")),
-                path("js/", JavaScriptCatalog.as_view(), name="javascript-catalog"),
             ]
         ),
     ),

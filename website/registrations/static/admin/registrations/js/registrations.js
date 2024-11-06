@@ -2,8 +2,7 @@ django.jQuery(function () {
     var $ = django.jQuery;
     $(".registrations-row a").click(function(e) {
         e.preventDefault();
-        var confirmTxt = gettext("Are you sure you want to excecute this action? Be warned that this doesn't save the form.");
-        var didConfirm = confirm(confirmTxt);
+        var didConfirm = confirm("Are you sure you want to excecute this action? Be warned that this doesn't save the form.");
         if(didConfirm) {
             var action = $(e.target).data('action');
             var href = $(e.target).data('href');
