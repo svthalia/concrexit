@@ -12,11 +12,10 @@ import json
 import logging
 import os
 
+from celery.schedules import crontab
 from django.core.management.commands import makemessages
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-
-from celery.schedules import crontab
 
 logger = logging.getLogger(__name__)
 
@@ -898,8 +897,6 @@ RATELIMIT_VIEW = "thaliawebsite.views.rate_limited_view"
 # Internationalization
 # https://docs.djangoproject.com/en/dev/topics/i18n/
 USE_I18N = False
-LANGUAGES = [("en", _("English"))]
-LANGUAGE_CODE = "en"
 TIME_ZONE = "Europe/Amsterdam"
 
 # We provide formatting overrides in the `thaliawebsite.en.formats`, because Django
