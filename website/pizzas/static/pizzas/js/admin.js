@@ -49,7 +49,7 @@ django.jQuery(function () {
     });
 
     $('a.deletelink').click(function () {
-        if (confirm(gettext('Are you sure you want to delete this order?'))) {
+        if (confirm('Are you sure you want to delete this order?')) {
             var button = $(this);
             var url = $(this).parents('tr').data("url");
 
