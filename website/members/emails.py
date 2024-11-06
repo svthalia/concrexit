@@ -132,23 +132,16 @@ def send_expiration_study_long(dry_run=False):
                     },
                 )
 
-        if not dry_run:
-            send_email(
-                to=[settings.BOARD_NOTIFICATION_ADDRESS],
-                subject="Membership expiration announcement sent",
-                txt_template="members/email/yearly_study_check.txt",
-                html_template="members/email/yearly_study_check.html",
-                connection=connection,
-                context={"members": members},
-            )
-
 
 def send_expiration_study_long_reminder(dry_run=False):
-    expiry_date = timezone.now() + timedelta(days=31)
+    recently_expired_minbound = timezone.now() - timedelta(days=30)
+    recently_expired_maxbound = timezone.now()
     members = (
-        Member.current_members.filter(membership__until__lte=expiry_date)
-        .exclude(membership__until__isnull=True)
-        .exclude(membership__study_long=False)
+        Member.current_members.filter(
+            membership__until__gte=recently_expired_minbound,
+            membership__until__lte=recently_expired_maxbound,
+            membership__study_long=True,
+        )
         .exclude(email="")
         .distinct()
     )
@@ -168,16 +161,6 @@ def send_expiration_study_long_reminder(dry_run=False):
                         + reverse("registrations:renew"),
                     },
                 )
-
-        if not dry_run:
-            send_email(
-                to=[settings.BOARD_NOTIFICATION_ADDRESS],
-                subject="Membership expiration announcement sent",
-                txt_template="members/email/yearly_study_check_reminder.txt",
-                html_template="members/email/yearly_study_check_reminder.html",
-                connection=connection,
-                context={"members": members},
-            )
 
 
 def send_welcome_message(user, password):
