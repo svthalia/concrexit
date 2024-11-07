@@ -579,6 +579,7 @@ if "SENTRY_DSN" in os.environ:
 ###############################################################################
 # (Mostly) static settings
 INSTALLED_APPS = [
+    "utils",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -619,7 +620,6 @@ INSTALLED_APPS = [
     "documents.apps.DocumentsConfig",
     "activemembers.apps.ActiveMembersConfig",
     "photos.apps.PhotosConfig",
-    "utils",
     "mailinglists.apps.MailinglistsConfig",
     "merchandise.apps.MerchandiseConfig",
     "thabloid.apps.ThabloidConfig",
