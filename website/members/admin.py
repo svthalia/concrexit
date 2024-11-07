@@ -180,6 +180,23 @@ class UserAdmin(BaseUserAdmin):
         "profile__starting_year",
     )
 
+    add_fieldsets = [
+        (
+            None,
+            {
+                "classes": ["wide"],
+                "fields": [
+                    "username",
+                    "first_name",
+                    "last_name",
+                    "email",
+                    "password1",
+                    "password2",
+                ],
+            },
+        ),
+    ]
+
     fieldsets = (
         (
             _("Personal"),
