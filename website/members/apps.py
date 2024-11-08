@@ -68,7 +68,6 @@ class MembersConfig(AppConfig):
                 {
                     "rich_text": render_to_string(
                         "members/announcement_not_member.html",
-                        context={"member": request.member},
                     )
                 },
             )
