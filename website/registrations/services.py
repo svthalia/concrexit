@@ -368,10 +368,7 @@ def _create_membership_from_registration(
     else:
         until = None
     study_long = False
-    if (
-        registration.length == Registration.MEMBERSHIP_STUDY
-        or registration.membership_type == Membership.HONORARY
-    ):
+    if registration.length == Registration.MEMBERSHIP_STUDY:
         study_long = True
 
     return Membership.objects.create(
