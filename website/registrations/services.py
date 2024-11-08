@@ -367,9 +367,19 @@ def _create_membership_from_registration(
         until = timezone.datetime(year=lecture_year + 1, month=9, day=1).date()
     else:
         until = None
+    study_long = False
+    if (
+        registration.length == Registration.MEMBERSHIP_STUDY
+        or registration.membership_type == Membership.HONORARY
+    ):
+        study_long = True
 
     return Membership.objects.create(
-        user=member, since=since, until=until, type=registration.membership_type
+        user=member,
+        since=since,
+        until=until,
+        study_long=study_long,
+        type=registration.membership_type,
     )
 
 
