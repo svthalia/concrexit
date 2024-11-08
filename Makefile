@@ -186,10 +186,6 @@ migrations: ## Automatically create migration scripts
 superuser: .make/deps website/db.sqlite3 ## Create a superuser for your local concrexit
 	poetry run website/manage.py createsuperuser
 
-.PHONY: member
-member: .make/deps website/db.sqlite3 ## Create a member for your local concrexit
-	poetry run website/manage.py createmember
-
 .PHONY: fixtures
 fixtures: .make/deps website/db.sqlite3 ## Create dummy database entries
 	poetry run website/manage.py createfixtures -a
