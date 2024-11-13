@@ -48,13 +48,6 @@ class IndexView(LoginRequiredMixin, PagedView):
         fetch_thumbnails([x.cover.file for x in context["object_list"] if x.cover])
 
         context[
-            "has_processing_reference_faces"
-        ] = self.request.member.reference_faces.filter(
-            status=ReferenceFace.Status.PROCESSING,
-            marked_for_deletion_at__isnull=True,
-        ).exists()
-
-        context[
             "has_rejected_reference_faces"
         ] = self.request.member.reference_faces.filter(
             status=ReferenceFace.Status.REJECTED,
@@ -64,7 +57,6 @@ class IndexView(LoginRequiredMixin, PagedView):
         context["has_reference_faces"] = self.request.member.reference_faces.filter(
             marked_for_deletion_at__isnull=True
         ).exists()
-
         return context
 
 
