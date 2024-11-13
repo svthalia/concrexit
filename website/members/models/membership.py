@@ -6,7 +6,6 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import pgettext_lazy
-
 from utils.snippets import overlaps
 
 
@@ -81,6 +80,11 @@ class Membership(models.Model):
 
         if self.type != self.HONORARY and self.until is None:
             errors.update({"until": "A non-honorary membership must have an end date."})
+
+        if self.type == self.BENEFACTOR and self.study_long:
+            errors.update(
+                {"study_long": "Benefactors cannot have a study long membership."}
+            )
 
         if errors:
             raise ValidationError(errors)
