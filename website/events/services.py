@@ -15,8 +15,6 @@ from events.models import (
     categories,
     status,
 )
-from payments.api.v1.fields import PaymentTypeField
-from payments.services import create_payment, delete_payment
 from utils.snippets import datetime_to_lectureyear
 
 
@@ -486,16 +484,16 @@ def update_registration_by_organiser(registration, member, data):
 
     registration.save()
 
-    if "payment" in data:
-        if data["payment"]["type"] == PaymentTypeField.NO_PAYMENT:
-            if registration.payment is not None:
-                delete_payment(registration, member)
-        else:
-            create_payment(
-                model_payable=registration,
-                processed_by=member,
-                pay_type=data["payment"]["type"],
-            )
+    # if "payment" in data:
+    #     if data["payment"]["type"] == PaymentTypeField.NO_PAYMENT:
+    #         if registration.payment is not None:
+    #             delete_payment(registration, member)
+    #     else:
+    #         create_payment(
+    #             model_payable=registration,
+    #             processed_by=member,
+    #             pay_type=data["payment"]["type"],
+    #         )
 
     registration.refresh_from_db(fields=["payment"])
 
