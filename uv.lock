@@ -147,7 +147,7 @@ source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "jmespath" },
     { name = "python-dateutil" },
-    { name = "urllib3" },
+    { name = "urllib3", marker = "python_full_version == '3.13.*'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/22/de/17d672eac6725da49bd5832e3bd2f74c4d212311cd393fd56b59f51a4e86/botocore-1.34.162.tar.gz", hash = "sha256:adc23be4fb99ad31961236342b7cbf3c0bfc62532cd02852196032e8c0d682f3", size = 12676693 }
 wheels = [
@@ -433,7 +433,7 @@ requires-dist = [
     { name = "django-two-factor-auth", extras = ["webauthn", "phonenumbers"], specifier = "~=1.16.0" },
     { name = "djangorestframework", specifier = "==3.15.2" },
     { name = "firebase-admin", specifier = "==6.2.0" },
-    { name = "freezegun", specifier = "==1.2.2" },
+    { name = "freezegun", specifier = "==1.5.1" },
     { name = "google-api-python-client", specifier = "==2.118.0" },
     { name = "gunicorn", specifier = "==22.0.0" },
     { name = "inflection", specifier = "~=0.5.1" },
@@ -612,11 +612,11 @@ name = "django-drf-filepond"
 version = "0.5.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "django" },
-    { name = "django-storages" },
-    { name = "djangorestframework" },
+    { name = "django", marker = "python_full_version == '3.13.*'" },
+    { name = "django-storages", marker = "python_full_version == '3.13.*'" },
+    { name = "djangorestframework", marker = "python_full_version == '3.13.*'" },
     { name = "requests" },
-    { name = "shortuuid" },
+    { name = "shortuuid", marker = "python_full_version == '3.13.*'" },
     { name = "six" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/a3/72/7a7c6f7b6949a83ef71e02e98c6a4d7061849f53829f6fbabfce6274a02a/django-drf-filepond-0.5.0.tar.gz", hash = "sha256:360abcbcfdc016398435679dcc768b0c2d6b29a92db46fe3430ad31176251a13", size = 41436 }
@@ -920,14 +920,14 @@ wheels = [
 
 [[package]]
 name = "freezegun"
-version = "1.2.2"
+version = "1.5.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "python-dateutil" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/1d/97/002ac49ec52858538b4aa6f6831f83c2af562c17340bdf6043be695f39ac/freezegun-1.2.2.tar.gz", hash = "sha256:cd22d1ba06941384410cd967d8a99d5ae2442f57dfafeff2fda5de8dc5c05446", size = 30670 }
+sdist = { url = "https://files.pythonhosted.org/packages/2c/ef/722b8d71ddf4d48f25f6d78aa2533d505bf3eec000a7cacb8ccc8de61f2f/freezegun-1.5.1.tar.gz", hash = "sha256:b29dedfcda6d5e8e083ce71b2b542753ad48cfec44037b3fc79702e2980a89e9", size = 33697 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/50/cd/ba1c8319c002727ccfa03049127218d1767232a77219924d03ba170e0601/freezegun-1.2.2-py3-none-any.whl", hash = "sha256:ea1b963b993cb9ea195adbd893a48d573fda951b0da64f60883d7e988b606c9f", size = 17062 },
+    { url = "https://files.pythonhosted.org/packages/51/0b/0d7fee5919bccc1fdc1c2a7528b98f65c6f69b223a3fd8f809918c142c36/freezegun-1.5.1-py3-none-any.whl", hash = "sha256:bf111d7138a8abe55ab48a71755673dbaa4ab87f4cff5634a4442dfec34c15f1", size = 17569 },
 ]
 
 [[package]]
@@ -937,7 +937,7 @@ source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "google-auth" },
     { name = "googleapis-common-protos" },
-    { name = "proto-plus" },
+    { name = "proto-plus", marker = "python_full_version == '3.13.*'" },
     { name = "protobuf" },
     { name = "requests" },
 ]
@@ -1119,7 +1119,7 @@ name = "httplib2"
 version = "0.22.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "pyparsing" },
+    { name = "pyparsing", marker = "python_full_version == '3.13.*'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/3d/ad/2371116b22d616c194aa25ec410c9c6c37f23599dcd590502b74db197584/httplib2-0.22.0.tar.gz", hash = "sha256:d7a10bc5ef5ab08322488bde8c726eeee5c8618723fdb399597ec58f3d82df81", size = 351116 }
 wheels = [
@@ -1194,7 +1194,7 @@ version = "5.4.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "amqp" },
-    { name = "tzdata" },
+    { name = "tzdata", marker = "python_full_version == '3.13.*'" },
     { name = "vine" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/38/4d/b93fcb353d279839cc35d0012bee805ed0cf61c07587916bfc35dbfddaf1/kombu-5.4.2.tar.gz", hash = "sha256:eef572dd2fd9fc614b37580e3caeafdd5af46c1eff31e7fba89138cdb406f2cf", size = 442858 }
