@@ -68,7 +68,7 @@ jobs:
           uv run website/manage.py makemigrations --no-input --check --dry-run
 
       - name: Run tests
-          uv run coverage run website/manage.py test website/
+        run: uv run coverage run website/manage.py test website/
 
       - name: Report coverage
         run: |
@@ -121,33 +121,6 @@ jobs:
 
       - name: Run create fixtures
         run: uv run website/manage.py createfixtures -a
-
-  documentation-tests:
-    name: Documentation Tests
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Setup Poetry
-        uses: snok/install-poetry@v1
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Restore any cached Poetry dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-poetry-
-
-      - name: Install any new dependencies
-        run: poetry install
-        if: steps.cache.outputs.cache-hit != 'true'
 
   upload-coverage:
     name: Deploy Coverage Report
