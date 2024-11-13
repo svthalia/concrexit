@@ -1,4 +1,3 @@
-"""The models defined by the payments package."""
 import datetime
 import uuid
 from decimal import Decimal

@@ -1,4 +1,3 @@
-"""The sitemaps defined by the education package."""
 from django.contrib import sitemaps
 from django.urls import reverse
 

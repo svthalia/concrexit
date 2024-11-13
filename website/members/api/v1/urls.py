@@ -1,4 +1,3 @@
-"""DRF routes defined by the members package."""
 from rest_framework import routers
 
 from . import viewsets

@@ -1,4 +1,3 @@
-"""Routes defined by the events package."""
 from django.urls import include, path
 
 from events.feeds import EventFeed

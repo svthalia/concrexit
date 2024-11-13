@@ -14,7 +14,6 @@ import os
 
 from django.core.management.commands import makemessages
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
 
 from celery.schedules import crontab
 
@@ -584,6 +583,7 @@ if "SENTRY_DSN" in os.environ:
 ###############################################################################
 # (Mostly) static settings
 INSTALLED_APPS = [
+    "utils",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -624,7 +624,6 @@ INSTALLED_APPS = [
     "documents.apps.DocumentsConfig",
     "activemembers.apps.ActiveMembersConfig",
     "photos.apps.PhotosConfig",
-    "utils",
     "mailinglists.apps.MailinglistsConfig",
     "merchandise.apps.MerchandiseConfig",
     "thabloid.apps.ThabloidConfig",
@@ -901,9 +900,7 @@ RATELIMIT_VIEW = "thaliawebsite.views.rate_limited_view"
 
 # Internationalization
 # https://docs.djangoproject.com/en/dev/topics/i18n/
-USE_I18N = True
-LANGUAGES = [("en", _("English"))]
-LANGUAGE_CODE = "en"
+USE_I18N = False
 TIME_ZONE = "Europe/Amsterdam"
 
 # We provide formatting overrides in the `thaliawebsite.en.formats`, because Django

@@ -1,5 +1,3 @@
-"""Views provided by the registrations package."""
-
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
@@ -14,9 +12,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import CreateView, FormView
 from django.views.generic.base import TemplateResponseMixin, TemplateView
-
 from django_ratelimit.decorators import ratelimit
-
 from members.decorators import membership_required
 from members.models import Membership
 

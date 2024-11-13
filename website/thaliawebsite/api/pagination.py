@@ -1,4 +1,3 @@
-"""Custom API pagination classes."""
 from rest_framework.pagination import LimitOffsetPagination
 
 

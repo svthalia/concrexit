@@ -5,7 +5,6 @@ services:
       dockerfile: infra/concrexit/Dockerfile
       args:
         SOURCE_COMMIT: development
-        WITH_DEV: 1
     deploy:
       resources:
         limits:
@@ -42,7 +41,6 @@ services:
       dockerfile: infra/concrexit/Dockerfile
       args:
         SOURCE_COMMIT: development
-        WITH_DEV: 1
     deploy:
       resources:
         limits:

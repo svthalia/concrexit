@@ -1,4 +1,3 @@
-"""DRF serializers defined by the announcements package."""
 from rest_framework import serializers
 
 from announcements.models import Slide

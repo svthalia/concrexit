@@ -1,4 +1,3 @@
-"""Tests for things provided by this module."""
 import doctest
 
 from django.test import TestCase, override_settings

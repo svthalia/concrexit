@@ -1,4 +1,3 @@
-"""Pizzas app API v2 urls."""
 from django.urls import path
 
 from pizzas.api.v2.views import (

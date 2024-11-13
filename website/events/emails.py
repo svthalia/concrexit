@@ -1,4 +1,3 @@
-"""The emails defined by the events package."""
 from django.conf import settings
 
 from events.models.event_registration import EventRegistration

@@ -19,7 +19,7 @@ class ListView extends FullCalendar.View {
             var alertEl = document.createElement('div');
             alertEl.id = 'fc-no-events';
             alertEl.classList.add('alert', 'alert-info');
-            alertEl.append(gettext('No events planned in the selected period.'));
+            alertEl.append('No events planned in the selected period.');
             this.el.append(alertEl);
         }
 
@@ -76,7 +76,7 @@ class ListView extends FullCalendar.View {
             url.classList.add('btn', 'btn-primary');
             url.href = def.url;
             url.target = def.extendedProps.blank ? '_blank' : '_self';
-            url.append(gettext("Go to event"));
+            url.append("Go to event");
 
             const cardBody = document.createElement('div');
             cardBody.classList.add('card-body');

@@ -1,4 +1,3 @@
-"""Admin views provided by the payments package."""
 import csv
 
 from django.apps import apps

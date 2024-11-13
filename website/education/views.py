@@ -1,4 +1,3 @@
-"""Views provided by the education package."""
 import os
 from datetime import date, datetime
 

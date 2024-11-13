@@ -1,4 +1,3 @@
-"""The feeds defined by the events package."""
 from django.conf import settings
 from django.db.models.query_utils import Q
 from django.utils.translation import activate

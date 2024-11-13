@@ -23,14 +23,11 @@ class PublicS3Storage(S3RenameMixin, S3Boto3Storage):
     PUBLIC_MEDIA_LOCATION publicly, despite the objects in the bucket having a "private"
     ACL. Hence, we can still use the default "private" ACL to prevent people from using
     the S3 bucket directly.
-
-    To support the "ResponseContentDisposition" parameter for the `attachment` argument
-    to `PublicS3Storage.url` we do still need to sign the url, but in other cases we can
-    strip the signing parameters from urls.
     """
 
     location = settings.PUBLIC_MEDIA_LOCATION
     file_overwrite = False
+    querystring_auth = False
 
     # Cloudfront will have a behavior to serve files in PUBLIC_MEDIA_LOCATION publicly,
     # despite the objects in the bucket having a private ACL. Hence, we can use the
@@ -39,16 +36,17 @@ class PublicS3Storage(S3RenameMixin, S3Boto3Storage):
     def url(self, name, attachment=False, expire_seconds=None):
         params = {}
         if attachment:
-            params[
-                "ResponseContentDisposition"
-            ] = f'attachment; filename="{attachment}"'
+            # The S3 bucket will add the Content-Disposition header to the response
+            # if the signed URL contains the response-content-disposition query parameter.
+            # Cloudfront's cache policy is configured to pass this parameter through to
+            # the origin. Otherwise, it wouldn't end up at S3.
+            # The `ResponseContentDisposition` parameter as used in the private storage
+            # does not work if there's no signature present.
+            params["response-content-disposition"] = (
+                f'attachment; filename="{attachment}"'
+            )
 
         url = super().url(name, params, expire=expire_seconds)
-
-        if not attachment:
-            # The signature is required even for public media in order
-            # to support the "ResponseContentDisposition" parameter.
-            return self._strip_signing_parameters(url)
 
         return url
 
@@ -60,9 +58,11 @@ class PrivateS3Storage(S3RenameMixin, S3Boto3Storage):
     def url(self, name, attachment=False, expire_seconds=None):
         params = {}
         if attachment:
-            params[
-                "ResponseContentDisposition"
-            ] = f'attachment; filename="{attachment}"'
+            # Cloudfront will add the Content-Disposition header to the response
+            # if the signed URL contains the ResponseContentDisposition query parameter.
+            params["ResponseContentDisposition"] = (
+                f'attachment; filename="{attachment}"'
+            )
 
         return super().url(name, params, expire=expire_seconds)
 

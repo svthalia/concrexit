@@ -21,7 +21,7 @@ const SOURCES = {
 };
 
 function checkViewState(calendar) {
-    let buttonText = gettext('show birthdays');
+    let buttonText = 'show birthdays';
     if (calendar.getEventSourceById(SOURCES.birthdays.id)) {
         calendar.getEventSourceById(SOURCES.birthdays.id).remove();
     }
@@ -37,7 +37,7 @@ function checkViewState(calendar) {
         } else {
             if (Cookies.get(BIRTHDAYS_COOKIE)) {
                 calendar.addEventSource(SOURCES.birthdays);
-                buttonText = gettext('hide birthdays');
+                buttonText = 'hide birthdays';
             }
             calendar.setOption('header', {
                 right: 'showBirthdays, list,timeGridWeek,dayGridMonth prev,next today'
@@ -101,23 +101,23 @@ document.addEventListener('DOMContentLoaded', function () {
         nowIndicator: true,
         views: {
             list: {
-                buttonText: gettext('list'),
+                buttonText: 'list',
                 duration: { years: 5 },
                 type: 'list',
-                titleFormat: function() { return gettext("Upcoming Events") },
+                titleFormat: function() { return "Upcoming Events" },
             }
         },
         customButtons:
             isAuthenticated ? {
                 showBirthdays: {
-                    text: Cookies.get(BIRTHDAYS_COOKIE) ? gettext('hide birthdays') : gettext('show birthdays'),
+                    text: Cookies.get(BIRTHDAYS_COOKIE) ? 'hide birthdays' : 'show birthdays',
                     click: function (e) {
                         if (Cookies.get(BIRTHDAYS_COOKIE)) {
-                            e.target.innerHTML = gettext('show birthdays');
+                            e.target.innerHTML = 'show birthdays';
                             Cookies.remove(BIRTHDAYS_COOKIE);
                             calendar.getEventSourceById(SOURCES.birthdays.id).remove();
                         } else {
-                            e.target.innerHTML = gettext('hide birthdays');
+                            e.target.innerHTML = 'hide birthdays';
                             Cookies.set(BIRTHDAYS_COOKIE, 1);
                             calendar.addEventSource(SOURCES.birthdays);
                         }

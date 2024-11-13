@@ -1,4 +1,3 @@
-"""Sitemaps defined by the members package."""
 from django.contrib import sitemaps
 from django.urls import reverse
 

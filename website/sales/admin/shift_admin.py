@@ -213,9 +213,7 @@ class ShiftAdmin(admin.ModelAdmin):
         return f"€{obj.total_revenue or 0:.2f}"
 
     def product_sales(self, obj):
-        output = "\n".join(
-            f"- {str(k)}: {v}x" for k, v in obj.product_sales.items()  # noqa: RUF010
-        )
+        output = "\n".join(f"- {k}: {v}x" for k, v in obj.product_sales.items())
         if obj.num_orders != obj.num_orders_paid:
             return f"{output}\n{_('This includes some orders that are unpaid.')}"
         return output

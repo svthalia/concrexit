@@ -1,5 +1,3 @@
-"""The emails defined by the members package."""
-
 import logging
 from datetime import timedelta
 
@@ -7,7 +5,6 @@ from django.conf import settings
 from django.core import mail
 from django.urls import reverse
 from django.utils import timezone
-
 from members.models import Member
 from utils.snippets import send_email
 

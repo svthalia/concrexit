@@ -1,4 +1,3 @@
-"""The models defined by the announcement package."""
 from django.core.files.storage import storages
 from django.core.validators import (
     FileExtensionValidator,

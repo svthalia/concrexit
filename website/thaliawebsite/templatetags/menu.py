@@ -1,4 +1,3 @@
-"""Provides a template handler that renders the menu."""
 from collections import defaultdict
 from functools import cache
 

@@ -1,4 +1,3 @@
-"""Views provided by the announcements package."""
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.http import require_POST
 

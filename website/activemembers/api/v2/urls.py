@@ -1,4 +1,3 @@
-"""Activemembers app API v2 urls."""
 from django.urls import include, path, re_path
 
 from activemembers.api.v2.views import (

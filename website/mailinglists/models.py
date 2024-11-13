@@ -1,4 +1,3 @@
-"""The models defined by the mailinglists package."""
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models

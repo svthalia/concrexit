@@ -1,4 +1,3 @@
-"""Registers admin interfaces for the documents module."""
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 from django.utils.translation import gettext_lazy as _

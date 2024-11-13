@@ -1,4 +1,3 @@
-"""Tests for the ``utils`` module."""
 import doctest
 
 from utils import snippets
