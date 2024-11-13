@@ -1,4 +1,3 @@
-"""The signals defined by the activemembers package."""
 import logging
 
 from django.conf import settings

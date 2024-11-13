@@ -1,4 +1,3 @@
-"""Middleware provided by the members package."""
 from django.utils.functional import SimpleLazyObject
 
 from members.models import Member

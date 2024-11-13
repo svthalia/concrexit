@@ -1,4 +1,3 @@
-"""The models defined by the registrations package."""
 import string
 import unicodedata
 import uuid

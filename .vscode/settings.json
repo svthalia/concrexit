@@ -19,27 +19,23 @@
 //
 // The same goes for the launch.json file.
 {
-    "ruff.organizeImports": false,
+    "python.defaultInterpreterPath": ".venv/bin/python",
     "python.analysis.autoImportCompletions": true,
-    "python.analysis.addImport.exactMatchOnly": true,
+    "python.analysis.typeCheckingMode": "off",
     "python.analysis.extraPaths": [
         "website"
     ],
+    "ruff.organizeImports": true,
     "[python]": {
-        "editor.defaultFormatter": "ms-python.black-formatter",
         "editor.formatOnSave": true,
+        "editor.defaultFormatter": "charliermarsh.ruff",
         "editor.codeActionsOnSave": {
-            "source.organizeImports": "explicit"
-        },
-        "editor.formatOnType": true,
+            "source.organizeImports.isort": "never",
+            "source.organizeImports": "explicit",
+        }
     },
     "git.branchProtection": [
         "master"
-    ],
-    "black-formatter.importStrategy": "fromEnvironment",
-    "isort.args": [
-        "--profile",
-        "black"
     ],
     "ruff.lint.args": [
         "--extend-exclude",

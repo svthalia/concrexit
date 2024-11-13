@@ -1,4 +1,3 @@
-"""Configuration for the payments package."""
 from django.apps import AppConfig
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _

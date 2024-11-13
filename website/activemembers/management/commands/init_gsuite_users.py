@@ -1,4 +1,3 @@
-"""Initialise G Suite users management command."""
 import logging
 
 from django.core.management.base import BaseCommand

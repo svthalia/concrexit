@@ -1,4 +1,3 @@
-"""DRF routes defined by the activemembers package."""
 from rest_framework import routers
 
 from activemembers.api.v1 import viewsets

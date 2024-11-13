@@ -1,4 +1,3 @@
-"""This module registers admin pages for the models."""
 import csv
 
 from django.contrib import admin

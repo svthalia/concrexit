@@ -1,4 +1,3 @@
-"""The emails defined by the newsletters package."""
 import logging
 from smtplib import SMTPException
 

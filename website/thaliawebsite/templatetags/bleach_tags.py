@@ -1,4 +1,5 @@
 """Bleach allows to clean up user input to make it safe to display, but allow some HTML."""
+
 from django import template
 from django.template.defaultfilters import stringfilter
 from django.utils.safestring import mark_safe

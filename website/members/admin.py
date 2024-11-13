@@ -243,9 +243,7 @@ class UserAdmin(BaseUserAdmin):
 
     def address_csv_export(self, request, queryset):
         response = HttpResponse(content_type="text/csv")
-        response[
-            "Content-Disposition"
-        ] = 'attachment;\
+        response["Content-Disposition"] = 'attachment;\
                                            filename="addresses.csv"'
         writer = csv.writer(response)
         writer.writerow(

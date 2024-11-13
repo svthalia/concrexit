@@ -1,4 +1,3 @@
-"""GSuite syncing helpers defined by the mailinglists package."""
 import logging
 from random import random
 from time import sleep

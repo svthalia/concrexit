@@ -1,4 +1,3 @@
-"""Get a random header image."""
 import random
 
 from django import template

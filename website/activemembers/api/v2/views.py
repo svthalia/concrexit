@@ -1,4 +1,3 @@
-"""API views of the activemembers app."""
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework import filters as framework_filters
 from rest_framework.generics import ListAPIView, RetrieveAPIView, get_object_or_404

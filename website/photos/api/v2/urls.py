@@ -1,4 +1,3 @@
-"""Photos app API v2 urls."""
 from django.urls import include, path
 
 from photos.api.v2.views import (

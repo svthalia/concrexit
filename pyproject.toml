@@ -1,83 +1,79 @@
-[tool.poetry]
+[project]
 name = "concrexit"
 version = "0.0.dev"
 description = "New new Thalia website, now with extra Django."
-authors = ["Thalia Technicie <www@thalia.nu>"]
+maintainers = [
+    {name = "Thalia Technicie", email = "www@thalia.nu"},
+]
+readme = "README.md"
 license = "AGPL-3.0-or-later"
-package-mode = false
+requires-python = ">=3.13,<3.14"
 
-[tool.poetry.dependencies]
-python = "^3.11"
-Django = "5.1.1"
-django-localflavor = "4.0"
-djangorestframework = "3.15.2"
-django-ical = "1.9.2"
-django-sendfile2 = "0.7.1"
-django-queryable-properties = "1.8.5"
-django-oauth-toolkit = "2.4.0"
-django-cors-headers = "3.14.0"
-django-debug-toolbar = "4.4.6"
-django-admin-autocomplete-filter = "0.7.1"
-django-bootstrap5 = "^22.1"
-django-tinymce = "4.1.0"
-django-storages = "1.14.4"
-django-drf-filepond = "0.5.0"
-django-filepond-widget = "0.9.0"
-django-thumbnails = "0.7.0"
-django-ratelimit = "4.1.0"
-django-sass-processor = "1.4.1"
-django-otp = "1.5.1"
-django-formtools = "2.5.1"
-django-two-factor-auth = {extras = ["webauthn", "phonenumbers"], version = "^1.16.0"}
-bleach = {extras = ["css"], version = "6.1.0"}
-Pillow = "10.3.0"
-bcrypt = "4.0.1"
-argon2_cffi = "21.3.0"
-firebase-admin = "6.2.0"
-google-api-python-client = "2.118.0"
-sentry-sdk = "^2.12.0"
-beautifulsoup4 = "^4.11.1"
-boto3 = "1.34.149"
-gunicorn = "22.0.0"
-qrcode = {version = "^7.4.2", extras = ["pil"]}
-freezegun = "1.2.2"
-celery = {version = "^5.3.6", extras = ["redis"]}
+dependencies = [
+    "Django==5.1.1",
+    "django-localflavor==4.0",
+    "djangorestframework==3.15.2",
+    "django-ical==1.9.2",
+    "django-sendfile2==0.7.1",
+    "django-queryable-properties==1.8.5",
+    "django-oauth-toolkit==2.4.0",
+    "django-cors-headers==3.14.0",
+    "django-debug-toolbar==4.4.6",
+    "django-admin-autocomplete-filter==0.7.1",
+    "django-bootstrap5~=22.1",
+    "django-tinymce==4.1.0",
+    "django-storages==1.14.4",
+    "django-drf-filepond==0.5.0",
+    "django-filepond-widget==0.9.0",
+    "django-thumbnails==0.8.0",
+    "django-ratelimit==4.1.0",
+    "django-sass-processor==1.4.1",
+    "django-otp==1.5.1",
+    "django-formtools==2.5.1",
+    "django-two-factor-auth[webauthn,phonenumbers]~=1.16.0",
+    "bleach[css]~=6.1.0",
+    "Pillow==11.0.0",
+    "bcrypt==4.0.1",
+    "argon2_cffi==21.3.0",
+    "firebase-admin==6.2.0",
+    "google-api-python-client==2.118.0",
+    "sentry-sdk~=2.12.0",
+    "beautifulsoup4~=4.11.1",
+    "boto3==1.34.149",
+    "gunicorn==22.0.0",
+    "qrcode[pil]~=7.4.2",
+    "freezegun==1.5.1",
+    "celery[redis]~=5.3.6",
+    "PyYAML==6.0.1",
+    "inflection~=0.5.1",
+    "uritemplate~=4.1.1",
+    "puremagic~=1.27",
+    "psycopg[binary]~=3.2.3",
+]
 
-# Required (at least) by djangorestframework.
-PyYAML = "6.0.1"
-inflection = "^0.5.1"
-uritemplate = "^4.1.1"
-puremagic = "^1.27"
+[dependency-groups]
+dev = [
+    "django-template-check==0.4.0",
+    "factory_boy==3.3.0",
+    "pydenticon==0.3.1",
+    "Faker==18.13.0",
+    "coverage[toml]~=7.5.3",
+    "ruff==0.7.1",
+    "pre-commit==3.5.0",
+    "pyparsing~=3.0.9",
+    "pydot~=1.4.2",
+    "django-extensions~=3.2.1",
+]
 
-[tool.poetry.group.scss.dependencies]
-# These dependencies are only needed to compile SASS, which can be done
-# offline during a build. So these are not needed in production.
-libsass = "0.23.0"
-django-compressor = "4.5.1"
+scss = [
+    # These dependencies are only needed to compile SASS, which can be done
+    # offline during a build. So these are not needed in production.
+    "libsass==0.23.0",
+    "django-compressor==4.5.1",
+]
 
-[tool.poetry.group.postgres]
-optional = true
-
-[tool.poetry.group.postgres.dependencies]
-psycopg2 = "2.9.9"
-
-[tool.poetry.group.dev.dependencies]
-django-template-check = "0.4.0"
-factory_boy = "3.3.0"
-pydenticon = "0.3.1"
-Faker = "18.13.0"
-coverage = {extras = ["toml"], version = "^7.5.3"}
-isort = "5.12.0"
-black = "23.9.1"
-ruff = "0.0.291"
-pre-commit = "3.5.0"
-pyparsing = "^3.0.9"
-pydot = "^1.4.2"
-django-extensions = "^3.2.1"
-
-[build-system]
-requires = ["poetry>=1.8.2"]
-build-backend = "poetry.masonry.api"
+[tool.uv]
+default-groups = ["dev", "scss"]
 
 [tool.coverage.run]
 branch = true
@@ -90,23 +86,23 @@ skip_covered = true
 show_missing = true
 fail_under = 65.0
 
-[tool.black]
-exclude = '(/(\.eggs|\.git|\.tox)/|migrations)'
+[tool.ruff.format]
+exclude = ['migrations']
 
-[tool.isort]
-profile = "black"
-skip_glob = ["*/migrations/*"]
-sections = [
-    "FUTURE",
-    "STDLIB",
-    "DJANGO",
-    "THIRDPARTY",
-    "FIRSTPARTY",
-    "LOCALFOLDER",
+[tool.ruff.lint.isort.sections]
+django = ["django"]
+
+[tool.ruff.lint.isort]
+section-order = [
+    "future",
+    "standard-library",
+    "django",
+    "third-party",
+    "first-party",
+    "local-folder",
 ]
 
-known_django = ["django"]
-known_first_party = [
+known-first-party = [
     "website",
     "activemembers",
     "announcements",
@@ -135,8 +131,11 @@ known_first_party = [
 ]
 
 [tool.ruff]
+line-length = 88
+target-version = "py313"
 exclude = ["migrations", ".venv", ".vscode", ".pyenv"]
 
+[tool.ruff.lint]
 select = [
     "F",
     "E",
@@ -176,17 +175,16 @@ select = [
     "D419",
 ]
 
-target-version = "py311"
-
 ignore = [
     "E501",  # line too long
     "N818",  # exception class should have Error suffix
     "PLW2901",  # loop variable overwritten
     "RUF005",  # use spread operator instead of concatenation
     "RUF012",
+    "ISC001",
 ]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "test_*.py" = [
     "F841",  # unused local variable
     "D400",  # docstring first line should end with a period

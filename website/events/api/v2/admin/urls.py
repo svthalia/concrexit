@@ -1,4 +1,3 @@
-"""Events app API v2 urls."""
 from django.urls import path
 
 from events.api.v2.admin.views import (

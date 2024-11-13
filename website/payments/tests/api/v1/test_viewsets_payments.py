@@ -55,7 +55,7 @@ class PaymentProcessViewTest(TestCase):
         payables.get_payable.return_value = self.payable
 
         self.original_get_model = apps.get_model
-        mock_get_model = mock_get_model = MagicMock()
+        mock_get_model = MagicMock()
 
         def side_effect(*args, **kwargs):
             if "app_label" in kwargs and kwargs["app_label"] == "mock_app":

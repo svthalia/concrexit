@@ -1,4 +1,3 @@
-"""These context processors can be used to expand the context provided to admin views."""
 from .models import Announcement
 
 

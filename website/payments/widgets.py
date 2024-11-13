@@ -1,4 +1,3 @@
-"""Widgets provided by the payments package."""
 from django.forms import Widget
 
 from payments.models import Payment, PaymentUser

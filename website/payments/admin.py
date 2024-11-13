@@ -1,4 +1,3 @@
-"""Registers admin interfaces for the payments module."""
 import csv
 from collections import OrderedDict
 

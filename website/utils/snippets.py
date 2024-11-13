@@ -1,4 +1,3 @@
-"""Provides various utilities that are useful across the project."""
 import datetime
 import hmac
 from base64 import urlsafe_b64decode, urlsafe_b64encode

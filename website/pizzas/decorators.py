@@ -1,4 +1,3 @@
-"""The decorators defined by the pizzas package."""
 from django.core.exceptions import PermissionDenied
 
 from events import services

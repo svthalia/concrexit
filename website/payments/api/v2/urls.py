@@ -1,4 +1,3 @@
-"""Payments app API v2 urls."""
 from django.urls import path
 
 from payments.api.v2.views import (

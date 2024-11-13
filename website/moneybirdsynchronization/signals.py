@@ -1,4 +1,3 @@
-"""The signals checked by the moneybrid synchronization package."""
 import logging
 
 from django.contrib.auth import get_user_model

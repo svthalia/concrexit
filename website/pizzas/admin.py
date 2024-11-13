@@ -1,4 +1,3 @@
-"""Registers admin interfaces for the pizzas module."""
 from functools import partial
 
 from django.contrib import admin
@@ -106,7 +105,7 @@ class FoodOrderAdmin(DoNextModelAdmin):
             formfield_callback=partial(
                 self.formfield_for_dbfield, request=request, obj=obj
             ),
-            **kwargs
+            **kwargs,
         )
 
     def formfield_for_dbfield(self, db_field, request, obj=None, **kwargs):
