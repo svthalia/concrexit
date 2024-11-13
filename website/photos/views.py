@@ -8,7 +8,6 @@ from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import TemplateView
 
 from facedetection.models import ReferenceFace
-from facedetection.services import get_user_photos
 from photos.models import Album, Photo
 from photos.services import (
     check_shared_album_token,
@@ -49,13 +48,6 @@ class IndexView(LoginRequiredMixin, PagedView):
         fetch_thumbnails([x.cover.file for x in context["object_list"] if x.cover])
 
         context[
-            "has_processing_reference_faces"
-        ] = self.request.member.reference_faces.filter(
-            status=ReferenceFace.Status.PROCESSING,
-            marked_for_deletion_at__isnull=True,
-        ).exists()
-
-        context[
             "has_rejected_reference_faces"
         ] = self.request.member.reference_faces.filter(
             status=ReferenceFace.Status.REJECTED,
@@ -65,7 +57,6 @@ class IndexView(LoginRequiredMixin, PagedView):
         context["has_reference_faces"] = self.request.member.reference_faces.filter(
             marked_for_deletion_at__isnull=True
         ).exists()
-        context["has_own_photos"] = get_user_photos(self.request.member) is not None
         return context
 
 

@@ -26,15 +26,6 @@
                             Some of your reference faces have been rejected. <a style="text-decoration: underline; color:white" href="{% url 'facedetection:reference-faces' %}">Please delete them and upload new ones.</a>
                         </div>
                     </div>
-                {% elif has_processing_reference_faces %}
-                    <div class="col-md-12">
-                        {% alert "info" "Some of your reference faces have not been processed yet. Come back later." dismissible=False %}
-                    </div>
-                {% elif has_reference_faces and not has_processing_reference_faces and not has_own_photos %}
-                    <div class="col-md-12">
-                        {% alert "info" "You haven't been recognized on any photos (yet)." dismissible=False %}
-                    </div>
-                {% else %}
                 {% endif %}
             </div>
             <div class="d-flex flex-wrap col-12 search-form form-inline d-flex align-items-center justify-content-space-between gap-3">
