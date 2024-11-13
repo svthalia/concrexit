@@ -336,10 +336,10 @@ class ServicesTest(TestCase):
         def side_effect(data):
             """Return a new financial statement with plausible mutations for each call."""
             return {
-                "id": str(randint(1e10, 9e10)),
+                "id": str(randint(1_000_000_000, 9_000_000_000)),
                 "financial_mutations": [
                     {
-                        "id": str(randint(1e10, 9e10)),
+                        "id": str(randint(1_000_000_000, 9_000_000_000)),
                         "amount": f"{float(mut['amount']):0.2f}",
                         "batch_reference": mut["batch_reference"],
                     }
