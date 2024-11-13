@@ -35,6 +35,36 @@ resource "aws_cloudfront_response_headers_policy" "static_cors_headers" {
   }
 }
 
+resource "aws_cloudfront_cache_policy" "public_storage" {
+  name        = "${var.customer}-${var.stage}-concrexit-public-storage"
+  comment     = "Cache policy that forwards the response-content-disposition header."
+  min_ttl     = 1
+  default_ttl = 86400
+  max_ttl     = 31536000
+
+  parameters_in_cache_key_and_forwarded_to_origin {
+    cookies_config {
+      cookie_behavior = "none"
+    }
+
+    headers_config {
+      header_behavior = "none"
+    }
+
+    query_strings_config {
+      # This is required to allow using the response-content-disposition query parameter
+      # to cause a public file (without a signed URL) to be received as an attachment.
+      query_string_behavior = "whitelist"
+      query_strings {
+        items = ["response-content-disposition"]
+      }
+    }
+
+    enable_accept_encoding_gzip = true
+    enable_accept_encoding_brotli = true
+  }
+}
+
 resource "aws_cloudfront_distribution" "this" {
   aliases = [var.webdomain]
 
@@ -59,7 +89,6 @@ resource "aws_cloudfront_distribution" "this" {
 
     trusted_key_groups = [aws_cloudfront_key_group.this.id]
     cache_policy_id    = data.aws_cloudfront_cache_policy.caching_optimized.id
-
   }
 
   ordered_cache_behavior {
@@ -70,7 +99,7 @@ resource "aws_cloudfront_distribution" "this" {
     cached_methods         = ["GET", "HEAD"]
     compress               = true
 
-    cache_policy_id = data.aws_cloudfront_cache_policy.caching_optimized.id
+    cache_policy_id = aws_cloudfront_cache_policy.public_storage.id
   }
 
   ordered_cache_behavior {
