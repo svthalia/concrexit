@@ -1,10 +1,15 @@
-from rest_framework import serializers
-
 from announcements.models import Slide
+from rest_framework import serializers
 from thaliawebsite.api.v2.serializers import CleanedHTMLSerializer, ThumbnailSerializer
 from thaliawebsite.api.v2.serializers.cleaned_model_serializer import (
     CleanedModelSerializer,
 )
+
+
+class AnnouncementSerializer(serializers.Serializer):
+    content = CleanedHTMLSerializer(read_only=True)
+    closeable = serializers.BooleanField(read_only=True)
+    icon = serializers.CharField(read_only=True)
 
 
 class SlideSerializer(CleanedModelSerializer):

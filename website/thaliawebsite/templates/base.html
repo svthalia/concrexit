@@ -80,11 +80,7 @@
 
 <section id="announcements-alerts">
     {% include "announcements/announcement.html" with announcements=announcements %}
-    {% for announcement in persistent_announcements %}
-        <div class="announcement">
-            {{ announcement.rich_text | safe }}
-        </div>
-    {% endfor %}
+    {% include "announcements/announcement.html" with announcements=persistent_announcements %}
 </section>
 
 <div id="accentbar"></div>

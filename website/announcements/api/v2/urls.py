@@ -1,6 +1,7 @@
 from django.urls import include, path
 
 from announcements.api.v2.views import (
+    AnnouncementListView,
     FrontpageArticleDetailView,
     FrontpageArticleListView,
     SlideDetailView,
@@ -14,6 +15,11 @@ urlpatterns = [
         "announcements/",
         include(
             [
+                path(
+                    "announcements/",
+                    AnnouncementListView.as_view(actions={"get": "list"}),
+                    name="list",
+                ),
                 path("slides/", SlideListView.as_view(), name="slide-list"),
                 path(
                     "slides/<int:pk>/",
