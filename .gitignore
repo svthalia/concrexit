@@ -12,30 +12,23 @@ dumb.rdb
 celerybeat-schedule.*
 db.sqlite3
 *.egg-info
-.ruff_cache/
+.ruff_cache
+.venv
+.mypy_cache
 
 website/media/
 website/filepond-temp-uploads/
 website/static/
-covhtml/
+covhtml
+htmlcov
 .make
 
 # make graphs
 full_models_graph.png
 partial_models_graph.png
 
-# Ignore local settings
-website/thaliawebsite/settings/localsettings.py
-website/.sass-cache/
-
-# rope
-.ropeproject/
-
 # Coverage
 .coverage
-
-# venv from source_me.sh
-venv/
 
 # macOS
 .DS_Store

@@ -1,4 +1,3 @@
-"""Provides an exception filter for django."""
 import logging
 
 from django.views.debug import SafeExceptionReporterFilter
@@ -21,12 +20,12 @@ class ThaliaSafeExceptionReporterFilter(SafeExceptionReporterFilter):
                 if name == "request":
                     try:
                         val.COOKIES = {"cookies have been cleaned": True}
-                        val.META[
-                            "HTTP_COOKIE"
-                        ] = SafeExceptionReporterFilter.cleansed_substitute
-                        val.META[
-                            "HTTP_AUTHORIZATION"
-                        ] = SafeExceptionReporterFilter.cleansed_substitute
+                        val.META["HTTP_COOKIE"] = (
+                            SafeExceptionReporterFilter.cleansed_substitute
+                        )
+                        val.META["HTTP_AUTHORIZATION"] = (
+                            SafeExceptionReporterFilter.cleansed_substitute
+                        )
                     except (AttributeError, IndexError):
                         __LOGGER.exception("Somehow cleaning the request failed")
 

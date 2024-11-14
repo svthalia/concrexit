@@ -1,4 +1,3 @@
-"""The models defined by the pizzas package."""
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import models
 from django.db.models import Q

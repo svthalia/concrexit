@@ -29,8 +29,8 @@ def membergroup_card(group):
 def membergroup_member_card(membership):
     meta_text = ""
 
-    if "role" in membership and membership["role"]:
-        meta_text += f"<p class=\"px-1\">{membership['role']}</p>"
+    if membership.get("role"):
+        meta_text += f'<p class="px-1">{membership['role']}</p>'
 
     ribbon = None
     if membership["chair"] and not membership["until"]:

@@ -1,4 +1,3 @@
-"""The emails defined by the promotion request package."""
 import logging
 
 from django.conf import settings

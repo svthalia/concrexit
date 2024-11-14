@@ -1,4 +1,3 @@
-"""Decorators provided by the members package."""
 from django.core.exceptions import PermissionDenied
 
 

@@ -1,4 +1,3 @@
-"""Forms defined by the members package."""
 from django import forms
 from django.apps import apps
 from django.contrib.auth.forms import UserChangeForm as BaseUserChangeForm

@@ -1,4 +1,3 @@
-"""Registers admin interfaces for the announcements module."""
 from django.contrib import admin
 from django.template.defaultfilters import striptags
 

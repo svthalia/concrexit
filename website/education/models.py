@@ -1,4 +1,3 @@
-"""The models defined by the education package."""
 import datetime
 
 from django.db import models

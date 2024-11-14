@@ -1,4 +1,3 @@
-"""Views provided by the members package."""
 import json
 from datetime import date, datetime
 

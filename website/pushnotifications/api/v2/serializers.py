@@ -1,4 +1,3 @@
-"""Serializers for the pushnotifications app."""
 from rest_framework.relations import ManyRelatedField, PrimaryKeyRelatedField
 
 from pushnotifications.models import Category, Device, Message

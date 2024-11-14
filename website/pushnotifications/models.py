@@ -1,4 +1,3 @@
-"""The models defined by the pushnotifications package."""
 import datetime
 
 from django.conf import settings

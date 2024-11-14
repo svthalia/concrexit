@@ -16,7 +16,7 @@ class ThumbnailSerializer(FileField):
         size_small="small",
         size_medium="medium",
         size_large="large",
-        **kwargs
+        **kwargs,
     ):
         super().__init__(**kwargs)
 

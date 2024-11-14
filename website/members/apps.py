@@ -1,4 +1,3 @@
-"""Configuration for the members package."""
 from django.apps import AppConfig
 from django.template.loader import render_to_string
 from django.urls import reverse

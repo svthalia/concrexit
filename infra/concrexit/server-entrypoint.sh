@@ -10,6 +10,6 @@ MANAGE_PY=1 runuser -u appuser -- ./manage.py migrate --no-input
 MANAGE_PY=1 runuser -u appuser -- ./manage.py createcachetable
 
 
-exec runuser -u appuser -- /venv/bin/gunicorn \
+exec runuser -u appuser -- gunicorn \
   --config /app/gunicorn.conf.py \
   thaliawebsite.wsgi:application

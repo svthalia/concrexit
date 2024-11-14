@@ -1,4 +1,3 @@
-"""The forms defined by the education package."""
 import datetime
 
 from django.forms import (

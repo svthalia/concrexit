@@ -1,4 +1,3 @@
-"""Admin views provided by the pizzas package."""
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.utils.text import capfirst

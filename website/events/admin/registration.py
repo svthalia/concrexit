@@ -1,4 +1,3 @@
-"""Registers admin interfaces for the registration model."""
 from functools import partial
 
 from django.contrib import admin
