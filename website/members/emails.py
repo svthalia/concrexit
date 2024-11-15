@@ -3,51 +3,12 @@ from datetime import timedelta
 
 from django.conf import settings
 from django.core import mail
-from django.template.defaultfilters import floatformat
 from django.urls import reverse
 from django.utils import timezone
-
-from members.models import Member, Membership
+from members.models import Member
 from utils.snippets import send_email
 
 logger = logging.getLogger(__name__)
-
-
-def send_membership_announcement(dry_run=False):
-    """Send an email to all members with a never ending membership excluding honorary members.
-
-    :param dry_run: does not really send emails if True
-    """
-    members = (
-        Member.current_members.filter(membership__since__lt=timezone.now())
-        .filter(membership__until__isnull=True)
-        .exclude(membership__type=Membership.HONORARY)
-        .exclude(email="")
-        .distinct()
-    )
-
-    with mail.get_connection() as connection:
-        for member in members:
-            logger.info("Sent email to %s (%s)", member.get_full_name(), member.email)
-            if not dry_run:
-                send_email(
-                    to=[member.email],
-                    subject="Membership announcement",
-                    txt_template="members/email/membership_announcement.txt",
-                    html_template="members/email/membership_announcement.html",
-                    context={"name": member.get_full_name()},
-                    connection=connection,
-                )
-
-        if not dry_run:
-            send_email(
-                to=[settings.BOARD_NOTIFICATION_ADDRESS],
-                subject="Membership announcement sent",
-                txt_template="members/email/membership_announcement_notification.txt",
-                html_template="members/email/membership_announcement_notification.html",
-                context={"members": members},
-                connection=connection,
-            )
 
 
 def send_information_request(dry_run=False):
@@ -109,6 +70,7 @@ def send_expiration_announcement(dry_run=False):
     members = (
         Member.current_members.filter(membership__until__lte=expiry_date)
         .exclude(membership__until__isnull=True)
+        .exclude(membership__study_long=True)
         .exclude(email="")
         .distinct()
     )
@@ -125,9 +87,6 @@ def send_expiration_announcement(dry_run=False):
                     connection=connection,
                     context={
                         "name": member.get_full_name(),
-                        "membership_price": floatformat(
-                            settings.MEMBERSHIP_PRICES["year"], 2
-                        ),
                         "renewal_url": settings.BASE_URL
                         + reverse("registrations:renew"),
                     },
@@ -142,6 +101,63 @@ def send_expiration_announcement(dry_run=False):
                 connection=connection,
                 context={"members": members},
             )
+
+
+def send_expiration_study_long(dry_run=False):
+    expiry_date = timezone.now() + timedelta(days=31)
+    members = (
+        Member.current_members.filter(membership__until__lte=expiry_date)
+        .exclude(membership__until__isnull=True)
+        .exclude(membership__study_long=False)
+        .exclude(email="")
+        .distinct()
+    )
+    with mail.get_connection() as connection:
+        for member in members:
+            logger.info("Sent email to %s (%s)", member.get_full_name(), member.email)
+            if not dry_run:
+                send_email(
+                    to=[member.email],
+                    subject="Membership expiration warning",
+                    txt_template="members/email/yearly_study_check.txt",
+                    html_template="members/email/yearly_study_check.html",
+                    connection=connection,
+                    context={
+                        "name": member.get_full_name(),
+                        "renewal_url": settings.BASE_URL
+                        + reverse("registrations:renew"),
+                    },
+                )
+
+
+def send_expiration_study_long_reminder(dry_run=False):
+    recently_expired_minbound = timezone.now() - timedelta(days=30)
+    recently_expired_maxbound = timezone.now()
+    members = (
+        Member.current_members.filter(
+            membership__until__gte=recently_expired_minbound,
+            membership__until__lte=recently_expired_maxbound,
+            membership__study_long=True,
+        )
+        .exclude(email="")
+        .distinct()
+    )
+    with mail.get_connection() as connection:
+        for member in members:
+            logger.info("Sent email to %s (%s)", member.get_full_name(), member.email)
+            if not dry_run:
+                send_email(
+                    to=[member.email],
+                    subject="Membership expiration warning",
+                    txt_template="members/email/yearly_study_check_reminder.txt",
+                    html_template="members/email/yearly_study_check_reminder.html",
+                    connection=connection,
+                    context={
+                        "name": member.get_full_name(),
+                        "renewal_url": settings.BASE_URL
+                        + reverse("registrations:renew"),
+                    },
+                )
 
 
 def send_welcome_message(user, password):

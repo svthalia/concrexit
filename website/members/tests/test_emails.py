@@ -169,18 +169,6 @@ class EmailsTest(TestCase):
         )
 
     @freeze_time("2017-10-01")
-    def test_send_membership_announcement(self):
-        emails.send_membership_announcement()
-
-        self.assertEqual(len(mail.outbox), 3)
-        self.assertEqual(mail.outbox[0].to, ["test4@example.org"])
-        self.assertEqual(mail.outbox[1].to, ["test5@example.org"])
-
-        self.assertEqual(
-            mail.outbox[2].subject, "[THALIA] Membership announcement sent"
-        )
-
-    @freeze_time("2017-10-01")
     def test_send_information_request(self):
         emails.send_information_request()
 

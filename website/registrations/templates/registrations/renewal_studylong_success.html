@@ -1,0 +1,13 @@
+{% extends "small_page.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "success"|capfirst %} - {% trans "renewal"|capfirst %} — {{ block.super }}{% endblock %}
+
+{% block page_title %}{% trans "renewal" %}{% endblock %}
+
+{% block page_content %}
+    <p>
+        Thank you! You have successfully prolonged your study membership for another year!
+        You can now safely leave this page.
+    </p>
+{% endblock %}

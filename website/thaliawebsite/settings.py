@@ -383,10 +383,6 @@ CELERY_BEAT_SCHEDULE = {
         "task": "payments.tasks.revoke_mandates",
         "schedule": crontab(minute=0, hour=1),
     },
-    "membershipannouncement": {
-        "task": "members.tasks.membership_announcement",
-        "schedule": crontab(minute=0, hour=6, day_of_month=31, month_of_year=8),
-    },
     "inforequest": {
         "task": "members.tasks.info_request",
         "schedule": crontab(minute=0, hour=6, day_of_month=15, month_of_year=2),
@@ -394,6 +390,14 @@ CELERY_BEAT_SCHEDULE = {
     "expirationannouncement": {
         "task": "members.tasks.expiration_announcement",
         "schedule": crontab(minute=0, hour=6, day_of_month=8, month_of_year=8),
+    },
+    "studylongexpirationwarning": {
+        "task": "members.tasks.expiration_warning",
+        "schedule": crontab(minute=0, hour=6, day_of_month=1, month_of_year=8),
+    },
+    "studylongexpirationreminder": {
+        "task": "members.tasks.expiration_reminder",
+        "schedule": crontab(minute=0, hour=6, day_of_month=15, month_of_year=9),
     },
     "minimiseregistration": {
         "task": "registrations.tasks.minimise_registrations",

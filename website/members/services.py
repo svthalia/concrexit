@@ -5,7 +5,6 @@ from typing import Any
 from django.conf import settings
 from django.db.models import Count, Exists, OuterRef, Q
 from django.utils import timezone
-
 from members import emails
 from members.models import Member, Membership
 from registrations.models import Renewal
@@ -201,7 +200,7 @@ def process_email_change(change_request) -> None:
 
 
 def execute_data_minimisation(dry_run=False, members=None) -> list[Member]:
-    """Clean the profiles of members/users of whom the last membership ended at least 31 days ago.
+    """Clean the profiles of members/users of whom the last membership ended at least 90 days ago.
 
     :param dry_run: does not really remove data if True
     :param members: queryset of members to process, optional

@@ -12,9 +12,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import CreateView, FormView
 from django.views.generic.base import TemplateResponseMixin, TemplateView
-
 from django_ratelimit.decorators import ratelimit
-
 from members.decorators import membership_required
 from members.models import Membership
 
@@ -187,6 +185,49 @@ class BenefactorRegistrationFormView(BaseRegistrationFormView):
         )
         request.POST["no_references"] = "icis_employee" in request.POST
         return super().post(request, *args, **kwargs)
+
+
+class NewYearRenewalFormView(FormView):
+    """View that renders the membership extension form for study memberships."""
+
+    form_class = forms.NewYearForm
+    template_name = "registrations/new_year_renewal.html"
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        membership = request.member.latest_membership
+        existing_renewal = Renewal.objects.filter(
+            Q(member=self.request.member)
+            & (
+                Q(status=Registration.STATUS_ACCEPTED)
+                | Q(status=Registration.STATUS_REVIEW)
+            )
+        ).last()
+        if (
+            existing_renewal
+            or membership is None
+            or membership.type != Membership.MEMBER
+            or not membership.study_long
+            or request.member.profile.is_minimized
+            or membership.until is None
+            or ((membership.until - timezone.now().date()).days > 31)
+        ):
+            messages.error(
+                self.request,
+                "You cannot currently prolong a study membership.",
+            )
+
+            return redirect(reverse("registrations:renew"))
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        membership = self.request.member.latest_membership
+        membership.until = timezone.datetime(
+            year=membership.until.year + 1, month=9, day=1
+        ).date()
+        membership.save()
+        return redirect("registrations:renew-studylong-success")
 
 
 @method_decorator(login_required, name="dispatch")
