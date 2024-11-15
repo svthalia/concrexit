@@ -103,7 +103,7 @@ This documentation is available at `/api/docs/`.
 
 #### Authentication
 
-`v2` uses OAuth2 authentication, which is the new standard for authentication.
+The API uses OAuth2 authentication, which is the new standard for authentication.
 The OAuth2 authentication is implemented using the `django-oauth-toolkit` package.
 
 #### Throttling
