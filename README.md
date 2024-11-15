@@ -92,7 +92,7 @@ In the future we should register this method in the `apps.py` file of the app, b
 
 #### Versions
 
-We currently have 2 versions of the API.
+We used to have 2 versions of the API however `v1` is no longer available.
 The first version is the `v1` API, which is the old API and is no longer used.
 The second version is the `v2` API, which is the new API that is actively being developed.
 
