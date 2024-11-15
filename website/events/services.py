@@ -167,15 +167,6 @@ def user_registration_pending(member, event):
         return False
 
 
-def is_user_present(member, event):
-    if not event.registration_required or not member.is_authenticated:
-        return None
-
-    return event.registrations.filter(
-        member=member, date_cancelled=None, present=True
-    ).exists()
-
-
 def event_permissions(member, event: Event, name=None, registration_prefetch=False):
     """Return a dictionary with the available event permissions of the user.
 
@@ -473,29 +464,6 @@ def registration_fields(request, member=None, event=None, registration=None, nam
 
         return fields
     raise RegistrationError(_("You are not allowed to update this registration."))
-
-
-def update_registration_by_organiser(registration, member, data):
-    if not is_organiser(member, registration.event):
-        raise RegistrationError(_("You are not allowed to update this registration."))
-
-    if "present" in data:
-        registration.present = data["present"]
-
-    registration.save()
-
-    # if "payment" in data:
-    #     if data["payment"]["type"] == PaymentTypeField.NO_PAYMENT:
-    #         if registration.payment is not None:
-    #             delete_payment(registration, member)
-    #     else:
-    #         create_payment(
-    #             model_payable=registration,
-    #             processed_by=member,
-    #             pay_type=data["payment"]["type"],
-    #         )
-
-    registration.refresh_from_db(fields=["payment"])
 
 
 def generate_category_statistics() -> dict:
