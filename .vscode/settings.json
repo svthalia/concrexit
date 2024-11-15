@@ -31,7 +31,7 @@
         "editor.defaultFormatter": "charliermarsh.ruff",
         "editor.codeActionsOnSave": {
             "source.organizeImports.isort": "never",
-            "source.organizeImports": "explicit",
+            "source.organizeImports.ruff": "explicit",
         }
     },
     "git.branchProtection": [
