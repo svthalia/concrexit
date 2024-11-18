@@ -243,6 +243,7 @@ class RenewalForm(forms.ModelForm):
         if (
             self.cleaned_data["member"].latest_membership
             and self.cleaned_data["member"].latest_membership.study_long
+            and self.cleaned_data["membership_type"] != Membership.BENEFACTOR
         ):
             raise ValidationError("It's not possible to renew a study long membership.")
 

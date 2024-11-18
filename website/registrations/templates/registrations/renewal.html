@@ -129,11 +129,6 @@
                         have to renew your membership.
                     {% endblocktrans %}
                 </p>
-            {% elif latest_membership.study_long %}
-                <p>
-                    You seem to be on the wrong page for your membership type.
-                    follow <a href="{% url 'registrations:renew-studylong' %}">this link</a> to renew your membership.
-                </p>
             {% elif not request.member.profile.is_minimized %}
                 {% for error in form.errors.items %}
                     {% for message in error.1 %}
@@ -144,11 +139,19 @@
                       data-benefactor-type="{{ benefactor_type }}">
                     {% csrf_token %}
                     <fieldset>
-                        {% if not latest_membership.type == 'benefactor' %}
+                        {% if not latest_membership.type == 'benefactor' and not latest_membership.study_long %}
                             {% bootstrap_field form.membership_type %}
                             {% bootstrap_field form.length %}
                             {% bootstrap_field form.contribution form_group_class='form-row required-field d-none' %}
                         {% else %}
+                            {% if latest_membership.study_long %}
+                                <div class="col-md-12">
+                                    <div class="alert alert-info">
+                                        You seem to have a membership which you can freely extend until the end of your studies. If you are still studying Computing Science/Information Sience, <a style="text-decoration: underline; color:white" href="{% url 'registrations:renew-studylong' %}">click this link to extend your membership for free.</a> Otherwise continue with the form below to become benefactor.
+                                    </div>
+                                </div>
+                            {% endif %}
+
                             <div class="form-row">
                                 <label
                                         for="id_membership_type">{% trans 'membership type'|capfirst %}</label>
