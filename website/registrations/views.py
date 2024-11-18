@@ -12,7 +12,9 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import CreateView, FormView
 from django.views.generic.base import TemplateResponseMixin, TemplateView
+
 from django_ratelimit.decorators import ratelimit
+
 from members.decorators import membership_required
 from members.models import Membership
 
@@ -289,7 +291,10 @@ class RenewalFormView(FormView):
 
     def post(self, request, *args, **kwargs):
         request.POST = request.POST.dict()
-        if request.member.latest_membership.type == Membership.BENEFACTOR:
+        if (
+            request.member.latest_membership.type == Membership.BENEFACTOR
+            or request.member.latest_membership.study_long
+        ):
             request.POST["membership_type"] = Membership.BENEFACTOR
             request.POST["length"] = Entry.MEMBERSHIP_YEAR
         request.POST["member"] = request.member.pk
