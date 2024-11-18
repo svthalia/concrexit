@@ -466,8 +466,8 @@ class RenewalFormViewTest(TestCase):
                 request.member = MagicMock()
                 request.member.pk = 2
                 self.view.request = request
+                request.member.latest_membership.study_long = False
 
-                request.member.latest_membership.type = Membership.MEMBER
                 self.view.post(request)
 
                 request = super_post.call_args[0][0]
