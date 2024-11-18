@@ -692,6 +692,7 @@ TEMPLATES = [
                 "announcements.context_processors.announcements",
                 "thaliawebsite.context_processors.aprilfools",
                 "thaliawebsite.context_processors.lustrum_styling",
+                "thaliawebsite.context_processors.year_as_hex",
             ],
         },
     },
