@@ -77,6 +77,7 @@ class RegistrationInformationField(models.Model):
         field_value.registration = registration
         field_value.field = self
         field_value.value = value
+        field_value.full_clean()
         field_value.save()
 
     def __str__(self):
@@ -109,7 +110,7 @@ class BooleanRegistrationInformation(AbstractRegistrationInformation):
 class TextRegistrationInformation(AbstractRegistrationInformation):
     """Checkbox information filled in by members when registering."""
 
-    value = models.TextField()
+    value = models.TextField(max_length=5000)
 
 
 class IntegerRegistrationInformation(AbstractRegistrationInformation):
