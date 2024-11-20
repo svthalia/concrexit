@@ -110,7 +110,7 @@ class BooleanRegistrationInformation(AbstractRegistrationInformation):
 class TextRegistrationInformation(AbstractRegistrationInformation):
     """Checkbox information filled in by members when registering."""
 
-    value = models.TextField(max_length=5000)
+    value = models.TextField(blank=True, null=True, max_length=5000)
 
 
 class IntegerRegistrationInformation(AbstractRegistrationInformation):
