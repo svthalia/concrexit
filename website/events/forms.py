@@ -21,7 +21,9 @@ class FieldsForm(forms.Form):
             elif field_type == RegistrationInformationField.INTEGER_FIELD:
                 self.fields[key] = forms.IntegerField(required=field["required"])
             elif field_type == RegistrationInformationField.TEXT_FIELD:
-                self.fields[key] = forms.CharField(required=field["required"])
+                self.fields[key] = forms.CharField(
+                    required=field["required"], max_length=5000
+                )
 
             self.fields[key].label = field["label"]
             self.fields[key].help_text = field["description"]
