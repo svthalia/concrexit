@@ -25,7 +25,7 @@ class GSuiteUserService:
         return get_directory_api()
 
     def _generate_password(self, member: Member):
-        alphabet = string.ascii_letters + string.digits + string.punctuation
+        alphabet = string.ascii_letters + string.digits + "!@#$%^&*-_=+?"
         return "".join(secrets.choice(alphabet) for i in range(15))
 
     def create_user(self, member: Member):
