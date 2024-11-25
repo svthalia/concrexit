@@ -1,5 +1,7 @@
 import hashlib
 import logging
+import secrets
+import string
 
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
@@ -22,13 +24,17 @@ class GSuiteUserService:
             return self._directory_api
         return get_directory_api()
 
+    def _generate_password(self, member: Member):
+        alphabet = string.ascii_letters + string.digits + "!@#$%^&*-_=+?"
+        return "".join(secrets.choice(alphabet) for i in range(15))
+
     def create_user(self, member: Member):
         """Create a new GSuite user based on the provided data.
 
         :param member: The member that gets an account
         :return returns a tuple with the password and id of the created user
         """
-        plain_password = Member.objects.make_random_password(length=15)
+        plain_password = self._generate_password(member)
 
         # Google only supports sha-1, md5 or crypt as hash functions[0] for the initial password.
         # Because this password should be changed on first login and is safely sent to Google over
