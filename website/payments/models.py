@@ -312,6 +312,68 @@ def _default_withdrawal_date():
     ).date()
 
 
+class PaymentRequest(models.Model):
+    requester = models.ForeignKey(
+        Member, on_delete=models.PROTECT, related_name="payment_requester"
+    )
+
+    payer = models.ForeignKey(
+        PaymentUser, on_delete=models.PROTECT, related_name="payment_request_payer"
+    )
+
+    payment = models.OneToOneField(
+        Payment,
+        null=True,
+        editable=False,
+        on_delete=models.PROTECT,
+        related_name="related_payment",
+    )
+
+    required_paid_date = models.DateTimeField(
+        verbose_name=_("required paid date"),
+        blank=True,
+        null=True,
+    )
+
+    amount = models.FloatField(
+        verbose_name=_("payment amount"),
+        blank=False,
+        null=False,
+    )
+
+    topic = models.TextField(
+        max_length=32,
+        verbose_name=_("payment topic"),
+        blank=False,
+        null=False,
+    )
+
+    notes = models.TextField(
+        max_length=256,
+        verbose_name=_("payment notes"),
+        blank=True,
+        null=True,
+    )
+
+    @property
+    def status(self):
+        if self.payment is not None:
+            return "paid"
+        if self.required_paid_date and self.required_paid_date < timezone.now():
+            return "overdue"
+
+        return "pending"
+
+    def __str__(self):
+        return (
+            f"{self.topic}, €{self.amount}"
+            f" requested by {self.requester} to get paid by {self.payer}"
+        )
+
+    class Meta:
+        ordering = ("required_paid_date",)
+
+
 class Batch(models.Model):
     """Describes a batch of payments for export."""
 
