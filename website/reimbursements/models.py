@@ -2,6 +2,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MinLengthValidator
 from django.db import models
 
+from members.models import Member
 from payments.models import PaymentAmountField
 
 
@@ -11,7 +12,7 @@ class Reimbursement(models.Model):
         DENIED = "denied", "Denied"
 
     owner = models.ForeignKey(
-        "auth.User",
+        model=Member,
         related_name="reimbursements",
         on_delete=models.PROTECT,
     )
