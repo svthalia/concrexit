@@ -114,6 +114,46 @@ class Payable(ABC, Generic[PayableModel]):
         return hash((self.payment_amount, self.payment_topic, self.payment_notes))
 
 
+class PaymentRequestPayable(Payable):
+    @property
+    def payment_amount(self):
+        return self.model.amount
+
+    @property
+    def payment_topic(self):
+        return self.model.topic
+
+    @property
+    def payment_notes(self):
+        return self.model.notes
+
+    @property
+    def payment_payer(self):
+        return self.model.payer
+
+    def can_manage_payment(self, member):
+        return member.has_perm("payments.change_paymentrequest")
+
+    @classproperty
+    def immutable_after_payment(self):
+        return True
+
+    @classproperty
+    def immutable_model_fields_after_payment(self):
+        return [
+            "amount",
+            "topic",
+            "notes",
+            "required_paid_date",
+            "payer",
+            "created_at",
+            "requester",
+        ]
+
+    def register(self, model: type[Model], payable_class: type[Payable]):
+        raise NotImplementedError("PaymentRequestPayable cannot be registered.")
+
+
 class Payables:
     def __init__(self):
         self._registry: dict[str, type[Payable]] = {}
