@@ -17,7 +17,7 @@ from django.utils.translation import gettext_lazy as _
 from payments import admin_views, payables, services
 from payments.forms import BankAccountAdminForm, BatchPaymentInlineAdminForm
 
-from .models import BankAccount, Batch, Payment, PaymentUser
+from .models import BankAccount, Batch, Payment, PaymentRequest, PaymentUser
 
 
 def _show_message(
@@ -315,6 +315,34 @@ class PaymentAdmin(admin.ModelAdmin):
         return response
 
     export_csv.short_description = _("Export")
+
+
+class PaymentRequestInline(admin.TabularInline):
+    model = PaymentRequest
+    fields = (
+        "amount",
+        "topic",
+        "notes",
+        "required_paid_date",
+        "payer",
+        "created_at",
+        "requester",
+    )
+    readonly_fields = (
+        "created_at",
+        "requester",
+    )
+    extra = 0
+    can_delete = False
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 class ValidAccountFilter(admin.SimpleListFilter):
@@ -705,7 +733,7 @@ class PaymentUserAdmin(admin.ModelAdmin):
         ThaliaPayBalanceFilter,
     ]
 
-    inlines = [BankAccountInline, PaymentInline]
+    inlines = [BankAccountInline, PaymentInline, PaymentRequestInline]
 
     fields = (
         "user_link",
