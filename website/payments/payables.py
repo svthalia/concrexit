@@ -151,7 +151,21 @@ class PaymentRequestPayable(Payable):
         ]
 
     def register(self, model: type[Model], payable_class: type[Payable]):
-        raise NotImplementedError("PaymentRequestPayable cannot be registered.")
+        self._registry[self._get_key(model)] = payable_class
+        if payable_class.immutable_after_payment:
+            pre_save.connect(
+                prevent_saving, sender=model, dispatch_uid=f"prevent_saving_{model}"
+            )
+
+            for foreign_model in payable_class.immutable_foreign_key_models:
+                foreign_key_field = payable_class.immutable_foreign_key_models[
+                    foreign_model
+                ]
+                pre_save.connect(
+                    prevent_saving_related(foreign_key_field),
+                    sender=foreign_model,
+                    dispatch_uid=f"prevent_saving_related_{model}_{foreign_model}",
+                )
 
 
 class Payables:
