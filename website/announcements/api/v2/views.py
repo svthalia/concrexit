@@ -1,5 +1,10 @@
 """API v2 views of the announcements app."""
 
+from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
+from rest_framework import viewsets
+from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.response import Response
+
 from announcements.api.v2.serializers import (
     AnnouncementSerializer,
     FrontpageArticleSerializer,
@@ -8,10 +13,6 @@ from announcements.api.v2.serializers import (
 from announcements.context_processors import announcements
 from announcements.models import FrontpageArticle, Slide
 from announcements.services import close_announcement
-from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
-from rest_framework import viewsets
-from rest_framework.generics import ListAPIView, RetrieveAPIView
-from rest_framework.response import Response
 
 
 class AnnouncementsAPIViewMixin:
@@ -60,7 +61,14 @@ class AnnouncementListView(AnnouncementsAPIViewMixin, viewsets.ViewSet):
             announces["announcements"] + announces["persistent_announcements"],
             many=True,
         )
-        return Response(serializer.data)
+        data = {
+            "count": len(announces),
+            "next": None,
+            "previous": None,
+            "results": serializer.data,
+        }
+
+        return Response(data)
 
 
 class AnnouncementDetailView(AnnouncementsAPIViewMixin, viewsets.ViewSet):
