@@ -1,10 +1,9 @@
+from announcements.views import close_announcement_view
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.test import RequestFactory, TestCase, override_settings
 from django.urls import reverse
-
-from announcements.views import close_announcement
 
 
 @override_settings(SUSPEND_SIGNALS=True)
@@ -24,14 +23,14 @@ class AnnouncementCloseTestCase(TestCase):
             self.middleware.process_request(request)
             with self.subTest(user=user):
                 request.user = user
-                response = close_announcement(request)
+                response = close_announcement_view(request)
                 self.assertEqual(response.status_code, 405)
 
     def test_post_no_id(self):
         request = self.factory.post(reverse("announcements:close-announcement"))
         self.middleware.process_request(request)
         request.user = AnonymousUser()
-        response = close_announcement(request)
+        response = close_announcement_view(request)
         self.assertEqual(response.status_code, 400)
 
     def test_post_id_string(self):
@@ -40,7 +39,7 @@ class AnnouncementCloseTestCase(TestCase):
         )
         self.middleware.process_request(request)
         request.user = AnonymousUser()
-        response = close_announcement(request)
+        response = close_announcement_view(request)
         self.assertEqual(response.status_code, 400)
 
     def test_valid_request_anonymous(self):
@@ -49,7 +48,7 @@ class AnnouncementCloseTestCase(TestCase):
         )
         self.middleware.process_request(request)
         request.user = AnonymousUser()
-        response = close_announcement(request)
+        response = close_announcement_view(request)
 
         self.assertEqual(response.status_code, 204)
         self.assertIn("closed_announcements", request.session)
@@ -63,7 +62,7 @@ class AnnouncementCloseTestCase(TestCase):
         )
         self.middleware.process_request(request)
         request.user = self.user
-        response = close_announcement(request)
+        response = close_announcement_view(request)
 
         self.assertEqual(response.status_code, 204)
         self.assertIn("closed_announcements", request.session)
@@ -77,7 +76,7 @@ class AnnouncementCloseTestCase(TestCase):
         self.middleware.process_request(request)
         request.session["closed_announcements"] = [3]
         request.user = AnonymousUser()
-        response = close_announcement(request)
+        response = close_announcement_view(request)
 
         self.assertEqual(response.status_code, 204)
         self.assertIn("closed_announcements", request.session)
