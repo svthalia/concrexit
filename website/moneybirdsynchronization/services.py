@@ -185,7 +185,7 @@ def delete_external_invoice(obj):
 
     moneybird = get_moneybird_api_service()
     try:
-        moneybird.delete_external_invoice(external_invoice.moneybird_invoice_id)
+        moneybird.delete_external_sales_invoice(external_invoice.moneybird_invoice_id)
     except Administration.NotFound:
         # The invoice has probably been removed manually from moneybird.
         # We can assume it no longer exists there, but still, this should not happen
@@ -238,7 +238,7 @@ def _delete_invoices():
     for invoice in invoices:
         try:
             if invoice.moneybird_invoice_id is not None:
-                moneybird.delete_external_invoice(invoice.moneybird_invoice_id)
+                moneybird.delete_external_sales_invoice(invoice.moneybird_invoice_id)
             invoice.delete()
         except Administration.Error as e:
             logger.exception("Moneybird synchronization error: %s", e)

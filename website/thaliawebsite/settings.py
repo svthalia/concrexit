@@ -638,6 +638,7 @@ INSTALLED_APPS = [
     "shortlinks.apps.ShortLinkConfig",
     "sales.apps.SalesConfig",
     "moneybirdsynchronization.apps.MoneybirdsynchronizationConfig",
+    "reimbursements.apps.ReimbursementsConfig",
     "two_factor.plugins.webauthn",
 ]
 

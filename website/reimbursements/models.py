@@ -2,8 +2,8 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MinLengthValidator
 from django.db import models
 
-from members.models import Member
-from payments.models import PaymentAmountField
+from payments.models import BankAccount, PaymentAmountField
+from utils.media.services import get_upload_to_function
 
 
 class Reimbursement(models.Model):
@@ -12,7 +12,7 @@ class Reimbursement(models.Model):
         DENIED = "denied", "Denied"
 
     owner = models.ForeignKey(
-        model=Member,
+        "members.Member",
         related_name="reimbursements",
         on_delete=models.PROTECT,
     )
@@ -34,8 +34,10 @@ class Reimbursement(models.Model):
     )
 
     # explicitely chose for FileField over an ImageField because companies often send invoices as pdf
-    # TODO: verify file location
-    receipt = models.FileField(upload_to="receipts/")
+
+    receipt = models.FileField(
+        upload_to=get_upload_to_function("reimbursements/receipts"),
+    )
 
     created = models.DateTimeField(auto_now_add=True)
 
@@ -65,9 +67,17 @@ class Reimbursement(models.Model):
 
     def clean(self):
         super().clean()
-
+        bank = BankAccount.objects.filter(owner=self.owner).last()
         errors = {}
-        if self.date_incurred > self.created.date():
+        if bank is None:
+            errors["owner"] = (
+                "You must have a valid bank account to request a reimbursement."
+            )
+        if (
+            self.created is not None
+            and self.date_incurred is not None
+            and self.date_incurred > self.created.date()
+        ):
             errors["date_incurred"] = "The date incurred cannot be in the future."
 
         if self.verdict == self.Verdict.DENIED and not self.verdict_clarification:
@@ -76,10 +86,8 @@ class Reimbursement(models.Model):
             )
 
         if (
-            self.verdict == self.Verdict.APPROVED
-            or self.verdict == self.Verdict.DENIED
-            and not self.evaluated_by
-        ):
+            self.verdict == self.Verdict.APPROVED or self.verdict == self.Verdict.DENIED
+        ) and not self.evaluated_by:
             errors["evaluated_by"] = "You must provide the evaluator."
 
         if errors:

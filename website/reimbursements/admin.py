@@ -1,13 +1,13 @@
 from django.contrib import admin
-from django.contrib.admin import register
 from django.utils import timezone
 
-from reimbursements import models
 from utils.snippets import send_email
 
+from . import models
 
-@register(models.Reimbursement)
-class ReimbursementAdmin(admin.ModelAdmin):
+
+@admin.register(models.Reimbursement)
+class ReimbursementsAdmin(admin.ModelAdmin):
     list_display = (
         "id",
         "created",
@@ -17,17 +17,19 @@ class ReimbursementAdmin(admin.ModelAdmin):
         "verdict",
         "evaluated_by",
     )
-    list_filter = ("verdict", "created", "date_incurred", "owner")
+    list_filter = ("verdict", "created", "date_incurred")
+    search_fields = (
+        "date_incurred",
+        "owner__first_name",
+        "owner__last_name",
+        "description",
+    )
 
-    autocomplete_fields = ["owner"]
     readonly_fields = [
         "evaluated_by",
         "evaluated_at",
         "created",
-        "amount",
-        "receipt",
         "owner",
-        "date_incurred",
     ]
 
     def send_verdict_email(self, obj):
@@ -45,25 +47,36 @@ class ReimbursementAdmin(admin.ModelAdmin):
         )
 
     def save_model(self, request, obj, form, change):
+        obj.owner = request.user
         if obj.verdict is not None and obj.verdict != form.initial["verdict"]:
             obj.evaluated_by = request.user
             obj.evaluated_at = timezone.now()
+
+            # TODO: add moneybird integration
 
         super().save_model(request, obj, form, change)
 
         if obj.verdict is not None and obj.verdict != form.initial["verdict"]:
             self.send_verdict_email(obj)
 
-    def get_readonly_fields(self, obj=None):
-        if not obj or obj.verdict:
-            return self.readonly_fields + [
-                "verdict",
+    def get_readonly_fields(self, request, obj=None):
+        readonly = self.readonly_fields
+        if obj:
+            readonly += [
                 "description",
+                "amount",
+                "date_incurred",
+                "receipt",
             ]
-        return self.readonly_fields
+        if not obj or obj.verdict:
+            readonly += [
+                "verdict",
+                "verdict_clarification",
+            ]
+        return readonly
 
     def get_queryset(self, request):
-        if request.user.has_perm("reimbursements.view_reimbursement"):
+        if request.user.has_perm("reimbursements.change_reimbursement"):
             return super().get_queryset(request)
         return models.Reimbursement.objects.filter(owner=request.user)
 
