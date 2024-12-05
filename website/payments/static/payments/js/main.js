@@ -1,5 +1,5 @@
-(django.jQuery || jQuery)(function () {
-    $ = django.jQuery || jQuery;
+(jQuery || django.jQuery)(function () {
+    $ = jQuery || django.jQuery;
     var signatureField = $('#id_signature');
     var signatureCanvas = document.getElementById("id_signature_canvas");
     var signaturePad = new SignaturePad(signatureCanvas);
