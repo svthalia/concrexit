@@ -146,6 +146,7 @@ class PaymentListView(ListView):
 
     def get_context_data(self, *args, **kwargs):
         current_time = timezone.now().replace(tzinfo=None)
+        nr_months = 0
         earliest_membership = PaymentUser.objects.get(
             pk=self.request.member.pk
         ).earliest_membership.since
