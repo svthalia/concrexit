@@ -16,7 +16,7 @@
          </h5>
     {% endif %}
     <ul class="nav nav-tabs mb-4">
-        {% for filter in filters|slice:':6' %}
+        {% for filter in initial_filters %}
             <li class="nav-item">
                 <a class="nav-link {% if filter.year == year and filter.month == month %}active{% endif %}"
                    href="{% url 'payments:payment-list' filter.year filter.month %}">
@@ -24,13 +24,15 @@
                 </a>
             </li>
         {% endfor %}
+        {% for filter_group in year_filters %}
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle {% if filters.6.year == year and filters.6.month >= month or filters.6.year > year and filters.6.month < month %}active{% endif %}"
                data-bs-toggle="dropdown"
+               data-bs-display="static"
                href="#" role="button" aria-haspopup="true"
-               aria-expanded="false">{% trans 'Older' %}</a>
+               aria-expanded="false">{{ filter_group.year }}</a>
             <div class="dropdown-menu">
-                {% for filter in filters|slice:'6:' %}
+                {% for filter in filter_group.months %}
                     <a class="dropdown-item {% if filter.year == year and filter.month == month %}active{% endif %}"
                        href="{% url 'payments:payment-list' filter.year filter.month %}">
                         {{ filter.year }}-{{ filter.month|stringformat:"02d" }}
@@ -38,6 +40,7 @@
                 {% endfor %}
             </div>
         </li>
+        {% endfor %}
     </ul>
     {% if object_list %}
         <table class="table">
