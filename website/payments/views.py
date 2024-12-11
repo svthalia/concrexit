@@ -148,14 +148,15 @@ class PaymentListView(ListView):
         )
 
     def get_context_data(self, *args, **kwargs):
+        current_time = timezone.now().replace(tzinfo=None)
         earliest_membership = PaymentUser.objects.get(
             pk=self.request.member.pk
         ).earliest_membership.since
         if (
             earliest_membership
-            and earliest_membership > (timezone.now() - relativedelta(years=7)).date()
+            and earliest_membership > (current_time - relativedelta(years=7)).date()
         ):
-            difference = relativedelta(timezone.now(), earliest_membership)
+            difference = relativedelta(current_time, earliest_membership)
             months = difference.years * 12 + difference.months + 1
 
         filters = []
