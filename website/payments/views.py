@@ -154,10 +154,10 @@ class PaymentListView(ListView):
             and earliest_membership > (current_time - relativedelta(years=7)).date()
         ):
             difference = relativedelta(current_time, earliest_membership)
-            months = difference.years * 12 + difference.months + 1
+            nr_months = difference.years * 12 + difference.months + 1
 
         filters = []
-        for i in range(min(months, 85)):
+        for i in range(min(nr_months, 85)):
             new_now = timezone.now() - relativedelta(months=i)
             filters.append({"year": new_now.year, "month": new_now.month})
 
