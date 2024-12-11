@@ -164,7 +164,9 @@ def get_automatic_lists():
             "collection of all committee lists",
             "addresses": [
                 c.contact_address
-                for c in Committee.objects.all().select_related("contact_mailinglist")
+                for c in Committee.objects.all()
+                .filter(active=True)
+                .select_related("contact_mailinglist")
             ],
             "moderated": True,
         },
