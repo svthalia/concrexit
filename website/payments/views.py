@@ -1,5 +1,7 @@
+import datetime
 from decimal import Decimal
 from itertools import groupby
+import time
 
 from django.apps import apps
 from django.conf import settings
@@ -24,6 +26,7 @@ from django.views.generic.edit import CreateView, FormView, UpdateView
 
 from dateutil.relativedelta import relativedelta
 
+from members.models import member
 from payments import services
 from payments.exceptions import PaymentError
 from payments.forms import BankAccountForm, BankAccountUserRevokeForm, PaymentCreateForm
@@ -145,9 +148,18 @@ class PaymentListView(ListView):
         )
 
     def get_context_data(self, *args, **kwargs):
-        filters = []
+        earliest_membership = PaymentUser.objects.get(
+            pk=self.request.member.pk
+        ).earliest_membership.since
+        if (
+            earliest_membership
+            and earliest_membership > (timezone.now() - relativedelta(years=7)).date()
+        ):
+            difference = relativedelta(timezone.now(), earliest_membership)
+            months = difference.years * 12 + difference.months + 1
 
-        for i in range(85):
+        filters = []
+        for i in range(min(months, 85)):
             new_now = timezone.now() - relativedelta(months=i)
             filters.append({"year": new_now.year, "month": new_now.month})
 
