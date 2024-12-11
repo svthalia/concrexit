@@ -1,7 +1,5 @@
-import datetime
 from decimal import Decimal
 from itertools import groupby
-import time
 
 from django.apps import apps
 from django.conf import settings
@@ -26,7 +24,6 @@ from django.views.generic.edit import CreateView, FormView, UpdateView
 
 from dateutil.relativedelta import relativedelta
 
-from members.models import member
 from payments import services
 from payments.exceptions import PaymentError
 from payments.forms import BankAccountForm, BankAccountUserRevokeForm, PaymentCreateForm
