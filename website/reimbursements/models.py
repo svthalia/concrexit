@@ -33,7 +33,7 @@ class Reimbursement(models.Model):
         validators=[MinLengthValidator(10)],
     )
 
-    # explicitely chose for FileField over an ImageField because companies often send invoices as pdf
+    # explicitly chose for FileField over an ImageField because companies often send invoices as pdf
 
     receipt = models.FileField(
         upload_to=get_upload_to_function("reimbursements/receipts"),

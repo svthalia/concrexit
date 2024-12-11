@@ -9,9 +9,8 @@ from . import models
 @admin.register(models.Reimbursement)
 class ReimbursementsAdmin(admin.ModelAdmin):
     list_display = (
-        "id",
-        "created",
         "owner",
+        "created",
         "date_incurred",
         "amount",
         "verdict",

@@ -10,24 +10,20 @@ YEAR = timedelta(days=365)
 
 
 def execute_data_minimisation(dry_run=False):
-    old_declined_reimbursements = Reimbursement.objects.filter(
-        verdict=Reimbursement.Verdict.DENIED,
-        created__lt=timezone.now() - YEAR * 2,
-    )
+    def _delete_old_reimbursements(
+        verdict: Reimbursement.Verdict,
+        years_until_deletion: int,
+    ):
+        old_reimbursements = Reimbursement.objects.filter(
+            verdict=verdict,
+            created__lt=timezone.now() - YEAR * years_until_deletion,
+        )
 
-    logger.info(
-        "Deleting %d declined reimbursements", old_declined_reimbursements.count()
-    )
-    if not dry_run:
-        old_declined_reimbursements.delete()
+        logger.info(
+            "Deleting %d %s reimbursements", old_reimbursements.count(), verdict
+        )
+        if not dry_run:
+            old_reimbursements.delete()
 
-    old_approved_reimbursements = Reimbursement.objects.filter(
-        verdict=Reimbursement.Verdict.APPROVED,
-        created__lt=timezone.now() - YEAR * 7,
-    )
-
-    logger.info(
-        "Deleting %d approved reimbursements", old_approved_reimbursements.count()
-    )
-    if not dry_run:
-        old_approved_reimbursements.delete()
+    _delete_old_reimbursements(Reimbursement.Verdict.DENIED, years_until_deletion=2)
+    _delete_old_reimbursements(Reimbursement.Verdict.APPROVED, years_until_deletion=7)
