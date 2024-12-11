@@ -19,6 +19,9 @@ def announcements(request):
 
     # Announcements set by AnnouncementMiddleware.
     persistent_announcements = getattr(request, "_announcements", [])
+    for persistent_announcement in persistent_announcements:
+        persistent_announcement["closeable"] = False
+
     return {
         "announcements": announcements_list,
         "persistent_announcements": persistent_announcements,
