@@ -1,4 +1,4 @@
-from django.apps import apps
+from announcements.services import get_announcements
 
 
 class AnnouncementMiddleware:
@@ -13,10 +13,6 @@ class AnnouncementMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        announcements = []
-        for app in apps.get_app_configs():
-            if hasattr(app, "announcements"):
-                announcements += app.announcements(request)
-        request._announcements = announcements
+        request._announcements = get_announcements(request)
 
         return self.get_response(request)
