@@ -1,3 +1,14 @@
+from django.apps import apps
+
+
+def get_announcements(request):
+    announcements = []
+    for app in apps.get_app_configs():
+        if hasattr(app, "announcements"):
+            announcements += app.announcements(request)
+    return announcements
+
+
 def close_announcement(request, pk):
     """Close an announcement."""
     if "closed_announcements" not in request.session:
