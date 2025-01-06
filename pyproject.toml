@@ -10,7 +10,7 @@ license = {file = "LICENSE.md"}
 requires-python = ">=3.13,<3.14"
 
 dependencies = [
-    "Django==5.1.2",
+    "Django==5.1.4",
     "django-localflavor==4.0",
     "djangorestframework==3.15.2",
     "django-ical==1.9.2",
@@ -22,13 +22,13 @@ dependencies = [
     "django-admin-autocomplete-filter==0.7.1",
     "django-bootstrap5~=22.1",
     "django-tinymce==4.1.0",
-    "django-storages==1.14.3",
+    "django-storages==1.14.4",
     "django-drf-filepond==0.5.0",
     "django-filepond-widget==0.9.0",
     "django-thumbnails==0.8.0",
     "django-ratelimit==4.1.0",
     "django-sass-processor==1.4.1",
-    "django-otp==1.5.1",
+    "django-otp==1.5.4",
     "django-formtools==2.5.1",
     "django-two-factor-auth[webauthn,phonenumbers]~=1.16.0",
     "bleach[css]~=6.1.0",
@@ -39,7 +39,7 @@ dependencies = [
     "google-api-python-client==2.118.0",
     "sentry-sdk~=2.12.0",
     "beautifulsoup4~=4.11.1",
-    "boto3==1.35.62",
+    "boto3==1.35.92",
     "gunicorn==22.0.0",
     "qrcode[pil]~=7.4.2",
     "freezegun==1.5.1",
