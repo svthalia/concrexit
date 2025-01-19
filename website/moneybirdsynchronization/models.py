@@ -349,7 +349,6 @@ class MoneybirdExternalInvoice(models.Model):
 
 class MoneybirdReceipt(models.Model):
     reimbursement = models.OneToOneField(Reimbursement, on_delete=models.CASCADE)
-    object_id = models.CharField(max_length=255)
 
     moneybird_receipt_id = models.CharField(
         verbose_name=_("moneybird receipt id"),
@@ -358,27 +357,14 @@ class MoneybirdReceipt(models.Model):
         null=True,
     )
 
-    moneybird_details_attribute_id = models.CharField(
-        verbose_name=_("moneybird details attribute id"),
+    moneybird_attachment_id = models.CharField(
+        verbose_name=_("moneybird attachment id"),
         max_length=255,
         blank=True,
         null=True,
-    )  # We need this id, so we can update the rows (otherwise, updates will create new rows without deleting).
-    # We only support one attribute for now, so this is the easiest way to store it
-
-    needs_synchronization = models.BooleanField(
-        default=True,  # The field is set False only when it has been successfully synchronized.
-        help_text="Indicates that the invoice has to be synchronized (again).",
-    )
-
-    needs_deletion = models.BooleanField(
-        default=False,
-        help_text="Indicates that the invoice has to be deleted from moneybird.",
     )
 
     def to_moneybird(self):
-        moneybird = get_moneybird_api_service()
-
         contact_id = settings.MONEYBIRD_UNKNOWN_PAYER_CONTACT_ID
 
         if self.reimbursement.owner is not None:
@@ -392,21 +378,9 @@ class MoneybirdReceipt(models.Model):
 
         receipt_date = self.reimbursement.date_incurred.strftime("%Y-%m-%d")
 
-        project_name = f"Reimbursement [{receipt_date}]"
-
-        project_id = None
-        if project_name is not None:
-            project, __ = MoneybirdProject.objects.get_or_create(name=project_name)
-            if project.moneybird_id is None:
-                response = moneybird.create_project(project.to_moneybird())
-                project.moneybird_id = response["id"]
-                project.save()
-
-            project_id = project.moneybird_id
-
         source_url = settings.BASE_URL + reverse(
             f"admin:{self.reimbursement._meta.app_label}_{self.reimbursement._meta.model_name}_change",
-            args=(self.object_id,),
+            args=(self.reimbursement.pk,),
         )
 
         data = {
@@ -419,35 +393,22 @@ class MoneybirdReceipt(models.Model):
                 "prices_are_incl_tax": True,
                 "details_attributes": [
                     {
-                        "description": self.reimbursement.description,
+                        "description": self.reimbursement.description
+                        + f"\n\nIBAN: {self.reimbursement.iban}\n\nConcrexit: {source_url}",
                         "price": str(self.reimbursement.amount),
                     },
                 ],
             }
         }
 
-        if source_url is not None:
-            data["external_sales_invoice"]["source_url"] = source_url
-
-        if project_id is not None:
-            data["external_sales_invoice"]["details_attributes"][0]["project_id"] = int(
-                project_id
-            )
-
-        if self.moneybird_details_attribute_id is not None:
-            data["external_sales_invoice"]["details_attributes"][0]["id"] = int(
-                self.moneybird_details_attribute_id
-            )
-
         return data
 
     def __str__(self):
-        return f"Moneybird external invoice for {self.payable_object}"
+        return f"Moneybird receipt for {self.payable_object}"
 
     class Meta:
-        verbose_name = _("moneybird external invoice")
-        verbose_name_plural = _("moneybird external invoices")
-        unique_together = ("payable_model", "object_id")
+        verbose_name = _("moneybird receipt")
+        verbose_name_plural = _("moneybird receipt")
 
 
 class MoneybirdPayment(models.Model):

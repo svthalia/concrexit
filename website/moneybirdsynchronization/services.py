@@ -201,7 +201,7 @@ def delete_external_invoice(obj):
         external_invoice.delete()
 
 
-def create_or_update_receipt(reimbursement: Reimbursement):
+def create_receipt(reimbursement: Reimbursement):
     """Create a receipt on Moneybird for a Reimbursement object."""
     if not settings.MONEYBIRD_SYNC_ENABLED:
         return
@@ -215,48 +215,19 @@ def create_or_update_receipt(reimbursement: Reimbursement):
 
     moneybird = get_moneybird_api_service()
 
-    if moneybird_receipt.moneybird_receipt_id:
-        moneybird.update_receipt(
-            moneybird_receipt.moneybird_receipt_id, moneybird_receipt.to_moneybird()
-        )
-    else:
+    if moneybird_receipt.moneybird_receipt_id is None:
         response = moneybird.create_receipt(moneybird_receipt.to_moneybird())
         moneybird_receipt.moneybird_receipt_id = response["id"]
-        moneybird_receipt.moneybird_details_attribute_id = response["details"][0]["id"]
+
+    if moneybird_receipt.moneybird_attachment_id is None:
         attachment_response = moneybird.add_receipt_attachment(
             moneybird_receipt.moneybird_receipt_id, reimbursement.receipt
         )
-        moneybird_receipt.moneybird_receipt_attachment_id = attachment_response["id"]
+        moneybird_receipt.moneybird_attachment_id = attachment_response["id"]
 
-    moneybird_receipt.needs_synchronization = False
     moneybird_receipt.save()
 
     return moneybird_receipt
-
-
-def delete_receipt(receipt: MoneybirdReceipt):
-    """Delete or archive a receipt on Moneybird, and delete our record of it."""
-    if not settings.MONEYBIRD_SYNC_ENABLED:
-        return
-
-    if receipt.moneybird_receipt_id is None:
-        receipt.delete()
-        return
-
-    moneybird = get_moneybird_api_service()
-
-    try:
-        if receipt.moneybird_receipt_attachment_id:
-            moneybird.delete_receipt_attachment(receipt.moneybird_receipt_attachment_id)
-        moneybird.delete_receipt(receipt.moneybird_id)
-        receipt.delete()
-    except Administration.InvalidData:
-        logger.warning(
-            "Receipt %s for reimbursement %s could not be deleted.",
-            receipt.moneybird_receipt_id,
-            receipt.reimbursement,
-        )
-        receipt.delete()
 
 
 def synchronize_moneybird():
@@ -275,7 +246,6 @@ def synchronize_moneybird():
 
     # Delete invoices and receipts that have been marked for deletion.
     _delete_invoices()
-    _delete_receipts()
 
     # Resynchronize outdated invoices.
     _sync_outdated_invoices()
@@ -286,7 +256,7 @@ def synchronize_moneybird():
     _sync_registrations()
     _sync_renewals()
     _sync_event_registrations()
-    # _sync_receipts()
+    _sync_receipts()
 
     logger.info("Finished moneybird synchronization.")
 
@@ -305,15 +275,6 @@ def _delete_invoices():
         except Administration.Error as e:
             logger.exception("Moneybird synchronization error: %s", e)
             send_sync_error(e, invoice)
-
-
-def _delete_receipts():
-    """Delete the receipts that have been marked for deletion from moneybird."""
-    receipts = MoneybirdReceipt.objects.filter(needs_deletion=True)
-    logger.info("Deleting %d receipts.", receipts.count())
-
-    for receipt in receipts:
-        delete_receipt(receipt=receipt)
 
 
 def _sync_outdated_invoices():
@@ -548,8 +509,26 @@ def _sync_event_registrations():
             send_sync_error(e, instance)
 
 
-# def _sync_receipts():
-# TODO
+def _sync_receipts():
+    # Reimbursements whose MoneybirdReceipt does not exist or has not been fully pushed yet.
+    reimbursements = Reimbursement.objects.filter(
+        verdict=Reimbursement.verdicts.APPROVED,
+    ).exclude(
+        moneybird_receipt__isnull=False,
+        moneybird_receipt__moneybird_receipt_id__isnull=False,
+        moneybird_receipt__moneybird_attachment_id__isnull=False,
+    )
+
+    logger.info(
+        "Pushing %d reimbursement receipts to Moneybird.", reimbursements.count()
+    )
+
+    for reimbursement in reimbursements:
+        try:
+            create_receipt(reimbursement)
+        except Administration.Error as e:
+            logger.exception("Moneybird synchronization error: %s", e)
+            send_sync_error(e, reimbursement)
 
 
 def _sync_moneybird_payments():

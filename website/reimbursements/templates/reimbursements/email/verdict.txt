@@ -1,7 +1,7 @@
 Dear {{ first_name }},
 
 
-There has been a verdict on your reinbursement request with the following description:
+There has been a verdict on your reimbursement request with the following description:
     {{ description }}
 
 The request was {{ verdict }}.

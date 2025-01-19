@@ -633,12 +633,12 @@ INSTALLED_APPS = [
     "newsletters.apps.NewslettersConfig",
     "education.apps.EducationConfig",
     "registrations.apps.RegistrationsConfig",
+    "reimbursements.apps.ReimbursementsConfig",
     "payments.apps.PaymentsConfig",
     "singlepages.apps.SinglepagesConfig",
     "shortlinks.apps.ShortLinkConfig",
     "sales.apps.SalesConfig",
     "moneybirdsynchronization.apps.MoneybirdsynchronizationConfig",
-    "reimbursements.apps.ReimbursementsConfig",
     "two_factor.plugins.webauthn",
 ]
 

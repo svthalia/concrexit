@@ -56,20 +56,9 @@ class MoneybirdAPIService:
     def create_receipt(self, receipt_data):
         return self._administration.post("receipts", receipt_data)
 
-    def delete_receipt(self, receipt_id):
-        return self._administration.delete(f"receipts/{receipt_id}")
-
-    def update_receipt(self, receipt_id, receipt_data):
-        return self._administration.patch(f"receipts/{receipt_id}", receipt_data)
-
     def add_receipt_attachment(self, receipt_id, receipt_attachment):
         return self._administration.post(
             f"receipts/{receipt_id}/attachments", receipt_attachment
-        )
-
-    def delete_receipt_attachment(self, receipt_id, attachment_id):
-        return self._administration.delete(
-            f"receipts/{receipt_id}/attachments/{attachment_id}"
         )
 
     def link_mutation_to_booking(

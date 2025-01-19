@@ -2,6 +2,9 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MinLengthValidator
 from django.db import models
 
+from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
+from localflavor.generic.models import IBANField
+
 from payments.models import BankAccount, PaymentAmountField
 from utils.media.services import get_upload_to_function
 
@@ -23,6 +26,13 @@ class Reimbursement(models.Model):
         help_text="How much did you pay (in euros)?",
     )
 
+    iban = IBANField(
+        verbose_name="IBAN",
+        include_countries=IBAN_SEPA_COUNTRIES,
+        help_text="The bank account to which the reimbursement should be sent.",
+        # TODO: automatic suggestion to use the user's configured BankAccount.
+    )
+
     date_incurred = models.DateField(
         help_text="When was this payment made?",
     )
@@ -33,8 +43,7 @@ class Reimbursement(models.Model):
         validators=[MinLengthValidator(10)],
     )
 
-    # explicitly chose for FileField over an ImageField because companies often send invoices as pdf
-
+    # FileField and not ImageField because companies often send invoices as pdf
     receipt = models.FileField(
         upload_to=get_upload_to_function("reimbursements/receipts"),
     )
@@ -53,7 +62,7 @@ class Reimbursement(models.Model):
         blank=True,
     )
 
-    evaluated_at = models.DateTimeField(null=True)
+    evaluated_at = models.DateTimeField(null=True, editable=False)
     evaluated_by = models.ForeignKey(
         "auth.User",
         related_name="reimbursements_approved",
@@ -85,10 +94,11 @@ class Reimbursement(models.Model):
                 "You must provide a reason for the denial."
             )
 
-        if (
-            self.verdict == self.Verdict.APPROVED or self.verdict == self.Verdict.DENIED
-        ) and not self.evaluated_by:
-            errors["evaluated_by"] = "You must provide the evaluator."
+        if self.verdict == self.Verdict.APPROVED or self.verdict == self.Verdict.DENIED:
+            if not self.evaluated_by:
+                errors["evaluated_by"] = "You must provide the evaluator."
+            if not self.evaluated_at:
+                errors["evaluated_at"] = "You must provide the evaluation date."
 
         if errors:
             raise ValidationError(errors)

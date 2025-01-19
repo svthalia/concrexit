@@ -1,9 +1,26 @@
+from django import forms
 from django.contrib import admin
 from django.utils import timezone
 
-from utils.snippets import send_email
+from reimbursements.emails import send_verdict_email
 
 from . import models
+
+
+class ReimbursementForm(forms.ModelForm):
+    class Meta:
+        model = models.Reimbursement
+        fields = "__all__"
+
+    def clean(self):
+        if not self.instance.owner:
+            self.instance.owner = self.request.user
+
+        if self.cleaned_data["verdict"] != self.initial["verdict"]:
+            self.instance.evaluated_by = self.request.user
+            self.instance.evaluated_at = timezone.now()
+
+        return super().clean()
 
 
 @admin.register(models.Reimbursement)
@@ -24,53 +41,40 @@ class ReimbursementsAdmin(admin.ModelAdmin):
         "description",
     )
 
-    readonly_fields = [
-        "evaluated_by",
-        "evaluated_at",
-        "created",
-        "owner",
-    ]
+    form = ReimbursementForm
 
-    def send_verdict_email(self, obj):
-        send_email(
-            to=[obj.owner.email],
-            subject="Reimbursement request",
-            txt_template="reimbursements/email/verdict.txt",
-            html_template="reimbursements/email/verdict.html",
-            context={
-                "first_name": obj.owner.profile.firstname,
-                "description": obj.description,
-                "verdict": obj.verdict,
-                "verdict_clarification": obj.verdict_clarification,
-            },
-        )
+    def get_form(self, request, *args, **kwargs):
+        form = super().get_form(request, *args, **kwargs)
+        form.request = request
+        return form
 
     def save_model(self, request, obj, form, change):
-        obj.owner = request.user
-        if obj.verdict is not None and obj.verdict != form.initial["verdict"]:
-            obj.evaluated_by = request.user
-            obj.evaluated_at = timezone.now()
-
-            # TODO: add moneybird integration
+        # TODO: add immediate push to moneybird if approved.
 
         super().save_model(request, obj, form, change)
 
         if obj.verdict is not None and obj.verdict != form.initial["verdict"]:
-            self.send_verdict_email(obj)
+            send_verdict_email(obj)
 
     def get_readonly_fields(self, request, obj=None):
-        readonly = self.readonly_fields
+        readonly = [
+            "created",
+            "owner",
+        ]
         if obj:
             readonly += [
                 "description",
                 "amount",
                 "date_incurred",
                 "receipt",
+                "iban",
             ]
         if not obj or obj.verdict:
             readonly += [
                 "verdict",
                 "verdict_clarification",
+                "evaluated_by",
+                "evaluated_at",
             ]
         return readonly
 
