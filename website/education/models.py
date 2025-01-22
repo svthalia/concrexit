@@ -1,8 +1,12 @@
 import datetime
 
 from django.db import models
+from django.db.models import Count, Q
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+
+from queryable_properties.managers import QueryablePropertiesManager
+from queryable_properties.properties import AggregateProperty
 
 from members.models import Member
 from utils.snippets import datetime_to_lectureyear
@@ -29,6 +33,8 @@ class Category(models.Model):
 class Course(models.Model):
     """Describes a course."""
 
+    objects = QueryablePropertiesManager()
+
     name = models.CharField(max_length=255)
 
     categories = models.ManyToManyField(
@@ -51,6 +57,11 @@ class Course(models.Model):
 
     def get_absolute_url(self):
         return reverse("education:course", args=[str(self.pk)])
+
+    summary_count = AggregateProperty(
+        Count("summary", filter=Q(summary__accepted=True))
+    )
+    exam_count = AggregateProperty(Count("exam", filter=Q(exam__accepted=True)))
 
     class Meta:
         ordering = ["-pk"]
