@@ -33,6 +33,10 @@ class VacancySerializer(CleanedModelSerializer):
     company_logo = serializers.SerializerMethodField("_company_logo")
 
     def _company_logo(self, instance):
-        return ThumbnailSerializer().to_representation(instance.get_company_logo())
+        return ThumbnailSerializer(
+            size_small="fit_small",
+            size_medium="fit_medium",
+            size_large="fit_large",
+        ).to_representation(instance.get_company_logo())
 
     categories = VacancyCategorySerializer(many=True)
