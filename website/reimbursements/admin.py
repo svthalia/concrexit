@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib import admin
+from django.core.exceptions import ValidationError
 from django.utils import timezone
 
 from reimbursements.emails import send_verdict_email
@@ -15,10 +16,6 @@ class ReimbursementForm(forms.ModelForm):
     def clean(self):
         if not self.instance.owner:
             self.instance.owner = self.request.user
-
-        if self.cleaned_data["verdict"] != self.initial["verdict"]:
-            self.instance.evaluated_by = self.request.user
-            self.instance.evaluated_at = timezone.now()
 
         return super().clean()
 
@@ -49,6 +46,15 @@ class ReimbursementsAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         # TODO: add immediate push to moneybird if approved.
+        if obj.verdict is not None and change:
+            obj.evaluated_by = request.user
+            obj.evaluated_at = timezone.now()
+
+        if self.verdict == self.Verdict.APPROVED or self.verdict == self.Verdict.DENIED:
+            if not self.evaluated_by:
+                raise ValidationError("You must provide the evaluator.")
+            if not self.evaluated_at:
+                raise ValidationError("You must provide the evaluation date.")
 
         super().save_model(request, obj, form, change)
 

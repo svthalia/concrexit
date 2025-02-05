@@ -94,12 +94,6 @@ class Reimbursement(models.Model):
                 "You must provide a reason for the denial."
             )
 
-        if self.verdict == self.Verdict.APPROVED or self.verdict == self.Verdict.DENIED:
-            if not self.evaluated_by:
-                errors["evaluated_by"] = "You must provide the evaluator."
-            if not self.evaluated_at:
-                errors["evaluated_at"] = "You must provide the evaluation date."
-
         if errors:
             raise ValidationError(errors)
 
