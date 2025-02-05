@@ -1,9 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.core.validators import MinLengthValidator
 from django.db import models
-
-from localflavor.generic.countries.sepa import IBAN_SEPA_COUNTRIES
-from localflavor.generic.models import IBANField
+from django.utils import timezone
 
 from payments.models import BankAccount, PaymentAmountField
 from utils.media.services import get_upload_to_function
@@ -24,13 +22,6 @@ class Reimbursement(models.Model):
         max_digits=5,
         decimal_places=2,
         help_text="How much did you pay (in euros)?",
-    )
-
-    iban = IBANField(
-        verbose_name="IBAN",
-        include_countries=IBAN_SEPA_COUNTRIES,
-        help_text="The bank account to which the reimbursement should be sent.",
-        # TODO: automatic suggestion to use the user's configured BankAccount.
     )
 
     date_incurred = models.DateField(
@@ -78,7 +69,7 @@ class Reimbursement(models.Model):
         super().clean()
         bank = BankAccount.objects.filter(owner=self.owner).last()
         errors = {}
-        if bank is None:
+        if bank is None and not bank.valid_until <= timezone.now():
             errors["owner"] = (
                 "You must have a valid bank account to request a reimbursement."
             )
