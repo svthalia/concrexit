@@ -45,7 +45,6 @@ class ReimbursementsAdmin(admin.ModelAdmin):
 
     def get_form(self, request, *args, **kwargs):
         form = super().get_form(request, *args, **kwargs)
-        form.request = request
         return form
 
     def save_model(self, request, obj, form, change):
