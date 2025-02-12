@@ -59,9 +59,11 @@ class Course(models.Model):
         return reverse("education:course", args=[str(self.pk)])
 
     summary_count = AggregateProperty(
-        Count("summary", filter=Q(summary__accepted=True))
+        Count("summary", filter=Q(summary__accepted=True), distinct=True)
     )
-    exam_count = AggregateProperty(Count("exam", filter=Q(exam__accepted=True)))
+    exam_count = AggregateProperty(
+        Count("exam", filter=Q(exam__accepted=True), distinct=True)
+    )
 
     class Meta:
         ordering = ["-pk"]
