@@ -1,9 +1,8 @@
 from django.core.exceptions import ValidationError
 from django.core.validators import MinLengthValidator
 from django.db import models
-from django.utils import timezone
 
-from payments.models import BankAccount, PaymentAmountField
+from payments.models import PaymentAmountField
 from utils.media.services import get_upload_to_function
 
 
@@ -47,6 +46,7 @@ class Reimbursement(models.Model):
         null=True,
         blank=True,
     )
+
     verdict_clarification = models.TextField(
         help_text="Why did you choose this verdict?",
         null=True,
@@ -54,6 +54,7 @@ class Reimbursement(models.Model):
     )
 
     evaluated_at = models.DateTimeField(null=True, editable=False)
+
     evaluated_by = models.ForeignKey(
         "auth.User",
         related_name="reimbursements_approved",
@@ -67,12 +68,9 @@ class Reimbursement(models.Model):
 
     def clean(self):
         super().clean()
-        bank = BankAccount.objects.filter(owner=self.owner).last()
+
         errors = {}
-        if bank is None and not bank.valid_until <= timezone.now():
-            errors["owner"] = (
-                "You must have a valid bank account to request a reimbursement."
-            )
+
         if (
             self.created is not None
             and self.date_incurred is not None
