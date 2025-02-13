@@ -3,6 +3,7 @@ from django.contrib import admin
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 
+from payments.models import BankAccount
 from reimbursements.emails import send_verdict_email
 
 from . import models
@@ -13,11 +14,7 @@ class ReimbursementForm(forms.ModelForm):
         model = models.Reimbursement
         fields = "__all__"
 
-    def clean(self):
-        if not self.instance.owner:
-            self.instance.owner = self.request.user
-
-        return super().clean()
+    confirm_iban = forms.BooleanField(required=True)
 
 
 @admin.register(models.Reimbursement)
@@ -42,18 +39,32 @@ class ReimbursementsAdmin(admin.ModelAdmin):
 
     def get_form(self, request, *args, **kwargs):
         form = super().get_form(request, *args, **kwargs)
+        if request.member and request.member.bank_accounts.exists():
+            form.base_fields[
+                "confirm_iban"
+            ].help_text = request.member.bank_accounts.last().iban
         return form
 
     def save_model(self, request, obj, form, change):
         # TODO: add immediate push to moneybird if approved.
+        if not obj.owner_id:
+            obj.owner_id = request.user.id
+
+        bank = BankAccount.objects.filter(owner=obj.owner).last()
+
+        if bank is None and not bank.valid_until <= timezone.now():
+            raise ValidationError(
+                "You must have a valid bank account to request a reimbursement."
+            )
+
         if obj.verdict is not None and change:
             obj.evaluated_by = request.user
             obj.evaluated_at = timezone.now()
 
-        if self.verdict == self.Verdict.APPROVED or self.verdict == self.Verdict.DENIED:
-            if not self.evaluated_by:
+        if obj.verdict == obj.Verdict.APPROVED or obj.verdict == obj.Verdict.DENIED:
+            if not obj.evaluated_by:
                 raise ValidationError("You must provide the evaluator.")
-            if not self.evaluated_at:
+            if not obj.evaluated_at:
                 raise ValidationError("You must provide the evaluation date.")
 
         super().save_model(request, obj, form, change)
@@ -72,7 +83,6 @@ class ReimbursementsAdmin(admin.ModelAdmin):
                 "amount",
                 "date_incurred",
                 "receipt",
-                "iban",
             ]
         if not obj or obj.verdict:
             readonly += [
