@@ -125,7 +125,7 @@ server {
     }
 
     location = /.well-known/assetlinks.json {
-        alias /resources/assetlinks.json;
+        alias /resources/assetlinks-${SITE_DOMAIN}.json;
         default_type application/json;
     }
 
