@@ -48,6 +48,13 @@
         </div>
     </div>
 
+    <form class="search-form form-inline col-12 col-lg-6 mt-4 mt-lg-0 mb-4" method="get">
+        <div class="input-group">
+            <input class="form-control" style="width: available" name="keywords" type="search" value="" placeholder="Which subject are you looking for?" aria-label="Search the Thalia's members directory" aria-describedby="memberlist-search-button" id="search-bar">
+            <input id="summaries-search-button" class="btn btn-lg btn-primary col-12 mt-2 mt-md-0 col-md-3 ms-0" type="submit" value="Search">
+        </div>
+    </form>
+
     <ul class="nav nav-tabs mt-4">
         <li class="nav-item">
             <a class="nav-link" data-filter="all" href="#all">
@@ -83,7 +90,7 @@
                 <tr class="mix {% for cat in course.categories %}category-{{ cat.id }} {% endfor %}"
                     data-link="{{ course.url }}">
                     <td>{{ course.course_code }}</td>
-                    <td>{{ course.name }}</td>
+                    <td class="course-name" id="{{course.name}}">{{ course.name }}</td>
                     <td class="d-md-table-cell d-none">
                         {% for category in course.categories %}
                             {{ category.name }}{% if not forloop.last %},{% endif %}
@@ -101,4 +108,5 @@
     {{ block.super }}
     <script type="text/javascript" src="{% static 'js/mixitup.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'education/js/main.js' %}"></script>
+    <script type="text/javascript" src="{% static 'education/js/courses.js' %}"></script>
 {% endblock %}
