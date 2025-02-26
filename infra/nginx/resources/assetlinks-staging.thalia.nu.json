@@ -1,0 +1,26 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.thaliapp",
+      "sha256_cert_fingerprints": [
+        "39:E5:2D:0C:2E:29:03:5A:15:21:2A:85:20:58:78:DB:0B:12:AC:6D:6F:73:7B:7E:FA:8D:77:C9:8D:2C:08:21"
+      ]
+    }
+  },
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.thaliapp.staging",
+      "sha256_cert_fingerprints": [
+        "8B:17:6E:49:55:D7:04:A7:88:5A:91:B2:1B:E3:6F:B5:87:0F:BC:E2:44:8B:0A:7B:1B:E1:FF:8A:6F:E3:B2:2D"
+      ]
+    }
+  }
+]
