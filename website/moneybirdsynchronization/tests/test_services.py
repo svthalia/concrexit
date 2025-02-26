@@ -225,8 +225,8 @@ class ServicesTest(TestCase):
             moneybird_invoice_id="2",
         )
 
-        # _delete_invoices calls the delete_external_invoice API directly.
-        mock_delete_invoice = mock_api.return_value.delete_external_invoice
+        # _delete_invoices calls the delete_external_sales_invoice API directly.
+        mock_delete_invoice = mock_api.return_value.delete_external_sales_invoice
 
         with self.subTest("Invoices without needs_deletion are not deleted."):
             services._delete_invoices()
@@ -458,7 +458,7 @@ class ServicesTest(TestCase):
         # Renewal 2 is not paid yet, so no invoice should be made for it.
         mock_create_invoice.assert_called_once_with(renewal1)
 
-    @mock.patch("moneybirdsynchronization.services.delete_external_invoice")
+    @mock.patch("moneybirdsynchronization.services.delete_external_sales_invoice")
     @mock.patch("moneybirdsynchronization.services.create_or_update_external_invoice")
     def test_sync_event_registrations(
         self, mock_create_invoice, mock_delete_invoice, mock_api

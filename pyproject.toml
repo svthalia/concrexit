@@ -125,6 +125,7 @@ known-first-party = [
     "promotion",
     "pushnotifications",
     "registrations",
+    "reimbursements",
     "sales",
     "shortlinks",
     "singlepages",
