@@ -185,6 +185,7 @@ class ServicesTest(TestCase):
         membership = MemberGroupMembership.objects.create(
             member=self.member, group=self.committee
         )
+        del self.member.member_groups
         self.assertTrue(services.is_organiser(self.member, self.event))
         self.assertFalse(services.is_organiser(self.member, None))
         self._toggle_event_change_perm(False)
