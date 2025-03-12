@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib import admin
+from django.contrib.admin.widgets import AdminDateWidget
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.shortcuts import redirect
@@ -18,6 +19,7 @@ class ReimbursementForm(forms.ModelForm):
         fields = ["amount", "date_incurred", "description", "receipt", "confirm_iban"]
 
     confirm_iban = forms.BooleanField(required=True)
+    date_incurred = forms.DateField(required=True, widget=AdminDateWidget())
 
 
 @admin.register(models.Reimbursement)
@@ -101,13 +103,26 @@ class ReimbursementsAdmin(admin.ModelAdmin):
         if not request.user.has_perm("reimbursements.add_reimbursement"):
             raise PermissionError
 
+        bank_account = request.member.bank_accounts.last()
+
+        if not bank_account:
+            self.message_user(
+                request,
+                "Please add a bank account to create a reimbursement.",
+                level="ERROR",
+            )
+            return redirect("payments:bankaccount-list")
+
         if request.POST:
             form = ReimbursementForm(
                 request.POST,
                 request.FILES,
                 initial={"owner": request.user},
             )
-            form["confirm_iban"].help_text = request.member.bank_accounts.last().iban
+
+            form[
+                "confirm_iban"
+            ].help_text = f"I confirm that this is my IBAN: {bank_account.iban}"
             if form.is_valid():
                 form.instance.owner = request.user
                 form.save()
@@ -115,7 +130,9 @@ class ReimbursementsAdmin(admin.ModelAdmin):
                 return redirect("admin:reimbursements_reimbursement_changelist")
         else:
             form = ReimbursementForm()
-            form["confirm_iban"].help_text = request.member.bank_accounts.last().iban
+            form[
+                "confirm_iban"
+            ].help_text = f"I confirm that this is my IBAN: {bank_account.iban}"
 
         context = {
             **self.admin_site.each_context(request),
@@ -126,6 +143,15 @@ class ReimbursementsAdmin(admin.ModelAdmin):
             "app_label": app_label,
             "media": self.media,
             "form": form,
+            "add": True,
+            "change": False,
+            "save_as": False,
+            "has_delete_permission": self.has_delete_permission(request),
+            "has_change_permission": self.has_change_permission(request),
+            "has_view_permission": self.has_view_permission(request),
+            "has_add_permission": self.has_add_permission(request),
+            "has_editable_inline_admin_formsets": False,
+            "has_file_field": True,
         }
 
         return TemplateResponse(

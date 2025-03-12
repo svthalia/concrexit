@@ -1,12 +1,17 @@
 {% extends "admin/base_site.html" %}
-{% load i18n admin_urls %}
+{% load i18n admin_urls static admin_modify %}
 
-
-
-
-{% block extrahead %}{{ block.super }}
+{% block title %}{% if errors %}{% translate "Error:" %} {% endif %}{{ block.super }}{% endblock %}
+{% block extrahead %}
+  {{ block.super }}
+  <script src="{% url 'admin:jsi18n' %}"></script>
+  <script src="{% static 'admin/js/core.js' %}"></script>
   {{ form.media }}
 {% endblock %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" href="{% static "admin/css/forms.css" %}">{% endblock %}
+
+{% block coltype %}colM{% endblock %}
 
 
 {% block breadcrumbs %}
@@ -19,10 +24,42 @@
 {% endblock %}
 
 {% block content %}
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
+  <div id="content-main">
+  <form {% if has_file_field %}enctype="multipart/form-data" {% endif %}{% if form_url %}action="{{ form_url }}" {% endif %}method="post" id="{{ opts.model_name }}_form" novalidate>{% csrf_token %}{% block form_top %}{% endblock %}
+  <div>
+  {% if errors %}
+      <p class="errornote">
+      {% blocktranslate count counter=errors|length %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktranslate %}
+      </p>
+      {{ adminform.form.non_field_errors }}
+  {% endif %}
 
-    <input type="submit" class="default" value="Import">
+  <fieldset class="module aligned">
+    {% for field in form %}
+        <div class="form-row{% if field.errors %} errors{% endif %}">
+                <div>
+                    {% if not line.fields|length == 1 and not field.is_readonly %}{{ field.errors }}{% endif %}
+                        <div class="flex-container {% if field.field.name %} field-{{ field.field.name }}{% endif %}{% if field.errors %} errors{% endif %}{% if field.is_checkbox %} checkbox-row{% endif %}">
+                            {% if field.is_checkbox %}
+                                {{ field }}{{ field.label_tag }}
+                            {% else %}
+                                {{ field.label_tag }}
+                                {{ field }}
+                            {% endif %}
+                          </div>
+                      {% if field.help_text %}
+                          <div class="help">
+                              <div>{{ field.help_text|safe }}</div>
+                          </div>
+                      {% endif %}
+                </div>
+          </div>
+      {% endfor %}
+  </fieldset>
+  {% block after_field_sets %}{% endblock %}
+
+  {% block submit_buttons_bottom %}{% submit_row %}{% endblock %}
+  </div>
   </form>
+  </div>
 {% endblock %}
