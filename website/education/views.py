@@ -4,13 +4,15 @@ from datetime import date, datetime
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
-from django.http import FileResponse, HttpResponse
+from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import CreateView, DetailView, ListView, TemplateView
+
+from queryable_properties.utils import prefetch_queryable_properties
 
 from members.decorators import membership_required
 from utils.media.services import get_media_url
@@ -23,9 +25,17 @@ from .models import Category, Course, Exam, Summary
 class CourseIndexView(ListView):
     """Render an overview of the courses."""
 
-    queryset = Course.objects.filter(until=None).prefetch_related(
-        "categories", "old_courses"
-    )
+    def get_queryset(self):
+        queryset = (
+            Course.objects.filter(until=None)
+            .prefetch_related("categories", "old_courses")
+            .select_properties("summary_count", "exam_count")
+            .order_by("name")
+        )
+        prefetch_queryable_properties(queryset, "old_courses__summary_count")
+        prefetch_queryable_properties(queryset, "old_courses__exam_count")
+        return queryset
+
     template_name = "education/courses.html"
 
     def get_ordering(self) -> str:
@@ -42,12 +52,11 @@ class CourseIndexView(ListView):
                         "categories": x.categories.all(),
                         "document_count": sum(
                             [
-                                x.summary_set.filter(accepted=True).count(),
-                                x.exam_set.filter(accepted=True).count(),
+                                x.summary_count,
+                                x.exam_count,
                             ]
                             + [
-                                c.summary_set.filter(accepted=True).count()
-                                + c.exam_set.filter(accepted=True).count()
+                                c.summary_count + c.exam_count
                                 for c in x.old_courses.all()
                             ]
                         ),
