@@ -148,8 +148,14 @@ class PaymentListView(ListView):
         current_time = timezone.now().replace(tzinfo=None)
         nr_months = 0
         earliest_membership = self.request.member.earliest_membership
-        difference = relativedelta(current_time, earliest_membership.since)
-        nr_months = difference.years * 12 + difference.months + 1
+        difference = (
+            relativedelta(current_time, earliest_membership.since)
+            if earliest_membership
+            else None
+        )
+        nr_months = (
+            difference.years * 12 + difference.months + 1 if earliest_membership else 0
+        )
 
         filters = []
         for i in range(min(nr_months, 85)):
