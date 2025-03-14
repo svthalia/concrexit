@@ -1,0 +1,20 @@
+Dear {{ first_name }},
+
+
+There has been a verdict on your reimbursement request with the following description:
+    {{ description }}
+
+The request was {{ verdict }}.
+{% if not verdict_clarification %}No clarification was given.
+{% else %}The following clarification was given:
+    {{ verdict_clarification }}{% endif %}
+
+For questions, please reach out to the treasurer at treasurer@thalia.nu.
+
+
+With kind regards,
+
+The board of Study Association thalia
+
+
+This email was automatically generated.
