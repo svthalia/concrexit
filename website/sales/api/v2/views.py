@@ -3,7 +3,6 @@ from django.db.models import Q
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import GenericAPIView
-from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 from rest_framework.response import Response
 from rest_framework.schemas.openapi import AutoSchema
 
@@ -24,20 +23,20 @@ from thaliawebsite.api.v2.permissions import IsAuthenticatedOrTokenHasScopeForMe
 
 class UserShiftListView(ShiftListView):
     serializer_class = UserShiftSerializer
-    # queryset = SelfOrderPeriod.objects.all()
+    queryset = Shift.objects.filter(selforder=True)
     permission_classes = [
         IsAuthenticatedOrTokenHasScope,
-        DjangoModelPermissionsOrAnonReadOnly,
+        # DjangoModelPermissionsOrAnonReadOnly,
     ]
     required_scopes = ["sales:read"]
 
 
 class UserShiftDetailView(ShiftDetailView):
     serializer_class = UserShiftSerializer
-    # queryset = SelfOrderPeriod.objects.all()
+    queryset = Shift.objects.filter(selforder=True)
     permission_classes = [
         IsAuthenticatedOrTokenHasScope,
-        DjangoModelPermissionsOrAnonReadOnly,
+        # DjangoModelPermissionsOrAnonReadOnly,
     ]
     required_scopes = ["sales:read"]
 
