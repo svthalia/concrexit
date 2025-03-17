@@ -62,6 +62,14 @@ class Shift(models.Model):
         ),
     )
 
+    selforder = models.BooleanField(
+        verbose_name=_("self-order"),
+        blank=False,
+        null=False,
+        default=False,
+        help_text=_("Allow users to order products for themselves for this shift."),
+    )
+
     def clean(self):
         super().clean()
         errors = {}
@@ -148,9 +156,11 @@ class Shift(models.Model):
 
     @property
     def user_orders_allowed(self):
-        return self.selforderperiod_set.filter(
-            start__lte=timezone.now(), end__gt=timezone.now()
-        ).exists()
+        return (
+            self.start <= timezone.now()
+            and self.end > timezone.now()
+            and self.selforder
+        )
 
     @property
     def user_order_period(self):
