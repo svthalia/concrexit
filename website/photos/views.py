@@ -1,11 +1,14 @@
 import os
+from datetime import date
 
+from django.db.models import QuerySet
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
 from django.http.request import HttpRequest as HttpRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import TemplateView
+from utils.snippets import datetime_to_lectureyear
 
 from facedetection.models import ReferenceFace
 from photos.models import Album, Photo
@@ -26,25 +29,41 @@ class IndexView(LoginRequiredMixin, PagedView):
     template_name = "photos/index.html"
     context_object_name = "albums"
     keywords = None
+    query_filter = ""
+    year_range = []
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
-        self.keywords = request.GET.get("keywords", "").split()
+        self.year_range = list(
+            reversed(range(date.today().year - 5, date.today().year + 1))
+        )
+        self.keywords = request.GET.get("keywords", "").split() or None
+        self.query_filter = kwargs.get("year", None)
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         albums = Album.objects.filter(hidden=False, is_processing=False).select_related(
             "_cover"
         )
-        for key in self.keywords:
-            albums = albums.filter(title__icontains=key)
+        if self.query_filter == "older":
+            albums = albums.filter(date__year__lt=self.year_range[-1])
+        elif self.query_filter:
+            albums = albums.filter(date__year=self.query_filter)
+        if self.keywords:
+            for key in self.keywords:
+                albums = albums.filter(title__icontains=key)
         albums = get_annotated_accessible_albums(self.request, albums)
         albums = albums.order_by("-date")
-
         return albums
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["keywords"] = self.keywords
+        context.update(
+            {
+                "filter": self.query_filter,
+                "year_range": self.year_range,
+                "keywords": self.keywords,
+            }
+        )
         fetch_thumbnails([x.cover.file for x in context["object_list"] if x.cover])
 
         context["has_rejected_reference_faces"] = (

@@ -1,4 +1,4 @@
-from django.urls import include, path
+from django.urls import include, path, re_path
 
 from . import views
 
@@ -10,6 +10,7 @@ urlpatterns = [
         include(
             [
                 path("", views.IndexView.as_view(), name="index"),
+                re_path("(?P<year>([0-9]{4}|older))/$", views.IndexView.as_view(), name="index-filter"),
                 path("liked/", views.LikedPhotoView.as_view(), name="liked-photos"),
                 path(
                     "<slug>/",
