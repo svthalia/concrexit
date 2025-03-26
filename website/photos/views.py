@@ -8,6 +8,7 @@ from django.http import Http404
 from django.http.request import HttpRequest as HttpRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import TemplateView
+from utils.snippets import datetime_to_lectureyear
 
 from facedetection.models import ReferenceFace
 from photos.models import Album, Photo
