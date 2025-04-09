@@ -1,4 +1,5 @@
 from decimal import Decimal
+from itertools import groupby
 
 from django.apps import apps
 from django.conf import settings
@@ -144,15 +145,33 @@ class PaymentListView(ListView):
         )
 
     def get_context_data(self, *args, **kwargs):
+        current_time = timezone.now().replace(tzinfo=None)
+        nr_months = 0
+        earliest_membership = self.request.member.earliest_membership
+        difference = (
+            relativedelta(current_time, earliest_membership.since)
+            if earliest_membership
+            else None
+        )
+        nr_months = (
+            difference.years * 12 + difference.months + 1 if earliest_membership else 0
+        )
+
         filters = []
-        for i in range(13):
+        for i in range(min(nr_months, 85)):
             new_now = timezone.now() - relativedelta(months=i)
             filters.append({"year": new_now.year, "month": new_now.month})
+
+        initial_filters = filters[:6]
+        year_filters = []
+        for key, group in groupby(filters[6:], lambda f: f["year"]):
+            year_filters.append({"year": key, "months": list(group)})
 
         context = super().get_context_data(*args, **kwargs)
         context.update(
             {
-                "filters": filters,
+                "initial_filters": initial_filters,
+                "year_filters": year_filters,
                 "total": context["object_list"]
                 .aggregate(Sum("amount"))
                 .get("amount__sum"),
