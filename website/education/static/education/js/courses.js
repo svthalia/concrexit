@@ -1,18 +1,8 @@
-// Hello, I have no idea what I did, but it works.
-
-/*
- / \\__
-(    @\\___
-/         O
-/   (_____/
-/_____/   U
-*/
-
 $(document).ready(function() {
     $('#search-bar').focus();
 
     $('#summaries-search-button').click(performSearch);
-    $('#search-bar').keypress(function(event) {
+    $('#search-bar').keyup(function(event) {
         performSearch();
         if (event.keyCode === 13) {
             event.preventDefault();
