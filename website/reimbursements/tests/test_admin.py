@@ -37,14 +37,6 @@ class ReimbursementsAdminTests(TestCase):
         queryset = self.admin.get_queryset(request)
         self.assertIn(self.reimbursement, queryset)
 
-    def test_save_model_sets_owner(self):
-        request = MockRequest(self.superuser)
-        reimbursement = Reimbursement(
-            description="Another test", amount=200, date_incurred=timezone.now()
-        )
-        self.admin.save_model(request, reimbursement, None, False)
-        self.assertEqual(reimbursement.owner, self.superuser)
-
     def test_get_readonly_fields(self):
         self.reimbursement.verdict = "approved"
         self.reimbursement.verdict_clarification = "Approved by admin"

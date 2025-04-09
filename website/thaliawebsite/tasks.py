@@ -68,4 +68,3 @@ def clean_up():
 @shared_task
 def clear_tokens():
     clear_expired()
-    clear_expired()

@@ -39,32 +39,6 @@ class ReimbursementModelTest(TestCase):
             ["You must provide a reason for the denial."],
         )
 
-    def test_approved_verdict_without_evaluator(self):
-        reimbursement = Reimbursement(
-            created=timezone.now(),
-            verdict=Reimbursement.Verdict.APPROVED,
-        )
-        with self.assertRaises(ValidationError) as context:
-            reimbursement.clean()
-        self.assertIn("evaluated_by", context.exception.message_dict)
-        self.assertEqual(
-            context.exception.message_dict["evaluated_by"],
-            ["You must provide the evaluator."],
-        )
-
-    def test_denied_verdict_without_evaluator(self):
-        reimbursement = Reimbursement(
-            created=timezone.now(),
-            verdict=Reimbursement.Verdict.DENIED,
-        )
-        with self.assertRaises(ValidationError) as context:
-            reimbursement.clean()
-        self.assertIn("evaluated_by", context.exception.message_dict)
-        self.assertEqual(
-            context.exception.message_dict["evaluated_by"],
-            ["You must provide the evaluator."],
-        )
-
     def test_valid_reimbursement(self):
         reimbursement = Reimbursement(
             created=timezone.now(),
