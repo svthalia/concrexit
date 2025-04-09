@@ -1,0 +1,18 @@
+Dear {{ name }},
+
+You have a study membership with Thalia. This means that you'll be a member as
+long as you're enrolled in either a Computing Science or an Information Sciences programme.
+
+Are you still studying? Then please follow the link in this URL {{ renewal_url }} to make sure you stay member for another year.
+Did you graduate or stop with your studies for any other reason? Then you can simply ignore this message, and your membership will automatically end.
+
+Since the first of september has passed, your membership is technically over, however you can still prolong it by the link above, until we minimize your personal data.
+If you find this email after your profile has been minimized contact info@thalia.nu to prolong your membership anyway.
+
+With kind regards,
+
+The board of Study Association Thalia
+
+————
+
+This email was automatically generated.

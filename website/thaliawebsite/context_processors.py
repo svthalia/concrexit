@@ -18,3 +18,8 @@ def lustrum_styling(_):
         <= timezone.now().date()
         <= timezone.datetime(2022, 4, 29).date()
     }
+
+
+def year_as_hex(_):
+    now = timezone.now().year
+    return {"YEAR_IN_HEX": hex(now)}

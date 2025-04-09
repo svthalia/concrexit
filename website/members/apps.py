@@ -63,11 +63,20 @@ class MembersConfig(AppConfig):
         announcements = []
         if request.member and not request.member.has_active_membership():
             announcements.append(
-                {"rich_text": render_to_string("members/announcement_not_member.html")}
+                {
+                    "content": render_to_string(
+                        "members/announcement_not_member.html",
+                        context={"member": request.member},
+                    ),
+                    "icon": "id-card",
+                }
             )
         if request.member and request.member.profile.event_permissions != "all":
             announcements.append(
-                {"rich_text": render_to_string("members/announcement_no_events.html")}
+                {
+                    "content": render_to_string("members/announcement_no_events.html"),
+                    "icon": "exclamation",
+                }
             )
         if (
             request.member
@@ -75,6 +84,9 @@ class MembersConfig(AppConfig):
             and not request.member.profile.photo
         ):
             announcements.append(
-                {"rich_text": render_to_string("members/announcement_no_pfp.html")}
+                {
+                    "content": render_to_string("members/announcement_no_pfp.html"),
+                    "icon": "address-card",
+                }
             )
         return announcements

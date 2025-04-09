@@ -53,6 +53,26 @@ class ServicesTest(TestCase):
             optin_thabloid=True,
         )
 
+        cls.honory_registration = Registration.objects.create(
+            first_name="Bobby",
+            last_name="Bobs",
+            email="johnnydoe@examply.com",
+            student_number="s1234577",
+            starting_year=2014,
+            address_street="Heyendaalseweg 135",
+            address_street2="",
+            address_postal_code="6525AJ",
+            address_city="Nijmegen",
+            address_country="NL",
+            phone_number="06123456799",
+            birthday="1990-01-01",
+            length=Entry.MEMBERSHIP_STUDY,
+            contribution=7.5,
+            membership_type=Membership.HONORARY,
+            status=Entry.STATUS_CONFIRM,
+            optin_thabloid=False,
+        )
+
         cls.benefactor_registration = Registration.objects.create(
             first_name="Jane",
             last_name="Doe",
@@ -286,6 +306,17 @@ class ServicesTest(TestCase):
 
             self.assertEqual(len(mail.outbox), 1)
 
+        with self.subTest("Complete Honorary membership registration"):
+            self.honory_registration.status = Entry.STATUS_ACCEPTED
+            self.honory_registration.save()
+            create_payment(self.honory_registration, self.admin, Payment.CASH)
+            self.honory_registration.refresh_from_db()
+            self.assertEqual(self.honory_registration.status, Entry.STATUS_COMPLETED)
+            membership = self.honory_registration.membership
+            self.assertIsNotNone(membership)
+            self.assertEqual(membership.type, Membership.HONORARY)
+            self.assertIsNone(membership.until)
+
         self.benefactor_registration.status = Entry.STATUS_ACCEPTED
         self.benefactor_registration.username = None  # Default 'jdoe' is taken already.
         self.benefactor_registration.save()
@@ -348,7 +379,7 @@ class ServicesTest(TestCase):
             self.assertEqual(member.last_name, "Bar")
             self.assertEqual(member.username, "fbar")
             self.assertEqual(membership.type, Membership.MEMBER)
-            self.assertIsNone(membership.until)
+            self.assertIsNotNone(membership.until)
             self.assertEqual(len(mail.outbox), 1)
             self.assertEqual(
                 mail.outbox[0].subject,
@@ -517,7 +548,6 @@ class ServicesTest(TestCase):
                 membership = self.renewal.membership
                 self.assertIsNotNone(membership)
                 self.assertEqual(self.membership.pk, membership.pk)
-                self.assertIsNone(membership.until)
 
         # Restore data.
         with freeze_time("2023-08-25"):
@@ -543,11 +573,10 @@ class ServicesTest(TestCase):
                 membership = self.renewal.membership
                 self.assertIsNotNone(membership)
                 self.assertEqual(self.membership.pk, membership.pk)
-                self.assertIsNone(membership.until)
 
         # Restore data.
         with freeze_time("2023-08-25"):
-            self.membership.until = None
+            self.membership.study_long = True
             self.membership.save()
             self.renewal.delete()
             self.renewal = Renewal.objects.create(
@@ -575,6 +604,7 @@ class ServicesTest(TestCase):
         # Restore data.
         with freeze_time("2023-09-05"):
             self.membership.until = "2023-09-01"
+            self.membership.study_long = False
             self.membership.save()
             self.renewal.delete()
             self.renewal = Renewal.objects.create(
@@ -595,8 +625,7 @@ class ServicesTest(TestCase):
                 self.assertEqual(self.renewal.status, Entry.STATUS_COMPLETED)
                 membership = self.renewal.membership
                 self.assertIsNotNone(membership)
-                self.assertNotEqual(self.membership.pk, membership.pk)
-                self.assertIsNone(membership.until)
+                self.assertEqual(self.membership.pk, membership.pk)
 
         # Restore data.
         with freeze_time("2023-09-05"):
@@ -642,22 +671,22 @@ class ServicesTest(TestCase):
             self.member_registration.updated_at = timezone.now()
             self.member_registration.save()
 
-        self.assertEqual(Registration.objects.count(), 3)
+        self.assertEqual(Registration.objects.count(), 4)
         self.assertEqual(Renewal.objects.count(), 1)
 
         with freeze_time("2024-09-15"):
             with self.subTest("A recent completed registration and renewal."):
                 services.execute_data_minimisation()
-                self.assertEqual(Registration.objects.count(), 3)
+                self.assertEqual(Registration.objects.count(), 4)
                 self.assertEqual(Renewal.objects.count(), 1)
 
         with freeze_time("2024-10-15"):
             with self.subTest("Dry run."):
                 services.execute_data_minimisation(dry_run=True)
-                self.assertEqual(Registration.objects.count(), 3)
+                self.assertEqual(Registration.objects.count(), 4)
                 self.assertEqual(Renewal.objects.count(), 1)
 
             with self.subTest("An old completed registration and renewal."):
                 services.execute_data_minimisation()
-                self.assertEqual(Registration.objects.count(), 2)
+                self.assertEqual(Registration.objects.count(), 3)
                 self.assertEqual(Renewal.objects.count(), 0)

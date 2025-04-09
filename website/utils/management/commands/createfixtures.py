@@ -26,7 +26,7 @@ from activemembers.models import (
     Society,
 )
 from documents.models import Document
-from education.models import Category, Course
+from education.models import Category, Course, Exam, Summary
 from events.models import (
     EVENT_CATEGORIES,
     Event,
@@ -445,15 +445,15 @@ class Command(BaseCommand):
         membership.since = _faker.date_time_between(
             start_date="-4y", end_date="now", tzinfo=None
         )
-        membership.until = random.choice(
-            [
-                _faker.date_time_between(
-                    start_date=membership.since, end_date="+2y", tzinfo=None
-                ),
-                None,
-            ]
+
+        membership.until = _faker.date_time_between(
+            start_date=membership.since, end_date="+2y", tzinfo=None
         )
+
         membership.type = random.choice([t[0] for t in Membership.MEMBERSHIP_TYPES])
+
+        if membership.type == Membership.HONORARY:
+            membership.until = None
 
         user.full_clean()
         user.save()
@@ -586,6 +586,51 @@ class Command(BaseCommand):
 
         course.full_clean()
         course.save()
+
+        for _ in range(random.randint(0, 5)):
+            self.create_summary(course)
+        for _ in range(random.randint(0, 5)):
+            self.create_exam(course)
+
+    def create_exam(self, course):
+        self.stdout.write("Creating an exam")
+        exam = Exam()
+
+        exam.name = _generate_title()
+        exam.type = random.choice(Exam.EXAM_TYPES)[0]
+        exam.course = course
+        exam.uploader = Member.objects.order_by("?")[0]
+        exam.accepted = random.random() < 0.5
+        exam.exam_date = _faker.date_between("-1y", "today")
+        exam.file = SimpleUploadedFile(
+            f"{exam.name}.txt", _faker.text(max_nb_chars=120).encode()
+        )
+        exam.language = random.choice(Exam.language.field.choices)[0]
+        exam.download_count = random.randint(0, 100)
+
+        exam.name = _generate_title()
+
+        exam.full_clean()
+        exam.save()
+
+    def create_summary(self, course):
+        self.stdout.write("Creating a summary")
+        summary = Summary()
+
+        summary.name = _generate_title()
+        summary.course = course
+        summary.uploader = Member.objects.order_by("?")[0]
+        summary.year = random.randint(2016, 2020)
+        summary.author = _faker.name()
+        summary.accepted = random.random() < 0.5
+        summary.file = SimpleUploadedFile(
+            f"{summary.name}.txt", _faker.text(max_nb_chars=120).encode()
+        )
+        summary.language = random.choice(Summary.language.field.choices)[0]
+        summary.download_count = random.randint(0, 100)
+
+        summary.full_clean()
+        summary.save()
 
     def create_event_registration(self, event_to_register_for=None):
         self.stdout.write("Creating an event registration")

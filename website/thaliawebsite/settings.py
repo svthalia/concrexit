@@ -383,10 +383,6 @@ CELERY_BEAT_SCHEDULE = {
         "task": "payments.tasks.revoke_mandates",
         "schedule": crontab(minute=0, hour=1),
     },
-    "membershipannouncement": {
-        "task": "members.tasks.membership_announcement",
-        "schedule": crontab(minute=0, hour=6, day_of_month=31, month_of_year=8),
-    },
     "inforequest": {
         "task": "members.tasks.info_request",
         "schedule": crontab(minute=0, hour=6, day_of_month=15, month_of_year=2),
@@ -394,6 +390,14 @@ CELERY_BEAT_SCHEDULE = {
     "expirationannouncement": {
         "task": "members.tasks.expiration_announcement",
         "schedule": crontab(minute=0, hour=6, day_of_month=8, month_of_year=8),
+    },
+    "studylongexpirationwarning": {
+        "task": "members.tasks.expiration_warning",
+        "schedule": crontab(minute=0, hour=6, day_of_month=1, month_of_year=8),
+    },
+    "studylongexpirationreminder": {
+        "task": "members.tasks.expiration_reminder",
+        "schedule": crontab(minute=0, hour=6, day_of_month=15, month_of_year=9),
     },
     "minimiseregistration": {
         "task": "registrations.tasks.minimise_registrations",
@@ -688,6 +692,7 @@ TEMPLATES = [
                 "announcements.context_processors.announcements",
                 "thaliawebsite.context_processors.aprilfools",
                 "thaliawebsite.context_processors.lustrum_styling",
+                "thaliawebsite.context_processors.year_as_hex",
             ],
         },
     },
@@ -783,7 +788,7 @@ LOGIN_REDIRECT_URL = "/"
 
 # Cors configuration
 CORS_ORIGIN_ALLOW_ALL = True
-CORS_URLS_REGEX = r"^/(?:api/v1|api/v2|user/oauth)/.*"
+CORS_URLS_REGEX = r"^/(?:api/v2|user/oauth)/.*"
 
 # OAuth configuration
 OIDC_RSA_PRIVATE_KEY = from_env("OIDC_RSA_PRIVATE_KEY", testing=None)
@@ -872,12 +877,11 @@ AUTHENTICATION_BACKENDS = [
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.SessionAuthentication",
-        "thaliawebsite.api.authentication.APIv1TokenAuthentication",
         "oauth2_provider.contrib.rest_framework.OAuth2Authentication",
     ),
-    "DEFAULT_PAGINATION_CLASS": "thaliawebsite.api.pagination.APIv2LimitOffsetPagination",
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "PAGE_SIZE": 50,  # Only for API v2
-    "ALLOWED_VERSIONS": ["v1", "v2", "calendarjs", "facedetection"],
+    "ALLOWED_VERSIONS": ["v2", "calendarjs", "facedetection"],
     "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.NamespaceVersioning",
     "DEFAULT_SCHEMA_CLASS": "thaliawebsite.api.openapi.OAuthAutoSchema",
     "DEFAULT_THROTTLE_CLASSES": [

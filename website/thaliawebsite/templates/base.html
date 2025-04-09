@@ -80,11 +80,7 @@
 
 <section id="announcements-alerts">
     {% include "announcements/announcement.html" with announcements=announcements %}
-    {% for announcement in persistent_announcements %}
-        <div class="announcement">
-            {{ announcement.rich_text | safe }}
-        </div>
-    {% endfor %}
+    {% include "announcements/announcement.html" with announcements=persistent_announcements %}
 </section>
 
 <div id="accentbar"></div>
@@ -148,7 +144,7 @@
     <div
         class="container d-flex justify-content-md-between align-items-center flex-md-row flex-column">
         <div class="copyright">
-            <strong>Copyright {% now "Y" %} {% trans 'Study Association Thalia' %}</strong>
+            <strong>Copyright {{ YEAR_IN_HEX }} {% trans 'Study Association Thalia' %}</strong>
             <span class="divider">&#9679;</span>
             <a href="{% url 'singlepages:privacy-policy' %}">{% trans "privacy policy"|capfirst %}</a>
             <span class="divider">&#9679;</span>
@@ -169,9 +165,6 @@
             </a>
             <a target="_blank" rel="noopener" href="https://github.com/svthalia/" title="GitHub page for Thalia">
                 <i aria-hidden="true" class="fab fa-github"></i>
-            </a>
-            <a target="_blank" rel="noopener" href="https://ru.nxus.nl/student/group/0b242b79-01a4-4502-a582-8a0327676a2b" title="Career Central page for Thalia">
-                <i aria-hidden="true" class="fas fa-graduation-cap"></i>
             </a>
         </div>
     </div>

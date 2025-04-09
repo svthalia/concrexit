@@ -189,6 +189,49 @@ class BenefactorRegistrationFormView(BaseRegistrationFormView):
         return super().post(request, *args, **kwargs)
 
 
+class NewYearRenewalFormView(FormView):
+    """View that renders the membership extension form for study memberships."""
+
+    form_class = forms.NewYearForm
+    template_name = "registrations/new_year_renewal.html"
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        membership = request.member.latest_membership
+        existing_renewal = Renewal.objects.filter(
+            Q(member=self.request.member)
+            & (
+                Q(status=Registration.STATUS_ACCEPTED)
+                | Q(status=Registration.STATUS_REVIEW)
+            )
+        ).last()
+        if (
+            existing_renewal
+            or membership is None
+            or membership.type != Membership.MEMBER
+            or not membership.study_long
+            or request.member.profile.is_minimized
+            or membership.until is None
+            or ((membership.until - timezone.now().date()).days > 31)
+        ):
+            messages.error(
+                self.request,
+                "You cannot currently prolong a study membership.",
+            )
+
+            return redirect(reverse("registrations:renew"))
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        membership = self.request.member.latest_membership
+        membership.until = timezone.datetime(
+            year=membership.until.year + 1, month=9, day=1
+        ).date()
+        membership.save()
+        return redirect("registrations:renew-studylong-success")
+
+
 @method_decorator(login_required, name="dispatch")
 class RenewalFormView(FormView):
     """View that renders the membership renewal form."""
@@ -248,7 +291,10 @@ class RenewalFormView(FormView):
 
     def post(self, request, *args, **kwargs):
         request.POST = request.POST.dict()
-        if request.member.latest_membership.type == Membership.BENEFACTOR:
+        if (
+            request.member.latest_membership.type == Membership.BENEFACTOR
+            or request.member.latest_membership.study_long
+        ):
             request.POST["membership_type"] = Membership.BENEFACTOR
             request.POST["length"] = Entry.MEMBERSHIP_YEAR
         request.POST["member"] = request.member.pk

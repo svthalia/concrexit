@@ -6,7 +6,6 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import pgettext_lazy
-
 from utils.snippets import overlaps
 
 
@@ -43,7 +42,13 @@ class Membership(models.Model):
         verbose_name=_("Membership until"),
         help_text=_("The date the member stops holding this membership."),
         blank=True,
-        null=True,
+        null=True,  # This is only for honorary members
+    )
+
+    study_long = models.BooleanField(
+        verbose_name=_("Study long"),
+        help_text="Whether the member has paid to be member throughout their studies.",
+        default=False,
     )
 
     def __str__(self):
@@ -62,17 +67,24 @@ class Membership(models.Model):
 
         errors = {}
         if self.until and (not self.since or self.until < self.since):
-            raise ValidationError({"until": _("End date can't be before start date")})
+            raise ValidationError({"until": "End date can't be before start date"})
 
-        if self.since is not None:
-            memberships = self.user.membership_set.all()
-            if overlaps(self, memberships):
-                errors.update(
-                    {
-                        "since": _("A membership already exists for that period"),
-                        "until": _("A membership already exists for that period"),
-                    }
-                )
+        memberships = self.user.membership_set.all()
+        if self.since is not None and overlaps(self, memberships):
+            errors.update(
+                {
+                    "since": "A membership already exists for that period.",
+                    "until": "A membership already exists for that period.",
+                }
+            )
+
+        if self.type != self.HONORARY and self.until is None:
+            errors.update({"until": "A non-honorary membership must have an end date."})
+
+        if self.type == self.BENEFACTOR and self.study_long:
+            errors.update(
+                {"study_long": "Benefactors cannot have a study long membership."}
+            )
 
         if errors:
             raise ValidationError(errors)

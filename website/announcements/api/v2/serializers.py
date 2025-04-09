@@ -7,6 +7,13 @@ from thaliawebsite.api.v2.serializers.cleaned_model_serializer import (
 )
 
 
+class AnnouncementSerializer(serializers.Serializer):
+    content = CleanedHTMLSerializer(read_only=True)
+    closeable = serializers.BooleanField(read_only=True)
+    icon = serializers.CharField(read_only=True)
+    id = serializers.IntegerField(read_only=True, default=None)
+
+
 class SlideSerializer(CleanedModelSerializer):
     """Slide serializer."""
 

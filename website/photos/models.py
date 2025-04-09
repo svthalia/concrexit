@@ -176,16 +176,15 @@ class Album(models.Model):
 
         If a cover is not set, return a random photo or None if there are no photos.
         """
-        cover = None
         if self._cover is not None:
             return self._cover
 
         # Not prefetched because this should be rare and is a lot of data
-        # `exists` is faster in theory, but requires everything to be fetched later anyways
-        if self.photo_set.exists():
-            r = random.Random(self.dirname)
-            cover = r.choice(self.photo_set.all())
-        return cover
+        r = random.Random(self.dirname)
+        try:
+            return r.choice(self.photo_set.all())
+        except IndexError:
+            return None
 
     def __str__(self):
         """Get string representation of Album."""

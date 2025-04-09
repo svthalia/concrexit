@@ -46,9 +46,7 @@ class PublicS3Storage(S3RenameMixin, S3Boto3Storage):
                 f'attachment; filename="{attachment}"'
             )
 
-        url = super().url(name, params, expire=expire_seconds)
-
-        return url
+        return super().url(name, params, expire=expire_seconds)
 
 
 class PrivateS3Storage(S3RenameMixin, S3Boto3Storage):

@@ -11,6 +11,9 @@ registrations and renewals, and to process their payments.
 The flows that take place can be divided in two: registrations, where new members or benefactors are
 made, and renewals, where existing members renew their membership.
 
+Additionally, there are 'study' memberships, which are memeberships that can be extended for free
+by the user, without going through the full renewal process.
+
 
 > This app is very important for Thalia, and it is mainly used only at the beginning of the year. This means that we need to be very sure it works correctly. Hence, we require complete test coverage for this app.
 
@@ -49,9 +52,16 @@ If the automatically created username is not unique, the board can override it b
     - They indicate whether they still are 'member' or want to become a 'benefactor'.
     - If 'benefactor', the user picks a contribution amount (with minimum).
     - A 'member' with a current 'year' membership can upgrade to a 'study' membership. There is a discount for this.
-    - An expired 'member' can get a new 'study' membership. This is currently not discounted, but this may change depending on the Rules and Regulations.
+    - An expired 'member' can get a new 'study' membership.
     - An expired or current 'member' can get a new 'year' membership for the current year, or in August for the next year.
 
 2. If the user is a benefactor and not a previous 'member', the user gets an email with a link for references.
 3. The board accepts the renewal. The user gets an email telling them to pay.
 4. Once a payment is made, a membership is created or extended.
+
+
+## Study membership extensions
+1. The user gets an email with a link (indicating that their membership is about to expire or has
+   expired), or follows the link in the banner on the website.
+2. The user accepts the privacy statement and extension, thereby confirming that they are still studying.
+3. The membership is extended by one year.

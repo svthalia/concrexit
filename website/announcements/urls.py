@@ -1,6 +1,5 @@
-from django.urls import include, path
-
 from announcements import views
+from django.urls import include, path
 
 #: the name of this app
 app_name = "announcements"
@@ -13,7 +12,7 @@ urlpatterns = [
             [
                 path(
                     "close-announcement",
-                    views.close_announcement,
+                    views.close_announcement_view,
                     name="close-announcement",
                 )
             ]
