@@ -55,36 +55,41 @@ class AnnualDocument(Document):
     """Describes an annual document."""
 
     class Meta:
-        verbose_name = _("Annual document")
-        verbose_name_plural = _("Annual documents")
+        verbose_name = "Annual document"
+        verbose_name_plural = "Annual documents"
         unique_together = ("subcategory", "year")
 
-    SUBCATEGORIES = (
-        ("report", _("Annual report")),
-        ("financial", _("Financial report")),
-        ("policy", _("Policy document")),
-    )
+    class Subcategory(models.TextChoices):
+        REPORT = "report", "Annual report"
+        FINANCIAL = "financial", "Financial report"
+        POLICY = "policy", "Policy document"
+        SEMI_REPORT = "semi-report", "Semi-annual report"
+        SEMI_FINANCIAL = "semi-financial", "Semi-annual financial report"
 
     subcategory = models.CharField(
         max_length=40,
-        choices=SUBCATEGORIES,
-        verbose_name=_("category"),
-        default="report",
+        choices=Subcategory.choices,
+        verbose_name="category",
+        default=Subcategory.REPORT,
     )
 
     year = models.IntegerField(
-        verbose_name=_("year"),
+        verbose_name="year",
         validators=[MinValueValidator(1990)],
     )
 
     def save(self, **kwargs):
         self.category = "annual"
-        if self.subcategory == "report":
+        if self.subcategory == AnnualDocument.Subcategory.REPORT:
             self.name = f"Annual report {self.year}"
-        elif self.subcategory == "financial":
+        elif self.subcategory == AnnualDocument.Subcategory.FINANCIAL:
             self.name = f"Financial report {self.year}"
-        else:
+        elif self.subcategory == AnnualDocument.Subcategory.POLICY:
             self.name = f"Policy document {self.year}"
+        elif self.subcategory == AnnualDocument.Subcategory.SEMI_REPORT:
+            self.name = f"Semi-annual report {self.year}"
+        else:
+            self.name = f"Semi-annual financial report {self.year}"
         super().save(**kwargs)
 
 
