@@ -276,5 +276,5 @@ def execute_data_minimisation(dry_run=False):
         queryset_payments.update(paid_by=None, processed_by=None)
         queryset_bankaccounts.delete()
         queryset_mandates.update(valid_until=timezone.now())
-        
+
     return queryset_payments
