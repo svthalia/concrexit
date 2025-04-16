@@ -46,6 +46,8 @@ class IndexView(LoginRequiredMixin, PagedView):
         albums = Album.objects.filter(hidden=False, is_processing=False).select_related(
             "_cover"
         )
+        # We split on greater than the 7th month of the year (July),
+        # to make sure the introduction week photos (from August) are the first on each year page.
         if self.query_filter == "older":
             albums = albums.filter(
                 Q(date__year=self.year_range[-1], date__month__gt=7)
