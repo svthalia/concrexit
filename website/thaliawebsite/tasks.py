@@ -11,6 +11,7 @@ from facedetection import services as facedetection_services
 from members import services as members_services
 from payments import services as payments_services
 from pizzas import services as pizzas_services
+from reimbursements import services as reimbursements_services
 from sales import services as sales_services
 from utils.snippets import minimise_logentries_data
 
@@ -47,6 +48,12 @@ def data_minimisation():
     processed = facedetection_services.execute_data_minimisation()
     for p in processed:
         logger.info(f"Removed reference faces: {p}")
+
+    processed = members_services.execute_data_minimisation()
+    for p in processed:
+        logger.info(f"Removed data for {p}")
+
+    reimbursements_services.execute_data_minimisation()
 
     processed = minimise_logentries_data()
     logger.info(f"Removed {processed} log entries")
