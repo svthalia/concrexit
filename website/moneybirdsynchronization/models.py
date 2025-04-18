@@ -404,7 +404,7 @@ class MoneybirdReceipt(models.Model):
         return data
 
     def __str__(self):
-        return f"Moneybird receipt for {self.payable_object}"
+        return f"Moneybird receipt for {self.reimbursement}"
 
     class Meta:
         verbose_name = _("moneybird receipt")

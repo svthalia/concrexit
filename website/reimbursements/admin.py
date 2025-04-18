@@ -126,7 +126,7 @@ class ReimbursementsAdmin(admin.ModelAdmin):
             if form.is_valid():
                 form.instance.owner = request.user
                 form.save()
-                self.message_user(request, "Succesfully created a reimbursement.")
+                self.message_user(request, "Successfully created a reimbursement.")
                 return redirect("admin:reimbursements_reimbursement_changelist")
         else:
             form = ReimbursementForm()

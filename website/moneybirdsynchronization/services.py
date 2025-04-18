@@ -206,7 +206,7 @@ def create_receipt(reimbursement: Reimbursement):
     if not settings.MONEYBIRD_SYNC_ENABLED:
         return
 
-    if reimbursement.verdict != Reimbursement.verdicts.APPROVED:
+    if reimbursement.verdict != Reimbursement.Verdict.APPROVED:
         return
 
     moneybird_receipt, _ = MoneybirdReceipt.objects.get_or_create(
