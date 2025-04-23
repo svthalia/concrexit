@@ -394,7 +394,7 @@ class MoneybirdReceipt(models.Model):
                 "details_attributes": [
                     {
                         "description": self.reimbursement.description
-                        + f"\n\nIBAN: {self.reimbursement.iban}\n\nConcrexit: {source_url}",
+                        + f"\n\nConcrexit: {source_url}",
                         "price": str(self.reimbursement.amount),
                     },
                 ],
