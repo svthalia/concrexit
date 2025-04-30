@@ -512,7 +512,7 @@ def _sync_event_registrations():
 def _sync_receipts():
     # Reimbursements whose MoneybirdReceipt does not exist or has not been fully pushed yet.
     reimbursements = Reimbursement.objects.filter(
-        verdict=Reimbursement.verdict.APPROVED,
+        verdict=Reimbursement.Verdict.APPROVED,
     ).exclude(
         moneybird_receipt__isnull=False,
         moneybird_receipt__moneybird_receipt_id__isnull=False,
