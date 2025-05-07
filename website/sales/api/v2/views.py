@@ -1,5 +1,3 @@
-from django.db.models import Q
-
 from oauth2_provider.contrib.rest_framework import IsAuthenticatedOrTokenHasScope
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import GenericAPIView
@@ -65,7 +63,9 @@ class UserOrderListView(OrderListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(
-            Q(payer=self.request.member) | Q(created_by=self.request.member)
+            payer=self.request.member,
+            created_by=self.request.member,
+            shift__is_selforder=True,
         )
 
 
@@ -84,29 +84,26 @@ class UserOrderDetailView(OrderDetailView):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(
-            Q(payer=self.request.member) | Q(created_by=self.request.member)
+            payer=self.request.member,
+            created_by=self.request.member,
+            shift__is_selforder=True,
+            shift__active=True,
         )
 
     def update(self, request, *args, **kwargs):
         obj = self.get_object()
-        if not (obj.shift.is_selforder and obj.shift.active):
-            raise PermissionDenied
         if obj.payment:
             raise PermissionDenied
         return super().update(request, *args, **kwargs)
 
     def partial_update(self, request, *args, **kwargs):
         obj = self.get_object()
-        if not (obj.shift.is_selforder and obj.shift.active):
-            raise PermissionDenied
         if obj.payment:
             raise PermissionDenied
         return super().partial_update(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
         obj = self.get_object()
-        if not (obj.shift.is_selforder and obj.shift.active):
-            raise PermissionDenied
         if obj.payment:
             raise PermissionDenied
 
