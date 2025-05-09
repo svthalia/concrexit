@@ -57,7 +57,7 @@
                 <li class="nav-item">
                     <a class="nav-link{% if filter == year|stringformat:"i" %} active{% endif %}"
                        href="{% url 'photos:index-filter' year %}{% urlparams keywords=keys %}#photos-directory">
-                        {{ year }}
+                        {{ year }} / {{ year|add:"1" }}
                     </a>
                 </li>
             {% endfor %}
