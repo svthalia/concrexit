@@ -348,7 +348,11 @@ class MoneybirdExternalInvoice(models.Model):
 
 
 class MoneybirdReceipt(models.Model):
-    reimbursement = models.OneToOneField(Reimbursement, on_delete=models.CASCADE)
+    reimbursement = models.OneToOneField(
+        Reimbursement,
+        on_delete=models.CASCADE,
+        related_name="moneybird_receipt",
+    )
 
     moneybird_receipt_id = models.CharField(
         verbose_name=_("moneybird receipt id"),
