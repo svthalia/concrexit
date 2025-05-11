@@ -58,6 +58,7 @@ class OrderAPITest(TestCase):
             start=timezone.now(),
             end=timezone.now() + timezone.timedelta(hours=1),
             product_list=cls.normal,
+            selforder=True,
         )
 
         cls.o0 = Order.objects.create(shift=cls.shift)

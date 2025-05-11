@@ -162,15 +162,6 @@ class Shift(models.Model):
             and self.selforder
         )
 
-    @property
-    def user_order_period(self):
-        qs = self.selforderperiod_set.filter(
-            start__lte=timezone.now(), end__gt=timezone.now()
-        )
-        if qs.exists():
-            return qs.first()
-        return None
-
     def __str__(self):
         if self.title and self.title != "":
             return f"Shift {self.pk} - {self.title}"
