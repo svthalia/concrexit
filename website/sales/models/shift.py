@@ -10,6 +10,7 @@ from queryable_properties.managers import QueryablePropertiesManager
 from queryable_properties.properties import AggregateProperty, RangeCheckProperty
 
 from activemembers.models import MemberGroup
+from events.models import Event
 from payments.models import PaymentAmountField
 from sales.models.product import ProductList
 
@@ -34,6 +35,14 @@ class Shift(models.Model):
         help_text=_(
             "The end time is only indicative and does not prevent orders being created after the shift has ended. This only happens after locking the shift."
         ),
+    )
+
+    event = models.ForeignKey(
+        Event,
+        verbose_name=_("linked event"),
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
     )
 
     title = models.CharField(
