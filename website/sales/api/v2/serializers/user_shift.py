@@ -15,15 +15,6 @@ class UserShiftSerializer(serializers.ModelSerializer):
             "products",
         )
 
-    title = serializers.SerializerMethodField("_get_title")
-
-    def _get_title(self, instance):
-        return instance.title
-
-    start = serializers.DateTimeField(source="user_order_period.start", read_only=True)
-
-    end = serializers.DateTimeField(source="user_order_period.end", read_only=True)
-
     products = ProductListItemSerializer(
-        source="user_order_period.product_list.product_items", many=True, read_only=True
+        source="product_list.product_items", many=True, read_only=True
     )
