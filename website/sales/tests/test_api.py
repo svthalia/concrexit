@@ -16,7 +16,7 @@ from payments.services import create_payment
 from sales import payables
 from sales.models.order import Order, OrderItem
 from sales.models.product import Product, ProductList
-from sales.models.shift import SelfOrderPeriod, Shift
+from sales.models.shift import Shift
 
 
 @freeze_time("2021-01-01")
@@ -619,11 +619,6 @@ class OrderAPITest(TestCase):
         self.assertEqual(400, response.status_code)
 
     def test_user_self_order(self):
-        SelfOrderPeriod.objects.create(
-            shift=self.shift,
-            start=(timezone.now() - timezone.timedelta(hours=1)),
-            end=timezone.now() + timezone.timedelta(hours=1),
-        )
         data = {"order_items": [{"product": "beer", "amount": 4}]}
         response = self.client.post(
             reverse("api:v2:sales:user-order-list", kwargs={"pk": self.shift.pk}),
