@@ -1,0 +1,33 @@
+{% extends "small_page.html" %}
+
+{% block title %}Your orders for {{ shift.title }}{% if shift.event %} for {{shift.event.title}}{% endif %}{% endblock %}
+{% block page_title %}
+Your orders for {{ shift.title }}{% if shift.event %} for {{shift.event.title}}{% endif %}
+<a href="{% url 'sales:order-place' pk=shift.pk %}"
+    target="_blank"
+    class="btn btn-primary first-right d-flex align-items-center"
+>
+    Place order
+</a>
+{% endblock %}
+
+{% block page_content %}
+<table class="table table-bordered">
+<thead>
+<tr>
+<th scope="col"> Order description </th>
+<th scope="col"> Price </th>
+<th scope="col"> Payment </th>
+</tr>
+</thead>
+<tbody>
+{% for order in orders %}
+<tr>
+<td> {{ order.order_description }} </td>
+<td> &euro;&nbsp;{{ order.total_amount|floatformat:2 }} </td>
+<td> {% if order.payment %} Paid! {% else %} <a href="{% url 'sales:order-pay' pk=order.pk %}">Pay with Thalia Pay</a> {% endif %} </td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+{% endblock %}

@@ -1,15 +1,44 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views import View
+from django.views.generic import DetailView
 
 from sales import services
 from sales.forms import ProductOrderForm
 from sales.models.order import Shift, Order, OrderItem
 from sales.models.product import ProductListItem
+
+
+@method_decorator(login_required, name="dispatch")
+class ShiftDetailView(DetailView):
+    model = Shift
+    context_object_name = "shift"
+    template_name = "sales/shift_view.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        shift = context["shift"]
+        queryset = Order.objects.filter(shift=shift)
+        queryset = queryset.select_properties(
+            "total_amount", "subtotal", "num_items", "age_restricted"
+        )
+        queryset = queryset.prefetch_related(
+            "shift", "shift__event", "shift__product_list"
+        )
+        queryset = queryset.prefetch_related(
+            "order_items", "order_items__product", "order_items__product__product"
+        )
+        queryset = queryset.prefetch_related("payment")
+        context["orders"] = queryset.filter(
+            Q(payer=self.request.member) | Q(created_by=self.request.member)
+        )
+        return context
+
 
 @login_required
 def place_order_view(request, *args, **kwargs):
@@ -59,6 +88,7 @@ def place_order_view(request, *args, **kwargs):
     context["formfield"] = context["form"].fields["product_1"]
 
     return render(request, "sales/order_place.html", context)
+
 
 @method_decorator(login_required, name="dispatch")
 class OrderPaymentView(View):
