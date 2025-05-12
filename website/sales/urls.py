@@ -1,10 +1,15 @@
 from django.urls import path
 
-from sales.views import place_order_view, OrderPaymentView
+from sales.views import place_order_view, ShiftDetailView, OrderPaymentView
 
 app_name = "sales"
 
 urlpatterns = [
+    path(
+        "sales/shifts/<int:pk>/",
+        ShiftDetailView.as_view(),
+        name="shift-detail",
+    ),
     path(
         "sales/shifts/<int:pk>/order",
         place_order_view,
