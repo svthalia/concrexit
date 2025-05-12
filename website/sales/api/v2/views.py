@@ -121,6 +121,7 @@ class UserOrderListView(ListAPIView, CreateAPIView):
 
 class UserOrderDetailView(RetrieveAPIView, UpdateAPIView, DestroyAPIView):
     serializer_class = OrderSerializer
+    queryset = Order.objects.all()
     permission_classes = [
         IsAuthenticatedOrTokenHasScopeForMethod,
     ]
@@ -132,8 +133,25 @@ class UserOrderDetailView(RetrieveAPIView, UpdateAPIView, DestroyAPIView):
     }
 
     def get_queryset(self):
-        # TODO: cross-verify with queryset from OrderDetailView
         queryset = super().get_queryset()
+
+        if not self.request.member:
+            queryset = queryset.none()
+        elif not self.request.member.has_perm("sales.override_manager"):
+            queryset = queryset.filter(
+                shift__managers__in=self.request.member.get_member_groups()
+            ).distinct()
+
+        queryset = queryset.select_properties(
+            "total_amount", "subtotal", "num_items", "age_restricted"
+        )
+        queryset = queryset.prefetch_related(
+            "shift", "shift__event", "shift__product_list"
+        )
+        queryset = queryset.prefetch_related(
+            "order_items", "order_items__product", "order_items__product__product"
+        )
+        queryset = queryset.prefetch_related("payment")
         return queryset.filter(
             Q(payer=self.request.member) | Q(created_by=self.request.member)
         )
@@ -157,6 +175,7 @@ class UserOrderDetailView(RetrieveAPIView, UpdateAPIView, DestroyAPIView):
             raise PermissionDenied
         if self.get_object().payment:
             raise PermissionDenied
+        return super().destroy(request, *args, **kwargs)
 
 
 class OrderClaimView(GenericAPIView):
