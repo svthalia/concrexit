@@ -1,4 +1,5 @@
 {% extends "small_page.html" %}
+{% load payments %}
 
 {% block title %}Your orders for {{ shift.title }}{% if shift.event %} for {{shift.event.title}}{% endif %}{% endblock %}
 {% block page_title %}
@@ -16,16 +17,39 @@ Your orders for {{ shift.title }}{% if shift.event %} for {{shift.event.title}}{
 <thead>
 <tr>
 <th scope="col"> Order description </th>
+<!-- <th scope="col"> Time </th> -->
 <th scope="col"> Price </th>
 <th scope="col"> Payment </th>
+<th scope="col"> Cancel </th>
 </tr>
 </thead>
 <tbody>
 {% for order in orders %}
 <tr>
 <td> {{ order.order_description }} </td>
+<!-- <td> {{ order.created_at }} </td> -->
 <td> &euro;&nbsp;{{ order.total_amount|floatformat:2 }} </td>
-<td> {% if order.payment %} Paid! {% else %} <a href="{% url 'sales:order-pay' pk=order.pk %}">Pay with Thalia Pay</a> {% endif %} </td>
+<td>
+{% if order.total_amount == 0 %}
+    This order is free.
+{% elif order.payment %}
+    Paid!
+{% else %}
+    {% payment_button order request.path %}
+{% endif %} </td>
+<td>
+    <form
+        class="d-inline-block p-1"
+        method="post"
+        action="{% url 'sales:order-cancel' pk=order.pk %}">
+        {% csrf_token %}
+        <input type="submit"
+        value="Cancel"
+        class="btn btn-primary"
+        onclick="return confirm('Are you sure you want to cancel your order?')"/>
+    </form>
+
+</td>
 </tr>
 {% endfor %}
 </tbody>
