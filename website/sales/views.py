@@ -7,6 +7,8 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.generic import DetailView
+from django.views.decorators.http import require_http_methods
+
 
 from sales import services
 from sales.forms import ProductOrderForm
@@ -23,7 +25,7 @@ class ShiftDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         shift = context["shift"]
-        queryset = Order.objects.filter(shift=shift)
+        queryset = Order.objects.filter(shift=shift).order_by("-created_at")
         queryset = queryset.select_properties(
             "total_amount", "subtotal", "num_items", "age_restricted"
         )
@@ -76,7 +78,7 @@ def place_order_view(request, *args, **kwargs):
                     amount=amount,
                 )
                 item.save()
-            return redirect("sales:order-pay", pk=order.pk)
+            return redirect("sales:shift-detail", pk=shift.pk)
     else:
         form = ProductOrderForm(shift.product_list, services.is_adult(request.member))
 
@@ -88,6 +90,17 @@ def place_order_view(request, *args, **kwargs):
     context["formfield"] = context["form"].fields["product_1"]
 
     return render(request, "sales/order_place.html", context)
+
+
+@require_http_methods(["POST"])
+def cancel_order_view(request, *args, **kwargs):
+    order = get_object_or_404(Order, pk=kwargs["pk"])
+    if not order.shift.user_orders_allowed:
+        raise PermissionError
+    if order.payment:
+        raise PermissionError
+    order.delete()
+    return redirect("sales:shift-detail", pk=order.shift.pk)
 
 
 @method_decorator(login_required, name="dispatch")
