@@ -1,6 +1,6 @@
 from django.urls import path
 
-from sales.views import place_order_view, ShiftDetailView, OrderPaymentView
+from sales.views import place_order_view, cancel_order_view, ShiftDetailView, OrderPaymentView
 
 app_name = "sales"
 
@@ -19,5 +19,10 @@ urlpatterns = [
         "sales/order/<uuid:pk>/pay/",
         OrderPaymentView.as_view(),
         name="order-pay",
+    ),
+    path(
+        "sales/order/<uuid:pk>/cancel/",
+        cancel_order_view,
+        name="order-cancel",
     ),
 ]
