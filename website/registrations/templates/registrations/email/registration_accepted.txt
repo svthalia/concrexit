@@ -5,7 +5,7 @@ We have some wonderful news for you: your membership registration has been accep
 Unfortunately there is still one little thing that we have to take care of before
 you get access to everything Thalia has to offer: paying your membership fees.
 
-If possible, please visit us during lunch break (12:15-13:15) in M1.0.08 so that we can
+If possible, please visit us during lunch break (12:15-13:15) in M1.0.04 so that we can
 make sure your registration is completed.
 
 The membership fees are €{{ fees }} and can be paid using cash, a debit card or via wire transfer.
