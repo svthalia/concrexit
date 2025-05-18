@@ -8,6 +8,7 @@ from .models import (
     MoneybirdExternalInvoice,
     MoneybirdPayment,
     MoneybirdProject,
+    MoneybirdReceipt,
 )
 
 
@@ -152,3 +153,31 @@ class MoneybirdProjectAdmin(admin.ModelAdmin):
     )
 
     search_fields = ("name", "moneybird_id")
+
+
+@admin.register(MoneybirdReceipt)
+class MoneybirdReceiptAdmin(admin.ModelAdmin):
+    """Manage moneybird receipts."""
+
+    list_display = ("moneybird_receipt_id", "reimbursement_link")
+    search_fields = (
+        "moneybird_receipt_id",
+        "moneybird_attachment_id",
+        "reimbursement__date_incurred",
+        "reimbursement__owner__first_name",
+        "reimbursement__owner__last_name",
+        "reimbursement__description",
+    )
+    raw_id_fields = ("reimbursement",)
+
+    def reimbursement_link(self, obj):
+        return format_html(
+            '<a href="{}">{}</a>',
+            reverse(
+                "admin:reimbursements_reimbursement_change",
+                args=[obj.reimbursement.pk],
+            ),
+            obj.reimbursement,
+        )
+
+    reimbursement_link.short_description = "Reimbursement"
