@@ -181,3 +181,12 @@ class MoneybirdReceiptAdmin(admin.ModelAdmin):
         )
 
     reimbursement_link.short_description = "Reimbursement"
+
+    def get_readonly_fields(self, request, obj=None):
+        if not obj:
+            return ()
+        return ("reimbursement",)
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.select_related("reimbursement")
