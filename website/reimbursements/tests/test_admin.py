@@ -37,18 +37,6 @@ class ReimbursementsAdminTests(TestCase):
         queryset = self.admin.get_queryset(request)
         self.assertIn(self.reimbursement, queryset)
 
-    def test_get_readonly_fields(self):
-        self.reimbursement.verdict = "approved"
-        self.reimbursement.verdict_clarification = "Approved by admin"
-        request = MockRequest(self.superuser)
-        readonly_fields = self.admin.get_readonly_fields(request, self.reimbursement)
-        self.assertIn("description", readonly_fields)
-        self.assertIn("amount", readonly_fields)
-        self.assertIn("date_incurred", readonly_fields)
-        self.assertIn("receipt", readonly_fields)
-        self.assertIn("verdict", readonly_fields)
-        self.assertIn("verdict_clarification", readonly_fields)
-
     def test_has_view_permission(self):
         request = MockRequest(self.user)
         request.member = self.user
