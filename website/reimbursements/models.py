@@ -1,5 +1,5 @@
 from django.core.exceptions import ValidationError
-from django.core.validators import MinLengthValidator
+from django.core.validators import FileExtensionValidator, MinLengthValidator
 from django.db import models
 
 from payments.models import PaymentAmountField
@@ -36,6 +36,12 @@ class Reimbursement(models.Model):
     # FileField and not ImageField because companies often send invoices as pdf
     receipt = models.FileField(
         upload_to=get_upload_to_function("reimbursements/receipts"),
+        validators=[
+            FileExtensionValidator(
+                allowed_extensions=["pdf", "jpg", "jpeg", "png", "tiff"],
+                message="Only pdf, jpg, jpeg and png files are allowed.",
+            ),
+        ],
     )
 
     created = models.DateTimeField(auto_now_add=True)
