@@ -400,6 +400,7 @@ class MoneybirdReceipt(models.Model):
                         "description": self.reimbursement.description
                         + f"\n\nConcrexit: {source_url}",
                         "price": self.reimbursement.amount,
+                        "ledger_account_id": settings.MONEYBIRD_UNCATEGORIZEDEXPENSES_LEDGER_ID,
                     },
                 ],
             }
