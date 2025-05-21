@@ -399,7 +399,7 @@ class MoneybirdReceipt(models.Model):
                     {
                         "description": self.reimbursement.description
                         + f"\n\nConcrexit: {source_url}",
-                        "price": str(self.reimbursement.amount),
+                        "price": self.reimbursement.amount,
                     },
                 ],
             }
