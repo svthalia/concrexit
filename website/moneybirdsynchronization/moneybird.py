@@ -54,11 +54,11 @@ class MoneybirdAPIService:
         return self._administration.delete(f"financial_statements/{statement_id}")
 
     def create_receipt(self, receipt_data):
-        return self._administration.post("receipts", receipt_data)
+        return self._administration.post("documents/receipts", receipt_data)
 
     def add_receipt_attachment(self, receipt_id, receipt_attachment):
         return self._administration.post(
-            f"receipts/{receipt_id}/attachments", receipt_attachment
+            f"documents/receipts/{receipt_id}/attachments", receipt_attachment
         )
 
     def link_mutation_to_booking(
