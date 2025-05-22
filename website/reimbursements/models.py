@@ -32,6 +32,7 @@ class Reimbursement(models.Model):
         max_digits=5,
         decimal_places=2,
         help_text="How much did you pay (in euros)?",
+        allow_zero=True,  # To make sure no double error msg is shown
         validators=[RangeValueValidator(lower=0, lower_inclusive=False)],
     )
 
