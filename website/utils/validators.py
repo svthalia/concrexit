@@ -32,27 +32,31 @@ class RangeValueValidator:
             self.upper_inclusive,
         )
 
+        msg = ""
+
         match build_tuple:
             case (None, _, None, _):
                 return
             case (None, _, _, False):
-                return self.messages["upper_excl"]
+                msg = self.messages["upper_excl"]
             case (None, _, _, True):
-                return self.messages["upper_incl"]
+                msg = self.messages["upper_incl"]
             case (_, False, None, _):
-                return self.messages["lower_excl"]
+                msg = self.messages["lower_excl"]
             case (_, True, None, _):
-                return self.messages["lower_incl"]
+                msg = self.messages["lower_incl"]
             case (_, False, _, False):
-                return self.messages["lower_excl_upper_excl"]
+                msg = self.messages["lower_excl_upper_excl"]
             case (_, False, _, True):
-                return self.messages["lower_excl_upper_incl"]
+                msg = self.messages["lower_excl_upper_incl"]
             case (_, True, _, False):
-                return self.messages["lower_incl_upper_excl"]
+                msg = self.messages["lower_incl_upper_excl"]
             case (_, True, _, True):
-                return self.messages["lower_incl_upper_incl"]
+                msg = self.messages["lower_incl_upper_incl"]
             case _:
                 return
+
+        return msg % {"lower": self.lower, "upper": self.upper}
 
     def __init__(
         self,
@@ -66,16 +70,14 @@ class RangeValueValidator:
         self.upper = upper
         self.upper_inclusive = upper_inclusive
 
-        # Set lower_inclusive and upper_inclusive to False if no lower or upper respectively
-        if not self.upper:
-            self.upper_inclusive = False
-        if not self.lower:
-            self.lower_inclusive = False
-
         self.error_message = self.select_error_message()
 
     def __call__(self, value):
-        if self.lower:
+        print(
+            f"being called with value {value}, params {self.lower}, {self.lower_inclusive}, {self.upper}, {self.upper_inclusive}"
+        )
+
+        if self.lower is not None:
             if self.lower_inclusive:
                 if value < self.lower:
                     raise ValidationError(self.error_message)
@@ -83,7 +85,7 @@ class RangeValueValidator:
                 if value <= self.lower:
                     raise ValidationError(self.error_message)
 
-        if self.upper:
+        if self.upper is not None:
             if self.upper_inclusive:
                 if value > self.upper:
                     raise ValidationError(self.error_message)
