@@ -73,10 +73,6 @@ class RangeValueValidator:
         self.error_message = self.select_error_message()
 
     def __call__(self, value):
-        print(
-            f"being called with value {value}, params {self.lower}, {self.lower_inclusive}, {self.upper}, {self.upper_inclusive}"
-        )
-
         if self.lower is not None:
             if self.lower_inclusive:
                 if value < self.lower:
