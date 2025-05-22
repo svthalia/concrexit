@@ -26,7 +26,7 @@ from . import payables
 def validate_not_zero(value):
     if value == 0:
         raise ValidationError(
-            _("0 is not allowed."),
+            _("This field may not be 0."),
         )
 
 
