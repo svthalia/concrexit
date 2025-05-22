@@ -11,6 +11,12 @@ from payments.models import PaymentAmountField
 from utils.media.services import get_upload_to_function
 
 
+def validate_file_size(file):
+    max_size_mb = 10
+    if file.size > max_size_mb * 1024 * 1024:
+        raise ValidationError(f"File size must be less than {max_size_mb} MB")
+
+
 class Reimbursement(models.Model):
     class Verdict(models.TextChoices):
         APPROVED = "approved", "Approved"
@@ -47,8 +53,9 @@ class Reimbursement(models.Model):
         validators=[
             FileExtensionValidator(
                 allowed_extensions=["pdf", "jpg", "jpeg", "png", "tiff"],
-                message="Only pdf, jpg, jpeg and png files are allowed.",
+                message="Only pdf, jpg, jpeg, png and tiff files are allowed.",
             ),
+            validate_file_size,
         ],
     )
 
