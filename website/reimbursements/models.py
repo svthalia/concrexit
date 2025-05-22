@@ -1,6 +1,11 @@
 from django.core.exceptions import ValidationError
-from django.core.validators import MinLengthValidator
+from django.core.validators import (
+    FileExtensionValidator,
+    MinLengthValidator,
+    MinValueValidator,
+)
 from django.db import models
+from django.utils import timezone
 
 from payments.models import PaymentAmountField
 from utils.media.services import get_upload_to_function
@@ -21,6 +26,9 @@ class Reimbursement(models.Model):
         max_digits=5,
         decimal_places=2,
         help_text="How much did you pay (in euros)?",
+        validators=[
+            MinValueValidator(0),
+        ],
     )
 
     date_incurred = models.DateField(
@@ -36,6 +44,12 @@ class Reimbursement(models.Model):
     # FileField and not ImageField because companies often send invoices as pdf
     receipt = models.FileField(
         upload_to=get_upload_to_function("reimbursements/receipts"),
+        validators=[
+            FileExtensionValidator(
+                allowed_extensions=["pdf", "jpg", "jpeg", "png", "tiff"],
+                message="Only pdf, jpg, jpeg and png files are allowed.",
+            ),
+        ],
     )
 
     created = models.DateTimeField(auto_now_add=True)
@@ -72,9 +86,8 @@ class Reimbursement(models.Model):
         errors = {}
 
         if (
-            self.created is not None
-            and self.date_incurred is not None
-            and self.date_incurred > self.created.date()
+            self.date_incurred is not None
+            and self.date_incurred > timezone.now().date()
         ):
             errors["date_incurred"] = "The date incurred cannot be in the future."
 

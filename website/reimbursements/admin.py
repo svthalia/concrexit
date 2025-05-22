@@ -53,7 +53,7 @@ class ReimbursementsAdmin(admin.ModelAdmin):
 
         super().save_model(request, obj, form, change)
 
-        if obj.verdict is not None and obj.verdict != form.initial["verdict"]:
+        if obj.verdict is not None and obj.verdict != form.initial.get("verdict"):
             send_verdict_email(obj)
 
             if obj.verdict == obj.Verdict.APPROVED:
@@ -73,13 +73,7 @@ class ReimbursementsAdmin(admin.ModelAdmin):
                 "date_incurred",
                 "receipt",
             ]
-        if not obj or obj.verdict:
-            readonly += [
-                "verdict",
-                "verdict_clarification",
-                "evaluated_by",
-                "evaluated_at",
-            ]
+
         return readonly
 
     def get_queryset(self, request):
@@ -91,6 +85,11 @@ class ReimbursementsAdmin(admin.ModelAdmin):
         if obj and request.member and obj.owner == request.member:
             return True
         return super().has_view_permission(request, obj)
+
+    def has_change_permission(self, request, obj=None):
+        if obj and obj.verdict is not None:
+            return False
+        return super().has_change_permission(request, obj)
 
     def add_view(self, request, **kwargs):
         """View for setting study status.
