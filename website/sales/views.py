@@ -57,7 +57,9 @@ def place_order_view(request, *args, **kwargs):
         raise PermissionError
 
     if request.method == "POST":
-        form = ProductOrderForm(shift.product_list, services.is_adult(request.member), request.POST)
+        form = ProductOrderForm(
+            shift.product_list, services.is_adult(request.member), request.POST
+        )
         if form.is_valid():
             order = Order(
                 created_at=timezone.now(),

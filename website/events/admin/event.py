@@ -125,7 +125,7 @@ class EventAdmin(DoNextModelAdmin):
         ),
         (
             _("Extra"),
-            {"fields": ("documents", ), "classes": ("collapse",)},
+            {"fields": ("documents",), "classes": ("collapse",)},
         ),
     )
 
