@@ -109,6 +109,7 @@ class ShiftAdmin(admin.ModelAdmin):
         "end",
         "selforder",
         "active",
+        "event",
         "product_list",
         "managers",
         "product_sales",
