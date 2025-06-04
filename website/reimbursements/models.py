@@ -13,7 +13,7 @@ from utils.media.services import get_upload_to_function
 
 def validate_file_size(file):
     max_size_mb = 10
-    if file.size > max_size_mb * 1024 * 1024:
+    if file.size > max_size_mb * 1000 * 1000:
         raise ValidationError(f"File size must be less than {max_size_mb} MB")
 
 
