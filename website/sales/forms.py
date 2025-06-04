@@ -29,4 +29,3 @@ class ProductOrderForm(forms.Form):
             if not is_adult and item.product.age_restricted:
                 field.disabled = True
             self.fields[f"product_{item.product.pk}"] = field
-

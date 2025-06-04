@@ -1,6 +1,11 @@
 from django.urls import path
 
-from sales.views import place_order_view, cancel_order_view, ShiftDetailView, OrderPaymentView
+from sales.views import (
+    place_order_view,
+    cancel_order_view,
+    ShiftDetailView,
+    OrderPaymentView,
+)
 
 app_name = "sales"
 
