@@ -1,18 +1,18 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views import View
-from django.views.generic import DetailView
 from django.views.decorators.http import require_http_methods
-
+from django.views.generic import DetailView
 
 from sales import services
 from sales.forms import ProductOrderForm
-from sales.models.order import Shift, Order, OrderItem
+from sales.models.order import Order, OrderItem, Shift
 from sales.models.product import ProductListItem
 
 
@@ -47,7 +47,8 @@ def place_order_view(request, *args, **kwargs):
     shift = get_object_or_404(Shift, pk=kwargs["pk"])
     if not shift.selforder:
         # Orders can only be placed by shift managers
-        # Time issues are dealt with in the template
+        # which is done through the admin.
+        # Time issues are dealt with in the template.
         raise PermissionError
     if not shift.user_orders_allowed and request.method == "POST":
         # Forbid POSTing when not in the correct time period
@@ -61,26 +62,33 @@ def place_order_view(request, *args, **kwargs):
             shift.product_list, services.is_adult(request.member), request.POST
         )
         if form.is_valid():
-            order = Order(
-                created_at=timezone.now(),
-                created_by=request.member,
-                shift=shift,
-                payment=None,
-                discount=0.00,
-                payer=request.member,
-            )
-            order.save()
-            for fieldname, amount in form.cleaned_data.items():
-                if amount is None:
-                    continue
-                # TODO: deal with age-restricted items
-                item = OrderItem(
-                    product=form.fields[fieldname].get_productlistitem(),
-                    order=order,
-                    amount=amount,
+            with transaction.atomic():
+                order = Order(
+                    created_at=timezone.now(),
+                    created_by=request.member,
+                    shift=shift,
+                    payment=None,
+                    discount=0.00,
+                    payer=request.member,
                 )
-                item.save()
-            return redirect("sales:shift-detail", pk=shift.pk)
+                order.save()
+                for fieldname, amount in form.cleaned_data.items():
+                    if amount is None:
+                        continue
+                    if (
+                        not services.is_adult(request.member)
+                        and form.fields[fieldname]
+                        .get_productlistitem()
+                        .product.age_restricted
+                    ):
+                        raise PermissionError
+                    item = OrderItem(
+                        product=form.fields[fieldname].get_productlistitem(),
+                        order=order,
+                        amount=amount,
+                    )
+                    item.save()
+                return redirect("sales:shift-detail", pk=shift.pk)
     else:
         form = ProductOrderForm(shift.product_list, services.is_adult(request.member))
 
