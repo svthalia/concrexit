@@ -52,8 +52,8 @@ class Reimbursement(models.Model):
         upload_to=get_upload_to_function("reimbursements/receipts"),
         validators=[
             FileExtensionValidator(
-                allowed_extensions=["pdf", "jpg", "jpeg", "png", "tiff"],
-                message="Only pdf, jpg, jpeg, png and tiff files are allowed.",
+                allowed_extensions=["pdf", "jpg", "jpeg", "png"],
+                message="Only pdf, jpg, jpeg and png files are allowed.",
             ),
             validate_file_size,
         ],
