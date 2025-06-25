@@ -13,6 +13,7 @@ def grid_item(
     class_name="",
     anchor_attrs="",
     show_loading_animation=True,
+    album_title=None,
 ):
     return {
         "title": title,
@@ -23,4 +24,5 @@ def grid_item(
         "class_name": class_name,
         "anchor_attrs": anchor_attrs,
         "show_loading_animation": show_loading_animation,
+        "album_title": album_title,
     }

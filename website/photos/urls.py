@@ -17,6 +17,11 @@ urlpatterns = [
                 ),
                 path("liked/", views.LikedPhotoView.as_view(), name="liked-photos"),
                 path(
+                    "mostliked/",
+                    views.MostLikedPhotoView.as_view(),
+                    name="mostliked-photos",
+                ),
+                path(
                     "<slug>/",
                     include(
                         [
