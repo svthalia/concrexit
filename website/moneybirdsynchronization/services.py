@@ -221,7 +221,7 @@ def create_receipt(reimbursement: Reimbursement):
 
     if moneybird_receipt.moneybird_attachment_id is None:
         attachment_response = moneybird.add_receipt_attachment(
-            moneybird_receipt.moneybird_receipt_id, reimbursement.receipt
+            moneybird_receipt.moneybird_receipt_id, reimbursement.receipt.chunks()
         )
         moneybird_receipt.moneybird_attachment_id = attachment_response["id"]
 
