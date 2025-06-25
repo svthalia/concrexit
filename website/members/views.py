@@ -102,7 +102,7 @@ class MembersIndex(PagedView):
             members_query &= Q(pk__in=memberships.values("user__pk"))
         members = (
             Member.objects.filter(members_query)
-            .order_by("first_name")
+            .order_by("first_name", "last_name", "pk")
             .select_related("profile")
         )
         return members
