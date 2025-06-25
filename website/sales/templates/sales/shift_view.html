@@ -5,9 +5,7 @@
 {% block page_title %}
 Your orders for {{ shift.title }}{% if shift.event %} for {{shift.event.title}}{% endif %}
 <a href="{% url 'sales:order-place' pk=shift.pk %}"
-    target="_blank"
-    class="btn btn-primary first-right d-flex align-items-center"
->
+   class="btn btn-primary first-right d-flex align-items-center">
     Place order
 </a>
 {% endblock %}
