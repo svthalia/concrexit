@@ -44,6 +44,9 @@ Your orders for {{ shift.title }}{% if shift.event %} for {{shift.event.title}}{
         <input type="submit"
         value="Cancel"
         class="btn btn-primary"
+        {% if order.payment %}
+        disabled
+        {% endif %}
         onclick="return confirm('Are you sure you want to cancel your order?')"/>
     </form>
 
