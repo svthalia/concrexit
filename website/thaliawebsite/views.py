@@ -68,7 +68,7 @@ class RateLimitedPasswordResetView(PasswordResetView):
 
 
 class RateLimitedLoginView(LoginView):
-    @method_decorator(ratelimit(key="ip", rate="30/h"))
+    @method_decorator(ratelimit(key="ip", rate="100/h"))
     @method_decorator(ratelimit(key="post:username", rate="30/h"))
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)

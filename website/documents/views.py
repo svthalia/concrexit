@@ -30,7 +30,7 @@ class DocumentsIndexView(TemplateView):
 
         years = defaultdict(
             lambda: {
-                "documents": {"policy": None, "report": None, "financial": None},
+                "documents": {c: None for c in AnnualDocument.Subcategory.values},
                 "general_meetings": [],
             }
         )
@@ -41,9 +41,7 @@ class DocumentsIndexView(TemplateView):
         for year in range(1990, lecture_year + 1):
             years[year] = years[year]
 
-        for document in AnnualDocument.objects.filter(
-            subcategory__in=("policy", "report", "financial")
-        ):
+        for document in AnnualDocument.objects.all():
             years[document.year]["documents"][document.subcategory] = document
 
         for obj in GeneralMeeting.objects.all():
