@@ -2,13 +2,13 @@ from django.core.exceptions import ValidationError
 from django.core.validators import (
     FileExtensionValidator,
     MinLengthValidator,
-    MinValueValidator,
 )
 from django.db import models
 from django.utils import timezone
 
 from payments.models import PaymentAmountField
 from utils.media.services import get_upload_to_function
+from utils.validators import RangeValueValidator
 
 
 def validate_file_size(file):
@@ -32,9 +32,8 @@ class Reimbursement(models.Model):
         max_digits=5,
         decimal_places=2,
         help_text="How much did you pay (in euros)?",
-        validators=[
-            MinValueValidator(0),
-        ],
+        allow_zero=True,  # To make sure no double error msg is shown
+        validators=[RangeValueValidator(lower=0, lower_inclusive=False)],
     )
 
     date_incurred = models.DateField(
