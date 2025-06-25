@@ -5,12 +5,12 @@ from rest_framework import exceptions
 from rest_framework import filters as framework_filters
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import (
+    CreateAPIView,
+    DestroyAPIView,
     GenericAPIView,
     ListAPIView,
-    CreateAPIView,
     RetrieveAPIView,
     UpdateAPIView,
-    DestroyAPIView,
     get_object_or_404,
 )
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
@@ -97,14 +97,15 @@ class UserOrderListView(ListAPIView, CreateAPIView):
 
         queryset = queryset.select_properties(
             "total_amount", "subtotal", "num_items", "age_restricted"
+        ).prefetch_related(
+            "shift",
+            "shift__event",
+            "shift__product_list",
+            "order_items",
+            "order_items__product",
+            "order_items__product__product",
+            "payment",
         )
-        queryset = queryset.prefetch_related(
-            "shift", "shift__event", "shift__product_list"
-        )
-        queryset = queryset.prefetch_related(
-            "order_items", "order_items__product", "order_items__product__product"
-        )
-        queryset = queryset.prefetch_related("payment")
 
         return queryset.filter(
             Q(payer=self.request.member) | Q(created_by=self.request.member)
@@ -144,14 +145,15 @@ class UserOrderDetailView(RetrieveAPIView, UpdateAPIView, DestroyAPIView):
 
         queryset = queryset.select_properties(
             "total_amount", "subtotal", "num_items", "age_restricted"
+        ).prefetch_related(
+            "shift",
+            "shift__event",
+            "shift__product_list",
+            "order_items",
+            "order_items__product",
+            "order_items__product__product",
+            "payment",
         )
-        queryset = queryset.prefetch_related(
-            "shift", "shift__event", "shift__product_list"
-        )
-        queryset = queryset.prefetch_related(
-            "order_items", "order_items__product", "order_items__product__product"
-        )
-        queryset = queryset.prefetch_related("payment")
         return queryset.filter(
             Q(payer=self.request.member) | Q(created_by=self.request.member)
         )
