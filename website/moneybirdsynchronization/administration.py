@@ -212,7 +212,7 @@ class HttpsAdministration(Administration):
         return self._process_response(response)
 
     @_retry_if_throttled()
-    def post_files(self, resource_path: str, files: dict):
+    def post_files(self, resource_path: str, files: dict[str, bytes]):
         """Do a POST request for a file or other data on the Moneybird administration."""
         url = self._build_url(resource_path)
         logger.debug(f"POST {url} with {files}")
