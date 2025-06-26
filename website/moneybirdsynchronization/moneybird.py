@@ -56,7 +56,7 @@ class MoneybirdAPIService:
     def create_receipt(self, receipt_data):
         return self._administration.post("documents/receipts", receipt_data)
 
-    def add_receipt_attachment(self, receipt_id, receipt_attachment):
+    def add_receipt_attachment(self, receipt_id, receipt_attachment: bytes):
         return self._administration.post_files(
             f"documents/receipts/{receipt_id}/attachments",
             {"file": receipt_attachment},
