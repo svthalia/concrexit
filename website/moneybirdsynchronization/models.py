@@ -62,9 +62,10 @@ def date_for_payable_model(obj) -> datetime.datetime | datetime.date:
 
 def period_for_payable_model(obj) -> str | None:
     if isinstance(obj, Registration | Renewal):
-        if obj.membership is not None:
-            # Only bill for the start date, ignore the until date.
-            date = obj.membership.since
+        if obj.payment is not None:
+            date = obj.payment.created_at.date()
+            # Use the payment date, when the new membership normally starts,
+            # and don't bother with the 'until' date.
             return f"{date.strftime('%Y%m%d')}..{date.strftime('%Y%m%d')}"
     return None
 
