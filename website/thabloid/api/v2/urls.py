@@ -1,3 +1,5 @@
+"""Thabloid API v2 urls."""
+
 from django.urls import include, path
 
 from thabloid.api.v2.views import ThabloidDetailView, ThabloidListView
