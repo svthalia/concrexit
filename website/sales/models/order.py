@@ -21,7 +21,7 @@ from sales.models.shift import Shift
 
 
 def default_order_shift():
-    return Shift.objects.filter(active=True).first()
+    return Shift.objects.filter(active=True).only("pk").first()
 
 
 class Order(models.Model):
