@@ -1,0 +1,18 @@
+{% extends "email/html_email.html" %}
+
+{% block content %}
+  <p>Dear {{ first_name }},</p>
+  <br>
+  <p>There has been a verdict on your reimbursement request with the following description:
+    <blockquote>{{ description }}</blockquote></p>
+  <p><b>The request was {{ verdict }}.</b><br>
+  {% if not verdict_clarification %}
+    No clarification was given.
+  {% else %}
+    The following clarification was given:
+        <blockquote>{{ verdict_clarification }}</blockquote>
+  {% endif %}
+  </p>
+  <br>
+  <p>For questions, please reach out to the treasurer at treasurer@thalia.nu.</p>
+{% endblock %}
