@@ -209,7 +209,7 @@ class MostLikedPhotoView(LoginRequiredMixin, PagedView):
             .select_related("album")
             .select_properties("num_likes")
             .filter(num_likes__gt=0)
-            .order_by("-num_likes")
+            .order_by("-num_likes")[:12]
         )
         return photos
 
