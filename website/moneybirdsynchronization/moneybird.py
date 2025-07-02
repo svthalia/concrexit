@@ -57,10 +57,11 @@ class MoneybirdAPIService:
         return self._administration.post("documents/receipts", receipt_data)
 
     def add_receipt_attachment(self, receipt_id, receipt_attachment):
-        return self._administration.post_files(
-            f"documents/receipts/{receipt_id}/attachments",
-            {"file": receipt_attachment},
-        )
+        with open(receipt_attachment, "rb") as file:
+            return self._administration.post_files(
+                f"documents/receipts/{receipt_id}/attachments",
+                {"receipt": file},
+            )
 
     def link_mutation_to_booking(
         self,
