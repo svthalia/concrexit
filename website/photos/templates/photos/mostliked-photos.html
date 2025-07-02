@@ -1,0 +1,40 @@
+{% extends 'paginated_page.html' %}
+{% load static i18n sass_tags photos_cards alert pick_header_image %}
+
+{% block title %}{% trans "Most liked photos" %} — {{ block.super }}{% endblock %}
+{% block opengraph_title %}{% trans "Most liked photos" %} — {{ block.super }}{% endblock %}
+
+{% block header_image_srcset %}{% pick_header_image type='fun' %}{% endblock header_image_srcset %}
+
+{% block page_title %}
+    {% trans "Most liked photos" %}
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        {% if not photos %}
+        <div class="mt-4">
+                {% trans "There are no liked photos." as info_text %}
+                {% alert 'info' info_text dismissible=False %}
+            </div>
+        {% else %}
+            {% for photo in photos %}
+                <div class="col-4 col-md-3 my-3">
+                    {% mostliked_photo_card photo %}
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block css_head %}
+    {{ block.super }}
+    <link href="{% sass_src "photos/css/style.scss" %}" rel="stylesheet" type="text/css">
+    <link href="{% static "css/fancybox.css" %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block js_body %}
+    {{ block.super }}
+    <script src="{% static "js/fancybox.umd.js" %}"></script>
+        <script type="text/javascript" src="{% static "photos/js/main.js" %}"></script>
+{% endblock %}
