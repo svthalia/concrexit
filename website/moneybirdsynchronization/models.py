@@ -361,11 +361,8 @@ class MoneybirdReceipt(models.Model):
         null=True,
     )
 
-    moneybird_attachment_id = models.CharField(
-        verbose_name=_("moneybird attachment id"),
-        max_length=255,
-        blank=True,
-        null=True,
+    moneybird_attachment_is_uploaded = models.BooleanField(
+        default=False,
     )
 
     def to_moneybird(self):

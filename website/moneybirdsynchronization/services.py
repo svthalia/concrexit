@@ -218,15 +218,15 @@ def create_receipt(reimbursement: Reimbursement):
     if moneybird_receipt.moneybird_receipt_id is None:
         response = moneybird.create_receipt(moneybird_receipt.to_moneybird())
         moneybird_receipt.moneybird_receipt_id = response["id"]
+        moneybird_receipt.save()
 
-    if moneybird_receipt.moneybird_attachment_id is None:
-        attachment_response = moneybird.add_receipt_attachment(
+    if not moneybird_receipt.moneybird_attachment_is_uploaded:
+        moneybird.add_receipt_attachment(
             moneybird_receipt.moneybird_receipt_id,
             reimbursement.receipt,
         )
-        moneybird_receipt.moneybird_attachment_id = attachment_response["id"]
-
-    moneybird_receipt.save()
+        moneybird_receipt.moneybird_attachment_is_uploaded = True
+        moneybird_receipt.save()
 
     return moneybird_receipt
 
@@ -517,7 +517,7 @@ def _sync_receipts():
     ).exclude(
         moneybird_receipt__isnull=False,
         moneybird_receipt__moneybird_receipt_id__isnull=False,
-        moneybird_receipt__moneybird_attachment_id__isnull=False,
+        moneybird_receipt__moneybird_attachment_is_uploaded=False,
     )
 
     logger.info(

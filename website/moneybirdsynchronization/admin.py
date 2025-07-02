@@ -162,7 +162,7 @@ class MoneybirdReceiptAdmin(admin.ModelAdmin):
     list_display = ("moneybird_receipt_id", "reimbursement_link")
     search_fields = (
         "moneybird_receipt_id",
-        "moneybird_attachment_id",
+        "moneybird_attachment_is_uploaded",
         "reimbursement__date_incurred",
         "reimbursement__owner__first_name",
         "reimbursement__owner__last_name",
