@@ -266,7 +266,7 @@ def execute_data_minimisation(dry_run=False):
         ),
     )
 
-    queryset_mandates = queryset_bankaccounts.filter(
+    queryset_mandates = BankAccount.objects.filter(
         mandate_no__isnull=False,
         valid_until=None,
         owner__profile__is_minimized=True,
