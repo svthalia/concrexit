@@ -3,10 +3,12 @@ from datetime import timedelta
 
 from django.conf import settings
 from django.core import mail
+from django.db.models import Exists, OuterRef, Subquery
 from django.urls import reverse
 from django.utils import timezone
-from members.models import Member
-from utils.snippets import send_email
+
+from members.models import Member, Membership
+from utils.snippets import datetime_to_lectureyear, send_email
 
 logger = logging.getLogger(__name__)
 
@@ -66,14 +68,29 @@ def send_expiration_announcement(dry_run=False):
 
     :param dry_run: does not really send emails if True
     """
-    expiry_date = timezone.now() + timedelta(days=31)
-    members = (
-        Member.current_members.filter(membership__until__lte=expiry_date)
-        .exclude(membership__until__isnull=True)
-        .exclude(membership__study_long=True)
-        .exclude(email="")
-        .distinct()
+    expiry_date = datetime_to_lectureyear(timezone.now()) + 1
+    expiry_date = timezone.datetime(expiry_date, 9, 1)
+
+    study_long_membership = Exists(
+        Subquery(
+            Membership.objects.filter(
+                user=OuterRef("pk"), study_long=False, until__gte=timezone.now()
+            )
+        )
     )
+
+    no_cur_membership = ~Exists(
+        Subquery(
+            Membership.objects.filter(
+                user=OuterRef("pk"),
+                until__gte=expiry_date + timedelta(days=180),
+            ).exclude(until__isnull=True)
+        )
+    )
+
+    members = Member.current_members.filter(
+        study_long_membership, no_cur_membership
+    ).exclude(email="")
 
     with mail.get_connection() as connection:
         for member in members:
@@ -104,14 +121,29 @@ def send_expiration_announcement(dry_run=False):
 
 
 def send_expiration_study_long(dry_run=False):
-    expiry_date = timezone.now() + timedelta(days=31)
-    members = (
-        Member.current_members.filter(membership__until__lte=expiry_date)
-        .exclude(membership__until__isnull=True)
-        .exclude(membership__study_long=False)
-        .exclude(email="")
-        .distinct()
+    expiry_date = datetime_to_lectureyear(timezone.now()) + 1
+    expiry_date = timezone.datetime(expiry_date, 9, 1)
+    study_long_membership = Exists(
+        Subquery(
+            Membership.objects.filter(
+                user=OuterRef("pk"), study_long=True, until__gte=timezone.now()
+            )
+        )
     )
+
+    no_cur_membership = ~Exists(
+        Subquery(
+            Membership.objects.filter(
+                user=OuterRef("pk"),
+                until__gte=expiry_date + timedelta(days=180),
+            ).exclude(until__isnull=True)
+        )
+    )
+
+    members = Member.current_members.filter(
+        study_long_membership, no_cur_membership
+    ).exclude(email="")
+
     with mail.get_connection() as connection:
         for member in members:
             logger.info("Sent email to %s (%s)", member.get_full_name(), member.email)
@@ -131,14 +163,32 @@ def send_expiration_study_long(dry_run=False):
 
 
 def send_expiration_study_long_reminder(dry_run=False):
+    expiry_date = datetime_to_lectureyear(timezone.now()) + 1
+    expiry_date = timezone.datetime(expiry_date, 9, 1)
+
     recently_expired_minbound = timezone.now() - timedelta(days=30)
     recently_expired_maxbound = timezone.now()
-    members = (
-        Member.current_members.filter(
-            membership__until__gte=recently_expired_minbound,
-            membership__until__lte=recently_expired_maxbound,
-            membership__study_long=True,
+    study_long_membership = Exists(
+        Subquery(
+            Membership.objects.filter(
+                user=OuterRef("pk"),
+                study_long=True,
+                until__gte=recently_expired_minbound,
+                until__lte=recently_expired_maxbound,
+            )
         )
+    )
+
+    no_cur_membership = ~Exists(
+        Subquery(
+            Membership.objects.filter(
+                user=OuterRef("pk"), until__gte=recently_expired_maxbound
+            ).exclude(until__isnull=True)
+        )
+    )
+
+    members = (
+        Member.current_members.filter(study_long_membership, no_cur_membership)
         .exclude(email="")
         .distinct()
     )
