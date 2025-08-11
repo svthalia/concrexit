@@ -3,12 +3,12 @@ from datetime import timedelta
 
 from django.conf import settings
 from django.core import mail
-from django.db.models import Exists, OuterRef, Subquery
+from django.db.models import Exists, OuterRef, Q, Subquery
 from django.urls import reverse
 from django.utils import timezone
 
 from members.models import Member, Membership
-from utils.snippets import datetime_to_lectureyear, send_email
+from utils.snippets import send_email
 
 logger = logging.getLogger(__name__)
 
@@ -68,28 +68,29 @@ def send_expiration_announcement(dry_run=False):
 
     :param dry_run: does not really send emails if True
     """
-    expiry_date = datetime_to_lectureyear(timezone.now()) + 1
-    expiry_date = timezone.datetime(expiry_date, 9, 1)
-
-    study_long_membership = Exists(
+    has_current_membership = Exists(
         Subquery(
             Membership.objects.filter(
-                user=OuterRef("pk"), study_long=False, until__gte=timezone.now()
+                Q(until__gte=timezone.now()) | Q(until__isnull=True),
+                user=OuterRef("pk"),
+                since__lte=timezone.now(),
             )
         )
     )
 
-    no_cur_membership = ~Exists(
+    has_expiring_membership = ~Exists(
         Subquery(
             Membership.objects.filter(
                 user=OuterRef("pk"),
-                until__gte=expiry_date + timedelta(days=180),
-            ).exclude(until__isnull=True)
+                until__gte=timezone.now(),
+                until__lt=timezone.now() + timedelta(days=31),
+                study_long=False,
+            )
         )
     )
 
     members = Member.current_members.filter(
-        study_long_membership, no_cur_membership
+        has_expiring_membership, ~has_current_membership
     ).exclude(email="")
 
     with mail.get_connection() as connection:
@@ -106,6 +107,7 @@ def send_expiration_announcement(dry_run=False):
                         "name": member.get_full_name(),
                         "renewal_url": settings.BASE_URL
                         + reverse("registrations:renew"),
+                        "membership_discount": settings.MEMBERSHIP_PRICES["year"],
                     },
                 )
 
@@ -121,27 +123,30 @@ def send_expiration_announcement(dry_run=False):
 
 
 def send_expiration_study_long(dry_run=False):
-    expiry_date = datetime_to_lectureyear(timezone.now()) + 1
-    expiry_date = timezone.datetime(expiry_date, 9, 1)
-    study_long_membership = Exists(
+    """Send an email to members whose current study-long membership will end in the next 31 days."""
+    has_expiring_study_long_membership = Exists(
         Subquery(
             Membership.objects.filter(
-                user=OuterRef("pk"), study_long=True, until__gte=timezone.now()
+                user=OuterRef("pk"),
+                study_long=True,
+                until__gte=timezone.now(),
+                until__lt=timezone.now() + timedelta(days=31),
             )
         )
     )
 
-    no_cur_membership = ~Exists(
+    has_future_membership = Exists(
         Subquery(
             Membership.objects.filter(
                 user=OuterRef("pk"),
-                until__gte=expiry_date + timedelta(days=180),
-            ).exclude(until__isnull=True)
+                since__lte=timezone.now() + timedelta(days=31),
+                until__gte=timezone.now() + timedelta(days=31),
+            )
         )
     )
 
     members = Member.current_members.filter(
-        study_long_membership, no_cur_membership
+        has_expiring_study_long_membership, ~has_future_membership
     ).exclude(email="")
 
     with mail.get_connection() as connection:
@@ -163,35 +168,29 @@ def send_expiration_study_long(dry_run=False):
 
 
 def send_expiration_study_long_reminder(dry_run=False):
-    expiry_date = datetime_to_lectureyear(timezone.now()) + 1
-    expiry_date = timezone.datetime(expiry_date, 9, 1)
-
-    recently_expired_minbound = timezone.now() - timedelta(days=30)
-    recently_expired_maxbound = timezone.now()
-    study_long_membership = Exists(
+    """Send an email to members whose current study-long membership has expired in the last 31 days."""
+    has_expired_study_long_membership = Exists(
         Subquery(
             Membership.objects.filter(
                 user=OuterRef("pk"),
                 study_long=True,
-                until__gte=recently_expired_minbound,
-                until__lte=recently_expired_maxbound,
+                until__gte=timezone.now() - timedelta(days=31),
+                until__lte=timezone.now(),
             )
         )
     )
-
-    no_cur_membership = ~Exists(
+    has_current_membership = Exists(
         Subquery(
             Membership.objects.filter(
-                user=OuterRef("pk"), until__gte=recently_expired_maxbound
-            ).exclude(until__isnull=True)
+                Q(until__gte=timezone.now()) | Q(until__isnull=True),
+                since__lte=timezone.now(),
+                user=OuterRef("pk"),
+            )
         )
     )
-
-    members = (
-        Member.current_members.filter(study_long_membership, no_cur_membership)
-        .exclude(email="")
-        .distinct()
-    )
+    members = Member.objects.filter(
+        has_expired_study_long_membership, ~has_current_membership
+    ).exclude(email="")
     with mail.get_connection() as connection:
         for member in members:
             logger.info("Sent email to %s (%s)", member.get_full_name(), member.email)
