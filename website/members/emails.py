@@ -90,7 +90,7 @@ def send_expiration_announcement(dry_run=False):
     )
 
     members = Member.current_members.filter(
-        has_expiring_membership, has_future_membership
+        has_expiring_membership, ~has_future_membership
     ).exclude(email="")
 
     with mail.get_connection() as connection:
