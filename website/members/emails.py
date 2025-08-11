@@ -68,17 +68,17 @@ def send_expiration_announcement(dry_run=False):
 
     :param dry_run: does not really send emails if True
     """
-    has_current_membership = Exists(
+    has_future_membership = Exists(
         Subquery(
             Membership.objects.filter(
-                Q(until__gte=timezone.now()) | Q(until__isnull=True),
                 user=OuterRef("pk"),
-                since__lte=timezone.now(),
+                since__lte=timezone.now() + timedelta(days=31),
+                until__gte=timezone.now() + timedelta(days=31),
             )
         )
     )
 
-    has_expiring_membership = ~Exists(
+    has_expiring_membership = Exists(
         Subquery(
             Membership.objects.filter(
                 user=OuterRef("pk"),
@@ -90,7 +90,7 @@ def send_expiration_announcement(dry_run=False):
     )
 
     members = Member.current_members.filter(
-        has_expiring_membership, ~has_current_membership
+        has_expiring_membership, has_future_membership
     ).exclude(email="")
 
     with mail.get_connection() as connection:
