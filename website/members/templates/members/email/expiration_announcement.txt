@@ -10,11 +10,11 @@ Renewing your membership is easy. Open the renewal page on the website and
 select the right option: {{ renewal_url }}.
 
 Note that if you upgrade your yearly membership to a study membership before August 31,
-you will get a discount of €{{ membership_price }}.
+you will get a discount of €{{ membership_discount }}.
 
 Are you unable to renew your membership via the website? Then send us an email: info@thalia.nu.
 
-It's possible that you've already renewed your membership and that it hasn't 
+It's possible that you've already renewed your membership and that it hasn't
 been processed yet. If that's the case then you don't need to do anything.
 
 With kind regards,

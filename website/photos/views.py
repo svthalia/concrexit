@@ -1,5 +1,7 @@
 import os
+from datetime import date
 
+from django.db.models import QuerySet
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
@@ -16,6 +18,8 @@ from photos.services import (
 )
 from thaliawebsite.views import PagedView
 from utils.media.services import fetch_thumbnails, get_media_url
+from utils.snippets import datetime_to_lectureyear
+from django.db.models import Q
 
 COVER_FILENAME = "cover.jpg"
 
@@ -26,25 +30,50 @@ class IndexView(LoginRequiredMixin, PagedView):
     template_name = "photos/index.html"
     context_object_name = "albums"
     keywords = None
+    query_filter = ""
+    year_range = []
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
-        self.keywords = request.GET.get("keywords", "").split()
+        current_lectureyear = datetime_to_lectureyear(date.today())
+        self.year_range = list(
+            reversed(range(current_lectureyear - 5, current_lectureyear + 1))
+        )
+        self.keywords = request.GET.get("keywords", "").split() or None
+        self.query_filter = kwargs.get("year", None)
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         albums = Album.objects.filter(hidden=False, is_processing=False).select_related(
             "_cover"
         )
-        for key in self.keywords:
-            albums = albums.filter(title__icontains=key)
+        # We split on greater than the 7th month of the year (July),
+        # to make sure the introduction week photos (from August) are the first on each year page.
+        if self.query_filter == "older":
+            albums = albums.filter(
+                Q(date__year=self.year_range[-1], date__month__gt=7)
+                | Q(date__year__lt=self.year_range[-1])
+            )
+        elif self.query_filter:
+            albums = albums.filter(
+                Q(date__year=self.query_filter, date__month__gt=7)
+                | Q(date__year=int(self.query_filter) + 1, date__month__lt=8)
+            )
+        if self.keywords:
+            for key in self.keywords:
+                albums = albums.filter(title__icontains=key)
         albums = get_annotated_accessible_albums(self.request, albums)
         albums = albums.order_by("-date")
-
         return albums
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["keywords"] = self.keywords
+        context.update(
+            {
+                "filter": self.query_filter,
+                "year_range": self.year_range,
+                "keywords": self.keywords,
+            }
+        )
         fetch_thumbnails([x.cover.file for x in context["object_list"] if x.cover])
 
         context["has_rejected_reference_faces"] = (

@@ -20,7 +20,7 @@ Attention: Registration deadline = unregistration deadline! Thalia will recover 
  {% endif %}
 {% endfor %}
 
-Room: M1.0.08
+Room: M1.0.04
 Website: www.thalia.nu
 Email: info@thalia.nu
 

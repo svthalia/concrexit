@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 from django.conf import settings
+from django.core.files import File
 
 from moneybirdsynchronization.administration import HttpsAdministration
 
@@ -29,7 +30,7 @@ class MoneybirdAPIService:
             f"external_sales_invoices/{invoice_id}", invoice_data
         )
 
-    def delete_external_invoice(self, invoice_id):
+    def delete_external_sales_invoice(self, invoice_id):
         self._administration.delete(f"external_sales_invoices/{invoice_id}")
 
     def register_external_invoice_payment(self, invoice_id, payment_data):
@@ -52,6 +53,16 @@ class MoneybirdAPIService:
 
     def delete_financial_statement(self, statement_id):
         return self._administration.delete(f"financial_statements/{statement_id}")
+
+    def create_receipt(self, receipt_data):
+        return self._administration.post("documents/receipts", receipt_data)
+
+    def add_receipt_attachment(self, receipt_id, receipt_attachment: File):
+        with receipt_attachment.open("rb") as file:
+            return self._administration.post_files(
+                f"documents/receipts/{receipt_id}/attachments",
+                {"file": file.read()},
+            )
 
     def link_mutation_to_booking(
         self,
