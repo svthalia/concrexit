@@ -3,7 +3,6 @@ from decimal import Decimal
 from unittest.mock import PropertyMock, patch
 
 from django.core.exceptions import ValidationError
-from django.db.models.deletion import ProtectedError
 from django.test import TestCase, override_settings
 from django.utils import timezone
 
@@ -25,8 +24,9 @@ class PaymentTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.member = PaymentUser.objects.filter(last_name="Wiggers").first()
+        cls.processor = PaymentUser.objects.filter(last_name="Versteeg").first()
         cls.payment = Payment.objects.create(
-            amount=10, paid_by=cls.member, processed_by=cls.member, type=Payment.CASH
+            amount=10, paid_by=cls.member, processed_by=cls.processor, type=Payment.CASH
         )
         cls.batch = Batch.objects.create()
 
@@ -54,9 +54,8 @@ class PaymentTest(TestCase):
         with self.assertRaises(ValidationError):
             self.payment.save()
 
-    def test_delete_payer_raises_protectederror(self):
-        with self.assertRaises(ProtectedError):
-            self.member.delete()
+    def test_deleting_member_who_made_a_payment_doesnt_crash(self) -> None:
+        self.member.delete()
 
     def test_clean(self):
         """Tests the model clean functionality."""
