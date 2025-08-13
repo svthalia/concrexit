@@ -62,14 +62,14 @@ class PagedView(ListView):
 
 
 class RateLimitedPasswordResetView(PasswordResetView):
-    @method_decorator(ratelimit(key="ip", rate="5/h"))
+    @method_decorator(ratelimit(key="ip", rate="20/d"))
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
 
 
 class RateLimitedLoginView(LoginView):
-    @method_decorator(ratelimit(key="ip", rate="100/h"))
-    @method_decorator(ratelimit(key="post:username", rate="30/h"))
+    @method_decorator(ratelimit(key="ip", rate="50/m"))
+    @method_decorator(ratelimit(key="post:username", rate="20/d"))
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
 
