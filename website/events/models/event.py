@@ -217,8 +217,6 @@ class Event(models.Model):
 
     tpay_allowed = models.BooleanField(_("Allow Thalia Pay"), default=True)
 
-    shift = models.OneToOneField("sales.Shift", models.SET_NULL, null=True, blank=True)
-
     mark_present_url_token = models.UUIDField(
         unique=True, default=uuid.uuid4, editable=False
     )
