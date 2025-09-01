@@ -2,6 +2,7 @@ from warnings import warn
 
 from django.apps import apps
 from django.core.management.base import BaseCommand
+from django.db import transaction
 
 from utils.snippets import minimise_logentries_data
 
@@ -22,7 +23,8 @@ class Command(BaseCommand):
         # TODO make this actually sensible not just dumb
         for app in apps:
             try:
-                app.minimize_user_data(user)
+                with transaction.atomic():
+                    app.minimize_user_data(user)
             except Exception as e:
                 warn("User minimization failed:" + str(e))
 
