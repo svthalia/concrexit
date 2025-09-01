@@ -18,13 +18,13 @@ class Command(BaseCommand):
             help="Dry run instead of saving data",
         )
 
-    def handle(self, *args, **options):
+    def handle(self, user, *args, **options):
         # TODO make this actually sensible not just dumb
         for app in apps:
             try:
-                app.execute_data_minimization()
+                app.minimize_user_data(user)
             except Exception as e:
-                warn("Minimization failed:" + str(e))
+                warn("User minimization failed:" + str(e))
 
         count = minimise_logentries_data(options["dry-run"])
         self.stdout.write(f"Removed {count} log entries")
