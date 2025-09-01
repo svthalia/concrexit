@@ -152,3 +152,19 @@ class MembersConfig(AppConfig):
                     profile.save()
 
         return processed_members
+
+    def minimize_user(self, user: Member, dry_run: bool = False) -> None:
+        profile = user.profile
+        profile.student_number = None
+        profile.phone_number = None
+        profile.address_street = None
+        profile.address_street2 = None
+        profile.address_postal_code = None
+        profile.address_city = None
+        profile.address_country = None
+        profile.birthday = None
+        profile.emergency_contact_phone_number = None
+        profile.emergency_contact = None
+        profile.is_minimized = True
+        if not dry_run:
+            profile.save()

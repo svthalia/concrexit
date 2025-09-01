@@ -4,6 +4,8 @@ from datetime import timedelta
 from django.apps import AppConfig
 from django.utils import timezone
 
+from members.models.member import Member
+
 from .models import Reimbursement
 
 logger = logging.getLogger(__name__)
@@ -34,3 +36,9 @@ class ReimbursementsConfig(AppConfig):
         _delete_old_reimbursements(
             Reimbursement.Verdict.APPROVED, years_until_deletion=7
         )
+
+    def minimize_user(self, user: Member, dry_run: bool = False) -> None:
+        queryset = Reimbursement.objects.filter(member=user).exclude(verdict=None)
+        if not dry_run:
+            queryset.update(member=None)
+        return queryset.all()

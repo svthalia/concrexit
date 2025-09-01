@@ -5,6 +5,10 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from members.models import Member
+
+from .models import ReferenceFace
+
 
 class FaceDetectionConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
@@ -33,8 +37,6 @@ class FaceDetectionConfig(AppConfig):
         This deletes reference faces that have been marked for deletion by the user for
         some time, as well as reference faces of users that have not logged in for a year.
         """
-        from .models import ReferenceFace
-
         delete_period_inactive_member = timezone.now() - timezone.timedelta(days=365)
         delete_period_marked_for_deletion = timezone.now() - timezone.timedelta(
             days=settings.FACEDETECTION_REFERENCE_FACE_STORAGE_PERIOD_AFTER_DELETE_DAYS
@@ -50,3 +52,9 @@ class FaceDetectionConfig(AppConfig):
                 reference_face.delete()  # Don't run the queryset method, this will also delete the file
 
         return queryset
+
+    def minimize_user(self, user: Member, dry_run: bool = False) -> None:
+        queryset = ReferenceFace.objects.filter(user=user)
+        if not dry_run:
+            queryset.update(user=None)
+        return queryset.all()

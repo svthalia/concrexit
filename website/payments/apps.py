@@ -6,6 +6,8 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from members.models.member import Member
+
 
 class PaymentsConfig(AppConfig):
     """AppConfig for the payments package."""
@@ -79,3 +81,27 @@ class PaymentsConfig(AppConfig):
             queryset_mandates.update(valid_until=timezone.now())
 
         return queryset_payments
+
+    def minimize_user(self, user: Member, dry_run: bool = False) -> None:
+        from .models import BankAccount, Payment
+
+        queryset_payments = Payment.objects.filter(paid_by=user).exclude(
+            paid_by__isnull=True
+        )
+        queryset_bankaccounts = BankAccount.objects.filter(owner=user)
+        queryset_mandates = BankAccount.objects.filter(
+            mandate_no__isnull=False,
+            valid_until=None,
+            owner=user,
+        )
+
+        if not dry_run:
+            queryset_payments.update(paid_by=None, processed_by=None)
+            queryset_bankaccounts.delete()
+            queryset_mandates.update(valid_until=timezone.now())
+
+        return (
+            queryset_payments.all(),
+            queryset_bankaccounts.all(),
+            queryset_mandates.all(),
+        )

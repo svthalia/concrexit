@@ -4,6 +4,10 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from members.models.member import Member
+
+from .models import Entry, Registration, Renewal
+
 
 class RegistrationsConfig(AppConfig):
     """AppConfig for the registrations package."""
@@ -50,8 +54,6 @@ class RegistrationsConfig(AppConfig):
         :param dry_run: does not really remove data if True
         :return: number of removed objects.
         """
-        from .models import Entry, Registration, Renewal
-
         deletion_period = timezone.now() - timezone.timedelta(days=31)
         registrations = Registration.objects.filter(
             Q(status=Entry.STATUS_COMPLETED) | Q(status=Entry.STATUS_REJECTED),
@@ -74,3 +76,17 @@ class RegistrationsConfig(AppConfig):
         renewals = renewals.annotate(__deleting_for_dataminimisation=Value(True))
 
         return registrations.delete()[0] + renewals.delete()[0]
+
+    def minimize_user(self, user: Member, dry_run: bool = False) -> None:
+        registrations = Registration.objects.filter(
+            Q(status=Entry.STATUS_COMPLETED) | Q(status=Entry.STATUS_REJECTED),
+            member=user,
+        )
+        renewals = Renewal.objects.filter(
+            Q(status=Entry.STATUS_COMPLETED) | Q(status=Entry.STATUS_REJECTED),
+            member=user,
+        )
+        if not dry_run:
+            registrations.update(member=None)
+            renewals.update(member=None)
+        return registrations.all(), renewals.all()
