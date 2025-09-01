@@ -30,7 +30,7 @@ class EventRegistration(models.Model):
 
     member = models.ForeignKey(
         "members.Member",
-        models.SET_NULL,
+        models.CASCADE,
         blank=True,
         null=True,
     )
