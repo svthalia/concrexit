@@ -21,7 +21,7 @@ class Command(BaseCommand):
 
     def handle(self, user, *args, **options):
         # TODO make this actually sensible not just dumb
-        for app in apps:
+        for app in apps.get_app_configs():
             try:
                 with transaction.atomic():
                     app.minimize_user(user)
