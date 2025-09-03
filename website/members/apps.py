@@ -5,10 +5,6 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from registrations.models import Renewal
-
-from .models.member import Member
-
 
 class MembersConfig(AppConfig):
     name = "members"
@@ -97,13 +93,17 @@ class MembersConfig(AppConfig):
             )
         return announcements
 
-    def execute_data_minimisation(self, dry_run=False, members=None) -> list[Member]:
+    def execute_data_minimisation(self, dry_run=False, members=None):
         """Clean the profiles of members/users of whom the last membership ended at least 90 days ago.
 
         :param dry_run: does not really remove data if True
         :param members: queryset of members to process, optional
         :return: list of processed members
         """
+        from registrations.models import Renewal
+
+        from .models.member import Member
+
         if not members:
             members = Member.objects
         members = (
@@ -153,7 +153,7 @@ class MembersConfig(AppConfig):
 
         return processed_members
 
-    def minimize_user(self, user: Member, dry_run: bool = False) -> None:
+    def minimize_user(self, user, dry_run: bool = False) -> None:
         profile = user.profile
         profile.student_number = None
         profile.phone_number = None

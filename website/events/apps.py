@@ -4,10 +4,6 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from members.models.member import Member
-
-from .models.event_registration import EventRegistration
-
 
 class EventsConfig(AppConfig):
     """AppConfig for the events package."""
@@ -24,6 +20,7 @@ class EventsConfig(AppConfig):
     def execute_data_minimisation(self, dry_run=False):
         """Delete information about very old events."""
         # Sometimes years are 366 days of course, but better delete 1 or 2 days early than late
+        from .models.event_registration import EventRegistration
 
         deletion_period = timezone.now().date() - timezone.timedelta(days=365 * 5)
 
@@ -38,7 +35,9 @@ class EventsConfig(AppConfig):
             queryset.update(payment=None, member=None, name="<removed>")
         return queryset.all()
 
-    def minimize_user(self, user: Member, dry_run: bool = False) -> None:
+    def minimize_user(self, user, dry_run=False) -> None:
+        from .models.event_registration import EventRegistration
+
         queryset = EventRegistration.objects.filter(
             Q(payment__isnull=False) | Q(date__lte=timezone.now()), member=user
         )
