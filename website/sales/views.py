@@ -57,7 +57,10 @@ def place_order_view(request, *args, **kwargs):
     if shift.locked:
         # You cannot order in a locked shift!
         raise PermissionDenied
+    if not request.member.can_attend_events:
+        raise PermissionDenied
     # TODO: if a shift belongs to an event, should we restrict self-ordering to event participants?
+    # (at least if the event requires registration, of course)
 
     if request.method == "POST":
         form = ProductOrderForm(
