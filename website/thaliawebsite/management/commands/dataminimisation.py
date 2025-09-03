@@ -20,9 +20,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # TODO make this actually sensible not just dumb
-        for app in apps:
+        for app in apps.get_app_configs():
             try:
-                app.execute_data_minimization()
+                app.execute_data_minimisation()
             except Exception as e:
                 warn("Minimization failed:" + str(e))
 
