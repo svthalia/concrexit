@@ -111,6 +111,8 @@ def cancel_order_view(request, *args, **kwargs):
         raise PermissionDenied
     if order.payment:
         raise PermissionDenied
+    if order.created_by != request.member:
+        raise PermissionDenied
     order.delete()
     return redirect("sales:shift-detail", pk=order.shift.pk)
 
