@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
@@ -49,13 +50,13 @@ def place_order_view(request, *args, **kwargs):
         # Orders can only be placed by shift managers
         # which is done through the admin.
         # Time issues are dealt with in the template.
-        raise PermissionError
+        raise PermissionDenied
     if not shift.user_orders_allowed and request.method == "POST":
         # Forbid POSTing when not in the correct time period
-        raise PermissionError
+        raise PermissionDenied
     if shift.locked:
         # You cannot order in a locked shift!
-        raise PermissionError
+        raise PermissionDenied
     # TODO: if a shift belongs to an event, should we restrict self-ordering to event participants?
 
     if request.method == "POST":
@@ -82,7 +83,7 @@ def place_order_view(request, *args, **kwargs):
                         .get_productlistitem()
                         .product.age_restricted
                     ):
-                        raise PermissionError
+                        raise PermissionDenied
                     item = OrderItem(
                         product=form.fields[fieldname].get_productlistitem(),
                         order=order,
@@ -107,9 +108,9 @@ def place_order_view(request, *args, **kwargs):
 def cancel_order_view(request, *args, **kwargs):
     order = get_object_or_404(Order, pk=kwargs["pk"])
     if not order.shift.user_orders_allowed:
-        raise PermissionError
+        raise PermissionDenied
     if order.payment:
-        raise PermissionError
+        raise PermissionDenied
     order.delete()
     return redirect("sales:shift-detail", pk=order.shift.pk)
 
