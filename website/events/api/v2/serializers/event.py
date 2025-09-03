@@ -10,6 +10,7 @@ from events import services
 from events.api.v2.serializers.event_registration import EventRegistrationSerializer
 from events.models import Event
 from payments.api.v2.serializers.payment_amount import PaymentAmountSerializer
+from sales.api.v2.serializers.user_shift import UserShiftSerializer
 from thaliawebsite.api.v2.serializers import CleanedHTMLSerializer
 from thaliawebsite.api.v2.serializers.cleaned_model_serializer import (
     CleanedModelSerializer,
@@ -47,6 +48,7 @@ class EventSerializer(CleanedModelSerializer):
             "cancel_too_late_message",
             "has_fields",
             "food_event",
+            "shift_set",
             "maps_url",
             "user_permissions",
             "user_registration",
@@ -65,6 +67,7 @@ class EventSerializer(CleanedModelSerializer):
     documents = DocumentSerializer(many=True)
     user_permissions = serializers.SerializerMethodField("_user_permissions")
     url = serializers.SerializerMethodField("_url")
+    shift_set = UserShiftSerializer("shift_set", many=True)
 
     def _user_registration(self, instance: Event):
         if self.context["request"].member and len(instance.member_registration) > 0:
