@@ -8,8 +8,8 @@ from members.models import Member
 from moneybirdsynchronization.models import MoneybirdExternalInvoice
 from payments.models import Payment
 from payments.services import create_payment
+from registrations.apps import execute_data_minimisation
 from registrations.models import Renewal
-from registrations.services import execute_data_minimisation
 
 
 # Each test method has a mock_api argument that is a MagicMock instance, replacing the
