@@ -661,7 +661,9 @@ class ServicesTest(TestCase):
     def test_data_minimisation(self):
         with freeze_time("2025-01-01"):
             with self.subTest("No old completed registrations."):
-                self.assertEqual(apps.execute_data_minimisation(), 0)
+                self.assertEqual(
+                    apps.RegistrationsConfig.execute_data_minimisation(), 0
+                )
 
         with freeze_time("2024-09-10"):
             self.renewal.status = Entry.STATUS_COMPLETED
@@ -676,17 +678,17 @@ class ServicesTest(TestCase):
 
         with freeze_time("2024-09-15"):
             with self.subTest("A recent completed registration and renewal."):
-                apps.execute_data_minimisation()
+                apps.RegistrationsConfig.execute_data_minimisation()
                 self.assertEqual(Registration.objects.count(), 4)
                 self.assertEqual(Renewal.objects.count(), 1)
 
         with freeze_time("2024-10-15"):
             with self.subTest("Dry run."):
-                apps.execute_data_minimisation(dry_run=True)
+                apps.RegistrationsConfig.execute_data_minimisation(dry_run=True)
                 self.assertEqual(Registration.objects.count(), 4)
                 self.assertEqual(Renewal.objects.count(), 1)
 
             with self.subTest("An old completed registration and renewal."):
-                apps.execute_data_minimisation()
+                apps.RegistrationsConfig.execute_data_minimisation()
                 self.assertEqual(Registration.objects.count(), 3)
                 self.assertEqual(Renewal.objects.count(), 0)
