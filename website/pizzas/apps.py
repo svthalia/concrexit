@@ -14,7 +14,8 @@ class PizzasConfig(AppConfig):
 
         register()
 
-    def execute_data_minimisation(self, dry_run=False):
+    @staticmethod
+    def execute_data_minimisation(dry_run=False):
         """Anonymizes pizzas orders older than 3 years."""
         # Sometimes years are 366 days of course, but better delete 1 or 2 days early than late
         from .models import FoodOrder
@@ -28,7 +29,8 @@ class PizzasConfig(AppConfig):
             queryset.update(member=None, name="<removed>")
         return queryset
 
-    def minimize_user(self, user, dry_run=False) -> None:
+    @staticmethod
+    def minimize_user(user, dry_run=False) -> None:
         from .models import FoodOrder
 
         queryset = FoodOrder.objects.filter(member=user)

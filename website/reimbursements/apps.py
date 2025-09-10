@@ -12,7 +12,8 @@ class ReimbursementsConfig(AppConfig):
     name = "reimbursements"
     verbose_name = "Reimbursements"
 
-    def execute_data_minimisation(self, dry_run=False):
+    @staticmethod
+    def execute_data_minimisation(dry_run=False):
         from .models import Reimbursement
 
         def _delete_old_reimbursements(
@@ -35,7 +36,8 @@ class ReimbursementsConfig(AppConfig):
             Reimbursement.Verdict.APPROVED, years_until_deletion=7
         )
 
-    def minimize_user(self, user, dry_run: bool = False) -> None:
+    @staticmethod
+    def minimize_user(user, dry_run: bool = False) -> None:
         from .models import Reimbursement
 
         queryset = Reimbursement.objects.filter(member=user).exclude(verdict=None)

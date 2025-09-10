@@ -10,7 +10,8 @@ class SalesConfig(AppConfig):
 
         register()
 
-    def execute_data_minimisation(self, dry_run=False):
+    @staticmethod
+    def execute_data_minimisation(dry_run=False):
         """Anonymizes orders older than 3 years."""
         # Sometimes years are 366 days of course, but better delete 1 or 2 days early than late
         from .models.order import Order
@@ -24,7 +25,8 @@ class SalesConfig(AppConfig):
             queryset.update(payer=None)
         return queryset.all()
 
-    def minimize_user(self, user, dry_run: bool = False) -> None:
+    @staticmethod
+    def minimize_user(user, dry_run: bool = False) -> None:
         from .models.order import Order
 
         queryset = Order.objects.filter(payer=user)

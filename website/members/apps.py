@@ -93,7 +93,8 @@ class MembersConfig(AppConfig):
             )
         return announcements
 
-    def execute_data_minimisation(self, dry_run=False, members=None):
+    @staticmethod
+    def execute_data_minimisation(dry_run=False, members=None):
         """Clean the profiles of members/users of whom the last membership ended at least 90 days ago.
 
         :param dry_run: does not really remove data if True
@@ -153,7 +154,8 @@ class MembersConfig(AppConfig):
 
         return processed_members
 
-    def minimize_user(self, user, dry_run: bool = False) -> None:
+    @staticmethod
+    def minimize_user(user, dry_run: bool = False) -> None:
         profile = user.profile
         profile.student_number = None
         profile.phone_number = None

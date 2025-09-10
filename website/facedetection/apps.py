@@ -27,7 +27,8 @@ class FaceDetectionConfig(AppConfig):
         """Register signals when the app is ready."""
         from . import signals  # noqa: F401
 
-    def execute_data_minimisation(self, dry_run=False):
+    @staticmethod
+    def execute_data_minimisation(dry_run=False):
         """Delete old reference faces.
 
         This deletes reference faces that have been marked for deletion by the user for
@@ -51,7 +52,8 @@ class FaceDetectionConfig(AppConfig):
 
         return queryset
 
-    def minimize_user(self, user, dry_run: bool = False) -> None:
+    @staticmethod
+    def minimize_user(user, dry_run: bool = False) -> None:
         from .models import ReferenceFace
 
         queryset = ReferenceFace.objects.filter(user=user)

@@ -32,7 +32,8 @@ class PaymentsConfig(AppConfig):
             ],
         }
 
-    def execute_data_minimisation(self, dry_run=False):
+    @staticmethod
+    def execute_data_minimisation(dry_run=False):
         """Anonymize payments older than 7 years. Also revoke mandates of minimized users."""
         from .models import BankAccount, Payment
 
@@ -80,7 +81,8 @@ class PaymentsConfig(AppConfig):
 
         return queryset_payments
 
-    def minimize_user(self, user, dry_run: bool = False) -> None:
+    @staticmethod
+    def minimize_user(user, dry_run: bool = False) -> None:
         from .models import BankAccount, Payment
 
         queryset_payments = Payment.objects.filter(paid_by=user).exclude(

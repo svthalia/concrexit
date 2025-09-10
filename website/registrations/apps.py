@@ -44,7 +44,8 @@ class RegistrationsConfig(AppConfig):
             ],
         }
 
-    def execute_data_minimisation(self, dry_run=False):
+    @staticmethod
+    def execute_data_minimisation(dry_run=False):
         """Delete completed or rejected registrations that were modified at least 31 days ago.
 
         :param dry_run: does not really remove data if True
@@ -75,7 +76,8 @@ class RegistrationsConfig(AppConfig):
 
         return registrations.delete()[0] + renewals.delete()[0]
 
-    def minimize_user(self, user, dry_run: bool = False) -> None:
+    @staticmethod
+    def minimize_user(user, dry_run: bool = False) -> None:
         from .models import Entry, Registration, Renewal
 
         registrations = Registration.objects.filter(

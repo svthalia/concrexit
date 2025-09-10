@@ -17,34 +17,6 @@ class EventsConfig(AppConfig):
 
         register()
 
-    def execute_data_minimisation(self, dry_run=False):
-        """Delete information about very old events."""
-        # Sometimes years are 366 days of course, but better delete 1 or 2 days early than late
-        from .models.event_registration import EventRegistration
-
-        deletion_period = timezone.now().date() - timezone.timedelta(days=365 * 5)
-
-        queryset = EventRegistration.objects.filter(
-            event__end__lte=deletion_period
-        ).filter(
-            Q(payment__isnull=False)
-            | Q(member__isnull=False)
-            | ~Q(name__exact="<removed>")
-        )
-        if not dry_run:
-            queryset.update(payment=None, member=None, name="<removed>")
-        return queryset.all()
-
-    def minimize_user(self, user, dry_run=False) -> None:
-        from .models.event_registration import EventRegistration
-
-        queryset = EventRegistration.objects.filter(
-            Q(payment__isnull=False) | Q(date__lte=timezone.now()), member=user
-        )
-        if not dry_run:
-            queryset.update(payment=None, member=None, name="<removed>")
-        return queryset.all()
-
     def menu_items(self):
         return {
             "categories": [{"name": "association", "title": "Association", "key": 1}],
@@ -62,3 +34,33 @@ class EventsConfig(AppConfig):
                 },
             ],
         }
+
+    @staticmethod
+    def execute_data_minimisation(dry_run=False):
+        """Delete information about very old events."""
+        # Sometimes years are 366 days of course, but better delete 1 or 2 days early than late
+        from .models.event_registration import EventRegistration
+
+        deletion_period = timezone.now().date() - timezone.timedelta(days=365 * 5)
+
+        queryset = EventRegistration.objects.filter(
+            event__end__lte=deletion_period
+        ).filter(
+            Q(payment__isnull=False)
+            | Q(member__isnull=False)
+            | ~Q(name__exact="<removed>")
+        )
+        if not dry_run:
+            queryset.update(payment=None, member=None, name="<removed>")
+        return queryset.all()
+
+    @staticmethod
+    def minimize_user(user, dry_run=False) -> None:
+        from .models.event_registration import EventRegistration
+
+        queryset = EventRegistration.objects.filter(
+            Q(payment__isnull=False) | Q(date__lte=timezone.now()), member=user
+        )
+        if not dry_run:
+            queryset.update(payment=None, member=None, name="<removed>")
+        return queryset.all()
