@@ -138,10 +138,6 @@ class UserOrderDetailView(RetrieveAPIView, UpdateAPIView, DestroyAPIView):
 
         if not self.request.member:
             queryset = queryset.none()
-        elif not self.request.member.has_perm("sales.override_manager"):
-            queryset = queryset.filter(
-                shift__managers__in=self.request.member.get_member_groups()
-            ).distinct()
 
         queryset = queryset.select_properties(
             "total_amount", "subtotal", "num_items", "age_restricted"
