@@ -16,4 +16,4 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        apps.execute_data_minimisation(options["dry-run"])
+        apps.RegistrationsConfig.execute_data_minimisation(options["dry-run"])
