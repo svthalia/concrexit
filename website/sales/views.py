@@ -10,11 +10,11 @@ from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.decorators.http import require_http_methods
 from django.views.generic import DetailView
+from django.views.generic.edit import FormView
 
 from sales import services
 from sales.forms import ProductOrderForm
 from sales.models.order import Order, OrderItem, Shift
-from sales.models.product import ProductListItem
 
 
 @method_decorator(login_required, name="dispatch")
@@ -43,68 +43,68 @@ class ShiftDetailView(DetailView):
         return context
 
 
-@login_required
-def place_order_view(request, *args, **kwargs):
-    shift = get_object_or_404(Shift, pk=kwargs["pk"])
-    if not shift.selforder:
-        # Orders can only be placed by shift managers
-        # which is done through the admin.
-        # Time issues are dealt with in the template.
-        raise PermissionDenied
-    if not shift.user_orders_allowed and request.method == "POST":
-        # Forbid POSTing when not in the correct time period
-        raise PermissionDenied
-    if shift.locked:
-        # You cannot order in a locked shift!
-        raise PermissionDenied
-    if not request.member.can_attend_events:
-        raise PermissionDenied
-    # TODO: if a shift belongs to an event, should we restrict self-ordering to event participants?
-    # (at least if the event requires registration, of course)
+@method_decorator(login_required, name="dispatch")
+class PlaceOrderView(FormView):
+    template_name = "sales/order_place.html"
 
-    if request.method == "POST":
-        form = ProductOrderForm(
-            shift.product_list, services.is_adult(request.member), request.POST
+    def dispatch(self, request, *args, **kwargs):
+        self.shift = get_object_or_404(Shift, pk=kwargs["pk"])
+        if not self.shift.selforder:
+            # Orders can only be placed by shift managers
+            # which is done through the admin.
+            # Time issues are dealt with in the template.
+            raise PermissionDenied
+        if not self.shift.user_orders_allowed and request.method == "POST":
+            # Forbid POSTing when not in the correct time period
+            raise PermissionDenied
+        if self.shift.locked:
+            # You cannot order in a locked shift!
+            raise PermissionDenied
+        if not request.member.can_attend_events:
+            raise PermissionDenied
+        # TODO: if a shift belongs to an event, should we restrict self-ordering to event participants?
+        # (at least if the event requires registration, of course)
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_form(self, form_class=None):
+        return ProductOrderForm(
+            self.shift.product_list,
+            services.is_adult(self.request.member),
+            **self.get_form_kwargs(),
         )
-        if form.is_valid():
-            with transaction.atomic():
-                order = Order(
-                    created_at=timezone.now(),
-                    created_by=request.member,
-                    shift=shift,
-                    payment=None,
-                    discount=0.00,
-                    payer=request.member,
-                )
-                order.save()
-                for fieldname, amount in form.cleaned_data.items():
-                    if amount is None:
-                        continue
-                    if (
-                        not services.is_adult(request.member)
-                        and form.fields[fieldname]
-                        .get_productlistitem()
-                        .product.age_restricted
-                    ):
-                        raise PermissionDenied
-                    item = OrderItem(
-                        product=form.fields[fieldname].get_productlistitem(),
-                        order=order,
-                        amount=amount,
-                    )
-                    item.save()
-                return redirect("sales:shift-detail", pk=shift.pk)
-    else:
-        form = ProductOrderForm(shift.product_list, services.is_adult(request.member))
 
-    context = {}
-    context["shift"] = shift
-    context["items"] = ProductListItem.objects.filter(product_list=shift.product_list)
-    context["form"] = form
-    context["date_now"] = timezone.now()
-    context["formfield"] = context["form"].fields["product_1"]
+    @transaction.atomic
+    def form_valid(self, form):
+        order = Order(
+            created_at=timezone.now(),
+            created_by=self.request.member,
+            shift=self.shift,
+            payment=None,
+            discount=0.00,
+            payer=self.request.member,
+        )
+        order.save()
+        for fieldname, amount in form.cleaned_data.items():
+            if amount is None:
+                continue
+            if (
+                not services.is_adult(self.request.member)
+                and form.fields[fieldname].get_productlistitem().product.age_restricted
+            ):
+                raise PermissionDenied
+            item = OrderItem(
+                product=form.fields[fieldname].get_productlistitem(),
+                order=order,
+                amount=amount,
+            )
+            item.save()
+        return redirect("sales:shift-detail", pk=self.shift.pk)
 
-    return render(request, "sales/order_place.html", context)
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["shift"] = self.shift
+        ctx["date_now"] = timezone.now()
+        return ctx
 
 
 @require_http_methods(["POST"])
