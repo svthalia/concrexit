@@ -12,7 +12,7 @@ from .models import Registration, Renewal
 
 @shared_task
 def minimise_registrations():
-    apps.execute_data_minimisation()
+    apps.RegistrationsConfig.execute_data_minimisation()
 
 
 @shared_task
