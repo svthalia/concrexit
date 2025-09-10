@@ -3,7 +3,7 @@ from django.utils import timezone
 
 from freezegun import freeze_time
 
-from members.apps import MembersConfig as config
+from members.apps import MembersConfig as Config
 from members.models import Member, Membership, Profile
 
 
@@ -41,23 +41,23 @@ class DataMinimisationTest(TestCase):
 
     def test_removes_after_31_days_or_no_membership(self):
         with self.subTest("Deletes after 90 days"):
-            processed = config.execute_data_minimisation(True)
+            processed = Config.execute_data_minimisation(True)
             self.assertEqual(len(processed), 2)
             self.assertEqual(processed[0], self.m1)
 
         with self.subTest("Deletes after 90 days"):
             self.s1.until = timezone.now().replace(year=2018, month=11, day=1)
             self.s1.save()
-            processed = config.execute_data_minimisation(True)
+            processed = Config.execute_data_minimisation(True)
             self.assertEqual(len(processed), 1)
 
         with self.subTest("Deletes when no memberships"):
             self.s1.delete()
-            processed = config.execute_data_minimisation(True)
+            processed = Config.execute_data_minimisation(True)
             self.assertEqual(len(processed), 2)
 
     def test_provided_queryset(self):
-        processed = config.execute_data_minimisation(True, members=Member.objects)
+        processed = Config.execute_data_minimisation(True, members=Member.objects)
         self.assertEqual(len(processed), 2)
         self.assertEqual(processed[0], self.m1)
 
@@ -65,12 +65,12 @@ class DataMinimisationTest(TestCase):
         with self.subTest("Membership ends in future"):
             self.s1.until = timezone.now().replace(year=2019, month=9, day=1)
             self.s1.save()
-            processed = config.execute_data_minimisation(True)
+            processed = Config.execute_data_minimisation(True)
             self.assertEqual(len(processed), 1)
         with self.subTest("Never ending membership"):
             self.s1.until = None
             self.s1.save()
-            processed = config.execute_data_minimisation(True)
+            processed = Config.execute_data_minimisation(True)
             self.assertEqual(len(processed), 1)
             self.s1.until = timezone.now().replace(year=2018, month=9, day=1)
             self.s1.save()
@@ -81,7 +81,7 @@ class DataMinimisationTest(TestCase):
                 since=timezone.now().replace(year=2018, month=9, day=10),
                 until=timezone.now().replace(year=2019, month=8, day=31),
             )
-            processed = config.execute_data_minimisation(True)
+            processed = Config.execute_data_minimisation(True)
             self.assertEqual(len(processed), 1)
             m.delete()
         with self.subTest("Newer study membership after expired one"):
@@ -91,6 +91,6 @@ class DataMinimisationTest(TestCase):
                 since=timezone.now().replace(year=2018, month=9, day=10),
                 until=None,
             )
-            processed = config.execute_data_minimisation(True)
+            processed = Config.execute_data_minimisation(True)
             self.assertEqual(len(processed), 1)
             m.delete()
