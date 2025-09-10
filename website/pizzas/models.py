@@ -146,7 +146,7 @@ class FoodOrder(models.Model):
 
     member = models.ForeignKey(
         members.models.Member,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         blank=True,
         null=True,
     )
