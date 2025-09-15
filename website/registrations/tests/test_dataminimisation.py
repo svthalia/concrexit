@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.test import TestCase
 from django.utils import timezone
 
@@ -151,6 +152,78 @@ class DataMinimisationTest(TestCase):
                 self.assertEqual(Registration.objects.count(), 3)
                 self.assertEqual(Renewal.objects.count(), 0)
 
-    def test_minimize_user(self):
-        apps.RegistrationsConfig.minimize_user(self.member, dry_run=True)
-        self.member.refresh_from_db()
+    def test_minimize_user_dry_run(self):
+        """Test minimize_user with dry_run=True returns renewals without deleting."""
+        # Create more renewals for the test user
+        new_renewal1 = Renewal.objects.create(
+            member=self.member,
+            length=Entry.MEMBERSHIP_YEAR,
+            contribution=7.5,
+            status=Entry.STATUS_COMPLETED,
+        )
+
+        new_renewal2 = Renewal.objects.create(
+            member=self.member,
+            length=Entry.MEMBERSHIP_YEAR,
+            contribution=7.5,
+            status=Entry.STATUS_REJECTED,
+        )
+
+        initial_count = Renewal.objects.filter(member=self.member).count()
+        expected_renewal_count = Renewal.objects.filter(
+            Q(status=Entry.STATUS_COMPLETED) | Q(status=Entry.STATUS_REJECTED),
+            member=self.member,
+        ).count()
+
+        # Call minimize_user with dry_run=True
+        renewals = apps.RegistrationsConfig.minimize_user(self.member, dry_run=True)
+
+        # Verify renewals were returned but not deleted
+        self.assertEqual(renewals.count(), expected_renewal_count)
+        self.assertEqual(
+            Renewal.objects.filter(member=self.member).count(), initial_count
+        )
+
+    def test_minimize_user_actual_run(self):
+        """Test minimize_user with dry_run=False properly deletes renewals."""
+        new_renewal1 = Renewal.objects.create(
+            member=self.member,
+            length=Entry.MEMBERSHIP_YEAR,
+            contribution=7.5,
+            status=Entry.STATUS_COMPLETED,
+        )
+
+        new_renewal2 = Renewal.objects.create(
+            member=self.member,
+            length=Entry.MEMBERSHIP_YEAR,
+            contribution=7.5,
+            status=Entry.STATUS_REJECTED,
+        )
+
+        new_renewal3 = Renewal.objects.create(
+            member=self.member,
+            length=Entry.MEMBERSHIP_YEAR,
+            contribution=7.5,
+            status=Entry.STATUS_CONFIRM,
+        )
+
+        confirm_count_before = Renewal.objects.filter(
+            member=self.member, status=Entry.STATUS_CONFIRM
+        ).count()
+
+        result = apps.RegistrationsConfig.minimize_user(self.member, dry_run=False)
+
+        self.assertEqual(
+            Renewal.objects.filter(
+                member=self.member,
+                status__in=[Entry.STATUS_COMPLETED, Entry.STATUS_REJECTED],
+            ).count(),
+            0,
+        )
+
+        self.assertEqual(
+            Renewal.objects.filter(
+                member=self.member, status=Entry.STATUS_CONFIRM
+            ).count(),
+            confirm_count_before,
+        )
