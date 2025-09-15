@@ -78,17 +78,12 @@ class RegistrationsConfig(AppConfig):
 
     @staticmethod
     def minimize_user(user, dry_run: bool = False) -> None:
-        from .models import Entry, Registration, Renewal
+        from .models import Entry, Renewal
 
-        registrations = Registration.objects.filter(
-            Q(status=Entry.STATUS_COMPLETED) | Q(status=Entry.STATUS_REJECTED),
-            member=user,
-        )
         renewals = Renewal.objects.filter(
             Q(status=Entry.STATUS_COMPLETED) | Q(status=Entry.STATUS_REJECTED),
             member=user,
         )
         if not dry_run:
-            registrations.update(member=None)
-            renewals.update(member=None)
-        return registrations.all(), renewals.all()
+            renewals.delete()[0]
+        return renewals.all()

@@ -94,3 +94,61 @@ class DataMinimisationTest(TestCase):
             processed = Config.execute_data_minimisation(True)
             self.assertEqual(len(processed), 1)
             m.delete()
+
+
+@freeze_time("2018-12-2")
+@override_settings(SUSPEND_SIGNALS=True)
+class MinimizeUserTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.m1 = Member.objects.create(
+            username="test1",
+            first_name="Test1",
+            last_name="Example",
+            email="example@test.com",
+        )
+        Profile.objects.create(user=cls.m1, student_number="s1234567")
+        cls.s1 = Membership.objects.create(
+            user=cls.m1,
+            type=Membership.MEMBER,
+            since=timezone.now().replace(year=2017, month=9, day=1),
+            until=timezone.now().replace(year=2018, month=9, day=1),
+        )
+        cls.m2 = Member.objects.create(
+            username="test2",
+            first_name="Test2",
+            last_name="Example",
+            email="example2@test.com",
+        )
+        Profile.objects.create(user=cls.m2, student_number="s7654321")
+        cls.s2 = Membership.objects.create(
+            user=cls.m2,
+            type=Membership.MEMBER,
+            since=timezone.now().replace(year=2017, month=9, day=1),
+            until=timezone.now().replace(year=2018, month=9, day=1),
+        )
+
+    def test_minimize_user(self):
+        with self.subTest("Minimize user"):
+            Config.minimize_user(self.m1)
+            self.m1.refresh_from_db()
+            self.assertTrue(self.m1.profile.is_minimized)
+            self.assertEqual(self.m1.first_name, "Test1")
+            self.assertEqual(self.m1.last_name, "Example")
+            self.assertEqual(self.m1.email, "example@test.com")
+            self.assertIsNone(self.m1.profile.student_number)
+        with self.subTest("Minimize already minimized user"):
+            Config.minimize_user(self.m1)
+            self.m1.refresh_from_db()
+            self.assertTrue(self.m1.profile.is_minimized)
+            self.assertEqual(self.m1.first_name, "Test1")
+            self.assertEqual(self.m1.last_name, "Example")
+            self.assertEqual(self.m1.email, "example@test.com")
+            self.assertIsNone(self.m1.profile.student_number)
+        with self.subTest("Does not affect other user"):
+            self.m2.refresh_from_db()
+            self.assertFalse(self.m2.profile.is_minimized)
+            self.assertEqual(self.m2.first_name, "Test2")
+            self.assertEqual(self.m2.last_name, "Example")
+            self.assertEqual(self.m2.email, "example2@test.com")
+            self.assertIsNotNone(self.m2.profile.student_number)
