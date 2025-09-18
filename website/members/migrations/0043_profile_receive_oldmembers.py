@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("members", "0042_profile_is_minimised_alter_profile_address_city_and_more"),
+        ("members", "0042_profile_is_minimized_alter_profile_address_city_and_more"),
     ]
 
     operations = [
