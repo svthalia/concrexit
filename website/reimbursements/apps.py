@@ -40,8 +40,8 @@ class ReimbursementsConfig(AppConfig):
     def minimise_user(user, dry_run: bool = False) -> None:
         from .models import Reimbursement
 
-        queryset = Reimbursement.objects.filter(member=user).exclude(verdict=None)
-        open_reimbursements = Reimbursement.objects.filter(member=user, verdict=None)
+        queryset = Reimbursement.objects.filter(member=user)
+        open_reimbursements = queryset.filter(verdict=None)
         if open_reimbursements.exists():
             raise ValueError("Cannot minimise user with open reimbursements.")
 
