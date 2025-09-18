@@ -84,6 +84,11 @@ class RegistrationsConfig(AppConfig):
             Q(status=Entry.STATUS_COMPLETED) | Q(status=Entry.STATUS_REJECTED),
             member=user,
         )
+
+        open_renewals = Renewal.objects.filter(member=user, status=Entry.STATUS_OPEN)
+        if open_renewals.exists():
+            raise ValueError("Cannot minimise user with open renewals.")
+
         if not dry_run:
             renewals.delete()[0]
         return renewals.all()

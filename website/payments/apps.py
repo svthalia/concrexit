@@ -94,6 +94,13 @@ class PaymentsConfig(AppConfig):
             valid_until=None,
             owner=user,
         )
+        unprocessed_payments = Payment.objects.filter(
+            processed=False,
+            paid_by=user,
+        )
+
+        if unprocessed_payments.exists():
+            raise ValueError("Cannot minimise user with unprocessed payments")
 
         if not dry_run:
             queryset_payments.update(paid_by=None, processed_by=None)

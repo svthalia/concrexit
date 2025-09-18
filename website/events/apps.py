@@ -61,6 +61,13 @@ class EventsConfig(AppConfig):
         queryset = EventRegistration.objects.filter(
             Q(payment__isnull=False) | Q(date__lte=timezone.now()), member=user
         )
+        future_registrations = EventRegistration.objects.filter(
+            event__start__gt=timezone.now(), member=user
+        )
+
+        if future_registrations.exists():
+            raise ValueError("Cannot minimise user with future event registrations.")
+
         if not dry_run:
             queryset.update(payment=None, member=None, name="<removed>")
         return queryset.all()
