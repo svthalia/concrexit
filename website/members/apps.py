@@ -148,14 +148,14 @@ class MembersConfig(AppConfig):
                 profile.birthday = None
                 profile.emergency_contact_phone_number = None
                 profile.emergency_contact = None
-                profile.is_minimized = True
+                profile.is_minimised = True
                 if not dry_run:
                     profile.save()
 
         return processed_members
 
     @staticmethod
-    def minimize_user(user, dry_run: bool = False) -> None:
+    def minimise_user(user, dry_run: bool = False) -> None:
         profile = user.profile
         profile.student_number = None
         profile.phone_number = None
@@ -167,6 +167,6 @@ class MembersConfig(AppConfig):
         profile.birthday = None
         profile.emergency_contact_phone_number = None
         profile.emergency_contact = None
-        profile.is_minimized = True
+        profile.is_minimised = True
         if not dry_run:
             profile.save()

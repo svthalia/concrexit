@@ -13,10 +13,10 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name="profile",
-            name="is_minimized",
+            name="is_minimised",
             field=models.BooleanField(
                 default=False,
-                verbose_name="The data from this profile has been minimized",
+                verbose_name="The data from this profile has been minimised",
             ),
         ),
         migrations.AlterField(

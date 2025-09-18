@@ -98,7 +98,7 @@ class DataMinimisationTest(TestCase):
 
 @freeze_time("2018-12-2")
 @override_settings(SUSPEND_SIGNALS=True)
-class MinimizeUserTest(TestCase):
+class MinimiseUserTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.m1 = Member.objects.create(
@@ -128,26 +128,26 @@ class MinimizeUserTest(TestCase):
             until=timezone.now().replace(year=2018, month=9, day=1),
         )
 
-    def test_minimize_user(self):
-        with self.subTest("Minimize user"):
-            Config.minimize_user(self.m1)
+    def test_minimise_user(self):
+        with self.subTest("minimise user"):
+            Config.minimise_user(self.m1)
             self.m1.refresh_from_db()
-            self.assertTrue(self.m1.profile.is_minimized)
+            self.assertTrue(self.m1.profile.is_minimised)
             self.assertEqual(self.m1.first_name, "Test1")
             self.assertEqual(self.m1.last_name, "Example")
             self.assertEqual(self.m1.email, "example@test.com")
             self.assertIsNone(self.m1.profile.student_number)
-        with self.subTest("Minimize already minimized user"):
-            Config.minimize_user(self.m1)
+        with self.subTest("minimise already minimised user"):
+            Config.minimise_user(self.m1)
             self.m1.refresh_from_db()
-            self.assertTrue(self.m1.profile.is_minimized)
+            self.assertTrue(self.m1.profile.is_minimised)
             self.assertEqual(self.m1.first_name, "Test1")
             self.assertEqual(self.m1.last_name, "Example")
             self.assertEqual(self.m1.email, "example@test.com")
             self.assertIsNone(self.m1.profile.student_number)
         with self.subTest("Does not affect other user"):
             self.m2.refresh_from_db()
-            self.assertFalse(self.m2.profile.is_minimized)
+            self.assertFalse(self.m2.profile.is_minimised)
             self.assertEqual(self.m2.first_name, "Test2")
             self.assertEqual(self.m2.last_name, "Example")
             self.assertEqual(self.m2.email, "example2@test.com")

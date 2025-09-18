@@ -30,7 +30,7 @@ class PizzasConfig(AppConfig):
         return queryset
 
     @staticmethod
-    def minimize_user(user, dry_run=False) -> None:
+    def minimise_user(user, dry_run=False) -> None:
         from .models import FoodOrder
 
         queryset = FoodOrder.objects.filter(member=user)

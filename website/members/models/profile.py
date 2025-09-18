@@ -269,8 +269,8 @@ class Profile(models.Model):
         default=False,
     )
 
-    is_minimized = models.BooleanField(
-        verbose_name="The data from this profile has been minimized", default=False
+    is_minimised = models.BooleanField(
+        verbose_name="The data from this profile has been minimised", default=False
     )
 
     def display_name(self):
@@ -312,7 +312,7 @@ class Profile(models.Model):
         super().clean()
         errors = {}
 
-        if not self.is_minimized and not (
+        if not self.is_minimised and not (
             self.address_street
             or self.address_postal_code
             or self.address_city
@@ -354,7 +354,7 @@ class Profile(models.Model):
                 self.emergency_contact,
             ]
         ):
-            self.is_minimized = False
+            self.is_minimised = False
         super().save(**kwargs)
 
         if self._orig_image and not self.photo:

@@ -26,7 +26,7 @@ class SalesConfig(AppConfig):
         return queryset.all()
 
     @staticmethod
-    def minimize_user(user, dry_run: bool = False) -> None:
+    def minimise_user(user, dry_run: bool = False) -> None:
         from .models.order import Order
 
         queryset = Order.objects.filter(payer=user)

@@ -135,7 +135,7 @@ class RenewalFormTest(TestCase):
             self.data["privacy_policy"] = 0
             form = forms.RenewalForm(self.data)
             self.assertFalse(form.is_valid(), msg=dict(form.errors))
-        with self.subTest("User is minimized"):
+        with self.subTest("User is minimised"):
             profile = self.member.profile
             profile.student_number = None
             profile.phone_number = None
@@ -147,7 +147,7 @@ class RenewalFormTest(TestCase):
             profile.birthday = None
             profile.emergency_contact_phone_number = None
             profile.emergency_contact = None
-            profile.is_minimized = True
+            profile.is_minimised = True
             profile.save()
             self.assertFalse(forms.RenewalForm(self.data).is_valid())
 
@@ -371,7 +371,7 @@ class NewYearFormTest(TestCase):
         with self.subTest("User doesn't have study_long"):
             self.member.latest_membership.study_long = False
             self.assertFalse(forms.NewYearForm(self.data).is_valid())
-        with self.subTest("User is minimized"):
+        with self.subTest("User is minimised"):
             profile = self.member.profile
             profile.student_number = None
             profile.phone_number = None
@@ -383,7 +383,7 @@ class NewYearFormTest(TestCase):
             profile.birthday = None
             profile.emergency_contact_phone_number = None
             profile.emergency_contact = None
-            profile.is_minimized = True
+            profile.is_minimised = True
             profile.save()
             self.assertFalse(forms.NewYearForm(self.data).is_valid())
 

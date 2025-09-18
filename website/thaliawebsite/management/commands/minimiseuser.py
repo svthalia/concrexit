@@ -24,7 +24,7 @@ class Command(BaseCommand):
         for app in apps.get_app_configs():
             try:
                 with transaction.atomic():
-                    app.minimize_user(user)
+                    app.minimise_user(user)
             except Exception as e:
                 warn("User minimization failed:" + str(e))
 

@@ -37,7 +37,7 @@ class ReimbursementsConfig(AppConfig):
         )
 
     @staticmethod
-    def minimize_user(user, dry_run: bool = False) -> None:
+    def minimise_user(user, dry_run: bool = False) -> None:
         from .models import Reimbursement
 
         queryset = Reimbursement.objects.filter(member=user).exclude(verdict=None)

@@ -53,7 +53,7 @@ class FaceDetectionConfig(AppConfig):
         return queryset
 
     @staticmethod
-    def minimize_user(user, dry_run: bool = False) -> None:
+    def minimise_user(user, dry_run: bool = False) -> None:
         from .models import ReferenceFace
 
         queryset = ReferenceFace.objects.filter(user=user)

@@ -34,7 +34,7 @@ class PaymentsConfig(AppConfig):
 
     @staticmethod
     def execute_data_minimisation(dry_run=False):
-        """Anonymize payments older than 7 years. Also revoke mandates of minimized users."""
+        """Anonymize payments older than 7 years. Also revoke mandates of minimised users."""
         from .models import BankAccount, Payment
 
         # Sometimes years are 366 days of course, but better delete 1 or 2 days early than late
@@ -71,7 +71,7 @@ class PaymentsConfig(AppConfig):
         queryset_mandates = BankAccount.objects.filter(
             mandate_no__isnull=False,
             valid_until=None,
-            owner__profile__is_minimized=True,
+            owner__profile__is_minimised=True,
         )
 
         if not dry_run:
@@ -82,7 +82,7 @@ class PaymentsConfig(AppConfig):
         return queryset_payments
 
     @staticmethod
-    def minimize_user(user, dry_run: bool = False) -> None:
+    def minimise_user(user, dry_run: bool = False) -> None:
         from .models import BankAccount, Payment
 
         queryset_payments = Payment.objects.filter(paid_by=user).exclude(

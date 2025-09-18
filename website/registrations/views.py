@@ -210,7 +210,7 @@ class NewYearRenewalFormView(FormView):
             or membership is None
             or membership.type != Membership.MEMBER
             or not membership.study_long
-            or request.member.profile.is_minimized
+            or request.member.profile.is_minimised
             or membership.until is None
             or ((membership.until - timezone.now().date()).days > 31)
         ):

@@ -55,7 +55,7 @@ class EventsConfig(AppConfig):
         return queryset.all()
 
     @staticmethod
-    def minimize_user(user, dry_run=False) -> None:
+    def minimise_user(user, dry_run=False) -> None:
         from .models.event_registration import EventRegistration
 
         queryset = EventRegistration.objects.filter(

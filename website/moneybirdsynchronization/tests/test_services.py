@@ -528,7 +528,7 @@ class ServicesTest(TestCase):
         mock_delete_contact,
         mock_api,
     ):
-        # test moneyboard contact is made for users without moneybird contact (and not minimized), in this case only for self.member
+        # test moneyboard contact is made for users without moneybird contact (and not minimised), in this case only for self.member
         services._sync_contacts()
 
         self.assertEqual(mock_create_or_update_contact.call_count, 5)
@@ -572,7 +572,7 @@ class ServicesTest(TestCase):
         self.member.moneybird_contact.needs_synchronization = False
         self.member.moneybird_contact.save()
 
-        # Moneybird contact is deleted (archived) if a profile is minimized.
+        # Moneybird contact is deleted (archived) if a profile is minimised.
         profile = self.member.profile
         profile.student_number = None
         profile.phone_number = None
@@ -584,7 +584,7 @@ class ServicesTest(TestCase):
         profile.birthday = None
         profile.emergency_contact_phone_number = None
         profile.emergency_contact = None
-        profile.is_minimized = True
+        profile.is_minimised = True
         profile.save()
 
         services._sync_contacts()

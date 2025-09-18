@@ -77,7 +77,7 @@ class RegistrationsConfig(AppConfig):
         return registrations.delete()[0] + renewals.delete()[0]
 
     @staticmethod
-    def minimize_user(user, dry_run: bool = False) -> None:
+    def minimise_user(user, dry_run: bool = False) -> None:
         from .models import Entry, Renewal
 
         renewals = Renewal.objects.filter(

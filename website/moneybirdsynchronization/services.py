@@ -304,7 +304,7 @@ def _sync_contacts():
     logger.info("Synchronizing contacts...")
     # Make moneybird contacts for people that dont have.
     for member in Member.objects.filter(
-        moneybird_contact__isnull=True, profile__is_minimized=False
+        moneybird_contact__isnull=True, profile__is_minimised=False
     ):
         try:
             create_or_update_contact(member)
@@ -320,8 +320,8 @@ def _sync_contacts():
             logger.exception("Moneybird synchronization error: %s", e)
             send_sync_error(e, contact.member)
 
-    # Archive moneybrid contacts where mb contact has not been archived but user was minimized.
-    for contact in MoneybirdContact.objects.filter(member__profile__is_minimized=True):
+    # Archive moneybrid contacts where mb contact has not been archived but user was minimised.
+    for contact in MoneybirdContact.objects.filter(member__profile__is_minimised=True):
         try:
             delete_contact(contact)
         except Administration.Error as e:

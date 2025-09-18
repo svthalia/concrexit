@@ -129,7 +129,7 @@
                         have to renew your membership.
                     {% endblocktrans %}
                 </p>
-            {% elif not request.member.profile.is_minimized %}
+            {% elif not request.member.profile.is_minimised %}
                 {% for error in form.errors.items %}
                     {% for message in error.1 %}
                         {% alert 'danger' message dismissible=True %}
@@ -184,7 +184,7 @@
             {% else %}
                 <p>
 
-                        You have a minimized profile. You can't renew your
+                        You have a minimised profile. You can't renew your
                         membership until you have filled in all the required
                         fields.<a href="{% url "members:edit-profile"  %}?require_address=1&next={% url "registrations:renew" %}"> Click here</a> to complete your profile.
                 </p>

@@ -14,8 +14,8 @@ from .models import Profile
 class ProfileForm(forms.ModelForm):
     """Form with all the user editable fields of a Profile model.
 
-    If the profile is minimized, no fields are required, unless the `require_address`
-    keyword argument is True, which is set if a user is filling a minimized profile
+    If the profile is minimised, no fields are required, unless the `require_address`
+    keyword argument is True, which is set if a user is filling a minimised profile
     in order to be able to create a Renewal.
     """
 
@@ -58,7 +58,7 @@ class ProfileForm(forms.ModelForm):
             "address_city",
             "address_country",
         ]:
-            if require_address or not user.profile.is_minimized:
+            if require_address or not user.profile.is_minimised:
                 self.fields[field].required = True
             else:
                 self.fields[field].required = False
@@ -78,7 +78,7 @@ class ProfileForm(forms.ModelForm):
             )
 
         self.fields["birthday"].widget.input_type = "date"
-        if not user.profile.is_minimized:
+        if not user.profile.is_minimised:
             self.fields["birthday"].disabled = True
 
         self.render_app_specific_profile_form_fields()

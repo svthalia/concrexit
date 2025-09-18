@@ -152,8 +152,8 @@ class DataMinimisationTest(TestCase):
                 self.assertEqual(Registration.objects.count(), 3)
                 self.assertEqual(Renewal.objects.count(), 0)
 
-    def test_minimize_user_dry_run(self):
-        """Test minimize_user with dry_run=True returns renewals without deleting."""
+    def test_minimise_user_dry_run(self):
+        """Test minimise_user with dry_run=True returns renewals without deleting."""
         # Create more renewals for the test user
         new_renewal1 = Renewal.objects.create(
             member=self.member,
@@ -175,8 +175,8 @@ class DataMinimisationTest(TestCase):
             member=self.member,
         ).count()
 
-        # Call minimize_user with dry_run=True
-        renewals = apps.RegistrationsConfig.minimize_user(self.member, dry_run=True)
+        # Call minimise_user with dry_run=True
+        renewals = apps.RegistrationsConfig.minimise_user(self.member, dry_run=True)
 
         # Verify renewals were returned but not deleted
         self.assertEqual(renewals.count(), expected_renewal_count)
@@ -184,8 +184,8 @@ class DataMinimisationTest(TestCase):
             Renewal.objects.filter(member=self.member).count(), initial_count
         )
 
-    def test_minimize_user_actual_run(self):
-        """Test minimize_user with dry_run=False properly deletes renewals."""
+    def test_minimise_user_actual_run(self):
+        """Test minimise_user with dry_run=False properly deletes renewals."""
         new_renewal1 = Renewal.objects.create(
             member=self.member,
             length=Entry.MEMBERSHIP_YEAR,
@@ -211,7 +211,7 @@ class DataMinimisationTest(TestCase):
             member=self.member, status=Entry.STATUS_CONFIRM
         ).count()
 
-        result = apps.RegistrationsConfig.minimize_user(self.member, dry_run=False)
+        result = apps.RegistrationsConfig.minimise_user(self.member, dry_run=False)
 
         self.assertEqual(
             Renewal.objects.filter(
