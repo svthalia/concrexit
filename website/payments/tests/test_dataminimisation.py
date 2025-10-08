@@ -72,7 +72,6 @@ class UserMinimisationTests(TestCase):
 
     def test_minimise_user_dry_run(self):
         """Test dry run returns correct querysets without modifying data."""
-        # processed payment that should be anonymised in actual run
         payment = Payment.objects.create(
             paid_by=self.member,
             amount=1,
@@ -82,7 +81,6 @@ class UserMinimisationTests(TestCase):
             processed_by=self.member,
         )
 
-        # regular bank account (should be included in deletion)
         b = BankAccount.objects.create(
             owner=self.member,
             initials="J",
@@ -94,10 +92,22 @@ class UserMinimisationTests(TestCase):
             signature="base64,png",
         )
 
+        b2 = BankAccount.objects.create(
+            owner=self.member,
+            initials="b",
+            last_name="Test3",
+            iban="NL91ABNA0417164330",
+            mandate_no="11-8",
+            valid_from=timezone.now().date() - timezone.timedelta(days=5),
+            valid_until=timezone.now().date() - timezone.timedelta(days=2),
+            last_used=timezone.now().date() - timezone.timedelta(days=5),
+            signature="base61.png",
+        )
+
         thalia_pay_payment = Payment.objects.create(
             paid_by=self.member,
             amount=1,
-            type=getattr(Payment, "TPAY", None),
+            type=Payment.TPAY,
             created_at=timezone.now(),
             topic="thalia pay",
             notes="processed",
@@ -118,11 +128,68 @@ class UserMinimisationTests(TestCase):
         payments_qs, banks_qs, mandates_qs = result
 
         self.assertIn(payment, payments_qs)
-        self.assertIn(b, banks_qs)
+        self.assertIn(b2, banks_qs)
         self.assertIn(mandate, mandates_qs)
 
         self.assertEqual(Payment.objects.filter(paid_by=self.member).count(), 2)
-        self.assertEqual(BankAccount.objects.filter(owner=self.member).count(), 2)
+        self.assertEqual(BankAccount.objects.filter(owner=self.member).count(), 3)
         self.assertIsNone(BankAccount.objects.get(pk=mandate.pk).valid_until)
         self.assertIsNotNone(Payment.objects.get(pk=payment.pk).paid_by)
         self.assertIsNotNone(Payment.objects.get(pk=payment.pk).processed_by)
+
+    def test_minimise_user_successfully(self):
+        """Test actual minimisation anonymises payments and handles bank accounts."""
+        payment = Payment.objects.create(
+            paid_by=self.member,
+            amount=1,
+            created_at=timezone.now(),
+            topic="test",
+            notes="processed",
+            processed_by=self.member,
+        )
+
+        b = BankAccount.objects.create(
+            owner=self.member,
+            initials="J",
+            last_name="Test2",
+            iban="NL91ABNA0417164300",
+            mandate_no="11-2",
+            valid_from=timezone.now().date() - timezone.timedelta(days=10),
+            valid_until=timezone.now().date() - timezone.timedelta(days=3),
+            last_used=timezone.now().date() - timezone.timedelta(days=5),
+            signature="base64,png",
+        )
+
+        card_payment = Payment.objects.create(
+            paid_by=self.member,
+            amount=1,
+            type=Payment.CARD,
+            created_at=timezone.now(),
+            topic="thalia pay",
+            notes="processed",
+            processed_by=self.member,
+        )
+
+        mandate = BankAccount.objects.create(
+            owner=self.member,
+            iban="NL00BANK9876543210",
+            valid_until=None,
+            mandate_no="MANDATE123",
+        )
+
+        PaymentsConfig.minimise_user(self.member, dry_run=False)
+
+        payment.refresh_from_db()
+        self.assertIsNone(payment.paid_by)
+        self.assertIsNone(payment.processed_by)
+
+        card_payment.refresh_from_db()
+        self.assertIsNone(card_payment.paid_by)
+        self.assertIsNone(card_payment.processed_by)
+
+        self.assertFalse(BankAccount.objects.filter(pk=b.pk).exists())
+
+        mandate.refresh_from_db()
+        self.assertIsNotNone(mandate.valid_until)
+
+        self.assertEqual(Payment.objects.filter(paid_by=self.member).count(), 0)

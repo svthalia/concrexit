@@ -88,7 +88,9 @@ class PaymentsConfig(AppConfig):
         queryset_payments = Payment.objects.filter(paid_by=user).exclude(
             paid_by__isnull=True
         )
-        queryset_bankaccounts = BankAccount.objects.filter(owner=user)
+        queryset_bankaccounts = BankAccount.objects.filter(
+            owner=user, valid_until__lt=timezone.now()
+        )
         bankaccount_deletion_period = timezone.now() - datetime.timedelta(days=31 * 13)
         queryset_bankaccounts_no_minimize = queryset_bankaccounts.filter(  # Also keep bank accounts that
             Q(owner__paid_payment_set__type=Payment.TPAY),
