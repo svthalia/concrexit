@@ -78,23 +78,24 @@ class RegistrationsConfig(AppConfig):
 
     @staticmethod
     def minimise_user(user, dry_run: bool = False) -> None:
+        """Minimise the data stored for a user."""
         from .models import Entry, Renewal
 
         renewals = Renewal.objects.filter(
-            Q(status=Entry.STATUS_COMPLETED) | Q(status=Entry.STATUS_REJECTED),
             member=user,
         )
 
-        open_renewals = Renewal.objects.filter(
-            status=Q(Entry.STATUS_CONFIRM)
-            | Q(Entry.STATUS_REVIEW)
-            | Q(Entry.STATUS_ACCEPTED),
+        open_renewals = renewals.filter(
+            (
+                Q(status=Entry.STATUS_CONFIRM)
+                | Q(status=Entry.STATUS_ACCEPTED)
+                | Q(status=Entry.STATUS_REVIEW)
+            ),
             member=user,
         )
-
         if open_renewals.exists():
             raise ValueError("Cannot minimise user with open renewals.")
 
         if not dry_run:
-            renewals.delete()[0]
+            renewals.delete()
         return renewals.all()

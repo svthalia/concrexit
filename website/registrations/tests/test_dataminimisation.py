@@ -1,4 +1,3 @@
-from django.db.models import Q
 from django.test import TestCase
 from django.utils import timezone
 
@@ -152,78 +151,65 @@ class DataMinimisationTest(TestCase):
                 self.assertEqual(Registration.objects.count(), 3)
                 self.assertEqual(Renewal.objects.count(), 0)
 
-    def test_minimise_user_dry_run(self):
-        """Test minimise_user with dry_run=True returns renewals without deleting."""
-        # Create more renewals for the test user
-        new_renewal1 = Renewal.objects.create(
-            member=self.member,
+
+class MinimiseUserTest(TestCase):
+    fixtures = ["members.json"]
+
+    @classmethod
+    @freeze_time("2023-08-25")
+    def setUpTestData(cls):
+        cls.member = Member.objects.get(pk=1)
+
+        # Completed and rejected renewals (can be deleted)
+        cls.completed_renewal = Renewal.objects.create(
+            pk=1,
+            member=cls.member,
             length=Entry.MEMBERSHIP_YEAR,
             contribution=7.5,
             status=Entry.STATUS_COMPLETED,
         )
-
-        new_renewal2 = Renewal.objects.create(
-            member=self.member,
+        cls.rejected_renewal = Renewal.objects.create(
+            pk=2,
+            member=cls.member,
             length=Entry.MEMBERSHIP_YEAR,
             contribution=7.5,
             status=Entry.STATUS_REJECTED,
         )
-
-        initial_count = Renewal.objects.filter(member=self.member).count()
-        expected_renewal_count = Renewal.objects.filter(
-            Q(status=Entry.STATUS_COMPLETED) | Q(status=Entry.STATUS_REJECTED),
-            member=self.member,
-        ).count()
-
-        # Call minimise_user with dry_run=True
-        renewals = apps.RegistrationsConfig.minimise_user(self.member, dry_run=True)
-
-        # Verify renewals were returned but not deleted
-        self.assertEqual(renewals.count(), expected_renewal_count)
-        self.assertEqual(
-            Renewal.objects.filter(member=self.member).count(), initial_count
-        )
-
-    def test_minimise_user_actual_run(self):
-        """Test minimise_user with dry_run=False properly deletes renewals."""
-        new_renewal1 = Renewal.objects.create(
-            member=self.member,
-            length=Entry.MEMBERSHIP_YEAR,
-            contribution=7.5,
-            status=Entry.STATUS_COMPLETED,
-        )
-
-        new_renewal2 = Renewal.objects.create(
-            member=self.member,
-            length=Entry.MEMBERSHIP_YEAR,
-            contribution=7.5,
-            status=Entry.STATUS_REJECTED,
-        )
-
-        new_renewal3 = Renewal.objects.create(
-            member=self.member,
+        # Open renewal (prevents minimisation)
+        cls.open_renewal = Renewal.objects.create(
+            pk=3,
+            member=cls.member,
             length=Entry.MEMBERSHIP_YEAR,
             contribution=7.5,
             status=Entry.STATUS_CONFIRM,
         )
 
-        confirm_count_before = Renewal.objects.filter(
-            member=self.member, status=Entry.STATUS_CONFIRM
-        ).count()
+    def test_minimise_user_raises_with_open_renewal(self):
+        """Should raise ValueError if user has open renewals."""
+        with self.assertRaises(ValueError):
+            apps.RegistrationsConfig.minimise_user(self.member, dry_run=True)
+        with self.assertRaises(ValueError):
+            apps.RegistrationsConfig.minimise_user(self.member, dry_run=False)
 
-        result = apps.RegistrationsConfig.minimise_user(self.member, dry_run=False)
-
+    def test_minimise_user_dry_run(self):
+        """Should return all renewals for user (no deletion) if no open renewals."""
+        # Remove open renewal
+        self.open_renewal.status = Entry.STATUS_REJECTED
+        self.open_renewal.save()
+        renewals = apps.RegistrationsConfig.minimise_user(self.member, dry_run=True)
+        # Should return queryset with completed and rejected renewals
         self.assertEqual(
-            Renewal.objects.filter(
-                member=self.member,
-                status__in=[Entry.STATUS_COMPLETED, Entry.STATUS_REJECTED],
-            ).count(),
-            0,
+            set(renewals),
+            {self.completed_renewal, self.rejected_renewal, self.open_renewal},
         )
+        # Nothing deleted
+        self.assertEqual(Renewal.objects.filter(member=self.member).count(), 3)
 
-        self.assertEqual(
-            Renewal.objects.filter(
-                member=self.member, status=Entry.STATUS_CONFIRM
-            ).count(),
-            confirm_count_before,
-        )
+    def test_minimise_user_actual_run(self):
+        """Should delete all renewals for user if no open renewals and dry_run=False."""
+        # Remove open renewal
+        self.open_renewal.status = Entry.STATUS_REJECTED
+        self.open_renewal.save()
+        apps.RegistrationsConfig.minimise_user(self.member, dry_run=False)
+        # All renewals for user should be deleted
+        self.assertEqual(Renewal.objects.filter(member=self.member).count(), 0)

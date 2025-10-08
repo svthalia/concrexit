@@ -89,20 +89,31 @@ class PaymentsConfig(AppConfig):
             paid_by__isnull=True
         )
         queryset_bankaccounts = BankAccount.objects.filter(owner=user)
+        bankaccount_deletion_period = timezone.now() - datetime.timedelta(days=31 * 13)
+        queryset_bankaccounts_no_minimize = queryset_bankaccounts.filter(  # Also keep bank accounts that
+            Q(owner__paid_payment_set__type=Payment.TPAY),
+            Q(owner__paid_payment_set__batch__isnull=True)
+            | Q(owner__paid_payment_set__batch__processed=False)
+            | Q(
+                owner__paid_payment_set__batch__processing_date__gt=bankaccount_deletion_period
+            ),
+        )
         queryset_mandates = BankAccount.objects.filter(
             mandate_no__isnull=False,
             valid_until=None,
             owner=user,
         )
         unprocessed_payments = Payment.objects.filter(
-            processed=False,
+            processed_by__isnull=True,
             paid_by=user,
         )
 
-        if unprocessed_payments.exists():
-            raise ValueError("Cannot minimise user with unprocessed payments")
-
         if not dry_run:
+            if (
+                unprocessed_payments.exists()
+                or queryset_bankaccounts_no_minimize.exists()
+            ):
+                raise ValueError("Cannot minimise user with unprocessed payments")
             queryset_payments.update(paid_by=None, processed_by=None)
             queryset_bankaccounts.delete()
             queryset_mandates.update(valid_until=timezone.now())
