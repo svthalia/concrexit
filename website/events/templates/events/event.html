@@ -289,7 +289,7 @@
                             <ul>
                             {% for shift in shifts %}
                                 <li>
-                                    <a href="{% url "sales:shift-detail" pk=shift.pk %}">{{ shift.title }}</a>
+                                    <a href="{% url 'sales:shift-detail' pk=shift.pk %}">{{ shift.title }}</a>
                                 </li>
                             {% endfor %}
                             </ul>
