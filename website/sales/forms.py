@@ -23,7 +23,6 @@ class ProductOrderForm(forms.Form):
                 label=item.product.name,
                 required=False,
                 min_value=0,
-                max_value=5,
             )
             field.set_productlistitem(item)
             if not is_adult and item.product.age_restricted:
