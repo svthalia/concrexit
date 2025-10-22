@@ -8,8 +8,7 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views import View
-from django.views.decorators.http import require_http_methods
-from django.views.generic import DetailView
+from django.views.generic import DeleteView, DetailView
 from django.views.generic.edit import FormView
 
 from sales import services
@@ -107,17 +106,22 @@ class PlaceOrderView(FormView):
         return ctx
 
 
-@require_http_methods(["POST"])
-def cancel_order_view(request, *args, **kwargs):
-    order = get_object_or_404(Order, pk=kwargs["pk"])
-    if not order.shift.user_orders_allowed:
-        raise PermissionDenied
-    if order.payment:
-        raise PermissionDenied
-    if order.created_by != request.member:
-        raise PermissionDenied
-    order.delete()
-    return redirect("sales:shift-detail", pk=order.shift.pk)
+@method_decorator(login_required, name="dispatch")
+class CancelOrderView(DeleteView):
+    model = Order
+
+    def get_object(self, queryset=None):
+        order = super().get_object(queryset)
+        if not order.shift.user_orders_allowed:
+            raise PermissionDenied
+        if order.payment:
+            raise PermissionDenied
+        if order.created_by != self.request.member:
+            raise PermissionDenied
+        return order
+
+    def get_success_url(self):
+        return redirect("sales:shift-detail", pk=self.object.shift.pk)
 
 
 @method_decorator(login_required, name="dispatch")

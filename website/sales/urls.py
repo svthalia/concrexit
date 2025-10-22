@@ -1,10 +1,10 @@
 from django.urls import path
 
 from sales.views import (
+    CancelOrderView,
     OrderPaymentView,
     PlaceOrderView,
     ShiftDetailView,
-    cancel_order_view,
 )
 
 app_name = "sales"
@@ -27,7 +27,7 @@ urlpatterns = [
     ),
     path(
         "sales/order/<uuid:pk>/cancel/",
-        cancel_order_view,
+        CancelOrderView.as_view(),
         name="order-cancel",
     ),
 ]
