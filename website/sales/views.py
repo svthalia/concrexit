@@ -49,16 +49,9 @@ class PlaceOrderView(FormView):
 
     def dispatch(self, request, *args, **kwargs):
         self.shift = get_object_or_404(Shift, pk=kwargs["pk"])
-        if not self.shift.selforder:
-            # Orders can only be placed by shift managers
-            # which is done through the admin.
-            # Time issues are dealt with in the template.
-            raise PermissionDenied
         if not self.shift.user_orders_allowed and request.method == "POST":
             # Forbid POSTing when not in the correct time period
-            raise PermissionDenied
-        if self.shift.locked:
-            # You cannot order in a locked shift!
+            # or when only admins can manage this shift's orders
             raise PermissionDenied
         if not request.member.can_attend_events:
             raise PermissionDenied
@@ -113,11 +106,7 @@ class CancelOrderView(DeleteView):
 
     def get_object(self, queryset=None):
         order = super().get_object(queryset)
-        if not order.shift.user_orders_allowed:
-            raise PermissionDenied
-        if order.payment:
-            raise PermissionDenied
-        if order.created_by != self.request.member:
+        if not order.user_can_modify(self.request.member):
             raise PermissionDenied
         return order
 

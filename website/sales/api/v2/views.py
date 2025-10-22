@@ -79,8 +79,6 @@ class UserOrderListView(ListAPIView, CreateAPIView):
         shift = Shift.objects.get(pk=kwargs["pk"])
         if not shift.user_orders_allowed:
             raise PermissionDenied
-        if shift.locked:
-            raise PermissionDenied
         return super().create(request, *args, **kwargs)
 
     def perform_create(self, serializer):
@@ -155,23 +153,17 @@ class UserOrderDetailView(RetrieveAPIView, UpdateAPIView, DestroyAPIView):
         )
 
     def update(self, request, *args, **kwargs):
-        if not self.get_object().shift.user_orders_allowed:
-            raise PermissionDenied
-        if self.get_object().payment:
+        if not self.get_object().user_can_modify(request.member):
             raise PermissionDenied
         return super().update(request, *args, **kwargs)
 
     def partial_update(self, request, *args, **kwargs):
-        if not self.get_object().shift.user_orders_allowed:
-            raise PermissionDenied
-        if self.get_object().payment:
+        if not self.get_object().user_can_modify(request.member):
             raise PermissionDenied
         return super().partial_update(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
-        if not self.get_object().shift.user_orders_allowed:
-            raise PermissionDenied
-        if self.get_object().payment:
+        if not self.get_object().user_can_modify(request.member):
             raise PermissionDenied
         return super().destroy(request, *args, **kwargs)
 

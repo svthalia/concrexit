@@ -169,6 +169,7 @@ class Shift(models.Model):
             self.start <= timezone.now()
             and self.end > timezone.now()
             and self.selforder
+            and not self.locked  # should be redundant, since locking should only happen after end
         )
 
     def __str__(self):
