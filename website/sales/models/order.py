@@ -183,7 +183,6 @@ class Order(models.Model):
     def accept_payment_from_any_user(self):
         return True
 
-    @property
     def user_can_modify(self, user):
         if not self.shift.user_orders_allowed:
             return False
