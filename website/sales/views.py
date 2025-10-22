@@ -4,6 +4,7 @@ from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
@@ -121,7 +122,7 @@ class CancelOrderView(DeleteView):
         return order
 
     def get_success_url(self):
-        return redirect("sales:shift-detail", pk=self.object.shift.pk)
+        return reverse("sales:shift-detail", args=[self.object.shift.pk])
 
 
 @method_decorator(login_required, name="dispatch")
