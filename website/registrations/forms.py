@@ -174,6 +174,16 @@ class BenefactorRegistrationForm(BaseRegistrationForm):
             "optin_thabloid",
         )
 
+        def clean(self):
+            super().clean()
+            if (
+                self.cleaned_data.get("member") is not None
+                and self.cleaned_data["member"].profile.is_minimized
+            ):
+                raise ValidationError(
+                    "It's not possible to renew a membership using an incomplete profile."
+                )
+
 
 class NewYearForm(forms.Form):
     privacy_policy = forms.BooleanField(
