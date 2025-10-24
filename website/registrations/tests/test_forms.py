@@ -457,3 +457,43 @@ class ReferenceFormTest(TestCase):
                 form.errors,
                 {"__all__": ["You've already given a reference for this person."]},
             )
+
+    @freeze_time("2018-08-15")
+    def test_memberregistration_clean_and_reference_august_edge(self):
+        """
+        Covers:
+          - MemberRegistrationForm.clean early return when 'length' missing
+          - ReferenceForm branch where today.month == 8 increments lecture_year
+            and the membership.until <= date(lecture_year, 9, 1) validation triggers.
+        """
+        form = forms.MemberRegistrationForm({})
+        form.cleaned_data = {}
+        cleaned = form.clean()
+        self.assertEqual(cleaned, {})
+
+        from datetime import date
+
+        from utils.snippets import datetime_to_lectureyear
+
+        today = timezone.now().date()
+        lecture_year = datetime_to_lectureyear(today)
+        m = Membership.objects.create(
+            type=Membership.MEMBER,
+            user=self.member,
+            since="2017-09-01",
+            until=date(lecture_year, 9, 1),
+        )
+        try:
+            form = forms.ReferenceForm(self.data)
+            self.assertFalse(form.is_valid())
+            self.assertEqual(
+                form.errors,
+                {
+                    "__all__": [
+                        "It's not possible to give references for memberships "
+                        "that start after your own membership's end."
+                    ]
+                },
+            )
+        finally:
+            m.delete()
