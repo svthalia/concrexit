@@ -418,7 +418,7 @@ requires-dist = [
     { name = "celery", extras = ["redis"], specifier = "~=5.5.3" },
     { name = "django", specifier = "==5.2.5" },
     { name = "django-admin-autocomplete-filter", specifier = "==0.7.1" },
-    { name = "django-bootstrap5", specifier = "~=22.1" },
+    { name = "django-bootstrap5", specifier = "~=25.2" },
     { name = "django-cors-headers", specifier = "==3.14.0" },
     { name = "django-debug-toolbar", specifier = "==4.4.6" },
     { name = "django-drf-filepond", specifier = "==0.5.0" },
@@ -440,7 +440,7 @@ requires-dist = [
     { name = "firebase-admin", specifier = "==6.2.0" },
     { name = "freezegun", specifier = "==1.5.5" },
     { name = "google-api-python-client", specifier = "==2.118.0" },
-    { name = "gunicorn", specifier = "==22.0.0" },
+    { name = "gunicorn", specifier = "==23.0.0" },
     { name = "inflection", specifier = "~=0.5.1" },
     { name = "pillow", specifier = "==11.0.0" },
     { name = "psycopg", extras = ["binary"], specifier = "~=3.2.3" },
@@ -584,14 +584,14 @@ wheels = [
 
 [[package]]
 name = "django-bootstrap5"
-version = "22.2"
+version = "25.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/5c/65/28852aa87ce4a96377b4bda99c644cb0761f2ad264a12be4cb450bcdf529/django-bootstrap5-22.2.tar.gz", hash = "sha256:e944f5ced342e0e16cde77e1ddacb4b9fd5bce4cc190df2f7da0b8e18a24c9cb", size = 78914 }
+sdist = { url = "https://files.pythonhosted.org/packages/40/97/7c905896f8014978e982f5cfe3c3a56131cf5042d8983f33b98b196ef119/django_bootstrap5-25.2.tar.gz", hash = "sha256:abcfcd543efc19aaab4456a12b566507f684cfda98effc5dd3ad5167ba05c7b3", size = 129765 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/48/11/922e10876262ab6b14091f8da1b64d2fb6c18510d9c3b74047ad85eaf4e0/django_bootstrap5-22.2-py3-none-any.whl", hash = "sha256:5d677bbfb94207c1a034d63a5f39d95ce287ef509e0b31dfb4d233cc81f93bcc", size = 24536 },
+    { url = "https://files.pythonhosted.org/packages/45/e4/becdbbb273a4176029df49999d78169600000747ed7b5118dab13fe49d99/django_bootstrap5-25.2-py3-none-any.whl", hash = "sha256:9418969fa5932729dc1addb1b70f13c9312a522b15033219ac3cbc5728eb8937", size = 26740 },
 ]
 
 [[package]]
@@ -1131,14 +1131,14 @@ wheels = [
 
 [[package]]
 name = "gunicorn"
-version = "22.0.0"
+version = "23.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "packaging" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/1e/88/e2f93c5738a4c1f56a458fc7a5b1676fc31dcdbb182bef6b40a141c17d66/gunicorn-22.0.0.tar.gz", hash = "sha256:4a0b436239ff76fb33f11c07a16482c521a7e09c1ce3cc293c2330afe01bec63", size = 3639760 }
+sdist = { url = "https://files.pythonhosted.org/packages/34/72/9614c465dc206155d93eff0ca20d42e1e35afc533971379482de953521a4/gunicorn-23.0.0.tar.gz", hash = "sha256:f014447a0101dc57e294f6c18ca6b40227a4c90e9bdb586042628030cba004ec", size = 375031 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/29/97/6d610ae77b5633d24b69c2ff1ac3044e0e565ecbd1ec188f02c45073054c/gunicorn-22.0.0-py3-none-any.whl", hash = "sha256:350679f91b24062c86e386e198a15438d53a7a8207235a78ba1b53df4c4378d9", size = 84443 },
+    { url = "https://files.pythonhosted.org/packages/cb/7d/6dac2a6e1eba33ee43f318edbed4ff29151a49b5d37f080aad1e6469bca4/gunicorn-23.0.0-py3-none-any.whl", hash = "sha256:ec400d38950de4dfd418cff8328b2c8faed0edb0d517d3394e457c317908ca4d", size = 85029 },
 ]
 
 [[package]]
