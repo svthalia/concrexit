@@ -200,7 +200,7 @@ wheels = [
 
 [[package]]
 name = "celery"
-version = "5.3.6"
+version = "5.5.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "billiard" },
@@ -210,17 +210,16 @@ dependencies = [
     { name = "click-repl" },
     { name = "kombu" },
     { name = "python-dateutil" },
-    { name = "tzdata" },
     { name = "vine" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/99/72/45a2d2f9b45ccc6e80e2168ce169d17bf06a98711c192d7b53d5a8accf77/celery-5.3.6.tar.gz", hash = "sha256:870cc71d737c0200c397290d730344cc991d13a057534353d124c9380267aab9", size = 1544498 }
+sdist = { url = "https://files.pythonhosted.org/packages/bb/7d/6c289f407d219ba36d8b384b42489ebdd0c84ce9c413875a8aae0c85f35b/celery-5.5.3.tar.gz", hash = "sha256:6c972ae7968c2b5281227f01c3a3f984037d21c5129d07bf3550cc2afc6b10a5", size = 1667144 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/37/c2/4c8a67a4d98a6fcd55dbdd79b641f945d7f59637c3e885c4abbda3c431f6/celery-5.3.6-py3-none-any.whl", hash = "sha256:9da4ea0118d232ce97dff5ed4974587fb1c0ff5c10042eb15278487cdd27d1af", size = 422035 },
+    { url = "https://files.pythonhosted.org/packages/c9/af/0dcccc7fdcdf170f9a1585e5e96b6fb0ba1749ef6be8c89a6202284759bd/celery-5.5.3-py3-none-any.whl", hash = "sha256:0b5761a07057acee94694464ca482416b959568904c9dfa41ce8413a7d65d525", size = 438775 },
 ]
 
 [package.optional-dependencies]
 redis = [
-    { name = "redis" },
+    { name = "kombu", extra = ["redis"] },
 ]
 
 [[package]]
@@ -416,7 +415,7 @@ requires-dist = [
     { name = "beautifulsoup4", specifier = "~=4.11.1" },
     { name = "bleach", extras = ["css"], specifier = "~=6.1.0" },
     { name = "boto3", specifier = "==1.35.62" },
-    { name = "celery", extras = ["redis"], specifier = "~=5.3.6" },
+    { name = "celery", extras = ["redis"], specifier = "~=5.5.3" },
     { name = "django", specifier = "==5.2.5" },
     { name = "django-admin-autocomplete-filter", specifier = "==0.7.1" },
     { name = "django-bootstrap5", specifier = "~=22.1" },
@@ -439,7 +438,7 @@ requires-dist = [
     { name = "django-two-factor-auth", extras = ["webauthn", "phonenumbers"], specifier = "~=1.16.0" },
     { name = "djangorestframework", specifier = "==3.15.2" },
     { name = "firebase-admin", specifier = "==6.2.0" },
-    { name = "freezegun", specifier = "==1.5.1" },
+    { name = "freezegun", specifier = "==1.5.5" },
     { name = "google-api-python-client", specifier = "==2.118.0" },
     { name = "gunicorn", specifier = "==22.0.0" },
     { name = "inflection", specifier = "~=0.5.1" },
@@ -948,14 +947,14 @@ wheels = [
 
 [[package]]
 name = "freezegun"
-version = "1.5.1"
+version = "1.5.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "python-dateutil" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/2c/ef/722b8d71ddf4d48f25f6d78aa2533d505bf3eec000a7cacb8ccc8de61f2f/freezegun-1.5.1.tar.gz", hash = "sha256:b29dedfcda6d5e8e083ce71b2b542753ad48cfec44037b3fc79702e2980a89e9", size = 33697 }
+sdist = { url = "https://files.pythonhosted.org/packages/95/dd/23e2f4e357f8fd3bdff613c1fe4466d21bfb00a6177f238079b17f7b1c84/freezegun-1.5.5.tar.gz", hash = "sha256:ac7742a6cc6c25a2c35e9292dfd554b897b517d2dec26891a2e8debf205cb94a", size = 35914 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/51/0b/0d7fee5919bccc1fdc1c2a7528b98f65c6f69b223a3fd8f809918c142c36/freezegun-1.5.1-py3-none-any.whl", hash = "sha256:bf111d7138a8abe55ab48a71755673dbaa4ab87f4cff5634a4442dfec34c15f1", size = 17569 },
+    { url = "https://files.pythonhosted.org/packages/5e/2e/b41d8a1a917d6581fc27a35d05561037b048e47df50f27f8ac9c7e27a710/freezegun-1.5.5-py3-none-any.whl", hash = "sha256:cd557f4a75cf074e84bc374249b9dd491eaeacd61376b9eb3c423282211619d2", size = 19266 },
 ]
 
 [[package]]
@@ -1218,16 +1217,22 @@ wheels = [
 
 [[package]]
 name = "kombu"
-version = "5.4.2"
+version = "5.5.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "amqp" },
+    { name = "packaging" },
     { name = "tzdata", marker = "python_full_version == '3.13.*'" },
     { name = "vine" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/38/4d/b93fcb353d279839cc35d0012bee805ed0cf61c07587916bfc35dbfddaf1/kombu-5.4.2.tar.gz", hash = "sha256:eef572dd2fd9fc614b37580e3caeafdd5af46c1eff31e7fba89138cdb406f2cf", size = 442858 }
+sdist = { url = "https://files.pythonhosted.org/packages/0f/d3/5ff936d8319ac86b9c409f1501b07c426e6ad41966fedace9ef1b966e23f/kombu-5.5.4.tar.gz", hash = "sha256:886600168275ebeada93b888e831352fe578168342f0d1d5833d88ba0d847363", size = 461992 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/87/ec/7811a3cf9fdfee3ee88e54d08fcbc3fabe7c1b6e4059826c59d7b795651c/kombu-5.4.2-py3-none-any.whl", hash = "sha256:14212f5ccf022fc0a70453bb025a1dcc32782a588c49ea866884047d66e14763", size = 201349 },
+    { url = "https://files.pythonhosted.org/packages/ef/70/a07dcf4f62598c8ad579df241af55ced65bed76e42e45d3c368a6d82dbc1/kombu-5.5.4-py3-none-any.whl", hash = "sha256:a12ed0557c238897d8e518f1d1fdf84bd1516c5e305af2dacd85c2015115feb8", size = 210034 },
+]
+
+[package.optional-dependencies]
+redis = [
+    { name = "redis" },
 ]
 
 [[package]]
@@ -1778,11 +1783,11 @@ wheels = [
 
 [[package]]
 name = "tzdata"
-version = "2024.2"
+version = "2025.2"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/e1/34/943888654477a574a86a98e9896bae89c7aa15078ec29f490fef2f1e5384/tzdata-2024.2.tar.gz", hash = "sha256:7d85cc416e9382e69095b7bdf4afd9e3880418a2413feec7069d533d6b4e31cc", size = 193282 }
+sdist = { url = "https://files.pythonhosted.org/packages/95/32/1a225d6164441be760d75c2c42e2780dc0873fe382da3e98a2e1e48361e5/tzdata-2025.2.tar.gz", hash = "sha256:b60a638fcc0daffadf82fe0f57e53d06bdec2f36c4df66280ae79bce6bd6f2b9", size = 196380 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a6/ab/7e5f53c3b9d14972843a647d8d7a853969a58aecc7559cb3267302c94774/tzdata-2024.2-py2.py3-none-any.whl", hash = "sha256:a48093786cdcde33cad18c2555e8532f34422074448fbc874186f0abd79565cd", size = 346586 },
+    { url = "https://files.pythonhosted.org/packages/5c/23/c7abc0ca0a1526a0774eca151daeb8de62ec457e77262b66b359c3c7679e/tzdata-2025.2-py2.py3-none-any.whl", hash = "sha256:1a403fada01ff9221ca8044d701868fa132215d84beb92242d9acd2147f667a8", size = 347839 },
 ]
 
 [[package]]
