@@ -326,6 +326,12 @@ class RenewalFormTest(TestCase):
                     settings.MEMBERSHIP_PRICES[Entry.MEMBERSHIP_STUDY],
                 )
                 renewal.delete()
+        with self.subTest("Length parameter missing from data"):
+            self.data.pop("length")
+            form = forms.RenewalForm(self.data)
+            form.cleaned_data = self.data
+            form.clean()
+            self.assertEqual(self.data, form.data)
 
     def test_study_long_membership_cannot_be_renewed(self):
         membership = Membership.objects.create(
