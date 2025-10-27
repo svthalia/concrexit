@@ -5,6 +5,7 @@ from typing import Any
 from django.conf import settings
 from django.db.models import Count, Exists, OuterRef, Q
 from django.utils import timezone
+
 from members import emails
 from members.models import Member, Membership
 from registrations.models import Renewal
@@ -221,7 +222,7 @@ def execute_data_minimisation(dry_run=False, members=None) -> list[Member]:
             Exists(
                 Renewal.objects.filter(member__id=OuterRef("pk")).exclude(
                     status__in=(
-                        Renewal.STATUS_ACCEPTED,
+                        Renewal.STATUS_COMPLETED,
                         Renewal.STATUS_REJECTED,
                     )
                 )
