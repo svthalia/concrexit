@@ -31,11 +31,11 @@
             <p>
                 {{ membergroup.description|safe }}
             </p>
-            {% if membergroup.committee or membergroup.society %}
-            <p>
-                    <strong>{% trans 'contact email address'|capfirst %}:</strong>
-                <a href="mailto:{{ membergroup.contact_address }}">{{ membergroup.contact_address }}</a>
-            </p>
+            {% if (membergroup.committee or membergroup.society) and membergroup.active %}
+                <p>
+                        <strong>{% trans 'contact email address'|capfirst %}:</strong>
+                    <a href="mailto:{{ membergroup.contact_address }}">{{ membergroup.contact_address }}</a>
+                </p>
             {% endif %}
         </div>
     </section>
