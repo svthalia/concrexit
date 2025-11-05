@@ -1,6 +1,6 @@
 [project]
 name = "concrexit"
-version = "0.0.dev"
+version = "59.0"
 description = "New new Thalia website, now with extra Django."
 maintainers = [
     {name = "Thalia Technicie", email = "www@thalia.nu"},
