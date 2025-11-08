@@ -4,25 +4,8 @@ from django.utils.translation import gettext_lazy as _
 
 from payments.models import Payment
 from sales.models.order import Order
-from sales.models.shift import SelfOrderPeriod, Shift
+from sales.models.shift import Shift
 from sales.services import is_manager
-
-
-class SelfOrderPeriodInline(admin.TabularInline):
-    model = SelfOrderPeriod
-    ordering = ("start",)
-    extra = 0
-    fields = (
-        "start",
-        "end",
-    )
-
-    def has_change_permission(self, request, obj=None):
-        if obj and obj.locked:
-            return False
-        if obj and not is_manager(request.member, obj):
-            return False
-        return super().has_change_permission(request, obj)
 
 
 class OrderInline(admin.TabularInline):
@@ -95,7 +78,6 @@ class OrderInline(admin.TabularInline):
 @register(Shift)
 class ShiftAdmin(admin.ModelAdmin):
     inlines = [
-        SelfOrderPeriodInline,
         OrderInline,
     ]
     search_fields = (
@@ -125,7 +107,9 @@ class ShiftAdmin(admin.ModelAdmin):
         "title",
         "start",
         "end",
+        "selforder",
         "active",
+        "event",
         "product_list",
         "managers",
         "product_sales",

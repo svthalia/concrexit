@@ -1,0 +1,53 @@
+{% extends "small_page.html" %}
+{% load payments %}
+
+{% block title %}Your orders for {{ shift.title }}{% if shift.event %} for {{shift.event.title}}{% endif %}{% endblock %}
+{% block page_title %}
+Your orders for {{ shift.title }}{% if shift.event %} for {{shift.event.title}}{% endif %}
+<a href="{% url 'sales:order-place' pk=shift.pk %}"
+   class="btn btn-primary first-right d-flex align-items-center">
+    Place order
+</a>
+{% endblock %}
+
+{% block page_content %}
+<table class="table table-bordered">
+<thead>
+<tr>
+<th scope="col"> Order description </th>
+<!-- <th scope="col"> Time </th> -->
+<th scope="col"> Price </th>
+<th scope="col"> Payment </th>
+<th scope="col"> Cancel </th>
+</tr>
+</thead>
+<tbody>
+{% for order in orders %}
+<tr>
+<td> {{ order.order_description }} </td>
+<!-- <td> {{ order.created_at }} </td> -->
+<td> &euro;&nbsp;{{ order.total_amount|floatformat:2 }} </td>
+<td>
+{% if order.total_amount == 0 %}
+    This order is free.
+{% elif order.payment %}
+    Paid!
+{% else %}
+    {% payment_button order request.path %}
+{% endif %} </td>
+<td>
+    <a href="{% url 'sales:order-cancel' pk=order.pk %}"
+       class="btn btn-primary
+       {% if order.payment %}
+       disabled
+       {% endif %}"
+       >
+        Cancel
+    </a>
+
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+{% endblock %}
