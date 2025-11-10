@@ -37,7 +37,7 @@ dependencies = [
     "argon2_cffi==21.3.0",
     "firebase-admin==6.2.0",
     "google-api-python-client==2.118.0",
-    "sentry-sdk~=2.12.0",
+    "sentry-sdk~=2.43.0",
     "beautifulsoup4~=4.11.1",
     "boto3==1.35.62",
     "gunicorn==22.0.0",
