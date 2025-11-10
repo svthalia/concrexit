@@ -80,7 +80,7 @@ jobs:
         run: uv run coverage html --directory=covhtml --no-skip-covered --title="Coverage Report"
 
       - name: Save coverage report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: coverage-html
           path: covhtml
