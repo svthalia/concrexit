@@ -129,7 +129,7 @@
                         have to renew your membership.
                     {% endblocktrans %}
                 </p>
-            {% elif not request.member.profile.is_minimised %}
+            {% elif not request.member.profile.is_minimized %}
                 {% for error in form.errors.items %}
                     {% for message in error.1 %}
                         {% alert 'danger' message dismissible=True %}

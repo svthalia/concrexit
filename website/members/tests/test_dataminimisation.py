@@ -132,7 +132,7 @@ class MinimiseUserTest(TestCase):
         with self.subTest("minimise user"):
             Config.minimise_user(self.m1)
             self.m1.refresh_from_db()
-            self.assertTrue(self.m1.profile.is_minimised)
+            self.assertTrue(self.m1.profile.is_minimized)
             self.assertEqual(self.m1.first_name, "Test1")
             self.assertEqual(self.m1.last_name, "Example")
             self.assertEqual(self.m1.email, "example@test.com")
@@ -140,14 +140,14 @@ class MinimiseUserTest(TestCase):
         with self.subTest("minimise already minimised user"):
             Config.minimise_user(self.m1)
             self.m1.refresh_from_db()
-            self.assertTrue(self.m1.profile.is_minimised)
+            self.assertTrue(self.m1.profile.is_minimized)
             self.assertEqual(self.m1.first_name, "Test1")
             self.assertEqual(self.m1.last_name, "Example")
             self.assertEqual(self.m1.email, "example@test.com")
             self.assertIsNone(self.m1.profile.student_number)
         with self.subTest("Does not affect other user"):
             self.m2.refresh_from_db()
-            self.assertFalse(self.m2.profile.is_minimised)
+            self.assertFalse(self.m2.profile.is_minimized)
             self.assertEqual(self.m2.first_name, "Test2")
             self.assertEqual(self.m2.last_name, "Example")
             self.assertEqual(self.m2.email, "example2@test.com")

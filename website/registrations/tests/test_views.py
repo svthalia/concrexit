@@ -562,7 +562,7 @@ class NewYearRenewalFormViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.member = Member.objects.get(pk=1)
-        cls.member.profile.is_minimised = False
+        cls.member.profile.is_minimized = False
         cls.member.profile.save()
 
         cls.membership = Membership.objects.create(
@@ -608,7 +608,7 @@ class NewYearRenewalFormViewTest(TestCase):
         profile.birthday = None
         profile.emergency_contact_phone_number = None
         profile.emergency_contact = None
-        profile.is_minimised = True
+        profile.is_minimized = True
         self.member.profile.save()
 
         with freeze_time("2023-08-01"):

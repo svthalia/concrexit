@@ -71,7 +71,7 @@ class PaymentsConfig(AppConfig):
         queryset_mandates = BankAccount.objects.filter(
             mandate_no__isnull=False,
             valid_until=None,
-            owner__profile__is_minimised=True,
+            owner__profile__is_minimized=True,
         )
 
         if not dry_run:

@@ -1,5 +1,5 @@
 <p>
-    {% if member.latest_membership.study_long and not member.profile.is_minimised %}
+    {% if member.latest_membership.study_long and not member.profile.is_minimized %}
         You're currently not a member of Thalia. <a href="{% url 'registrations:renew-studylong' %}">Extend your membership</a> if you are still studying and get access to all parts of the website.
     {% else %}
         You're currently not a member of Thalia. <a href="{% url 'registrations:renew' %}">Renew your membership</a> to get access to all parts of the website.

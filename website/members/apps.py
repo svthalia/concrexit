@@ -148,7 +148,7 @@ class MembersConfig(AppConfig):
                 profile.birthday = None
                 profile.emergency_contact_phone_number = None
                 profile.emergency_contact = None
-                profile.is_minimised = True
+                profile.is_minimized = True
                 if not dry_run:
                     profile.save()
 
@@ -167,6 +167,6 @@ class MembersConfig(AppConfig):
         profile.birthday = None
         profile.emergency_contact_phone_number = None
         profile.emergency_contact = None
-        profile.is_minimised = True
+        profile.is_minimized = True
         if not dry_run:
             profile.save()

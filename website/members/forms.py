@@ -58,7 +58,7 @@ class ProfileForm(forms.ModelForm):
             "address_city",
             "address_country",
         ]:
-            if require_address or not user.profile.is_minimised:
+            if require_address or not user.profile.is_minimized:
                 self.fields[field].required = True
             else:
                 self.fields[field].required = False
@@ -78,7 +78,7 @@ class ProfileForm(forms.ModelForm):
             )
 
         self.fields["birthday"].widget.input_type = "date"
-        if not user.profile.is_minimised:
+        if not user.profile.is_minimized:
             self.fields["birthday"].disabled = True
 
         self.render_app_specific_profile_form_fields()

@@ -147,7 +147,7 @@ class RenewalFormTest(TestCase):
             profile.birthday = None
             profile.emergency_contact_phone_number = None
             profile.emergency_contact = None
-            profile.is_minimised = True
+            profile.is_minimized = True
             profile.save()
             self.assertFalse(forms.RenewalForm(self.data).is_valid())
 
@@ -383,7 +383,7 @@ class NewYearFormTest(TestCase):
             profile.birthday = None
             profile.emergency_contact_phone_number = None
             profile.emergency_contact = None
-            profile.is_minimised = True
+            profile.is_minimized = True
             profile.save()
             self.assertFalse(forms.NewYearForm(self.data).is_valid())
 

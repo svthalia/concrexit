@@ -23,7 +23,7 @@ def post_profile_save(sender, instance, **kwargs):
     if updated_fields is not None and not any(
         field in updated_fields
         for field in [
-            "is_minimised",
+            "is_minimized",
             "address_street",
             "address_street2",
             "address_postal_code",
