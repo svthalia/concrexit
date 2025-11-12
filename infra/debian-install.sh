@@ -134,5 +134,6 @@ step "Creating users..."
 create_user dirk "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIgMsOXBM1i1/GHoZIJpXQIm+dU5SRMat7HtZSKVrl5T"
 create_user quinten "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII8GLsrAXmnzd7ps5BI12KG/sN4apUPGksVZq6n6jtY2 quinten@epsilon"
 create_user ties "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIYxMh74Ocgn0l7I0rrWiQ4uTcWgYo6UX3WgNZWPpUXF tiesdirksen@gmail.com"
+create_user luuk "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJTfQJLdxEazVP/D0hjb6/b6n/pab8A5T3foRiKztoE+"
 
 step "Done :)"

@@ -19,7 +19,7 @@ def send_document_notification(document):
     )
 
     send_email(
-        to=[settings.EDUCATION_NOTIFICATION_ADDRESS],
+        to=[settings.TURING_NOTIFICATION_ADDRESS],
         subject="Education document ready for review",
         txt_template="education/email/document_notification.txt",
         html_template="education/email/document_notification.html",
