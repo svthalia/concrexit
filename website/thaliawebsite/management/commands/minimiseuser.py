@@ -2,6 +2,7 @@ from warnings import warn
 
 from django.apps import apps
 from django.core.management.base import BaseCommand
+from django.db import transaction
 
 from utils.snippets import minimise_logentries_data
 
@@ -18,13 +19,14 @@ class Command(BaseCommand):
             help="Dry run instead of saving data",
         )
 
-    def handle(self, *args, **options):
+    def handle(self, user, *args, **options):
         # TODO make this actually sensible not just dumb
         for app in apps.get_app_configs():
             try:
-                app.execute_data_minimisation()
+                with transaction.atomic():
+                    app.minimise_user(user)
             except Exception as e:
-                warn("Minimization failed:" + str(e))
+                warn("User minimization failed:" + str(e))
 
         count = minimise_logentries_data(options["dry-run"])
         self.stdout.write(f"Removed {count} log entries")

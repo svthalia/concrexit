@@ -6,13 +6,13 @@ from celery import shared_task
 
 from registrations import emails
 
-from . import services
+from . import apps
 from .models import Registration, Renewal
 
 
 @shared_task
 def minimise_registrations():
-    services.execute_data_minimisation()
+    apps.RegistrationsConfig.execute_data_minimisation()
 
 
 @shared_task
