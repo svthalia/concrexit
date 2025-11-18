@@ -51,12 +51,3 @@ class FaceDetectionConfig(AppConfig):
                 reference_face.delete()  # Don't run the queryset method, this will also delete the file
 
         return queryset
-
-    @staticmethod
-    def minimise_user(user, dry_run: bool = False) -> None:
-        from .models import ReferenceFace
-
-        queryset = ReferenceFace.objects.filter(user=user)
-        if not dry_run:
-            queryset.update(user=None)
-        return queryset.all()
