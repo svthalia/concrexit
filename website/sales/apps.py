@@ -32,4 +32,5 @@ class SalesConfig(AppConfig):
         queryset = Order.objects.filter(payer=user)
         if not dry_run:
             queryset.update(payer=None)
-        return queryset.all()
+        if dry_run:
+            return queryset.all()
