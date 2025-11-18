@@ -70,4 +70,5 @@ class EventsConfig(AppConfig):
 
         if not dry_run:
             queryset.update(payment=None, member=None, name="<removed>")
-        return queryset.all()
+        else:
+            return queryset.all()
