@@ -1,6 +1,8 @@
 from django.apps import AppConfig
 from django.utils import timezone
 
+from thaliawebsite.apps import MinimisationError
+
 
 class SalesConfig(AppConfig):
     name = "sales"
@@ -30,7 +32,15 @@ class SalesConfig(AppConfig):
         from .models.order import Order
 
         queryset = Order.objects.filter(payer=user)
+        short_notice = queryset.filter(
+            created_at__lt=timezone.now().date() - timezone.timedelta.days(31)
+        )
+        if short_notice:
+            raise MinimisationError(
+                "Cannot minimise user with payment made within last month"
+            )
         if not dry_run:
             queryset.update(payer=None)
+
         if dry_run:
             return queryset.all()
