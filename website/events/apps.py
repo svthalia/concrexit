@@ -4,6 +4,8 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from thaliawebsite.apps import MinimisationError
+
 
 class EventsConfig(AppConfig):
     """AppConfig for the events package."""
@@ -66,7 +68,9 @@ class EventsConfig(AppConfig):
         )
 
         if future_registrations.exists():
-            raise ValueError("Cannot minimise user with future event registrations.")
+            raise MinimisationError(
+                "Cannot minimise user with future event registrations."
+            )
 
         if not dry_run:
             queryset.update(payment=None, member=None, name="<removed>")
