@@ -6,6 +6,8 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from thaliawebsite.apps import MinimisationError
+
 
 class PaymentsConfig(AppConfig):
     """AppConfig for the payments package."""
@@ -41,7 +43,7 @@ class PaymentsConfig(AppConfig):
         payment_deletion_period = timezone.now().date() - timezone.timedelta(
             days=365 * 7
         )
-        bankaccount_deletion_period = timezone.now() - datetime.timedelta(days=31 * 13)
+        bankaccount_deletion_period = timezone.now() - datetime.timedelta(days=31 * 12)
 
         queryset_payments = Payment.objects.filter(
             created_at__lte=payment_deletion_period
@@ -111,11 +113,14 @@ class PaymentsConfig(AppConfig):
         )
 
         if not dry_run:
-            if (
-                unprocessed_payments.exists()
-                or queryset_bankaccounts_no_minimize.exists()
-            ):
-                raise ValueError("Cannot minimise user with unprocessed payments")
+            if unprocessed_payments.exists():
+                raise MinimisationError(
+                    "Cannot minimise user with unprocessed payments"
+                )
+            if queryset_bankaccounts_no_minimize.exists():
+                raise MinimisationError(
+                    "Cannot minimise user with payments that have been paid less then a year ago"
+                )
             queryset_payments.update(paid_by=None, processed_by=None)
             queryset_bankaccounts.delete()
             queryset_mandates.update(valid_until=timezone.now())
