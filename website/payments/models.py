@@ -154,7 +154,7 @@ class Payment(models.Model):
 
     paid_by = models.ForeignKey(
         "members.Member",
-        models.SET_NULL,
+        models.PROTECT,
         verbose_name=_("paid by"),
         related_name="paid_payment_set",
         blank=True,
