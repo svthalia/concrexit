@@ -4,6 +4,8 @@ from datetime import timedelta
 from django.apps import AppConfig
 from django.utils import timezone
 
+from thaliawebsite.apps import MinimisationError
+
 logger = logging.getLogger(__name__)
 YEAR = timedelta(days=365)
 
@@ -40,10 +42,20 @@ class ReimbursementsConfig(AppConfig):
     def minimise_user(user, dry_run: bool = False) -> None:
         from .models import Reimbursement
 
-        queryset = Reimbursement.objects.filter(member=user)
+        queryset = Reimbursement.objects.filter(owner=user)
+        month_verdict = queryset.filter(
+            evaluated_at__gt=timezone.now() - timedelta.days(31),
+            verdict=Reimbursement.Verdict.APPROVED,
+        )
+
+        if month_verdict:
+            raise MinimisationError(
+                "A reimbursement exists that should is approved too shortly ago exists."
+            )
         open_reimbursements = queryset.filter(verdict=None)
+
         if open_reimbursements.exists():
-            raise ValueError("Cannot minimise user with open reimbursements.")
+            raise MinimisationError("Cannot minimise user with open reimbursements.")
 
         if not dry_run:
             queryset.update(member=None)
