@@ -5,6 +5,9 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from members.models import Membership
+from thaliawebsite.apps import MinimisationError
+
 
 class MembersConfig(AppConfig):
     name = "members"
@@ -156,6 +159,12 @@ class MembersConfig(AppConfig):
 
     @staticmethod
     def minimise_user(user, dry_run: bool = False) -> None:
+        if Membership.objects.filter(
+            (Q(until__gt=timezone.now()) | Q(until__is_null=True)), member=user
+        ).exists():
+            raise MinimisationError(
+                "This member has a current membership that has not yet expired."
+            )
         profile = user.profile
         profile.student_number = None
         profile.phone_number = None
