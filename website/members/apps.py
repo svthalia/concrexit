@@ -5,9 +5,6 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from members.models import Membership
-from thaliawebsite.apps import MinimisationError
-
 
 class MembersConfig(AppConfig):
     name = "members"
@@ -159,6 +156,9 @@ class MembersConfig(AppConfig):
 
     @staticmethod
     def minimise_user(user, dry_run: bool = False) -> None:
+        from members.models import Membership
+        from thaliawebsite.apps import MinimisationError
+
         if Membership.objects.filter(
             (Q(until__gt=timezone.now()) | Q(until__is_null=True)), member=user
         ).exists():

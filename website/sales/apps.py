@@ -1,8 +1,6 @@
 from django.apps import AppConfig
 from django.utils import timezone
 
-from thaliawebsite.apps import MinimisationError
-
 
 class SalesConfig(AppConfig):
     name = "sales"
@@ -29,6 +27,8 @@ class SalesConfig(AppConfig):
 
     @staticmethod
     def minimise_user(user, dry_run: bool = False) -> None:
+        from thaliawebsite.apps import MinimisationError
+
         from .models.order import Order
 
         queryset = Order.objects.filter(payer=user)

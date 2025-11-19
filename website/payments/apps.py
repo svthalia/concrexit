@@ -6,8 +6,6 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from thaliawebsite.apps import MinimisationError
-
 
 class PaymentsConfig(AppConfig):
     """AppConfig for the payments package."""
@@ -85,6 +83,8 @@ class PaymentsConfig(AppConfig):
 
     @staticmethod
     def minimise_user(user, dry_run: bool = False) -> None:
+        from thaliawebsite.apps import MinimisationError
+
         from .models import BankAccount, Payment
 
         queryset_payments = Payment.objects.filter(paid_by=user).exclude(

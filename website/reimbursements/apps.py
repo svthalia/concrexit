@@ -4,8 +4,6 @@ from datetime import timedelta
 from django.apps import AppConfig
 from django.utils import timezone
 
-from thaliawebsite.apps import MinimisationError
-
 logger = logging.getLogger(__name__)
 YEAR = timedelta(days=365)
 
@@ -40,6 +38,8 @@ class ReimbursementsConfig(AppConfig):
 
     @staticmethod
     def minimise_user(user, dry_run: bool = False) -> None:
+        from thaliawebsite.apps import MinimisationError
+
         from .models import Reimbursement
 
         queryset = Reimbursement.objects.filter(owner=user)
