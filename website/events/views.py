@@ -89,6 +89,8 @@ class EventDetail(DetailView):
             "member", "member__profile"
         )
 
+        context["shifts"] = event.shift_set.filter(selforder=True)
+
         fetch_thumbnails(
             [p.member.profile.photo for p in context["participants"] if p.member]
         )

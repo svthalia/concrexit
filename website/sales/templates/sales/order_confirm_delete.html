@@ -1,0 +1,37 @@
+{% extends "small_page.html" %}
+{% load i18n fieldtype django_bootstrap5 alert thumbnail grid_item %}
+
+{% block title %}Delete order — {{ block.super }}{% endblock %}
+{% block opengraph_title %}Delete order — {{ block.super }}{% endblock %}
+
+{% block page_title %}Delete order{% endblock %}
+
+{% block page_content %}
+    {% if form.errors %}
+        {% bootstrap_form_errors form %}
+    {% endif %}
+    <form method="post" enctype="multipart/form-data" class="col-12">
+        <p>Are you sure you want to delete this order?</p>
+
+        <ul>
+            {% for item in object.order_items.all %}
+            <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+
+        <p>
+            <em>You can cancel this order until {{ object.shift.end|date:"SHORT_DATETIME_FORMAT" }}, or until you pay.
+                After that, the order cannot be cancelled anymore. You can also place new orders until this time.
+            </em>
+        </p>
+
+        {% csrf_token %}
+        {% if next %}
+            <input type="hidden" name="next" value="{{ next }}">
+        {% endif %}
+        {% bootstrap_form form %}
+        <div class="form-row">
+            <input type="submit" value="Delete" class="btn btn-primary mt-3 float-start">
+        </div>
+    </form>
+{% endblock %}

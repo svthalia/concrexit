@@ -10,6 +10,7 @@ from queryable_properties.managers import QueryablePropertiesManager
 from queryable_properties.properties import AggregateProperty, RangeCheckProperty
 
 from activemembers.models import MemberGroup
+from events.models import Event
 from payments.models import PaymentAmountField
 from sales.models.product import ProductList
 
@@ -36,6 +37,14 @@ class Shift(models.Model):
         ),
     )
 
+    event = models.ForeignKey(
+        Event,
+        verbose_name=_("linked event"),
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+    )
+
     title = models.CharField(
         verbose_name=_("title"), blank=True, null=True, max_length=100
     )
@@ -60,6 +69,14 @@ class Shift(models.Model):
         help_text=_(
             "Prevent orders being changed or created for this shift. This will also clean up all unpaid orders in this shift."
         ),
+    )
+
+    selforder = models.BooleanField(
+        verbose_name=_("self-order"),
+        blank=False,
+        null=False,
+        default=False,
+        help_text=_("Allow users to order products for themselves for this shift."),
     )
 
     def clean(self):
@@ -148,45 +165,14 @@ class Shift(models.Model):
 
     @property
     def user_orders_allowed(self):
-        return self.selforderperiod_set.filter(
-            start__lte=timezone.now(), end__gt=timezone.now()
-        ).exists()
-
-    @property
-    def user_order_period(self):
-        qs = self.selforderperiod_set.filter(
-            start__lte=timezone.now(), end__gt=timezone.now()
+        return (
+            self.start <= timezone.now()
+            and self.end > timezone.now()
+            and self.selforder
+            and not self.locked  # should be redundant, since locking should only happen after end
         )
-        if qs.exists():
-            return qs.first()
-        return None
 
     def __str__(self):
         if self.title and self.title != "":
             return f"Shift {self.pk} - {self.title}"
         return f"Shift {self.pk}"
-
-
-class SelfOrderPeriod(models.Model):
-    class Meta:
-        verbose_name = _("self-order period")
-        verbose_name_plural = _("self-order periods")
-        ordering = ["start"]
-
-    shift = models.ForeignKey(Shift, blank=False, null=False, on_delete=models.CASCADE)
-    start = models.DateTimeField(
-        verbose_name=_("start"),
-        blank=False,
-        null=False,
-    )
-    end = models.DateTimeField(
-        verbose_name=_("end"),
-        blank=False,
-        null=False,
-        help_text=_(
-            "After this moment, users cannot place orders themselves anymore in this shift."
-        ),
-    )
-
-    def __str__(self):
-        return f"Self-order period for shift {self.shift.pk}"
