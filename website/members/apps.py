@@ -160,7 +160,7 @@ class MembersConfig(AppConfig):
         from thaliawebsite.apps import MinimisationError
 
         if Membership.objects.filter(
-            (Q(until__gt=timezone.now()) | Q(until__is_null=True)), member=user
+            (Q(until__gt=timezone.now()) | Q(until__isnull=True)), member=user
         ).exists():
             raise MinimisationError(
                 "This member has a current membership that has not yet expired."
