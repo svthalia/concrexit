@@ -731,11 +731,12 @@ class Command(BaseCommand):
 
         album.full_clean()
         album.save()
-
+        pos = 1
         for _ in range(random.randint(20, 30)):
-            self.create_photo(album)
+            self.create_photo(album, pos)
+            pos += 1
 
-    def create_photo(self, album):
+    def create_photo(self, album, pos):
         self.stdout.write("Creating a photo")
         photo = Photo()
 
@@ -751,7 +752,7 @@ class Command(BaseCommand):
             padding=(10, 10, 10, 10),
             output_format="jpeg",
         )  # 620x620 pixels, with 10 pixels padding on each side
-        photo.file = SimpleUploadedFile(f"{name}.jpg", icon, "image/jpeg")
+        photo.file = SimpleUploadedFile(f"{pos}-{name}.jpg", icon, "image/jpeg")
 
         photo.full_clean()
         photo.save()
