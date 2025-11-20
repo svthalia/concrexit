@@ -1,6 +1,6 @@
 from django.core.management import BaseCommand
 
-from registrations import services
+from registrations import apps
 
 
 class Command(BaseCommand):
@@ -16,4 +16,4 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        services.execute_data_minimisation(options["dry-run"])
+        apps.RegistrationsConfig.execute_data_minimisation(options["dry-run"])

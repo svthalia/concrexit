@@ -84,7 +84,7 @@ class Order(models.Model):
 
     payer = models.ForeignKey(
         Member,
-        models.SET_NULL,
+        models.PROTECT,
         verbose_name=_("payer"),
         related_name="sales_order",
         blank=True,
