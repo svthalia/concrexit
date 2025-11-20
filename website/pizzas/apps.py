@@ -2,6 +2,8 @@ from django.apps import AppConfig
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from thaliawebsite.apps import MinimisationError
+
 
 class PizzasConfig(AppConfig):
     """AppConfig for the pizzas package."""
@@ -34,6 +36,10 @@ class PizzasConfig(AppConfig):
         from .models import FoodOrder
 
         queryset = FoodOrder.objects.filter(member=user)
+        queryset_unpaid = queryset.filter(payment=None)
+        if queryset_unpaid:
+            raise MinimisationError("Cannot minimise unpaid orders")
+
         if not dry_run:
             queryset.update(member=None, name="<removed>")
         return queryset
