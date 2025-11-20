@@ -3,6 +3,7 @@ from decimal import Decimal
 from unittest.mock import PropertyMock, patch
 
 from django.core.exceptions import ValidationError
+from django.db.models.deletion import ProtectedError
 from django.test import TestCase, override_settings
 from django.utils import timezone
 
@@ -54,8 +55,9 @@ class PaymentTest(TestCase):
         with self.assertRaises(ValidationError):
             self.payment.save()
 
-    def test_deleting_member_who_made_a_payment_doesnt_crash(self) -> None:
-        self.member.delete()
+    def test_deleting_member_who_made_a_payment_crashes(self) -> None:
+        with self.assertRaises(ProtectedError):
+            self.member.delete()
 
     def test_clean(self):
         """Tests the model clean functionality."""

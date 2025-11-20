@@ -4,6 +4,7 @@ from django.utils import timezone
 from members.models import Member
 from payments.apps import PaymentsConfig
 from payments.models import BankAccount, Payment
+from thaliawebsite.apps import MinimisationError
 
 
 class DataMinimisationTests(TestCase):
@@ -67,7 +68,7 @@ class UserMinimisationTests(TestCase):
             notes="unprocessed",
             processed_by=None,
         )
-        with self.assertRaises(ValueError):
+        with self.assertRaises(MinimisationError):
             PaymentsConfig.minimise_user(self.member, dry_run=False)
 
     def test_minimise_user_dry_run(self):
