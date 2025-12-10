@@ -339,6 +339,8 @@ def cancel_registration(member, event):
                     date_cancelled=None
                 ).order_by("date")[event.max_participants]
                 emails.notify_first_waiting(event, first_waiting)
+                if first_waiting.would_cancel_after_deadline:
+                    emails.notify_late_queue_entry(event, first_waiting)
                 signals.user_left_queue.send(
                     sender=None, event=event, first_waiting=first_waiting
                 )
