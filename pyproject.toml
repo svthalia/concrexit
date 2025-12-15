@@ -39,7 +39,7 @@ dependencies = [
     "google-api-python-client==2.118.0",
     "sentry-sdk~=2.12.0",
     "beautifulsoup4~=4.11.1",
-    "boto3==1.35.62",
+    "boto3==1.40.64",
     "gunicorn==22.0.0",
     "qrcode[pil]~=7.4.2",
     "freezegun==1.5.5",
