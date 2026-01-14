@@ -49,12 +49,12 @@ dependencies = [
     "uritemplate~=4.1.1",
     "puremagic~=1.27",
     "psycopg[binary]~=3.2.3",
+    "factory_boy==3.3.3",
 ]
 
 [dependency-groups]
 dev = [
     "django-template-check==0.4.0",
-    "factory_boy==3.3.3",
     "pydenticon==0.3.1",
     "Faker==18.13.0",
     "coverage[toml]~=7.6.7",
