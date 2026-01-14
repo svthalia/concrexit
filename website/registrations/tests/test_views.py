@@ -590,7 +590,7 @@ class NewYearRenewalFormViewTest(TestCase):
         )
 
     @freeze_time("2023-07-31")
-    def test_cannot_prolong_membership_before_august_or_when_minimized(self):
+    def test_cannot_prolong_membership_before_august_or_when_minimised(self):
         response = self.client.post(
             reverse("registrations:renew-studylong"),
             data={"privacy_policy": True, "extension": True},
