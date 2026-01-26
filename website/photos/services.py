@@ -67,6 +67,7 @@ def get_annotated_accessible_albums(request, albums):
 def extract_archive(album, archive) -> tuple[dict[str, str], int]:
     """Extract zip and tar files."""
     warnings, count = {}, 0
+    pos = 1
     if is_zipfile(archive):
         archive.seek(0)
         with ZipFile(archive) as zip_file:
@@ -78,10 +79,11 @@ def extract_archive(album, archive) -> tuple[dict[str, str], int]:
                     continue
 
                 with zip_file.open(photo) as file:
-                    if warning := _try_save_photo(album, file, photo):
+                    if warning := _try_save_photo(album, file, photo, pos):
                         warnings[photo] = warning
                     else:
                         count += 1
+                pos += 1
         return warnings, count
 
     archive.seek(0)
@@ -113,11 +115,12 @@ def _has_photo_extension(filename):
     return extension.lower() in (".jpg", ".jpeg", ".png", ".webp")
 
 
-def _try_save_photo(album, file, filename) -> str | None:
+def _try_save_photo(album, file, filename, pos) -> str | None:
     """Try to save a photo to an album.
 
     Returns None, or a string describing a reason for failure.
     """
+    filename = f"{pos}-{filename}"
     instance = Photo(album=album)
     instance.file = File(file, filename)
     try:

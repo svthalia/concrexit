@@ -27,7 +27,8 @@ logger = logging.getLogger(__name__)
 
 def photo_uploadto(instance, filename):
     ext = os.path.splitext(filename)[1]
-    return f"photos/{instance.album.dirname}/{token_hex(8)}{ext}"
+    position = str(instance).split("-")[0]
+    return f"photos/{instance.album.dirname}/{position}-{token_hex(8)}{ext}"
 
 
 class DuplicatePhotoException(Exception):
