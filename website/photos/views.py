@@ -203,3 +203,30 @@ class LikedPhotoView(LoginRequiredMixin, PagedView):
         fetch_thumbnails([p.file for p in context["photos"]])
 
         return context
+
+
+class MostLikedPhotoView(LoginRequiredMixin, PagedView):
+    model = Photo
+    paginate_by = 16
+    template_name = "photos/mostliked-photos.html"
+    context_object_name = "photos"
+
+    def get_queryset(self):
+        photos = (
+            Photo.objects.filter(
+                album__hidden=False,
+                album__is_processing=False,
+            )
+            .select_related("album")
+            .select_properties("num_likes")
+            .filter(num_likes__gt=0)
+            .order_by("-num_likes")[:12]
+        )
+        return photos
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        fetch_thumbnails([p.file for p in context["photos"]])
+
+        return context

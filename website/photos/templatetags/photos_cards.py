@@ -4,6 +4,7 @@ from django.urls import reverse
 
 from thaliawebsite.templatetags.grid_item import grid_item
 from utils.media.services import get_media_url
+from django.utils.html import format_html
 
 register = template.Library()
 
@@ -61,6 +62,7 @@ def photo_card(photo):
         image_url=image_url,
         class_name=class_name,
         anchor_attrs=anchor_attrs,
+        album_title=photo.album.title,
     )
 
 
@@ -68,4 +70,15 @@ def photo_card(photo):
 def liked_photo_card(photo):
     card = photo_card(photo)
     card.update({"meta_text": ""})
+    return card
+
+
+@register.inclusion_tag("includes/grid_item.html")
+def mostliked_photo_card(photo):
+    card = photo_card(photo)
+    card["meta_text"] = format_html(
+        "<h5 class='px-2'>{title}</h5><p><i class='fas fa-heart me-2'></i>{likes}</p>",
+        title=photo.album.title,
+        likes=photo.num_likes,
+    )
     return card
