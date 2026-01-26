@@ -60,7 +60,7 @@ dev = [
     "coverage[toml]~=7.6.7",
     "ruff==0.7.1",
     "pre-commit==3.5.0",
-    "pyparsing~=3.0.9",
+    "pyparsing~=3.3.2",
     "pydot~=1.4.2",
     "django-extensions~=3.2.1",
 ]
