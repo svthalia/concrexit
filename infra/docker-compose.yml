@@ -74,13 +74,9 @@ services:
         condition: service_healthy
       concrexit:
         condition: service_started
-    healthcheck:
-      # The celery status timeout needs to be smaller than docker's timeout.
-      # Otherwise, celery will fail to clean up after itself on redis.
-      test: [ "CMD", "celery", "--app", "thaliawebsite", "status", "--timeout=5" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+    # No healthcheck because celery status leaks ....pidbox messages into redis that
+    # makes it slow down and use increasing CPU over time.
+    # See: https://github.com/celery/celery/issues/6089.
 
 volumes:
   concrexit-media:
