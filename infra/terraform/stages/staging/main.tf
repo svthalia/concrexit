@@ -24,4 +24,5 @@ module "concrexit" {
   cloudfront_public_key    = file("cloudfront-public-key.pem")
   ec2_instance_type        = "t3a.small"
   facedetection_lambda_arn = "arn:aws:lambda:eu-west-1:627002765486:function:concrexit-staging-facedetection-lambda"
+  ec2_ami                  = "ami-0c5d3777e994cd6cc"
 }
