@@ -231,7 +231,11 @@ def execute_data_minimisation(dry_run=False, members=None) -> list[Member]:
         .distinct()
         .prefetch_related("membership_set", "profile")
     )
-    deletion_period = timezone.now().date() - timezone.timedelta(days=90)
+
+    deletion_period = timezone.now().date() - timezone.timedelta(
+        days=settings.DATA_RETENTION_PERIODS["MEMBERS"]
+    )
+    
     processed_members = []
     for member in members:
         if (

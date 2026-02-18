@@ -2,6 +2,7 @@
 
 import secrets
 
+from django.conf import settings
 from django.contrib.admin.models import CHANGE, LogEntry
 from django.contrib.admin.options import get_content_type_for_model
 from django.contrib.auth import get_user_model
@@ -386,7 +387,10 @@ def execute_data_minimisation(dry_run=False):
     :param dry_run: does not really remove data if True
     :return: number of removed objects.
     """
-    deletion_period = timezone.now() - timezone.timedelta(days=31)
+    deletion_period = timezone.now() - timezone.timedelta(
+        days=settings.DATA_RETENTION_PERIODS["REGISTRATIONS"]
+    )
+    
     registrations = Registration.objects.filter(
         Q(status=Entry.STATUS_COMPLETED) | Q(status=Entry.STATUS_REJECTED),
         updated_at__lt=deletion_period,

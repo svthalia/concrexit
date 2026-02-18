@@ -23,9 +23,11 @@ def execute_data_minimisation(dry_run=False):
     This deletes reference faces that have been marked for deletion by the user for
     some time, as well as reference faces of users that have not logged in for a year.
     """
-    delete_period_inactive_member = timezone.now() - timezone.timedelta(days=365)
+    delete_period_inactive_member = timezone.now() - timezone.timedelta(
+        days=settings.DATA_RETENTION_PERIODS["FACEDETECTION_INACTIVE"]
+    )
     delete_period_marked_for_deletion = timezone.now() - timezone.timedelta(
-        days=settings.FACEDETECTION_REFERENCE_FACE_STORAGE_PERIOD_AFTER_DELETE_DAYS
+        days=settings.DATA_RETENTION_PERIODS["FACEDETECTION_MARKED"]
     )
 
     queryset = ReferenceFace.objects.filter(
