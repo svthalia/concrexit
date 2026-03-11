@@ -25,9 +25,9 @@ def execute_data_minimisation(dry_run=False):
             old_reimbursements.delete()
 
     _delete_old_reimbursements(Reimbursement.Verdict.DENIED, 
-        days_until_deletion=settings.DATA_RETENTION_PERIODS["REIMBURSEMENTS_DENIED"]
+        days_until_deletion=timedelta(days=settings.DATA_RETENTION_PERIODS["REIMBURSEMENTS_DENIED"])
     )
 
     _delete_old_reimbursements(Reimbursement.Verdict.APPROVED, 
-        days_until_deletion=settings.DATA_RETENTION_PERIODS["REIMBURSEMENTS_APPROVED"]
+        days_until_deletion=timedelta(days=settings.DATA_RETENTION_PERIODS["REIMBURSEMENTS_APPROVED"])
     )
