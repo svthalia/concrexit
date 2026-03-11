@@ -5,6 +5,7 @@ from django.contrib.auth.models import AnonymousUser, Permission
 from django.http import HttpRequest
 from django.test import TestCase, override_settings
 from django.utils import timezone
+from django.conf import settings
 
 from freezegun import freeze_time
 
@@ -13,6 +14,7 @@ from events import services
 from events.exceptions import RegistrationError
 from events.models import Event, EventRegistration, RegistrationInformationField
 from members.models import Member
+from payments.models import Payment
 
 
 @freeze_time("2017-01-01")
@@ -537,3 +539,56 @@ class ServicesTest(TestCase):
             # Test that the ordering is correct
             labels = [field["label"] for field in fields.values()]
             self.assertEqual(labels, sorted(labels))
+
+    def test_data_minimisation(self):
+        #sanity check for data retention
+        with self.subTest("EventRegistrations older than 5 years should be minimised"):
+            e1 = Event.objects.create(
+            pk=2,
+            title="testevent",
+            description="desc",
+            published=True,
+            start=(timezone.now() - timedelta(days=(settings.DATA_RETENTION_PERIODS["EVENTS"]) + 1)), #should be minimised
+            end=(timezone.now() - timedelta(days=(settings.DATA_RETENTION_PERIODS["EVENTS"]) + 2)),
+            location="test location",
+            map_location="test map location",
+            price=0.00,
+            fine=0.00,
+            )
+
+            registration = EventRegistration.objects.create(
+                event=e1,
+                member=self.member,
+            )
+
+            result = services.execute_data_minimisation(dry_run=True)
+
+            self.assertTrue(result.filter(pk=registration.pk).exists())
+
+        with self.subTest("EventRegistrartions younger than 5 years should not be minimised"):
+            e2 = Event.objects.create(
+            pk=3,
+            title="testevent",
+            description="desc",
+            published=True,
+            start=(timezone.now() - timedelta(days=(settings.DATA_RETENTION_PERIODS["EVENTS"] - 2))), #should not be minimised
+            end=(timezone.now() - timedelta(days=(settings.DATA_RETENTION_PERIODS["EVENTS"] - 1))),
+            location="test location",
+            map_location="test map location",
+            price=0.00,
+            fine=0.00,
+            )
+
+            registration2 = EventRegistration.objects.create(
+                event=e2,
+                member=self.member,
+            )
+
+            result = services.execute_data_minimisation(dry_run=True)
+
+            self.assertFalse(result.filter(pk=registration2.pk).exists())
+
+
+
+
+
