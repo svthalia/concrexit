@@ -165,7 +165,7 @@ TREASURER_NOTIFICATION_ADDRESS = (
 )
 
 # Dictionary which stores data retention periods for each relevant situation in one central place
-# For this data, we assume that a year always consists of 365 days, which is wrong. 
+# For this data, we assume that a year always consists of 365 days, which is wrong.
 # If a year lasts 366 days instead, the data is simply minimised earlier (i.e. we don't care).
 
 DATA_RETENTION_PERIODS = {
@@ -173,7 +173,7 @@ DATA_RETENTION_PERIODS = {
     "FACEDETECTION_INACTIVE" : 365, #period for facedetection reference photos of users (for users that have not logged in for some time)
     "FACEDETECTION_MARKED" : 180, #period for facedetection reference photos of users (for photos that were marked for deletion for some time)
     "MEMBERS" : 90, #period for old members (how long since their membership ended)
-    "PAYMENTS_PAYMENTS" : 365 * 7, #period for payments older than 7 years 
+    "PAYMENTS_PAYMENTS" : 365 * 7, #period for payments older than 7 years
     "PAYMENTS_INVALID_BANKACCS" : 31 * 13, #period for invalid bank accounts (how long since they have been last used)
     "FOOD" : 365 * 3, #period for food orders (how long after they've been)
     "REGISTRATIONS" : 31, #period for completed AND rejected registrations (how long after they happened)

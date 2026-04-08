@@ -390,7 +390,7 @@ def execute_data_minimisation(dry_run=False):
     deletion_period = timezone.now() - timezone.timedelta(
         days=settings.DATA_RETENTION_PERIODS["REGISTRATIONS"]
     )
-    
+
     registrations = Registration.objects.filter(
         Q(status=Entry.STATUS_COMPLETED) | Q(status=Entry.STATUS_REJECTED),
         updated_at__lt=deletion_period,

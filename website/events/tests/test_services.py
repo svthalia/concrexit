@@ -14,8 +14,6 @@ from events import services
 from events.exceptions import RegistrationError
 from events.models import Event, EventRegistration, RegistrationInformationField
 from members.models import Member
-from payments.models import Payment
-
 
 @freeze_time("2017-01-01")
 @override_settings(SUSPEND_SIGNALS=True)

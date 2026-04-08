@@ -160,7 +160,7 @@ class PizzaEventTestCase(TestCase):
             description="test descr",
             price=1.00
         )
-        
+
         with self.subTest("FoodOrders older than 3 years should be minimised"):
             e1 = Event.objects.create(
             pk=10,
@@ -174,7 +174,7 @@ class PizzaEventTestCase(TestCase):
             price=0.00,
             fine=0.00,
             )
-        
+
             fo1 = FoodEvent.objects.create(
                 start=e1.start,
                 end=e1.end,
@@ -204,13 +204,13 @@ class PizzaEventTestCase(TestCase):
             price=0.00,
             fine=0.00,
             )
-        
+
             fo2 = FoodEvent.objects.create(
                 start=e2.start,
                 end=e2.end,
                 event=e2,
             )
-            
+
             o2 = FoodOrder.objects.create(
                 member=self.member,
                 food_event=fo2,
@@ -220,5 +220,5 @@ class PizzaEventTestCase(TestCase):
             result = services.execute_data_minimisation(dry_run=True)
 
             self.assertFalse(result.filter(pk=o2.pk).exists())
-        
-    
+
+
