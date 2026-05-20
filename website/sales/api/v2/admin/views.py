@@ -158,4 +158,5 @@ class OrderDetailView(AdminRetrieveAPIView, AdminUpdateAPIView, AdminDestroyAPIV
             "order_items", "order_items__product", "order_items__product__product"
         )
         queryset = queryset.prefetch_related("payment")
+        queryset = queryset.prefetch_related("payer")
         return queryset
