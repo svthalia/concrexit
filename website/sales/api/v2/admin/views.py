@@ -116,7 +116,7 @@ class OrderListView(AdminListAPIView, AdminCreateAPIView):
         queryset = queryset.prefetch_related(
             "order_items", "order_items__product", "order_items__product__product"
         )
-        queryset = queryset.prefetch_related("payment")
+        queryset = queryset.select_related("payment")
         return queryset
 
     def get_serializer_context(self):
@@ -157,6 +157,6 @@ class OrderDetailView(AdminRetrieveAPIView, AdminUpdateAPIView, AdminDestroyAPIV
         queryset = queryset.prefetch_related(
             "order_items", "order_items__product", "order_items__product__product"
         )
-        queryset = queryset.prefetch_related("payment")
-        queryset = queryset.prefetch_related("payer")
+        queryset = queryset.select_related("payment")
+        queryset = queryset.select_related("payer")
         return queryset
