@@ -1,5 +1,6 @@
 from django.db.models import Count
 from django.utils import timezone
+from django.conf import settings
 
 from events.services import is_organiser
 
@@ -43,7 +44,9 @@ def can_change_order(member, food_event):
 def execute_data_minimisation(dry_run=False):
     """Anonymizes pizzas orders older than 3 years."""
     # Sometimes years are 366 days of course, but better delete 1 or 2 days early than late
-    deletion_period = timezone.now().date() - timezone.timedelta(days=365 * 3)
+    deletion_period = timezone.now().date() - timezone.timedelta(
+        days=settings.DATA_RETENTION_PERIODS["FOOD"]
+    )
 
     queryset = FoodOrder.objects.filter(food_event__end__lte=deletion_period).exclude(
         name="<removed>"
