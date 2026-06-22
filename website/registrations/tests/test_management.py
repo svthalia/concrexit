@@ -18,7 +18,7 @@ class ManagementMinimiseTest(TestCase):
             help="Dry run instead of saving data",
         )
 
-    @mock.patch("registrations.services.execute_data_minimisation")
+    @mock.patch("registrations.apps.RegistrationsConfig.execute_data_minimisation")
     def test_handle(self, execute_data_minimisation):
         Command().handle({}, **{"dry-run": False})
         execute_data_minimisation.assert_called_with(False)

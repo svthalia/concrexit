@@ -320,7 +320,7 @@ def _sync_contacts():
             logger.exception("Moneybird synchronization error: %s", e)
             send_sync_error(e, contact.member)
 
-    # Archive moneybrid contacts where mb contact has not been archived but user was minimized.
+    # Archive moneybrid contacts where mb contact has not been archived but user was minimised.
     for contact in MoneybirdContact.objects.filter(member__profile__is_minimized=True):
         try:
             delete_contact(contact)
