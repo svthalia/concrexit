@@ -1,0 +1,12 @@
+{% extends "email/board_email.html" %}
+
+{% block content %}
+  Hi,<br>
+
+  <p>A member that was registered for the event '{{ event.title }}' has cancelled their registration after the deadline.</p>
+  <p>The first waiting queue member can now attend the event, but they should not receive a fine for non-attendance as the cancellation deadline has passed.</p>
+
+  <p>Name: {{ registration.member.profile.display_name }}</p>
+
+  <p>~ With love, from Techie</p>
+{% endblock %}
