@@ -67,6 +67,15 @@ def cancel_info_string(event: Event, cancel_status, reg_status):
 
 
 def registration_status(event: Event, registration: EventRegistration, member):
+    if member and not (
+        member.can_attend_events
+        or (
+            event.registration_without_membership
+            and member.can_attend_events_without_membership
+        )
+    ):
+        return status.STATUS_INELIGIBLE
+
     if not event.registration_required and not event.optional_registration_allowed:
         return status.STATUS_NONE
 

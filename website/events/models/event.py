@@ -534,6 +534,7 @@ class Event(models.Model):
         status.STATUS_LOGIN: _(
             "You have to log in before you can register for this event."
         ),
+        status.STATUS_INELIGIBLE: _("You are not eligible to register for this event."),
     }
 
     STATUS_MESSAGE_FIELDS = {

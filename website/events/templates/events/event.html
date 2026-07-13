@@ -228,9 +228,11 @@
                                                    onclick="return confirm('{% trans 'Are you sure you want to cancel your registration?' %}');"/>
                                         {% endif %}
                                     </form>
-                                {% elif not request.user.is_authenticated and event.registration_required %}
-                                    <a class="btn btn-primary"
-                                       href="{% url 'login' %}?next={{ request.path }}">{% trans "Login" %}</a>
+                                {% elif not request.user.is_authenticated %}
+                                    {% if event.registration_required or event.optional_registration_allowed %}
+                                        <a class="btn btn-primary"
+                                        href="{% url 'login' %}?next={{ request.path }}">{% trans "Login" %}</a>
+                                    {% endif %}
                                 {% endif %}
                             </td>
                         </tr>
