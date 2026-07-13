@@ -4,6 +4,7 @@ from django.contrib.auth.models import ContentType, Permission
 from django.core.exceptions import ValidationError
 from django.test import TestCase, override_settings
 from django.utils import timezone, translation
+from django.conf import settings
 
 from freezegun import freeze_time
 
@@ -11,7 +12,7 @@ from activemembers.models import Committee
 from events.models import Event
 from members.models import Member
 from pizzas import services
-from pizzas.models import FoodEvent, FoodOrder
+from pizzas.models import FoodEvent, FoodOrder, Product
 
 
 @freeze_time("2018-03-21")
@@ -151,3 +152,73 @@ class PizzaEventTestCase(TestCase):
         # refresh member to defeat cache
         member = Member.objects.get(pk=self.member.pk)
         self.assertTrue(services.can_change_order(member, self.food_event))
+
+    def test_data_minimisation(self):
+
+        p1 = Product.objects.create(
+            name="test",
+            description="test descr",
+            price=1.00
+        )
+
+        with self.subTest("FoodOrders older than 3 years should be minimised"):
+            e1 = Event.objects.create(
+            pk=10,
+            title="testevent",
+            description="desc",
+            published=True,
+            start=(timezone.now() - datetime.timedelta(days=(settings.DATA_RETENTION_PERIODS["FOOD"]) + 1)), #should be minimised
+            end=(timezone.now() - datetime.timedelta(days=(settings.DATA_RETENTION_PERIODS["FOOD"]) + 2)),
+            location="test location",
+            map_location="test map location",
+            price=0.00,
+            fine=0.00,
+            )
+
+            fo1 = FoodEvent.objects.create(
+                start=e1.start,
+                end=e1.end,
+                event=e1,
+            )
+
+            o1 = FoodOrder.objects.create(
+                member=self.member,
+                food_event=fo1,
+                product=p1,
+            )
+
+            result = services.execute_data_minimisation(dry_run=True)
+
+            self.assertTrue(result.filter(pk=o1.pk).exists())
+
+        with self.subTest("FoodOrders not older than 3 years should not be minimised"):
+            e2 = Event.objects.create(
+            pk=11,
+            title="testevent",
+            description="desc",
+            published=True,
+            start=(timezone.now() - datetime.timedelta(days=(settings.DATA_RETENTION_PERIODS["FOOD"]) -2)), #should not be minimised
+            end=(timezone.now() - datetime.timedelta(days=(settings.DATA_RETENTION_PERIODS["FOOD"]) - 1)),
+            location="test location",
+            map_location="test map location",
+            price=0.00,
+            fine=0.00,
+            )
+
+            fo2 = FoodEvent.objects.create(
+                start=e2.start,
+                end=e2.end,
+                event=e2,
+            )
+
+            o2 = FoodOrder.objects.create(
+                member=self.member,
+                food_event=fo2,
+                product=p1,
+            )
+
+            result = services.execute_data_minimisation(dry_run=True)
+
+            self.assertFalse(result.filter(pk=o2.pk).exists())
+
+
