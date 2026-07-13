@@ -44,3 +44,8 @@ variable "facedetection_lambda_arn" {
   description = "ARN of the Lambda function for face detection"
   type        = string
 }
+variable "ec2_ami" {
+  description = "EC2 AMI"
+  type        = string
+  default     = "ami-089f338f3a2e69431" # Debian 11 (amd64, eu-west-1)
+}
