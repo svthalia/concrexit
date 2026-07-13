@@ -486,7 +486,7 @@ class Renewal(Entry):
     # two kinds of entries. That way, we can efficiently look the right Payable.
     payment = models.OneToOneField(
         "payments.Payment",
-        on_delete=models.SET_NULL,
+        on_delete=models.PROTECT,
         blank=True,
         null=True,
     )

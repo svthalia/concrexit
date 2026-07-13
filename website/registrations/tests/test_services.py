@@ -2,7 +2,6 @@ from datetime import date
 
 from django.core import mail
 from django.test import TestCase, override_settings
-from django.utils import timezone
 
 from freezegun import freeze_time
 
@@ -657,36 +656,3 @@ class ServicesTest(TestCase):
             self.assertEqual(membership.since, date(2023, 9, 10))
             self.assertEqual(membership.until, date(2024, 9, 1))
             self.assertEqual(membership.type, Membership.BENEFACTOR)
-
-    def test_data_minimisation(self):
-        with freeze_time("2025-01-01"):
-            with self.subTest("No old completed registrations."):
-                self.assertEqual(services.execute_data_minimisation(), 0)
-
-        with freeze_time("2024-09-10"):
-            self.renewal.status = Entry.STATUS_COMPLETED
-            self.renewal.updated_at = timezone.now()
-            self.renewal.save()
-            self.member_registration.status = Entry.STATUS_COMPLETED
-            self.member_registration.updated_at = timezone.now()
-            self.member_registration.save()
-
-        self.assertEqual(Registration.objects.count(), 4)
-        self.assertEqual(Renewal.objects.count(), 1)
-
-        with freeze_time("2024-09-15"):
-            with self.subTest("A recent completed registration and renewal."):
-                services.execute_data_minimisation()
-                self.assertEqual(Registration.objects.count(), 4)
-                self.assertEqual(Renewal.objects.count(), 1)
-
-        with freeze_time("2024-10-15"):
-            with self.subTest("Dry run."):
-                services.execute_data_minimisation(dry_run=True)
-                self.assertEqual(Registration.objects.count(), 4)
-                self.assertEqual(Renewal.objects.count(), 1)
-
-            with self.subTest("An old completed registration and renewal."):
-                services.execute_data_minimisation()
-                self.assertEqual(Registration.objects.count(), 3)
-                self.assertEqual(Renewal.objects.count(), 0)

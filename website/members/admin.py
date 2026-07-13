@@ -12,7 +12,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from activemembers.models import MemberGroupMembership
-from members import services
+from members import apps
 from members.models import EmailChange, Member
 
 from . import forms, models
@@ -290,7 +290,7 @@ class UserAdmin(BaseUserAdmin):
 
     def minimise_data(self, request, queryset):
         processed = len(
-            services.execute_data_minimisation(
+            apps.execute_data_minimisation(
                 members=Member.objects.filter(pk__in=queryset)
             )
         )
