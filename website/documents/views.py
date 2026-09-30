@@ -41,19 +41,22 @@ class DocumentsIndexView(TemplateView):
         for year in range(1990, lecture_year + 1):
             years[year] = years[year]
 
-        for document in AnnualDocument.objects.all():
-            years[document.year]["documents"][document.subcategory] = document
+        association_documents = []
 
-        for obj in GeneralMeeting.objects.all():
-            meeting_year = datetime_to_lectureyear(obj.datetime)
-            years[meeting_year]["general_meetings"].append(obj)
+        if self.request.user.is_authenticated:
+            for document in AnnualDocument.objects.all():
+                years[document.year]["documents"][document.subcategory] = document
+
+            for obj in GeneralMeeting.objects.all():
+                meeting_year = datetime_to_lectureyear(obj.datetime)
+                years[meeting_year]["general_meetings"].append(obj)
+
+            association_documents = AssociationDocument.objects.order_by("name").all()
 
         context = super().get_context_data(**kwargs)
         context.update(
             {
-                "association_documents": AssociationDocument.objects.order_by(
-                    "name"
-                ).all(),
+                "association_documents": association_documents,
                 "years": sorted(years.items(), reverse=True),
             }
         )
