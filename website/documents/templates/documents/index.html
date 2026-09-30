@@ -27,107 +27,109 @@
     </section>
 
     <section class="page-section" id="documents-annual">
-        <div class="container">
-            <h1 class="section-title">Annual documents</h1>
-            <p>
-                Every candidate board of Thalia drafts a policy document before being installed, to detail their plans for the next year. This also includes a general planning of all activities, as well as the budget for that year. Furthermore, the association is obliged to deliver an annual report and provide a financial overview. These documents show the financial developments over the year, what contacts Thalia maintained and what activities were organized. All historical policy documents and reports are made available, below.
-            </p>
-            <p>
-                The General Meetings (ALVs) can be attended by all members, honorary members and donors. Thalia organizes at least two general meetings each year. Minutes of these meetings are made available below. This allows (honorary) members and donors that did not attend to get an insight in what was discussed as well.
-            </p>
-            <ul class="nav nav-tabs mt-4" role="tablist">
-                {% for year, data in years|slice:":6" %}
-                    <li class="nav-item">
-                        <a class="nav-link{% if forloop.counter0 == 0 %} active{% endif %}" id="tab-{{ year }}-button"
-                           data-bs-toggle="tab" data-bs-target="#tab-{{ year }}" href="#tab-{{ year }}" role="tab" aria-controls="tab-{{ year }}" aria-selected="{% if forloop.counter0 == 0 %}true{% else %}false{% endif %}">
-                            {{ year }}-{{ year|add:1 }}
-                        </a>
+        {% if user.is_authenticated %}
+            <div class="container">
+                <h1 class="section-title">Annual documents</h1>
+                <p>
+                    Every candidate board of Thalia drafts a policy document before being installed, to detail their plans for the next year. This also includes a general planning of all activities, as well as the budget for that year. Furthermore, the association is obliged to deliver an annual report and provide a financial overview. These documents show the financial developments over the year, what contacts Thalia maintained and what activities were organized. All historical policy documents and reports are made available, below.
+                </p>
+                <p>
+                    The General Meetings (ALVs) can be attended by all members, honorary members and donors. Thalia organizes at least two general meetings each year. Minutes of these meetings are made available below. This allows (honorary) members and donors that did not attend to get an insight in what was discussed as well.
+                </p>
+                <ul class="nav nav-tabs mt-4" role="tablist">
+                    {% for year, data in years|slice:":6" %}
+                        <li class="nav-item">
+                            <a class="nav-link{% if forloop.counter0 == 0 %} active{% endif %}" id="tab-{{ year }}-button"
+                                data-bs-toggle="tab" data-bs-target="#tab-{{ year }}" href="#tab-{{ year }}" role="tab" aria-controls="tab-{{ year }}" aria-selected="{% if forloop.counter0 == 0 %}true{% else %}false{% endif %}">
+                                {{ year }}-{{ year|add:1 }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" id="dropdownYearsButton" data-bs-toggle="dropdown" data-bs-target="#dropdownYears"
+                            aria-controls="dropdownYears" aria-expanded="false"
+                            aria-label="Dropdown years">Older</a>
+                        <div class="dropdown-menu dropdown-years" id="dropdownYears" aria-labelledby="dropdownYearsButton">
+                            {% for year, data in years|slice:"6:" %}
+                                <a class="dropdown-item" href="#tab-{{ year }}" id="tab-{{ year }}-button"
+                                    data-bs-toggle="tab" data-bs-target="#tab-{{ year }}"
+                                    role="tab" aria-controls="tab-{{ year }}">{{ year }}-{{ year|add:1 }}</a>
+                            {% endfor %}
+                        </div>
                     </li>
-                {% endfor %}
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="dropdownYearsButton" data-bs-toggle="dropdown" data-bs-target="#dropdownYears"
-                       aria-controls="dropdownYears" aria-expanded="false"
-                       aria-label="Dropdown years">Older</a>
-                    <div class="dropdown-menu dropdown-years" id="dropdownYears" aria-labelledby="dropdownYearsButton">
-                        {% for year, data in years|slice:"6:" %}
-                            <a class="dropdown-item" href="#tab-{{ year }}" id="tab-{{ year }}-button"
-                               data-bs-toggle="tab" data-bs-target="#tab-{{ year }}"
-                               role="tab" aria-controls="tab-{{ year }}">{{ year }}-{{ year|add:1 }}</a>
-                        {% endfor %}
-                    </div>
-                </li>
-        </ul>
+            </ul>
 
-        <div class="tab-content">
-            {% for year, data in years %}
-                <div
-                    class="tab-pane fade{% if forloop.counter0 == 0 %} show active{% endif %}"
-                    id="tab-{{ year }}" role="tabpanel" aria-labelledby="tab-{{ year }}-button">
-                    <div class="row">
-                        {% if data.general_meetings %}
-                            <div class="col-12 col-md-6 my-3">
-                                <div class="accordion bordered">
-                                    {% for gm in data.general_meetings %}
-                                        <div class="card mb-0">
-                                            <div
-                                                class="card-header collapsed"
-                                                data-bs-toggle="collapse"
-                                                data-bs-target="#gm-content-{{ forloop.counter0 }}">
-                                                <div class="title">
-                                                    GM {{ forloop.counter }}: {{ gm.datetime }}
+            <div class="tab-content">
+                {% for year, data in years %}
+                    <div
+                        class="tab-pane fade{% if forloop.counter0 == 0 %} show active{% endif %}"
+                        id="tab-{{ year }}" role="tabpanel" aria-labelledby="tab-{{ year }}-button">
+                        <div class="row">
+                            {% if data.general_meetings %}
+                                <div class="col-12 col-md-6 my-3">
+                                    <div class="accordion bordered">
+                                        {% for gm in data.general_meetings %}
+                                            <div class="card mb-0">
+                                                <div
+                                                    class="card-header collapsed"
+                                                    data-bs-toggle="collapse"
+                                                    data-bs-target="#gm-content-{{ forloop.counter0 }}">
+                                                    <div class="title">
+                                                        GM {{ forloop.counter }}: {{ gm.datetime }}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="collapse"
-                                                id="gm-content-{{ forloop.counter0 }}">
-                                                <div class="card-body">
-                                                    <p>
-                                                        Location: {{ gm.location }}<br/>
-                                                        Documents:<br/>
-                                                    <ol>
-                                                        {% for doc in gm.documents.all %}
-                                                            <li>
-                                                                <a href="{{ doc.get_absolute_url }}">
-                                                                    {{ doc.name }}
-                                                                </a>
-                                                            </li>
-                                                        {% endfor %}
-                                                    </ol>
-                                                    </p>
-                                                    {% if gm.minutes %}
+                                                <div class="collapse"
+                                                    id="gm-content-{{ forloop.counter0 }}">
+                                                    <div class="card-body">
                                                         <p>
-                                                            <a href="{{ gm.minutes.get_absolute_url }}"
-                                                            class="btn btn-primary">
-                                                                Minutes
-                                                            </a>
+                                                            Location: {{ gm.location }}<br/>
+                                                            Documents:<br/>
+                                                        <ol>
+                                                            {% for doc in gm.documents.all %}
+                                                                <li>
+                                                                    <a href="{{ doc.get_absolute_url }}">
+                                                                        {{ doc.name }}
+                                                                    </a>
+                                                                </li>
+                                                            {% endfor %}
+                                                        </ol>
                                                         </p>
-                                                    {% endif %}
+                                                        {% if gm.minutes %}
+                                                            <p>
+                                                                <a href="{{ gm.minutes.get_absolute_url }}"
+                                                                class="btn btn-primary">
+                                                                    Minutes
+                                                                </a>
+                                                            </p>
+                                                        {% endif %}
+                                                    </div>
                                                 </div>
                                             </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6 row">
+                                    {% for type, doc in data.documents.items %}
+                                        <div class="col-4 my-3">
+                                            {% annual_document_card type doc %}
                                         </div>
                                     {% endfor %}
                                 </div>
-                            </div>
-                            <div class="col-12 col-md-6 row">
+                            {% else %}
+                                <div lass="col-12 col-md-6 my-3 d-flex justify-content-center align-items-center">
+                                    There have not been any general meetings yet.
+                                </div>
                                 {% for type, doc in data.documents.items %}
-                                    <div class="col-4 my-3">
+                                    <div class="col-4 col-md-2 my-3">
                                         {% annual_document_card type doc %}
                                     </div>
                                 {% endfor %}
-                            </div>
-                        {% else %}
-                            <div lass="col-12 col-md-6 my-3 d-flex justify-content-center align-items-center">
-                                There have not been any general meetings yet.
-                            </div>
-                            {% for type, doc in data.documents.items %}
-                                <div class="col-4 col-md-2 my-3">
-                                    {% annual_document_card type doc %}
-                                </div>
-                            {% endfor %}
-                        {% endif %}
+                            {% endif %}
+                        </div>
                     </div>
-                </div>
-            {% endfor %}
-        </div>
-        </div>
+                {% endfor %}
+            </div>
+            </div>
+        {% endif %}
     </section>
 {% endblock %}
