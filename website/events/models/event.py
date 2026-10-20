@@ -235,9 +235,9 @@ class Event(models.Model):
     @property
     def cancel_too_late_message(self):
         return _(
-            "Cancellation isn't possible anymore without having to pay "
-            "the full costs of €" + str(self.fine) + ". Also note that "
-            "you will be unable to re-register."
+            "The deadline has passed, are you sure you want to cancel your registration "
+            "and pay the estimated full costs of" + str(self.fine) + "? "
+            "You will not be able to undo this!"
         )
 
     @property

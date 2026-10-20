@@ -188,6 +188,12 @@ class OrderSerializer(serializers.ModelSerializer):
 
 
 class OrderListSerializer(OrderSerializer):
+    items = OrderItemSerializer(source="order_items", many=True, read_only=True)
+
+    payment = PaymentSerializer(read_only=True)
+
+    payer = MemberSerializer(read_only=True, detailed=False)
+
     class Meta:
         model = Order
         fields = (
@@ -195,10 +201,16 @@ class OrderListSerializer(OrderSerializer):
             "created_at",
             "total_amount",
             "num_items",
+            "items",
+            "payment",
+            "payer",
         )
         read_only_fields = (
             "pk",
             "created_at",
             "total_amount",
             "num_items",
+            "items",
+            "payment",
+            "payer",
         )
