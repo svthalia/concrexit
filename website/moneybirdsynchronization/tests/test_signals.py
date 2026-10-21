@@ -8,8 +8,8 @@ from members.models import Member
 from moneybirdsynchronization.models import MoneybirdExternalInvoice
 from payments.models import Payment
 from payments.services import create_payment
+from registrations.apps import RegistrationsConfig
 from registrations.models import Renewal
-from registrations.services import execute_data_minimisation
 
 
 # Each test method has a mock_api argument that is a MagicMock instance, replacing the
@@ -53,7 +53,7 @@ class SignalsTest(TestCase):
 
         with freeze_time("2023-11-01"):
             with override_settings(SUSPEND_SIGNALS=False):
-                count_deleted = execute_data_minimisation()
+                count_deleted = RegistrationsConfig.execute_data_minimisation()
 
                 self.assertGreaterEqual(count_deleted, 1)
 

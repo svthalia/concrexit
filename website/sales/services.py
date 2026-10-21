@@ -1,7 +1,7 @@
 from django.db.models import Sum
 from django.utils import timezone
 
-from sales.models.order import Order, OrderItem
+from sales.models.order import OrderItem
 
 
 def is_adult(member):
@@ -21,19 +21,6 @@ def is_manager(member, shift):
             )
         )
     return False
-
-
-def execute_data_minimisation(dry_run=False):
-    """Anonymizes orders older than 3 years."""
-    # Sometimes years are 366 days of course, but better delete 1 or 2 days early than late
-    deletion_period = timezone.now().date() - timezone.timedelta(days=365 * 3)
-
-    queryset = Order.objects.filter(created_at__lte=deletion_period).exclude(
-        payer__isnull=True
-    )
-    if not dry_run:
-        queryset.update(payer=None)
-    return queryset.all()
 
 
 def gen_stats_sales_orders() -> dict:

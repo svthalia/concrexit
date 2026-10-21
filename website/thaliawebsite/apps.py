@@ -50,3 +50,7 @@ class ThaliaWebsiteConfig(AppConfig):
 
 class ThaliaAdminConfig(AdminConfig):
     default_site = "thaliawebsite.admin.ThaliaAdminSite"
+
+
+class MinimisationError(Exception):
+    """Custom error for problems during the minimisation of a specific user."""

@@ -1,18 +1,12 @@
 import logging
 from importlib import import_module
 
+from django.apps import apps
 from django.conf import settings
 
 from celery import shared_task
 from oauth2_provider.models import clear_expired
 
-from events import services as events_services
-from facedetection import services as facedetection_services
-from members import services as members_services
-from payments import services as payments_services
-from pizzas import services as pizzas_services
-from reimbursements import services as reimbursements_services
-from sales import services as sales_services
 from utils.snippets import minimise_logentries_data
 
 logger = logging.getLogger(__name__)
@@ -25,38 +19,14 @@ def debug_task(self):
 
 @shared_task
 def data_minimisation():
-    processed = members_services.execute_data_minimisation()
-    for p in processed:
-        logger.info(f"Removed data for {p}")
+    for app in apps.get_app_configs():
+        try:
+            app.execute_data_minimisation(dry_run=False)
+        except Exception as e:
+            logger.warning("Minimization failed: %s", e)
 
-    processed = events_services.execute_data_minimisation()
-    for p in processed:
-        logger.info(f"Removed registration information for {p}")
-
-    processed = payments_services.execute_data_minimisation()
-    for p in processed:
-        logger.info(f"Removed payments information for {p}")
-
-    processed = pizzas_services.execute_data_minimisation()
-    for p in processed:
-        logger.info(f"Removed food events information for {p}")
-
-    processed = sales_services.execute_data_minimisation()
-    for p in processed:
-        logger.info(f"Removed sales orders for {p}")
-
-    processed = facedetection_services.execute_data_minimisation()
-    for p in processed:
-        logger.info(f"Removed reference faces: {p}")
-
-    processed = members_services.execute_data_minimisation()
-    for p in processed:
-        logger.info(f"Removed data for {p}")
-
-    reimbursements_services.execute_data_minimisation()
-
-    processed = minimise_logentries_data()
-    logger.info(f"Removed {processed} log entries")
+    count = minimise_logentries_data(dry_run=False)
+    logger.info("Removed %d log entries", count)
 
 
 @shared_task

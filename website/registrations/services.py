@@ -6,7 +6,6 @@ from django.contrib.admin.models import CHANGE, LogEntry
 from django.contrib.admin.options import get_content_type_for_model
 from django.contrib.auth import get_user_model
 from django.db import transaction
-from django.db.models import Q, Value
 from django.utils import timezone
 
 from members.emails import send_welcome_message
@@ -14,7 +13,7 @@ from members.models import Member, Membership, Profile
 from payments.models import BankAccount, Payment, PaymentUser
 from payments.services import create_payment
 from registrations import emails
-from registrations.models import Entry, Registration, Renewal
+from registrations.models import Registration, Renewal
 from thabloid.models.thabloid_user import ThabloidUser
 from utils.snippets import datetime_to_lectureyear
 
@@ -378,31 +377,3 @@ def _create_membership_from_registration(
         study_long=study_long,
         type=registration.membership_type,
     )
-
-
-def execute_data_minimisation(dry_run=False):
-    """Delete completed or rejected registrations that were modified at least 31 days ago.
-
-    :param dry_run: does not really remove data if True
-    :return: number of removed objects.
-    """
-    deletion_period = timezone.now() - timezone.timedelta(days=31)
-    registrations = Registration.objects.filter(
-        Q(status=Entry.STATUS_COMPLETED) | Q(status=Entry.STATUS_REJECTED),
-        updated_at__lt=deletion_period,
-    )
-    renewals = Renewal.objects.filter(
-        Q(status=Entry.STATUS_COMPLETED) | Q(status=Entry.STATUS_REJECTED),
-        updated_at__lt=deletion_period,
-    )
-
-    if dry_run:
-        return registrations.count() + renewals.count()  # pragma: no cover
-
-    # Mark that this deletion is for data minimisation so that it can be recognized
-    # in any post_delete signal handlers. This is used to prevent the deletion of
-    # Moneybird invoices.
-    registrations = registrations.annotate(__deleting_for_dataminimisation=Value(True))
-    renewals = renewals.annotate(__deleting_for_dataminimisation=Value(True))
-
-    return registrations.delete()[0] + renewals.delete()[0]

@@ -25,8 +25,9 @@ class PaymentTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.member = PaymentUser.objects.filter(last_name="Wiggers").first()
+        cls.processor = PaymentUser.objects.filter(last_name="Versteeg").first()
         cls.payment = Payment.objects.create(
-            amount=10, paid_by=cls.member, processed_by=cls.member, type=Payment.CASH
+            amount=10, paid_by=cls.member, processed_by=cls.processor, type=Payment.CASH
         )
         cls.batch = Batch.objects.create()
 
@@ -54,7 +55,7 @@ class PaymentTest(TestCase):
         with self.assertRaises(ValidationError):
             self.payment.save()
 
-    def test_delete_payer_raises_protectederror(self):
+    def test_deleting_member_who_made_a_payment_crashes(self) -> None:
         with self.assertRaises(ProtectedError):
             self.member.delete()
 
