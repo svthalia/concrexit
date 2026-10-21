@@ -10,7 +10,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from events.models import EventRegistration
+from events.models import Event, EventRegistration
 from members.models import Member
 from moneybirdsynchronization.moneybird import get_moneybird_api_service
 from payments.models import BankAccount, Payment
@@ -69,6 +69,26 @@ def cost_centre_id_for_payable_model(obj) -> str | None:
         project = None
     moneybird_id = project.moneybird_id if project and project.active else None
     return moneybird_id or settings.MONEYBIRD_DEFAULT_COST_CENTRE_ID
+
+
+def event_for_payable_model(obj) -> Event | None:
+    """Return the event that a payable belongs to, if any."""
+    if isinstance(obj, EventRegistration):
+        return obj.event
+    if isinstance(obj, FoodOrder):
+        return obj.food_event.event
+    if isinstance(obj, Order):
+        return obj.shift.event
+    return None
+
+
+def reference_for_payable(payable) -> str:
+    """Return the invoice reference, ending with an [E<event id>] label for events."""
+    reference = f"{payable.payment_topic} [{payable.model.pk}]"
+    event = event_for_payable_model(payable.model)
+    if event is not None:
+        reference += f" [E{event.pk}]"
+    return reference
 
 
 def date_for_payable_model(obj) -> datetime.datetime | datetime.date:
@@ -446,7 +466,7 @@ class MoneybirdExternalInvoice(models.Model):
         data = {
             "external_sales_invoice": {
                 "contact_id": int(contact_id),
-                "reference": f"{self.payable.payment_topic} [{self.payable.model.pk}]",
+                "reference": reference_for_payable(self.payable),
                 "source": f"Concrexit ({settings.SITE_DOMAIN})",
                 "date": invoice_date,
                 "currency": "EUR",

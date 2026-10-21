@@ -13,8 +13,10 @@ from moneybirdsynchronization.models import (
     MoneybirdExternalInvoice,
     MoneybirdProject,
     cost_centre_id_for_payable_model,
+    reference_for_payable,
 )
 from pizzas.models import FoodEvent, FoodOrder
+from payments.payables import payables
 from pizzas.models import Product as FoodProduct
 from sales.models.order import Order, OrderItem
 from sales.models.product import ProductList
@@ -128,6 +130,31 @@ class CostCentreTest(TestCase):
             member=self.member, food_event=food_event, product=product
         )
         self.assertIsNone(cost_centre_id_for_payable_model(order))
+
+    def test_references_end_with_event_label(self):
+        label = f" [E{self.event.pk}]"
+        registration = EventRegistration.objects.create(
+            event=self.event, member=self.member
+        )
+        food_event = FoodEvent.objects.create(
+            event=self.event,
+            start=timezone.now(),
+            end=timezone.now() + timezone.timedelta(hours=1),
+        )
+        food_order = FoodOrder.objects.create(
+            member=self.member,
+            food_event=food_event,
+            product=FoodProduct.objects.create(name="foo", description="bar", price=1),
+        )
+        order = Order.objects.create(shift=self._create_shift(event=self.event))
+        for obj in (registration, food_order, order):
+            with self.subTest(obj=obj):
+                reference = reference_for_payable(payables.get_payable(obj))
+                self.assertTrue(reference.endswith(f"[{obj.pk}]{label}"), reference)
+
+        no_event_order = Order.objects.create(shift=self._create_shift())
+        reference = reference_for_payable(payables.get_payable(no_event_order))
+        self.assertTrue(reference.endswith(f"[{no_event_order.pk}]"), reference)
 
 
 @mock.patch("moneybirdsynchronization.moneybird.MoneybirdAPIService", autospec=True)
