@@ -258,6 +258,7 @@ class MoneybirdExternalInvoice(models.Model):
             )
         except cls.DoesNotExist:
             return None
+
     def to_moneybird(self):
         moneybird = get_moneybird_api_service()
 
