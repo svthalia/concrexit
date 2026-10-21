@@ -3,6 +3,7 @@ from django.contrib.admin import register
 from django.utils.translation import gettext_lazy as _
 
 from payments.models import Payment
+from sales.forms import ShiftAdminForm
 from sales.models.order import Order
 from sales.models.shift import Shift
 from sales.services import is_manager
@@ -77,6 +78,7 @@ class OrderInline(admin.TabularInline):
 
 @register(Shift)
 class ShiftAdmin(admin.ModelAdmin):
+    form = ShiftAdminForm
     inlines = [
         OrderInline,
     ]

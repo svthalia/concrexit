@@ -45,6 +45,15 @@ class Shift(models.Model):
         on_delete=models.SET_NULL,
     )
 
+    no_event = models.BooleanField(
+        verbose_name=_("no event"),
+        default=False,
+        help_text=_(
+            "Indicates that this shift is deliberately not linked to an event. "
+            "Its sales are pushed to Moneybird without a project."
+        ),
+    )
+
     title = models.CharField(
         verbose_name=_("title"), blank=True, null=True, max_length=100
     )
@@ -95,12 +104,18 @@ class Shift(models.Model):
         if self.end and self.start and self.end <= self.start:
             errors.update({"end": _("End cannot be before start.")})
 
+        if self.event is None and not self.no_event:
+            errors.update({"event": _("Select an event, or select 'No event'.")})
+
         if errors:
             raise ValidationError(errors)
 
     def save(
         self, force_insert=False, force_update=False, using=None, update_fields=None
     ):
+        if self.event is not None:
+            self.no_event = False
+
         if self.locked:
             self.orders.filter(
                 (Q(payment__isnull=True) & Q(total_amount__gt=0))

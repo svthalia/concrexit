@@ -11,6 +11,8 @@ from members.models import Member
 from payments.exceptions import PaymentError
 from payments.models import Payment
 from payments.services import create_payment
+from events.models import Event
+from sales.forms import ShiftAdminForm
 from sales.models.order import Order, OrderItem
 from sales.models.product import Product, ProductList
 from sales.models.shift import Shift
@@ -319,6 +321,7 @@ class ShiftTest(TestCase):
             start=timezone.now(),
             end=timezone.now() + timezone.timedelta(hours=1),
             product_list=cls.normal,
+            no_event=True,
         )
 
     def test_time(self):
@@ -472,3 +475,51 @@ class ShiftTest(TestCase):
         self.member.has_perm = MagicMock()
         self.member.has_perm.return_value = True
         self.assertTrue(is_manager(self.member, self.shift))
+
+    def test_event_or_no_event_required(self):
+        self.shift.clean()
+
+        self.shift.no_event = False
+        with self.assertRaises(ValidationError) as context:
+            self.shift.clean()
+        self.assertIn("event", context.exception.message_dict)
+
+    def test_linking_event_clears_no_event(self):
+        event = Event.objects.create(
+            title="testevent",
+            description="desc",
+            start=timezone.now(),
+            end=timezone.now() + timezone.timedelta(hours=1),
+            location="test location",
+            map_location="test map location",
+            price=0.00,
+            fine=0.00,
+        )
+        self.shift.event = event
+        self.shift.save()
+        self.shift.refresh_from_db()
+        self.assertFalse(self.shift.no_event)
+
+    def test_admin_form_event_choice(self):
+        data = {
+            "start": timezone.now(),
+            "end": timezone.now() + timezone.timedelta(hours=1),
+            "product_list": self.normal.pk,
+            "managers": [Committee.objects.first().pk],
+        }
+
+        with self.subTest("An event or 'No event' must be selected."):
+            form = ShiftAdminForm(data={**data, "event": ""})
+            self.assertFalse(form.is_valid())
+            self.assertIn("event", form.errors)
+
+        with self.subTest("'No event' creates a shift without event."):
+            form = ShiftAdminForm(data={**data, "event": ShiftAdminForm.NO_EVENT})
+            self.assertTrue(form.is_valid(), form.errors)
+            shift = form.save()
+            self.assertIsNone(shift.event)
+            self.assertTrue(shift.no_event)
+
+        with self.subTest("An existing 'No event' shift shows 'No event'."):
+            form = ShiftAdminForm(instance=shift)
+            self.assertEqual(form.initial["event"], ShiftAdminForm.NO_EVENT)
