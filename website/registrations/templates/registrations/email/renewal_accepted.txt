@@ -13,7 +13,7 @@ To pay with Thalia Pay, go to {{ url }}.
 - You can transfer the amount of €{{ fees }} to NL 23 INGB 0006 2341 84 with the description "Contribution {{ name }}".
 Once your payment is processed by us, you will receive a confirmation email.
 
-- You can pay using debit card or cash by visiting the Thalia board room (M1.0.08) during the lunch break (12:15-13:15).
+- You can pay using debit card or cash by visiting the Thalia board room (M1.0.04) during the lunch break (12:15-13:15).
 
 If you have any questions, then don't hesitate and send an email to info@thalia.nu.
 

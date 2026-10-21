@@ -225,8 +225,8 @@ class ServicesTest(TestCase):
             moneybird_invoice_id="2",
         )
 
-        # _delete_invoices calls the delete_external_invoice API directly.
-        mock_delete_invoice = mock_api.return_value.delete_external_invoice
+        # _delete_invoices calls the delete_external_sales_invoice API directly.
+        mock_delete_invoice = mock_api.return_value.delete_external_sales_invoice
 
         with self.subTest("Invoices without needs_deletion are not deleted."):
             services._delete_invoices()

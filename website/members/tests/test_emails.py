@@ -168,34 +168,92 @@ class EmailsTest(TestCase):
             until=None,
         )
 
+        # Member with expiring study-long membership in the next 31 days
+        cls.study_long_expiring = Member.objects.create(
+            username="test10",
+            first_name="Test10",
+            last_name="Example",
+            email="test10@example.org",
+        )
+        Profile.objects.create(
+            user=cls.study_long_expiring,
+        )
+        Membership.objects.create(
+            user=cls.study_long_expiring,
+            type=Membership.MEMBER,
+            since=timezone.now().replace(year=2017, month=9, day=1),
+            until=timezone.now().replace(year=2018, month=8, day=25),
+            study_long=True,
+        )
+        # Member with expired study-long membership in +-60 days
+        cls.study_long_expired = Member.objects.create(
+            username="test11",
+            first_name="Test11",
+            last_name="Example",
+            email="test11@example.org",
+        )
+        Profile.objects.create(
+            user=cls.study_long_expired,
+        )
+        Membership.objects.create(
+            user=cls.study_long_expired,
+            type=Membership.MEMBER,
+            since=timezone.now().replace(year=2017, month=9, day=1),
+            until=timezone.now().replace(year=2018, month=10, day=15),
+            study_long=True,
+        )
+        # Member with expiring study-long membership with future membership
+        cls.study_long_expiring_with_future = Member.objects.create(
+            username="test12",
+            first_name="Test12",
+            last_name="Example",
+            email="test12@example.org",
+        )
+        Profile.objects.create(
+            user=cls.study_long_expiring_with_future,
+        )
+        Membership.objects.create(
+            user=cls.study_long_expiring_with_future,
+            type=Membership.MEMBER,
+            since=timezone.now().replace(year=2017, month=9, day=1),
+            until=timezone.now().replace(year=2018, month=8, day=25),
+            study_long=True,
+        )
+        # Future membership for study_long_expiring_with_future
+        Membership.objects.create(
+            user=cls.study_long_expiring_with_future,
+            type=Membership.BENEFACTOR,
+            since=timezone.now().replace(year=2018, month=9, day=1),
+            until=timezone.now().replace(year=2019, month=9, day=1),
+        )
+
     @freeze_time("2017-10-01")
     def test_send_information_request(self):
         emails.send_information_request()
 
-        self.assertEqual(len(mail.outbox), 9)
-        self.assertEqual(mail.outbox[0].to, ["test1@example.org"])
-        self.assertEqual(
-            mail.outbox[0].subject, "[THALIA] Membership information check"
-        )
-        self.assertEqual(mail.outbox[1].to, ["test2@example.org"])
-        self.assertEqual(
-            mail.outbox[1].subject, "[THALIA] Membership information check"
-        )
-        self.assertEqual(mail.outbox[2].to, ["test3@example.org"])
-        self.assertEqual(mail.outbox[3].to, ["test4@example.org"])
-        self.assertEqual(mail.outbox[4].to, ["test5@example.org"])
-        self.assertEqual(mail.outbox[5].to, ["test6@example.org"])
-        self.assertEqual(mail.outbox[6].to, ["test7@example.org"])
-        self.assertEqual(mail.outbox[7].to, ["test9@example.org"])
+        self.assertEqual(len(mail.outbox), 12)
+        mails = list(sorted(mail.outbox, key=lambda x: x.to[0]))
+        self.assertEqual(mails[1].to, ["test10@example.org"])
+        self.assertEqual(mails[2].to, ["test11@example.org"])
+        self.assertEqual(mails[3].to, ["test12@example.org"])
+        self.assertEqual(mails[4].to, ["test1@example.org"])
+        self.assertEqual(mails[4].subject, "[THALIA] Membership information check")
+        self.assertEqual(mails[5].to, ["test2@example.org"])
+        self.assertEqual(mails[5].subject, "[THALIA] Membership information check")
+        self.assertEqual(mails[6].to, ["test3@example.org"])
+        self.assertEqual(mails[7].to, ["test4@example.org"])
+        self.assertEqual(mails[8].to, ["test5@example.org"])
+        self.assertEqual(mails[9].to, ["test6@example.org"])
+        self.assertEqual(mails[10].to, ["test7@example.org"])
+        self.assertEqual(mails[11].to, ["test9@example.org"])
 
-        self.assertEqual(
-            mail.outbox[8].subject, "[THALIA] Membership information check sent"
-        )
+        self.assertEqual(mails[0].subject, "[THALIA] Membership information check sent")
 
     @freeze_time("2018-08-15")
     def test_send_expiration_announcement(self):
         emails.send_expiration_announcement()
 
+        print(mail.outbox)
         self.assertEqual(len(mail.outbox), 4)
         self.assertEqual(mail.outbox[0].to, ["test1@example.org"])
         self.assertEqual(
@@ -219,4 +277,24 @@ class EmailsTest(TestCase):
         self.assertEqual(mail.outbox[0].to, ["test1@example.org"])
         self.assertEqual(
             mail.outbox[0].subject, "[THALIA] Welcome to Study Association Thalia"
+        )
+
+    @freeze_time("2018-08-15")
+    def test_send_expiration_study_long(self):
+        emails.send_expiration_study_long()
+
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].to, ["test10@example.org"])
+        self.assertEqual(
+            mail.outbox[0].subject, "[THALIA] Membership expiration warning"
+        )
+
+    @freeze_time("2018-09-15")
+    def test_send_expiration_study_long_reminder(self):
+        emails.send_expiration_study_long_reminder()
+
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].to, ["test10@example.org"])
+        self.assertEqual(
+            mail.outbox[0].subject, "[THALIA] Membership expiration warning"
         )

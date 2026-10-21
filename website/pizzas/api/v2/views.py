@@ -143,7 +143,7 @@ class FoodEventOrderDetailView(
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
-        if instance.event.has_ended:
+        if instance.food_event.has_ended:
             raise PermissionDenied
         if instance.payment:
             delete_payment(instance, member=request.member, ignore_change_window=True)

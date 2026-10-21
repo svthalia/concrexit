@@ -15,6 +15,7 @@ from payments.models import BankAccount, Payment
 from payments.payables import payables
 from pizzas.models import FoodOrder
 from registrations.models import Registration, Renewal
+from reimbursements.models import Reimbursement
 from sales.models.order import Order
 
 
@@ -61,9 +62,10 @@ def date_for_payable_model(obj) -> datetime.datetime | datetime.date:
 
 def period_for_payable_model(obj) -> str | None:
     if isinstance(obj, Registration | Renewal):
-        if obj.membership is not None:
-            # Only bill for the start date, ignore the until date.
-            date = obj.membership.since
+        if obj.payment is not None:
+            date = obj.payment.created_at.date()
+            # Use the payment date, when the new membership normally starts,
+            # and don't bother with the 'until' date.
             return f"{date.strftime('%Y%m%d')}..{date.strftime('%Y%m%d')}"
     return None
 
@@ -344,6 +346,73 @@ class MoneybirdExternalInvoice(models.Model):
         verbose_name = _("moneybird external invoice")
         verbose_name_plural = _("moneybird external invoices")
         unique_together = ("payable_model", "object_id")
+
+
+class MoneybirdReceipt(models.Model):
+    reimbursement = models.OneToOneField(
+        Reimbursement,
+        on_delete=models.CASCADE,
+        related_name="moneybird_receipt",
+    )
+
+    moneybird_receipt_id = models.CharField(
+        verbose_name=_("moneybird receipt id"),
+        max_length=255,
+        blank=True,
+        null=True,
+    )
+
+    moneybird_attachment_is_uploaded = models.BooleanField(
+        default=False,
+    )
+
+    def to_moneybird(self):
+        contact_id = settings.MONEYBIRD_UNKNOWN_PAYER_CONTACT_ID
+
+        if self.reimbursement.owner is not None:
+            try:
+                moneybird_contact = MoneybirdContact.objects.get(
+                    member=self.reimbursement.owner
+                )
+                contact_id = moneybird_contact.moneybird_id
+            except MoneybirdContact.DoesNotExist:
+                pass
+
+        receipt_date = self.reimbursement.date_incurred.strftime("%Y-%m-%d")
+
+        source_url = settings.BASE_URL + reverse(
+            f"admin:{self.reimbursement._meta.app_label}_{self.reimbursement._meta.model_name}_change",
+            args=(self.reimbursement.pk,),
+        )
+
+        data = {
+            "receipt": {
+                "contact_id": int(contact_id),
+                "reference": f"Receipt [{self.reimbursement.pk}]",
+                "source": f"Concrexit ({settings.SITE_DOMAIN})",
+                "date": receipt_date,
+                "currency": "EUR",
+                "prices_are_incl_tax": True,
+                "details_attributes": [
+                    {
+                        "description": self.reimbursement.description
+                        + f"\n\nConcrexit: {source_url}",
+                        "price": str(self.reimbursement.amount),
+                        "ledger_account_id": settings.MONEYBIRD_UNCATEGORIZEDEXPENSES_LEDGER_ID,
+                        "tax_rate_id": settings.MONEYBIRD_REIMBURSEMENT_DEFAULT_TAX_RATE_ID,
+                    },
+                ],
+            }
+        }
+
+        return data
+
+    def __str__(self):
+        return f"Moneybird receipt for {self.reimbursement}"
+
+    class Meta:
+        verbose_name = _("moneybird receipt")
+        verbose_name_plural = _("moneybird receipt")
 
 
 class MoneybirdPayment(models.Model):

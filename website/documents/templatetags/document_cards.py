@@ -33,7 +33,7 @@ def event_document_card(document):
 def annual_document_card(doc_type, document):
     name = ""
     class_name = "annual-document-card"
-    for t, n in AnnualDocument.SUBCATEGORIES:
+    for t, n in AnnualDocument.Subcategory.choices:
         if t == doc_type:
             name = n
     url = f"#{doc_type}"

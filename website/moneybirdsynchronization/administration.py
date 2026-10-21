@@ -205,10 +205,18 @@ class HttpsAdministration(Administration):
 
     @_retry_if_throttled()
     def post(self, resource_path: str, data: dict):
-        """Do a POST request on the Moneybird administration."""
+        """Do a POST request for json data on the Moneybird administration."""
         url = self._build_url(resource_path)
         logger.debug(f"POST {url} with {data}")
         response = self.session.post(url, json=data)
+        return self._process_response(response)
+
+    @_retry_if_throttled()
+    def post_files(self, resource_path: str, files: dict[str, bytes]):
+        """Do a POST request for a file or other data on the Moneybird administration."""
+        url = self._build_url(resource_path)
+        logger.debug(f"POST {url} with {files}")
+        response = self.session.post(url, files=files)
         return self._process_response(response)
 
     @_retry_if_throttled()

@@ -236,7 +236,7 @@ def send_tpay_batch_processing_emails(batch):
 
 
 def execute_data_minimisation(dry_run=False):
-    """Anonymizes payments older than 7 years."""
+    """Anonymize payments older than 7 years. Also revoke mandates of minimized users."""
     # Sometimes years are 366 days of course, but better delete 1 or 2 days early than late
     payment_deletion_period = timezone.now().date() - timezone.timedelta(days=365 * 7)
     bankaccount_deletion_period = timezone.now() - datetime.timedelta(days=31 * 13)
@@ -266,7 +266,15 @@ def execute_data_minimisation(dry_run=False):
         ),
     )
 
+    queryset_mandates = BankAccount.objects.filter(
+        mandate_no__isnull=False,
+        valid_until=None,
+        owner__profile__is_minimized=True,
+    )
+
     if not dry_run:
         queryset_payments.update(paid_by=None, processed_by=None)
         queryset_bankaccounts.delete()
+        queryset_mandates.update(valid_until=timezone.now())
+
     return queryset_payments

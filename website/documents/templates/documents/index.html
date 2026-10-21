@@ -78,7 +78,7 @@
                                                 </div>
                                             </div>
                                             <div class="collapse"
-                                                 id="gm-content-{{ forloop.counter0 }}">
+                                                id="gm-content-{{ forloop.counter0 }}">
                                                 <div class="card-body">
                                                     <p>
                                                         Location: {{ gm.location }}<br/>
@@ -96,7 +96,7 @@
                                                     {% if gm.minutes %}
                                                         <p>
                                                             <a href="{{ gm.minutes.get_absolute_url }}"
-                                                               class="btn btn-primary">
+                                                            class="btn btn-primary">
                                                                 Minutes
                                                             </a>
                                                         </p>
@@ -107,16 +107,23 @@
                                     {% endfor %}
                                 </div>
                             </div>
+                            <div class="col-12 col-md-6 row">
+                                {% for type, doc in data.documents.items %}
+                                    <div class="col-4 my-3">
+                                        {% annual_document_card type doc %}
+                                    </div>
+                                {% endfor %}
+                            </div>
                         {% else %}
                             <div lass="col-12 col-md-6 my-3 d-flex justify-content-center align-items-center">
                                 There have not been any general meetings yet.
                             </div>
+                            {% for type, doc in data.documents.items %}
+                                <div class="col-4 col-md-2 my-3">
+                                    {% annual_document_card type doc %}
+                                </div>
+                            {% endfor %}
                         {% endif %}
-                        {% for type, doc in data.documents.items %}
-                            <div class="col-4 col-md-2 my-3">
-                                {% annual_document_card type doc %}
-                            </div>
-                        {% endfor %}
                     </div>
                 </div>
             {% endfor %}

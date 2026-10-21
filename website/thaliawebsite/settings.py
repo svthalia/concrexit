@@ -154,8 +154,8 @@ BOARD_NOTIFICATION_ADDRESS = (
 PARTNER_NOTIFICATION_ADDRESS = (
     f"{os.environ.get('ADDRESS_COLLABORATION', 'samenwerking')}@{SITE_DOMAIN}"
 )
-EDUCATION_NOTIFICATION_ADDRESS = (
-    f"{os.environ.get('ADDRESS_EDUCATION', 'educacie')}@{SITE_DOMAIN}"
+TURING_NOTIFICATION_ADDRESS = (
+    f"{os.environ.get('ADDRESS_TURING', 'turingcie')}@{SITE_DOMAIN}"
 )
 PROMO_REQUEST_NOTIFICATION_ADDRESS = (
     f"{os.environ.get('ADDRESS_PROMOREQUESTS', 'promocie')}@{SITE_DOMAIN}"
@@ -633,6 +633,7 @@ INSTALLED_APPS = [
     "newsletters.apps.NewslettersConfig",
     "education.apps.EducationConfig",
     "registrations.apps.RegistrationsConfig",
+    "reimbursements.apps.ReimbursementsConfig",
     "payments.apps.PaymentsConfig",
     "singlepages.apps.SinglepagesConfig",
     "shortlinks.apps.ShortLinkConfig",
@@ -1193,6 +1194,11 @@ MONEYBIRD_CONTRIBUTION_LEDGER_ID: int | None = (
     if os.environ.get("MONEYBIRD_CONTRIBUTION_LEDGER_ID")
     else None
 )
+MONEYBIRD_UNCATEGORIZEDEXPENSES_LEDGER_ID: int | None = (
+    int(os.environ.get("MONEYBIRD_UNCATEGORIZEDEXPENSES_LEDGER_ID"))
+    if os.environ.get("MONEYBIRD_UNCATEGORIZEDEXPENSES_LEDGER_ID")
+    else None
+)
 
 MONEYBIRD_TPAY_FINANCIAL_ACCOUNT_ID: int | None = (
     int(os.environ.get("MONEYBIRD_TPAY_FINANCIAL_ACCOUNT_ID"))
@@ -1213,6 +1219,11 @@ MONEYBIRD_CARD_FINANCIAL_ACCOUNT_ID: int | None = (
 MONEYBIRD_ZERO_TAX_RATE_ID: int | None = (
     int(os.environ.get("MONEYBIRD_ZERO_TAX_RATE_ID"))
     if os.environ.get("MONEYBIRD_ZERO_TAX_RATE_ID")
+    else None
+)
+MONEYBIRD_REIMBURSEMENT_DEFAULT_TAX_RATE_ID: int | None = (
+    int(os.environ.get("MONEYBIRD_REIMBURSEMENT_DEFAULT_TAX_RATE_ID"))
+    if os.environ.get("MONEYBIRD_REIMBURSEMENT_DEFAULT_TAX_RATE_ID")
     else None
 )
 
