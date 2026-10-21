@@ -76,3 +76,17 @@ def notify_registration(registration):
             "base_url": settings.BASE_URL,
         },
     )
+
+
+def notify_late_queue_entry(event, first_waiting):
+    send_email(
+        to=[settings.TREASURER_NOTIFICATION_ADDRESS],
+        subject=f"Notification about late entry from queue for {event.title}",
+        txt_template="events/email/late_queue_entry_email.txt",
+        html_template="events/email/late_queue_entry_email.html",
+        context={
+            "event": event,
+            "registration": first_waiting,
+            "base_url": settings.BASE_URL,
+        },
+    )
