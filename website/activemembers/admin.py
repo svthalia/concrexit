@@ -10,6 +10,7 @@ from django.utils.translation import gettext_lazy as _
 
 from activemembers import models
 from activemembers.forms import MemberGroupForm, MemberGroupMembershipForm
+from moneybirdsynchronization.admin import MoneybirdCostCentreInline
 from utils.snippets import datetime_to_lectureyear
 
 
@@ -48,7 +49,7 @@ class MemberGroupMembershipInline(admin.StackedInline):
 class MemberGroupAdmin(admin.ModelAdmin):
     """Manage the member groups."""
 
-    inlines = (MemberGroupMembershipInline,)
+    inlines = (MemberGroupMembershipInline, MoneybirdCostCentreInline)
     form = MemberGroupForm
     list_display = ("name", "since", "until", "active", "contact_address")
     list_filter = (
@@ -87,7 +88,7 @@ class SocietyAdmin(MemberGroupAdmin):
 class BoardAdmin(admin.ModelAdmin):
     """Manage the board."""
 
-    inlines = (MemberGroupMembershipInline,)
+    inlines = (MemberGroupMembershipInline, MoneybirdCostCentreInline)
     form = MemberGroupForm
     exclude = ("is_board",)
     filter_horizontal = ("permissions",)

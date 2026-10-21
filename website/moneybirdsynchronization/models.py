@@ -4,6 +4,7 @@ from decimal import Decimal
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
@@ -32,19 +33,42 @@ def financial_account_id_for_payment_type(payment_type) -> int | None:
 
 
 def project_name_for_payable_model(obj) -> str | None:
-    if isinstance(obj, EventRegistration):
-        start_date = obj.event.start.strftime("%Y-%m-%d")
-        return f"{obj.event.title} [{start_date}]"
+    """Return the name of a project that is created for a payable on Moneybird.
+
+    This is only used for payables that are not booked on a cost centre.
+    """
     if isinstance(obj, FoodOrder):
         start_date = obj.food_event.event.start.strftime("%Y-%m-%d")
         return f"{obj.food_event.event.title} [{start_date}]"
-    if isinstance(obj, Order):
-        start_date = obj.shift.start.strftime("%Y-%m-%d")
-        return f"{obj.shift} [{start_date}]"
-    if isinstance(obj, Registration | Renewal):
+    if isinstance(obj, EventRegistration | Order | Registration | Renewal):
         return None
 
     raise ValueError(f"Unknown payable model {obj}")
+
+
+def cost_centre_id_for_payable_model(obj) -> str | None:
+    """Return the Moneybird project id of the cost centre that a payable is booked on.
+
+    Event registrations, and sales orders in a shift that is linked to an event, use
+    the cost centre of the event's main organiser (the first organiser by name). If
+    that group has no active cost centre, the default cost centre is used.
+
+    Sales orders in a shift without an event are pushed without a project, so the
+    treasurer can assign one in Moneybird.
+    """
+    if isinstance(obj, EventRegistration):
+        group = obj.event.organisers.order_by("name").first()
+    elif isinstance(obj, Order) and obj.shift.event is not None:
+        group = obj.shift.event.organisers.order_by("name").first()
+    else:
+        return None
+
+    try:
+        project = group.moneybird_cost_centre.project
+    except (AttributeError, ObjectDoesNotExist):
+        project = None
+    moneybird_id = project.moneybird_id if project and project.active else None
+    return moneybird_id or settings.MONEYBIRD_DEFAULT_COST_CENTRE_ID
 
 
 def date_for_payable_model(obj) -> datetime.datetime | datetime.date:
@@ -163,12 +187,21 @@ class MoneybirdProject(models.Model):
         null=True,
     )
 
+    active = models.BooleanField(
+        _("active"),
+        default=True,
+        help_text=_(
+            "Projects that are deactivated in Moneybird are marked inactive when the "
+            "projects are imported, and can no longer be selected as cost centre."
+        ),
+    )
+
     class Meta:
         verbose_name = _("moneybird project")
         verbose_name_plural = _("moneybird projects")
 
     def __str__(self):
-        return f"Moneybird project {self.name}"
+        return self.name
 
     def to_moneybird(self):
         return {
@@ -176,6 +209,36 @@ class MoneybirdProject(models.Model):
                 "name": self.name,
             }
         }
+
+
+class MoneybirdCostCentre(models.Model):
+    """The Moneybird project (cost centre) that a group's events and sales are booked on."""
+
+    group = models.OneToOneField(
+        "activemembers.MemberGroup",
+        verbose_name=_("group"),
+        related_name="moneybird_cost_centre",
+        on_delete=models.CASCADE,
+    )
+
+    project = models.ForeignKey(
+        MoneybirdProject,
+        verbose_name=_("cost centre"),
+        related_name="cost_centres",
+        on_delete=models.PROTECT,
+        limit_choices_to={"active": True},
+        help_text=_(
+            "The Moneybird project on which the event registrations and sales of "
+            "events organised by this group are booked."
+        ),
+    )
+
+    class Meta:
+        verbose_name = _("moneybird cost centre")
+        verbose_name_plural = _("moneybird cost centres")
+
+    def __str__(self):
+        return f"{self.project.name} for {self.group}"
 
 
 class MoneybirdContact(models.Model):
@@ -339,9 +402,9 @@ class MoneybirdExternalInvoice(models.Model):
 
         period = period_for_payable_model(self.payable_object)
 
-        project_name = project_name_for_payable_model(self.payable_object)
+        project_id = cost_centre_id_for_payable_model(self.payable_object)
 
-        project_id = None
+        project_name = project_name_for_payable_model(self.payable_object)
         if project_name is not None:
             project, __ = MoneybirdProject.objects.get_or_create(name=project_name)
             if project.moneybird_id is None:

@@ -16,6 +16,7 @@ from moneybirdsynchronization.models import (
     MoneybirdContact,
     MoneybirdExternalInvoice,
     MoneybirdPayment,
+    MoneybirdProject,
     MoneybirdReceipt,
     financial_account_id_for_payment_type,
 )
@@ -234,12 +235,58 @@ def create_receipt(reimbursement: Reimbursement):
     return moneybird_receipt
 
 
+def import_projects():
+    """Import the active projects from Moneybird, so they can be used as cost centres.
+
+    Projects are matched on their Moneybird ID, or on their name for projects that
+    have not been pushed to Moneybird yet. Projects are never deleted, but projects
+    that are no longer active in Moneybird are marked inactive.
+    """
+    if not settings.MONEYBIRD_SYNC_ENABLED:
+        return
+
+    active_ids = []
+
+    moneybird = get_moneybird_api_service()
+    per_page = 100
+    page = 1
+    while True:
+        projects = moneybird.get_projects(page=page, per_page=per_page) or []
+        for project in projects:
+            moneybird_project = (
+                MoneybirdProject.objects.filter(moneybird_id=project["id"]).first()
+                or MoneybirdProject.objects.filter(name=project["name"]).first()
+                or MoneybirdProject()
+            )
+            moneybird_project.name = project["name"]
+            moneybird_project.moneybird_id = project["id"]
+            moneybird_project.active = True
+            moneybird_project.save()
+            active_ids.append(moneybird_project.moneybird_id)
+
+        if len(projects) < per_page:
+            break
+        page += 1
+
+    # Projects without a Moneybird ID have not been pushed yet, so leave them alone.
+    MoneybirdProject.objects.filter(moneybird_id__isnull=False).exclude(
+        moneybird_id__in=active_ids
+    ).update(active=False)
+
+
 def synchronize_moneybird():
     """Perform all synchronization to moneybird."""
     if not settings.MONEYBIRD_SYNC_ENABLED:
         return
 
     logger.info("Starting moneybird synchronization.")
+
+    # Import the projects first, so new cost centres can be selected in the admin.
+    try:
+        import_projects()
+    except Administration.Error as e:
+        logger.exception("Moneybird synchronization error: %s", e)
+        send_sync_error(e, "importing projects")
 
     _sync_contacts()
 

@@ -5,6 +5,7 @@ from django.utils.html import format_html
 
 from .models import (
     MoneybirdContact,
+    MoneybirdCostCentre,
     MoneybirdExternalInvoice,
     MoneybirdPayment,
     MoneybirdProject,
@@ -150,9 +151,32 @@ class MoneybirdProjectAdmin(admin.ModelAdmin):
     list_display = (
         "name",
         "moneybird_id",
+        "active",
     )
 
+    list_filter = ("active",)
+
     search_fields = ("name", "moneybird_id")
+
+
+class MoneybirdCostCentreInline(admin.StackedInline):
+    """Inline to require a cost centre for each group."""
+
+    model = MoneybirdCostCentre
+    template = "admin/moneybirdsynchronization/edit_inline/cost_centre_stacked.html"
+    autocomplete_fields = ("project",)
+    min_num = 1
+    max_num = 1
+    can_delete = False
+
+
+@admin.register(MoneybirdCostCentre)
+class MoneybirdCostCentreAdmin(admin.ModelAdmin):
+    list_display = ("group", "project")
+    list_select_related = ("group", "project")
+    autocomplete_fields = ("project",)
+    search_fields = ("group__name", "project__name")
+    ordering = ("group__name",)
 
 
 @admin.register(MoneybirdReceipt)

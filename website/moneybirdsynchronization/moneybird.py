@@ -22,6 +22,11 @@ class MoneybirdAPIService:
     def create_project(self, project_data):
         return self._administration.post("projects", project_data)
 
+    def get_projects(self, page=1, per_page=100):
+        return self._administration.get(
+            "projects", {"filter": "state:active", "page": page, "per_page": per_page}
+        )
+
     def create_external_sales_invoice(self, invoice_data):
         return self._administration.post("external_sales_invoices", invoice_data)
 
