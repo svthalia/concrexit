@@ -35,7 +35,7 @@ def project_name_for_payable_model(obj) -> str | None:
         return f"{obj.event.title} [{start_date}]"
     if isinstance(obj, FoodOrder):
         start_date = obj.food_event.event.start.strftime("%Y-%m-%d")
-        return f"{obj.food_event.event.title} [{start_date}]"
+        return f"C501 - Food orders"
     if isinstance(obj, Order):
         start_date = obj.shift.start.strftime("%Y-%m-%d")
         return f"{obj.shift} [{start_date}]"
