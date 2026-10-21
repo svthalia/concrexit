@@ -142,10 +142,15 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         viewSkeletonRender: function ({ view }) {
             const prevView = Cookies.get(VIEW_COOKIE);
-
             if (view.type !== prevView) {
                 Cookies.set(VIEW_COOKIE, view.type);
                 checkViewState(calendar);
+            }
+
+            if (view.type === 'list') {
+                const today = new Date();
+                calendar.gotoDate(today);
+                calendar.refetchEvents();
             }
         },
         datesRender: function () {

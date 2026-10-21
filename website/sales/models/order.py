@@ -21,7 +21,7 @@ from sales.models.shift import Shift
 
 
 def default_order_shift():
-    return Shift.objects.filter(active=True).first()
+    return Shift.objects.filter(active=True).only("pk").first()
 
 
 class Order(models.Model):
@@ -181,6 +181,15 @@ class Order(models.Model):
 
     @property
     def accept_payment_from_any_user(self):
+        return True
+
+    def user_can_modify(self, user):
+        if not self.shift.user_orders_allowed:
+            return False
+        if self.created_by.pk != user.pk:
+            return False
+        if self.payment:
+            return False
         return True
 
     @property

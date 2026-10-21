@@ -41,3 +41,40 @@ def render_frontpage_events(context, events=None):
         cards.append({"event": event, "current_user_registration": user_registration})
 
     return {"events": cards}
+
+
+@register.inclusion_tag("events/registration_events.html", takes_context=True)
+def render_frontpage_registration_events(context, events=None):
+    if events is None:
+        events = Event.objects.filter(
+            published=True,
+            registration_start__lte=timezone.now(),
+            registration_start__gte=timezone.now() - timezone.timedelta(days=7),
+            registration_end__gte=timezone.now(),
+            optional_registrations=False,
+        ).order_by("start")[:6]
+
+    cards = []
+    for event in events:
+        user_registration = None
+
+        if context["user"] and services.is_user_registered(context["user"], event):
+            if services.user_registration_pending(context["user"], event):
+                user_registration = {
+                    "class": "pending-registration",
+                    "text": _("In queue for this event"),
+                }
+            else:
+                user_registration = {
+                    "class": "has-registration",
+                    "text": _("Registered for this event"),
+                }
+        elif event.registration_required:
+            user_registration = {
+                "class": "open-registration",
+                "text": _("Not registered for this event"),
+            }
+
+        cards.append({"event": event, "current_user_registration": user_registration})
+
+    return {"events": cards}

@@ -124,6 +124,10 @@ class MemberRegistrationForm(BaseRegistrationForm):
 
     def clean(self):
         super().clean()
+        if "length" not in self.cleaned_data:
+            # This is not valid, but already validated automatically.
+            return self.cleaned_data
+
         self.cleaned_data["contribution"] = settings.MEMBERSHIP_PRICES[
             self.cleaned_data["length"]
         ]
@@ -235,7 +239,10 @@ class RenewalForm(forms.ModelForm):
         )
 
     def clean(self):
-        super().clean()
+        if "length" not in self.cleaned_data:
+            # This is not valid, but already validated automatically.
+            return self.cleaned_data
+
         if self.cleaned_data["member"].profile.is_minimized:
             raise ValidationError(
                 "It's not possible to renew a membership using an incomplete profile."

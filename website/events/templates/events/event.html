@@ -278,6 +278,24 @@
                                 </tr>
                             {% endif %}
                         {% endif %}
+
+                        {% if shifts %}
+                        <tr>
+                            <th>
+                                Ordering
+                            </th>
+                            <td>
+                            You can self-order for the following:
+                            <ul>
+                            {% for shift in shifts %}
+                                <li>
+                                    <a href="{% url 'sales:shift-detail' pk=shift.pk %}">{{ shift.title }}</a>
+                                </li>
+                            {% endfor %}
+                            </ul>
+                        {% endif %}
+
+
                         {% if event.album_set.all %}
                         <tr>
                             <th>{% trans "photos"|capfirst %}</th>

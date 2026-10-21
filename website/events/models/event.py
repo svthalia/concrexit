@@ -217,8 +217,6 @@ class Event(models.Model):
 
     tpay_allowed = models.BooleanField(_("Allow Thalia Pay"), default=True)
 
-    shift = models.OneToOneField("sales.Shift", models.SET_NULL, null=True, blank=True)
-
     mark_present_url_token = models.UUIDField(
         unique=True, default=uuid.uuid4, editable=False
     )
@@ -237,9 +235,9 @@ class Event(models.Model):
     @property
     def cancel_too_late_message(self):
         return _(
-            "Cancellation isn't possible anymore without having to pay "
-            "the full costs of €" + str(self.fine) + ". Also note that "
-            "you will be unable to re-register."
+            "The deadline has passed, are you sure you want to cancel your registration "
+            "and pay the estimated full costs of" + str(self.fine) + "? "
+            "You will not be able to undo this!"
         )
 
     @property
