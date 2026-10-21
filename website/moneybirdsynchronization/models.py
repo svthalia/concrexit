@@ -40,7 +40,7 @@ def project_name_for_payable_model(obj) -> str | None:
         start_date = obj.shift.start.strftime("%Y-%m-%d")
         return f"{obj.shift} [{start_date}]"
     if isinstance(obj, Registration | Renewal):
-        return None
+        return f"C311 - Contribution"
 
     raise ValueError(f"Unknown payable model {obj}")
 
@@ -258,7 +258,7 @@ class MoneybirdExternalInvoice(models.Model):
             )
         except cls.DoesNotExist:
             return None
-
+    
     def to_moneybird(self):
         moneybird = get_moneybird_api_service()
 
@@ -301,7 +301,7 @@ class MoneybirdExternalInvoice(models.Model):
         data = {
             "external_sales_invoice": {
                 "contact_id": int(contact_id),
-                "reference": f"{self.payable.payment_topic} [{self.payable.model.pk}]",
+                "reference": f"{self.payable.payment_topic} [{self.payable.model.pk}] ",
                 "source": f"Concrexit ({settings.SITE_DOMAIN})",
                 "date": invoice_date,
                 "currency": "EUR",
