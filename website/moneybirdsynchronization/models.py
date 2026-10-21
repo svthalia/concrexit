@@ -301,7 +301,7 @@ class MoneybirdExternalInvoice(models.Model):
         data = {
             "external_sales_invoice": {
                 "contact_id": int(contact_id),
-                "reference": f"{self.payable.payment_topic} [{self.payable.model.pk}] ",
+                "reference": f"{self.payable.payment_topic} [{self.payable.model.pk}]",
                 "source": f"Concrexit ({settings.SITE_DOMAIN})",
                 "date": invoice_date,
                 "currency": "EUR",
