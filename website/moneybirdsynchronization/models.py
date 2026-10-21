@@ -35,12 +35,12 @@ def project_name_for_payable_model(obj) -> str | None:
         return f"{obj.event.title} [{start_date}]"
     if isinstance(obj, FoodOrder):
         start_date = obj.food_event.event.start.strftime("%Y-%m-%d")
-        return f"C501 - Food orders"
+        return "C501 - Food orders"
     if isinstance(obj, Order):
         start_date = obj.shift.start.strftime("%Y-%m-%d")
         return f"{obj.shift} [{start_date}]"
     if isinstance(obj, Registration | Renewal):
-        return f"C311 - Contribution"
+        return "C311 - Contribution"
 
     raise ValueError(f"Unknown payable model {obj}")
 
@@ -258,7 +258,6 @@ class MoneybirdExternalInvoice(models.Model):
             )
         except cls.DoesNotExist:
             return None
-    
     def to_moneybird(self):
         moneybird = get_moneybird_api_service()
 
