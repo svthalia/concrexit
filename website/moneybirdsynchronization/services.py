@@ -107,7 +107,7 @@ def create_or_update_external_invoice(obj):
     moneybird = get_moneybird_api_service()
 
     if external_invoice.moneybird_invoice_id:
-        moneybird.update_external_sales_invoice(
+        response = moneybird.update_external_sales_invoice(
             external_invoice.moneybird_invoice_id, external_invoice.to_moneybird()
         )
     else:
@@ -115,7 +115,10 @@ def create_or_update_external_invoice(obj):
             external_invoice.to_moneybird()
         )
         external_invoice.moneybird_invoice_id = response["id"]
-        external_invoice.moneybird_details_attribute_id = response["details"][0]["id"]
+
+    external_invoice.moneybird_details_attribute_ids = [
+        str(detail["id"]) for detail in response["details"]
+    ]
 
     if external_invoice.payable.payment is not None:
         # Mark the invoice as paid if the payable is paid as well

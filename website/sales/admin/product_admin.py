@@ -6,7 +6,7 @@ from sales.models.product import Product, ProductList, ProductListItem
 
 @register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ("name", "age_restricted")
+    list_display = ("name", "age_restricted", "tax_rate")
 
 
 class ProductListItemInline(admin.TabularInline):

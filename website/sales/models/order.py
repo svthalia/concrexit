@@ -16,7 +16,7 @@ from queryable_properties.properties import AnnotationProperty
 
 from members.models import Member
 from payments.models import Payment, PaymentAmountField
-from sales.models.product import ProductListItem
+from sales.models.product import Product, ProductListItem
 from sales.models.shift import Shift
 
 
@@ -245,6 +245,13 @@ class OrderItem(models.Model):
         null=False,
         blank=True,
     )
+    tax_rate = models.CharField(
+        verbose_name=_("tax rate"),
+        max_length=10,
+        choices=Product.TaxRate.choices,
+        null=True,
+        blank=True,
+    )
 
     def save(
         self, force_insert=False, force_update=False, using=None, update_fields=None
@@ -265,6 +272,10 @@ class OrderItem(models.Model):
 
         if self.product:
             self.product_name = self.product.product_name
+            # Store the tax rate at the time of ordering, so that changing a product's
+            # tax rate later does not change the invoices of earlier orders.
+            if self.tax_rate is None:
+                self.tax_rate = self.product.product.tax_rate
 
         super().save(force_insert, force_update, using, update_fields)
 

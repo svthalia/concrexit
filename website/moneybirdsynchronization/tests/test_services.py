@@ -442,6 +442,82 @@ class ServicesTest(TestCase):
 
         mock_create_invoice.assert_called_once_with(order2)
 
+    @override_settings(
+        MONEYBIRD_UNKNOWN_PAYER_CONTACT_ID="1",
+        MONEYBIRD_LOW_TAX_RATE_ID="9",
+        MONEYBIRD_HIGH_TAX_RATE_ID="21",
+    )
+    def test_sales_order_invoice_lines_per_tax_rate(self, mock_api):
+        """Sales order invoices get one line per tax rate, which are updated in place."""
+        beer = SalesProduct.objects.get(name="beer")
+        beer.tax_rate = SalesProduct.TaxRate.HIGH
+        beer.save()
+        tosti = SalesProduct.objects.create(
+            name="tosti", tax_rate=SalesProduct.TaxRate.LOW
+        )
+        product_list = ProductList.objects.get(name="normal")
+        product_list.product_items.create(product=tosti, price="1.50")
+        shift = Shift.objects.create(
+            start=timezone.now(),
+            end=timezone.now() + timezone.timedelta(hours=1),
+            product_list=product_list,
+        )
+
+        order = Order.objects.create(shift=shift, payer=self.member)
+        OrderItem.objects.create(
+            order=order, product=product_list.product_items.get(product=beer), amount=2
+        )
+        OrderItem.objects.create(
+            order=order, product=product_list.product_items.get(product=tosti), amount=1
+        )
+        create_payment(order, self.member, Payment.TPAY)
+
+        mock_api.return_value.create_project.return_value = {"id": "5"}
+        mock_api.return_value.create_external_sales_invoice.return_value = {
+            "id": "100",
+            "details": [{"id": "101"}, {"id": "102"}],
+        }
+
+        external_invoice = services.create_or_update_external_invoice(order)
+
+        details = mock_api.return_value.create_external_sales_invoice.call_args[0][0][
+            "external_sales_invoice"
+        ]["details_attributes"]
+        self.assertEqual(len(details), 2)
+        self.assertEqual(details[0]["price"], "1.00")
+        self.assertEqual(details[0]["tax_rate_id"], 21)
+        self.assertTrue(details[0]["description"].startswith("2x beer."))
+        self.assertEqual(details[1]["price"], "1.50")
+        self.assertEqual(details[1]["tax_rate_id"], 9)
+        self.assertEqual(
+            external_invoice.moneybird_details_attribute_ids, ["101", "102"]
+        )
+
+        # Changing a product's tax rate does not change earlier orders.
+        tosti.tax_rate = SalesProduct.TaxRate.HIGH
+        tosti.save()
+
+        # When there are fewer lines than before, the surplus line is removed.
+        external_invoice.moneybird_details_attribute_ids.append("103")
+        external_invoice.save()
+        mock_api.return_value.update_external_sales_invoice.return_value = {
+            "id": "100",
+            "details": [{"id": "101"}, {"id": "102"}],
+        }
+
+        external_invoice = services.create_or_update_external_invoice(order)
+
+        details = mock_api.return_value.update_external_sales_invoice.call_args[0][1][
+            "external_sales_invoice"
+        ]["details_attributes"]
+        self.assertEqual(details[0]["id"], 101)
+        self.assertEqual(details[1]["id"], 102)
+        self.assertEqual(details[1]["tax_rate_id"], 9)
+        self.assertEqual(details[2], {"id": 103, "_destroy": True})
+        self.assertEqual(
+            external_invoice.moneybird_details_attribute_ids, ["101", "102"]
+        )
+
     @mock.patch("moneybirdsynchronization.services.create_or_update_external_invoice")
     def test_sync_renewals(self, mock_create_invoice, mock_api):
         renewal1 = Renewal.objects.create(

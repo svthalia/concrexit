@@ -21,8 +21,8 @@ class OrderItemInline(admin.TabularInline):
     model = OrderItem
     extra = 1
 
-    fields = ("product", "product_name", "amount", "total")
-    readonly_fields = ("product_name",)
+    fields = ("product", "product_name", "amount", "total", "tax_rate")
+    readonly_fields = ("product_name", "tax_rate")
 
     def get_readonly_fields(self, request: HttpRequest, obj: Order = None):
         default_fields = self.readonly_fields

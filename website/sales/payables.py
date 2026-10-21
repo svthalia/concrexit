@@ -55,7 +55,7 @@ class OrderPayable(Payable[Order]):
                 "payer",
                 "shift",
             ],
-            OrderItem: ["product", "order", "total", "amount"],
+            OrderItem: ["product", "order", "total", "amount", "tax_rate"],
         }
 
 

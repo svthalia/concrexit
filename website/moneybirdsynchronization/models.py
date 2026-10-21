@@ -1,4 +1,5 @@
 import datetime
+from decimal import Decimal
 
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -17,6 +18,7 @@ from pizzas.models import FoodOrder
 from registrations.models import Registration, Renewal
 from reimbursements.models import Reimbursement
 from sales.models.order import Order
+from sales.models.product import Product as SalesProduct
 
 
 def financial_account_id_for_payment_type(payment_type) -> int | None:
@@ -80,6 +82,68 @@ def ledger_id_for_payable_model(obj) -> int | None:
     if isinstance(obj, Registration | Renewal):
         return settings.MONEYBIRD_CONTRIBUTION_LEDGER_ID
     return None
+
+
+def tax_rate_id_for_product_tax_rate(tax_rate) -> int | None:
+    if tax_rate == SalesProduct.TaxRate.ZERO:
+        return settings.MONEYBIRD_ZERO_TAX_RATE_ID
+    if tax_rate == SalesProduct.TaxRate.LOW:
+        return settings.MONEYBIRD_LOW_TAX_RATE_ID
+    if tax_rate == SalesProduct.TaxRate.HIGH:
+        return settings.MONEYBIRD_HIGH_TAX_RATE_ID
+    return None
+
+
+def details_for_payable_model(obj, payable) -> list[dict]:
+    """Return the invoice lines for a payable, each with a description, price and tax rate."""
+    if isinstance(obj, Order):
+        return _details_for_sales_order(obj)
+    return [
+        {
+            "description": payable.payment_notes,
+            "price": payable.payment_amount,
+            "tax_rate_id": tax_rate_for_payable_model(obj),
+        }
+    ]
+
+
+def _details_for_sales_order(order: Order) -> list[dict]:
+    """Return one invoice line per tax rate of the items in a sales order.
+
+    A discount is subtracted proportionally from the lines, so that they add up
+    to the total amount of the order.
+    """
+    items_by_tax_rate = {}
+    for item in order.order_items.all():
+        items_by_tax_rate.setdefault(item.tax_rate, []).append(item)
+
+    # Sort the tax rates, so the lines keep the same order when the invoice is updated.
+    tax_rates = sorted(items_by_tax_rate, key=lambda tax_rate: tax_rate or "")
+    subtotal = sum(item.total for item in order.order_items.all())
+    discount = order.discount or Decimal("0.00")
+    remaining_discount = discount
+
+    details = []
+    for i, tax_rate in enumerate(tax_rates):
+        items = items_by_tax_rate[tax_rate]
+        price = sum(item.total for item in items)
+
+        if i == len(tax_rates) - 1:
+            # Put the rounding difference on the last line.
+            line_discount = remaining_discount
+        else:
+            line_discount = (discount * price / subtotal).quantize(Decimal("0.01"))
+            remaining_discount -= line_discount
+
+        description = ", ".join(str(item) for item in items)
+        details.append(
+            {
+                "description": f"{description}. Ordered at {order.created_at.time()} ({order.id})",
+                "price": price - line_discount,
+                "tax_rate_id": tax_rate_id_for_product_tax_rate(tax_rate),
+            }
+        )
+    return details
 
 
 class MoneybirdProject(models.Model):
@@ -215,13 +279,11 @@ class MoneybirdExternalInvoice(models.Model):
         null=True,
     )
 
-    moneybird_details_attribute_id = models.CharField(
-        verbose_name=_("moneybird details attribute id"),
-        max_length=255,
+    moneybird_details_attribute_ids = models.JSONField(
+        verbose_name=_("moneybird details attribute ids"),
+        default=list,
         blank=True,
-        null=True,
-    )  # We need this id, so we can update the rows (otherwise, updates will create new rows without deleting).
-    # We only support one attribute for now, so this is the easiest way to store it
+    )  # We need these ids, so we can update the rows (otherwise, updates will create new rows without deleting).
 
     needs_synchronization = models.BooleanField(
         default=True,  # The field is set False only when it has been successfully synchronized.
@@ -277,8 +339,6 @@ class MoneybirdExternalInvoice(models.Model):
 
         period = period_for_payable_model(self.payable_object)
 
-        tax_rate_id = tax_rate_for_payable_model(self.payable_object)
-
         project_name = project_name_for_payable_model(self.payable_object)
 
         project_id = None
@@ -298,6 +358,28 @@ class MoneybirdExternalInvoice(models.Model):
             args=(self.object_id,),
         )
 
+        details = []
+        for line in details_for_payable_model(self.payable_object, self.payable):
+            detail = {
+                "description": line["description"],
+                "price": str(line["price"]),
+            }
+            if project_id is not None:
+                detail["project_id"] = int(project_id)
+            if ledger_id is not None:
+                detail["ledger_id"] = int(ledger_id)
+            if period is not None:
+                detail["period"] = period
+            if line["tax_rate_id"] is not None:
+                detail["tax_rate_id"] = int(line["tax_rate_id"])
+            details.append(detail)
+
+        # Update the existing rows in place, and remove rows that are no longer needed.
+        for detail, detail_id in zip(details, self.moneybird_details_attribute_ids):
+            detail["id"] = int(detail_id)
+        for detail_id in self.moneybird_details_attribute_ids[len(details) :]:
+            details.append({"id": int(detail_id), "_destroy": True})
+
         data = {
             "external_sales_invoice": {
                 "contact_id": int(contact_id),
@@ -306,36 +388,12 @@ class MoneybirdExternalInvoice(models.Model):
                 "date": invoice_date,
                 "currency": "EUR",
                 "prices_are_incl_tax": True,
-                "details_attributes": [
-                    {
-                        "description": self.payable.payment_notes,
-                        "price": str(self.payable.payment_amount),
-                    },
-                ],
+                "details_attributes": details,
             }
         }
 
         if source_url is not None:
             data["external_sales_invoice"]["source_url"] = source_url
-        if project_id is not None:
-            data["external_sales_invoice"]["details_attributes"][0]["project_id"] = int(
-                project_id
-            )
-        if ledger_id is not None:
-            data["external_sales_invoice"]["details_attributes"][0]["ledger_id"] = int(
-                ledger_id
-            )
-
-        if self.moneybird_details_attribute_id is not None:
-            data["external_sales_invoice"]["details_attributes"][0]["id"] = int(
-                self.moneybird_details_attribute_id
-            )
-        if period is not None:
-            data["external_sales_invoice"]["details_attributes"][0]["period"] = period
-        if tax_rate_id is not None:
-            data["external_sales_invoice"]["details_attributes"][0]["tax_rate_id"] = (
-                int(tax_rate_id)
-            )
 
         return data
 

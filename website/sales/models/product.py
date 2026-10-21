@@ -8,11 +8,27 @@ from payments.models import PaymentAmountField
 class Product(models.Model):
     """Products that can be ordered."""
 
+    class TaxRate(models.TextChoices):
+        ZERO = "zero", _("0%")
+        LOW = "low", _("9%")
+        HIGH = "high", _("21%")
+
     name = models.CharField(
         verbose_name=_("name"), max_length=50, unique=True, null=False, blank=False
     )
     age_restricted = models.BooleanField(
         verbose_name=_("age restricted"), default=False, null=False, blank=False
+    )
+    tax_rate = models.CharField(
+        verbose_name=_("tax rate"),
+        max_length=10,
+        choices=TaxRate.choices,
+        null=True,
+        blank=True,
+        help_text=_(
+            "The VAT rate used for this product in Moneybird. "
+            "If empty, the default tax rate in Moneybird is used."
+        ),
     )
 
     def __str__(self):
