@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = "==3.13.*"
 resolution-markers = [
     "platform_python_implementation != 'PyPy'",
@@ -376,6 +376,7 @@ wheels = [
 name = "concrexit"
 version = "0.0.dev0"
 source = { virtual = "." }
+default-groups = ["dev", "scss"]
 dependencies = [
     { name = "argon2-cffi" },
     { name = "bcrypt" },
@@ -444,12 +445,12 @@ requires-dist = [
     { name = "bleach", extras = ["css"], specifier = "~=6.1.0" },
     { name = "boto3", specifier = "==1.35.62" },
     { name = "celery", extras = ["redis"], specifier = "~=5.5.3" },
-    { name = "django", specifier = "==5.2.9" },
+    { name = "django", specifier = "==5.2.18" },
     { name = "django-admin-autocomplete-filter", specifier = "==0.7.1" },
     { name = "django-bootstrap5", specifier = "~=25.2" },
     { name = "django-cors-headers", specifier = "==3.14.0" },
     { name = "django-debug-toolbar", specifier = "==4.4.6" },
-    { name = "django-drf-filepond", specifier = "==0.5.0" },
+    { name = "django-drf-filepond", specifier = "==0.5.2" },
     { name = "django-filepond-widget", specifier = "==0.9.0" },
     { name = "django-formtools", specifier = "==2.5.1" },
     { name = "django-ical", specifier = "==1.9.2" },
@@ -587,16 +588,16 @@ wheels = [
 
 [[package]]
 name = "django"
-version = "5.2.9"
+version = "5.2.18"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "asgiref" },
     { name = "sqlparse" },
     { name = "tzdata", marker = "sys_platform == 'win32'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/eb/1c/188ce85ee380f714b704283013434976df8d3a2df8e735221a02605b6794/django-5.2.9.tar.gz", hash = "sha256:16b5ccfc5e8c27e6c0561af551d2ea32852d7352c67d452ae3e76b4f6b2ca495", size = 10848762, upload-time = "2025-12-02T14:01:08.418Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/85/fe/79e692b430c7721bf4b812c328bfe687e73e3f28f56611a6a18a97e887cc/django-5.2.18.tar.gz", hash = "sha256:461c5dd06d2ea16bd5ca37d3f46e4def1d6b0fe7588c6f4e2119517bb0af8b2d", size = 10910238, upload-time = "2026-10-06T13:01:09.371Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/17/b0/7f42bfc38b8f19b78546d47147e083ed06e12fc29c42da95655e0962c6c2/django-5.2.9-py3-none-any.whl", hash = "sha256:3a4ea88a70370557ab1930b332fd2887a9f48654261cdffda663fef5976bb00a", size = 8290652, upload-time = "2025-12-02T14:01:03.485Z" },
+    { url = "https://files.pythonhosted.org/packages/d6/01/6568ec52b26548ca1b83d33249f7274db3bf74698f42c0da42ec9db1a24a/django-5.2.18-py3-none-any.whl", hash = "sha256:92ed81d500be6408ecd704d7bd1366c534f30427bffcc63c5fefb129561aec7c", size = 8316071, upload-time = "2026-10-06T13:01:04.413Z" },
 ]
 
 [[package]]
@@ -677,7 +678,7 @@ wheels = [
 
 [[package]]
 name = "django-drf-filepond"
-version = "0.5.0"
+version = "0.5.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
@@ -687,9 +688,9 @@ dependencies = [
     { name = "shortuuid" },
     { name = "six" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a3/72/7a7c6f7b6949a83ef71e02e98c6a4d7061849f53829f6fbabfce6274a02a/django-drf-filepond-0.5.0.tar.gz", hash = "sha256:360abcbcfdc016398435679dcc768b0c2d6b29a92db46fe3430ad31176251a13", size = 41436, upload-time = "2022-12-05T19:55:15.011Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/30/bc/517ec0a05d52a839ecf68f53dce89341499cd3ad3552af71fd528da69340/django_drf_filepond-0.5.2.tar.gz", hash = "sha256:77ed4ddd79dd9d5f5037ee0f54ed6b15ab256db3fc83a4f553a62cd38e5bba11", size = 81465, upload-time = "2026-01-15T18:28:05.168Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/42/ea/911cd1db67d5f81ef31d659de031c21e3c994332f6f059cd7dfd8977f70e/django_drf_filepond-0.5.0-py2.py3-none-any.whl", hash = "sha256:55d64c3272c716f0811f2e67877cc005b8927e96bb34ba7f7105202d6bd5a647", size = 44034, upload-time = "2022-12-05T19:55:12.332Z" },
+    { url = "https://files.pythonhosted.org/packages/d8/d2/b45c41d596c99799240e7a03e728406527e5fa846d384f1f5f3e431ddacd/django_drf_filepond-0.5.2-py2.py3-none-any.whl", hash = "sha256:d877d04df75760b0167d3bb2ef48f165e7466c2cdaac7d3ffcfd59599ccd16e6", size = 46880, upload-time = "2026-01-15T18:27:05.534Z" },
 ]
 
 [[package]]
