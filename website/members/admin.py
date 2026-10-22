@@ -70,11 +70,12 @@ class ProfileInline(admin.StackedInline):
     model = models.Profile
     can_delete = False
 
-    def get_fields(self, request, obj=None):
-        fields = super().get_fields(request, obj)
+    def get_formset(self, request, obj=None, **kwargs):
+        fields = list(self.fields)
         if obj and obj.is_staff:
-            fields = fields + ["email_gsuite_only"]
-        return fields
+            fields.append("email_gsuite_only")
+        kwargs["fields"] = fields
+        return super().get_formset(request, obj, **kwargs)
 
 
 class MembershipTypeListFilter(admin.SimpleListFilter):
