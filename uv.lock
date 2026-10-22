@@ -450,7 +450,7 @@ requires-dist = [
     { name = "django-bootstrap5", specifier = "~=25.2" },
     { name = "django-cors-headers", specifier = "==3.14.0" },
     { name = "django-debug-toolbar", specifier = "==4.4.6" },
-    { name = "django-drf-filepond", specifier = "==0.5.2" },
+    { name = "django-drf-filepond", specifier = "==0.5.0" },
     { name = "django-filepond-widget", specifier = "==0.9.0" },
     { name = "django-formtools", specifier = "==2.5.1" },
     { name = "django-ical", specifier = "==1.9.2" },
@@ -678,7 +678,7 @@ wheels = [
 
 [[package]]
 name = "django-drf-filepond"
-version = "0.5.2"
+version = "0.5.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
@@ -688,9 +688,9 @@ dependencies = [
     { name = "shortuuid" },
     { name = "six" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/30/bc/517ec0a05d52a839ecf68f53dce89341499cd3ad3552af71fd528da69340/django_drf_filepond-0.5.2.tar.gz", hash = "sha256:77ed4ddd79dd9d5f5037ee0f54ed6b15ab256db3fc83a4f553a62cd38e5bba11", size = 81465, upload-time = "2026-01-15T18:28:05.168Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/a3/72/7a7c6f7b6949a83ef71e02e98c6a4d7061849f53829f6fbabfce6274a02a/django-drf-filepond-0.5.0.tar.gz", hash = "sha256:360abcbcfdc016398435679dcc768b0c2d6b29a92db46fe3430ad31176251a13", size = 41436, upload-time = "2022-12-05T19:55:15.011Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d8/d2/b45c41d596c99799240e7a03e728406527e5fa846d384f1f5f3e431ddacd/django_drf_filepond-0.5.2-py2.py3-none-any.whl", hash = "sha256:d877d04df75760b0167d3bb2ef48f165e7466c2cdaac7d3ffcfd59599ccd16e6", size = 46880, upload-time = "2026-01-15T18:27:05.534Z" },
+    { url = "https://files.pythonhosted.org/packages/42/ea/911cd1db67d5f81ef31d659de031c21e3c994332f6f059cd7dfd8977f70e/django_drf_filepond-0.5.0-py2.py3-none-any.whl", hash = "sha256:55d64c3272c716f0811f2e67877cc005b8927e96bb34ba7f7105202d6bd5a647", size = 44034, upload-time = "2022-12-05T19:55:12.332Z" },
 ]
 
 [[package]]
