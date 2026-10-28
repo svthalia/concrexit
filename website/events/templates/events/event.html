@@ -67,6 +67,16 @@
                                 <td> &euro;{{ event.price }}</td>
                             </tr>
                         {% endif %}
+                        <tr>
+                            <th>{% trans "Wheelchair accessible"|capfirst %}</th>
+                            <td>
+                                {% if event.accessibility %}
+                                    {% trans "Yes" %}
+                                {% else %}
+                                    {% trans "This event might not be wheelchair accessible due to:" %} {{ event.hindrance }}
+                                {% endif %}
+                            </td>
+                        </tr>
                         {% if event.registration_required %}
                             {% if request.user.is_authenticated %}
                                 <tr>
