@@ -15,7 +15,7 @@ import os
 from django.core.management.commands import makemessages
 from django.utils import timezone
 
-from celery.schedules import crontab
+from celery.schedules import crontab, solar
 
 logger = logging.getLogger(__name__)
 
@@ -444,6 +444,10 @@ CELERY_BEAT_SCHEDULE = {
         "task": "photos.tasks.clean_broken_uploads",
         "schedule": crontab(minute=45),
     },
+    "sendbirthdayemail": {
+        "task": "members.tasks.send_birthday_email",
+        "schedule": crontab(minute=0, hour=8),
+    },
 }
 
 ###############################################################################
@@ -840,8 +844,7 @@ OAUTH2_PROVIDER = {
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": (
-            "django.contrib.auth."
-            "password_validation.UserAttributeSimilarityValidator"
+            "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
         ),
     },
     {
