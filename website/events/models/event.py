@@ -54,6 +54,26 @@ class Event(models.Model):
         ),
     )
 
+    accessibility = models.BooleanField(
+        _("wheelchair accessible"),
+        default=False,
+        help_text=_(
+            "Indicate if the event is accessible for people with a wheelchair."
+        ),
+    )
+
+    hindrance = models.TextField(
+        _("hindrance"),
+        max_length=500,
+        null=True,
+        blank=True,
+        help_text=_(
+            "A list of hindrances that might make the event not wheelchair accessible. "
+            'Uses "This event might not be wheelchair accessible due to:" as prefix. '
+            'e.g., "stairs, narrow doors, and uneven terrain." '
+        ),
+    )
+
     start = models.DateTimeField(_("start time"))
 
     end = models.DateTimeField(_("end time"))
@@ -370,6 +390,14 @@ class Event(models.Model):
     def clean(self):
         super().clean()
         errors = {}
+        if not self.accessibility and not self.hindrance:
+            errors.update(
+                {
+                    "hindrance": _(
+                        "If Wheelchair accessible is not checked, this field is required."
+                    )
+                }
+            )
         if self.start is None:
             errors.update({"start": _("Start cannot have an empty date or time field")})
         if self.end is None:
