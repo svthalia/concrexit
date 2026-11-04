@@ -138,10 +138,8 @@
                     only available to logged-in members.
                     Please log in to access these documents.
                 </p>
-                <a href="{% url 'login' %}?next={{ request.path }}"
-                   class="btn btn-primary">
-                    Log in
-                </a>
+                <a class="btn btn-primary"
+                    href="{% url 'login' %}?next={{ request.path }}">{% trans "Login" %}</a>
             </div>
         {% endif %}
     </section>
