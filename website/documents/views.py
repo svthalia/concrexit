@@ -41,8 +41,6 @@ class DocumentsIndexView(TemplateView):
         for year in range(1990, lecture_year + 1):
             years[year] = years[year]
 
-        association_documents = []
-
         if self.request.user.is_authenticated:
             for document in AnnualDocument.objects.all():
                 years[document.year]["documents"][document.subcategory] = document
