@@ -129,6 +129,19 @@
                     </div>
                 {% endfor %}
             </div>
+                        </div>
+        {% else %}
+            <div class="container text-center">
+                <h1 class="section-title">Annual documents</h1>
+                <p>
+                    The annual documents and General Meeting minutes are
+                    only available to logged-in members.
+                    Please log in to access these documents.
+                </p>
+                <a href="{% url 'login' %}?next={{ request.path }}"
+                   class="btn btn-primary">
+                    Log in
+                </a>
             </div>
         {% endif %}
     </section>
