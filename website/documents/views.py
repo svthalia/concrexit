@@ -51,12 +51,12 @@ class DocumentsIndexView(TemplateView):
                 meeting_year = datetime_to_lectureyear(obj.datetime)
                 years[meeting_year]["general_meetings"].append(obj)
 
-        association_documents = AssociationDocument.objects.order_by("name").all()
-
         context = super().get_context_data(**kwargs)
         context.update(
             {
-                "association_documents": association_documents,
+                "association_documents": AssociationDocument.objects.order_by(
+                    "name"
+                ).all(),
                 "years": sorted(years.items(), reverse=True),
                 "is_authenticated": self.request.user.is_authenticated,
             }
