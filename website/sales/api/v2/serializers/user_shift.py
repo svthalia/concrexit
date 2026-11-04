@@ -7,13 +7,7 @@ from sales.models.shift import Shift
 class UserShiftSerializer(serializers.ModelSerializer):
     class Meta:
         model = Shift
-        fields = (
-            "pk",
-            "title",
-            "start",
-            "end",
-            "products",
-        )
+        fields = ("pk", "title", "start", "end", "selforder", "products")
 
     title = serializers.SerializerMethodField("_get_title")
 
