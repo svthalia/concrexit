@@ -35,6 +35,7 @@ class EventTest(TestCase):
             price=0.00,
             fine=5.00,
             optional_registrations=False,
+            accessibility=True,
         )
         cls.event.organisers.add(cls.committee)
         cls.member = Member.objects.first()

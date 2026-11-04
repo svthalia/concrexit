@@ -23,3 +23,7 @@ def lustrum_styling(_):
 def year_as_hex(_):
     now = timezone.now().year
     return {"YEAR_IN_HEX": hex(now)}
+
+
+def staging(request):
+    return {"is_staging": settings.DJANGO_ENV == "staging"}
