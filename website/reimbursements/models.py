@@ -17,6 +17,15 @@ def validate_file_size(file):
         raise ValidationError(f"File size must be less than {max_size_mb} MB")
 
 
+RECEIPT_FILE_VALIDATORS = [
+    FileExtensionValidator(
+        allowed_extensions=["pdf", "jpg", "jpeg", "png"],
+        message="Only pdf, jpg, jpeg and png files are allowed.",
+    ),
+    validate_file_size,
+]
+
+
 class Reimbursement(models.Model):
     class Verdict(models.TextChoices):
         APPROVED = "approved", "Approved"
@@ -44,18 +53,6 @@ class Reimbursement(models.Model):
         max_length=512,
         help_text="Why did you make this payment?",
         validators=[MinLengthValidator(10)],
-    )
-
-    # FileField and not ImageField because companies often send invoices as pdf
-    receipt = models.FileField(
-        upload_to=get_upload_to_function("reimbursements/receipts"),
-        validators=[
-            FileExtensionValidator(
-                allowed_extensions=["pdf", "jpg", "jpeg", "png"],
-                message="Only pdf, jpg, jpeg and png files are allowed.",
-            ),
-            validate_file_size,
-        ],
     )
 
     created = models.DateTimeField(auto_now_add=True)
@@ -107,3 +104,20 @@ class Reimbursement(models.Model):
 
     def __str__(self):
         return f"Reimbursement #{self.id}"
+
+
+class ReimbursementReceipt(models.Model):
+    reimbursement = models.ForeignKey(
+        Reimbursement,
+        related_name="receipts",
+        on_delete=models.CASCADE,
+    )
+
+    # FileField and not ImageField because companies often send invoices as pdf
+    file = models.FileField(
+        upload_to=get_upload_to_function("reimbursements/receipts"),
+        validators=RECEIPT_FILE_VALIDATORS,
+    )
+
+    def __str__(self):
+        return f"Receipt for {self.reimbursement}"
