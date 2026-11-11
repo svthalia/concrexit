@@ -8,7 +8,10 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 
 from moneybirdsynchronization.tasks import synchronize_moneybird_reimbursement
-from reimbursements.emails import send_verdict_email
+from reimbursements.emails import (
+    send_verdict_email,
+    send_new_reimbursement_email,
+)
 
 from . import models
 
@@ -124,7 +127,8 @@ class ReimbursementsAdmin(admin.ModelAdmin):
             ].help_text = f"I confirm that this is my IBAN: {bank_account.iban}"
             if form.is_valid():
                 form.instance.owner = request.user
-                form.save()
+                reimbursement = form.save()
+                send_new_reimbursement_email(reimbursement)
                 self.message_user(request, "Successfully created a reimbursement.")
                 return redirect("admin:reimbursements_reimbursement_changelist")
         else:

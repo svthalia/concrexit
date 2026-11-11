@@ -1,0 +1,17 @@
+{% extends "email/html_email.html" %}
+
+
+{% block content %}
+  <p>Dear Treasurer,</p>
+
+  <h2>New reimbursement submitted!</h2>
+
+  <p>A new reimbursement has been uploaded.</p>
+
+  <p><strong>Submitted by:</strong> {{ first_name }}</p>
+  <p><strong>Description:</strong> {{ description }}</p>
+  <p><strong>Amount:</strong> {{ amount }}</p>
+
+  <p>Please review the reimbursement.</p>
+
+{% endblock %}
