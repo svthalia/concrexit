@@ -209,6 +209,30 @@ def send_expiration_study_long_reminder(dry_run=False):
                 )
 
 
+def send_birthday_email(dry_run=False):
+    """Send an email to every member who's birthday it is today."""
+    print("WORKS")
+    members = Member.current_members.with_birthdays_in_range(
+        timezone.localdate(), timezone.localdate()
+    ).exclude(email="")
+
+    logger.info("WORKS")
+    print("WORKS")
+
+    with mail.get_connection() as connection:
+        for member in members:
+            logger.info("Sent email to %s (%s)", member.get_full_name(), member.email)
+            if not dry_run:
+                send_email(
+                    to=[member.email],
+                    subject="Happy birthday!",
+                    txt_template="members/email/yearly_birthday_email.txt",
+                    html_template="members/email/yearly_birthday_email.html",
+                    connection=connection,
+                    context={"name": member.first_name},
+                )
+
+
 def send_welcome_message(user, password):
     """Send an email to a new user welcoming them.
 

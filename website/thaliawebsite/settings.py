@@ -444,6 +444,10 @@ CELERY_BEAT_SCHEDULE = {
         "task": "photos.tasks.clean_broken_uploads",
         "schedule": crontab(minute=45),
     },
+    "sendbirthdayemail": {
+        "task": "members.tasks.send_birthday_email",
+        "schedule": crontab(minute=0, hour=8),
+    },
 }
 
 ###############################################################################
@@ -841,8 +845,7 @@ OAUTH2_PROVIDER = {
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": (
-            "django.contrib.auth."
-            "password_validation.UserAttributeSimilarityValidator"
+            "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
         ),
     },
     {
