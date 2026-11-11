@@ -15,7 +15,7 @@ import os
 from django.core.management.commands import makemessages
 from django.utils import timezone
 
-from celery.schedules import crontab, solar
+from celery.schedules import crontab
 
 logger = logging.getLogger(__name__)
 
