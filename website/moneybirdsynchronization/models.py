@@ -415,6 +415,23 @@ class MoneybirdReceipt(models.Model):
         verbose_name_plural = _("moneybird receipt")
 
 
+class MoneybirdReceiptAttachment(models.Model):
+    moneybird_receipt = models.ForeignKey(
+        MoneybirdReceipt,
+        related_name="attachments",
+        on_delete=models.CASCADE,
+    )
+    reimbursement_receipt = models.OneToOneField(
+        "reimbursements.ReimbursementReceipt",
+        related_name="moneybird_attachment",
+        on_delete=models.CASCADE,
+    )
+    is_uploaded = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Moneybird attachment for {self.reimbursement_receipt}"
+
+
 class MoneybirdPayment(models.Model):
     payment = models.OneToOneField(
         "payments.Payment",

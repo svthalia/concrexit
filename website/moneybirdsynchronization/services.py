@@ -220,13 +220,23 @@ def create_receipt(reimbursement: Reimbursement):
         moneybird_receipt.moneybird_receipt_id = response["id"]
         moneybird_receipt.save()
 
-    if not moneybird_receipt.moneybird_attachment_is_uploaded:
-        moneybird.add_receipt_attachment(
-            moneybird_receipt.moneybird_receipt_id,
-            reimbursement.receipt,
+    for reimbursement_receipt in reimbursement.receipts.all():
+        attachment, _ = moneybird_receipt.attachments.get_or_create(
+            reimbursement_receipt=reimbursement_receipt,
         )
-        moneybird_receipt.moneybird_attachment_is_uploaded = True
-        moneybird_receipt.save()
+        if not attachment.is_uploaded:
+            moneybird.add_receipt_attachment(
+                moneybird_receipt.moneybird_receipt_id,
+                reimbursement_receipt.file,
+            )
+            attachment.is_uploaded = True
+            attachment.save(update_fields=["is_uploaded"])
+
+    if reimbursement.receipts.exists():
+        moneybird_receipt.moneybird_attachment_is_uploaded = not (
+            moneybird_receipt.attachments.filter(is_uploaded=False).exists()
+        )
+        moneybird_receipt.save(update_fields=["moneybird_attachment_is_uploaded"])
 
     return moneybird_receipt
 
@@ -512,12 +522,14 @@ def _sync_event_registrations():
 
 def _sync_receipts():
     # Reimbursements whose MoneybirdReceipt does not exist or has not been fully pushed yet.
-    reimbursements = Reimbursement.objects.filter(
-        verdict=Reimbursement.Verdict.APPROVED,
-    ).exclude(
-        moneybird_receipt__isnull=False,
-        moneybird_receipt__moneybird_receipt_id__isnull=False,
-        moneybird_receipt__moneybird_attachment_is_uploaded=False,
+    reimbursements = (
+        Reimbursement.objects.filter(verdict=Reimbursement.Verdict.APPROVED)
+        .filter(
+            Q(moneybird_receipt__isnull=True)
+            | Q(moneybird_receipt__moneybird_receipt_id__isnull=True)
+            | Q(moneybird_receipt__attachments__is_uploaded=False)
+        )
+        .distinct()
     )
 
     logger.info(

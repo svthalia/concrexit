@@ -21,6 +21,7 @@ from payments.services import create_payment
 from pizzas.models import FoodEvent, FoodOrder
 from pizzas.models import Product as FoodProduct
 from registrations.models import Renewal
+from reimbursements.models import Reimbursement, ReimbursementReceipt
 from sales.models.order import Order, OrderItem
 from sales.models.product import Product as SalesProduct
 from sales.models.product import ProductList
@@ -592,3 +593,41 @@ class ServicesTest(TestCase):
         self.assertEqual(mock_create_or_update_contact.call_count, 0)
         self.assertEqual(mock_delete_contact.call_count, 1)
         mock_delete_contact.assert_any_call(self.member.moneybird_contact)
+
+
+@override_settings(
+    MONEYBIRD_SYNC_ENABLED=True,
+    MONEYBIRD_UNKNOWN_PAYER_CONTACT_ID="1",
+    MONEYBIRD_UNCATEGORIZEDEXPENSES_LEDGER_ID="2",
+    MONEYBIRD_REIMBURSEMENT_DEFAULT_TAX_RATE_ID="3",
+)
+class ReimbursementReceiptSyncTest(TestCase):
+    @mock.patch("moneybirdsynchronization.services.get_moneybird_api_service")
+    def test_create_receipt_uploads_all_reimbursement_receipts(self, get_api):
+        reimbursement = Reimbursement.objects.create(
+            owner=Member.objects.create_user(username="receipt-user"),
+            amount="12.34",
+            date_incurred=timezone.now().date(),
+            description="A reimbursement with multiple receipts",
+            verdict=Reimbursement.Verdict.APPROVED,
+        )
+        ReimbursementReceipt.objects.create(
+            reimbursement=reimbursement,
+            file="reimbursements/receipts/first.pdf",
+        )
+        ReimbursementReceipt.objects.create(
+            reimbursement=reimbursement,
+            file="reimbursements/receipts/second.pdf",
+        )
+
+        get_api.return_value.create_receipt.return_value = {"id": "receipt-1"}
+
+        services.create_receipt(reimbursement)
+
+        self.assertEqual(get_api.return_value.add_receipt_attachment.call_count, 2)
+        self.assertEqual(
+            reimbursement.moneybird_receipt.attachments.filter(
+                is_uploaded=True
+            ).count(),
+            2,
+        )
