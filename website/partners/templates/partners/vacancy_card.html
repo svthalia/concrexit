@@ -1,9 +1,16 @@
-{% load i18n %}
+{% load i18n thumbnail %}
 <div class="card mb-0">
   <div class="row g-0">
     <div class="col-md-4 d-flex align-items-center bg">
       <a href="{{ url }}" class="p-3">
-        <img alt="{{ company_name }} logo" src="{{ image_url }}" class="img-fluid rounded-start card-img">
+        {% if dark_image_url %}
+          <picture>
+            <source media="(prefers-color-scheme: dark)" srcset="{{ dark_image_url }}">
+            <img alt="{{ company_name }} logo" src="{{ image_url }}" class="img-fluid rounded-start card-img">
+          </picture>
+        {% else %}
+          <img alt="{{ company_name }} logo" src="{{ image_url }}" class="img-fluid rounded-start card-img">
+        {% endif %}
       </a>
     </div>
     <div class="col-md-8">

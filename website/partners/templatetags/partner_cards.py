@@ -12,8 +12,11 @@ register = template.Library()
 def partner_card(partner):
     """Return grid item showing partner."""
     image_url = ""
+    dark_image_url = ""
     if partner.logo:
         image_url = get_thumbnail_url(partner.logo, "fit_medium")
+    if partner.dark_logo:
+        dark_image_url = get_thumbnail_url(partner.dark_logo, "fit_medium")
 
     meta_text = truncatechars(bleach(striptags(partner.company_profile)), 80)
 
@@ -22,6 +25,7 @@ def partner_card(partner):
         meta_text=f'<p class="px-2 d-none d-md-block">{meta_text}</p>',
         url=partner.get_absolute_url,
         image_url=image_url,
+        dark_image_url=dark_image_url,
         class_name="partner-card contain-logo",
         show_loading_animation=False,
     )
@@ -46,8 +50,13 @@ def partner_image_card(image):
 def vacancy_card(vacancy):
     """Return grid item showing vacancy."""
     image_url = None
+    dark_image_url = None
     if vacancy.get_company_logo():
         image_url = get_thumbnail_url(vacancy.get_company_logo(), "fit_medium")
+    if vacancy.get_company_dark_logo():
+        dark_image_url = get_thumbnail_url(
+            vacancy.get_company_dark_logo(), "fit_medium"
+        )
 
     description = truncatechars(bleach(striptags(vacancy.description)), 300)
     extra_class = "external-vacancy"
@@ -62,6 +71,7 @@ def vacancy_card(vacancy):
         "title": vacancy.title,
         "company_name": vacancy.get_company_name(),
         "image_url": image_url,
+        "dark_image_url": dark_image_url,
         "description": description,
         "location": location,
         "keywords": keywords,
