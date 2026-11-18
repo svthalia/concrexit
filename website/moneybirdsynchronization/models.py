@@ -39,9 +39,12 @@ def project_name_for_payable_model(obj) -> str | None:
     """
     if isinstance(obj, FoodOrder):
         start_date = obj.food_event.event.start.strftime("%Y-%m-%d")
-        return f"{obj.food_event.event.title} [{start_date}]"
-    if isinstance(obj, EventRegistration | Order | Registration | Renewal):
-        return None
+        return "C501 - Food orders"
+    if isinstance(obj, Order):
+        start_date = obj.shift.start.strftime("%Y-%m-%d")
+        return f"{obj.shift} [{start_date}]"
+    if isinstance(obj, Registration | Renewal):
+        return "C311 - Contribution"
 
     raise ValueError(f"Unknown payable model {obj}")
 
@@ -554,6 +557,23 @@ class MoneybirdReceipt(models.Model):
     class Meta:
         verbose_name = _("moneybird receipt")
         verbose_name_plural = _("moneybird receipt")
+
+
+class MoneybirdReceiptAttachment(models.Model):
+    moneybird_receipt = models.ForeignKey(
+        MoneybirdReceipt,
+        related_name="attachments",
+        on_delete=models.CASCADE,
+    )
+    reimbursement_receipt = models.OneToOneField(
+        "reimbursements.ReimbursementReceipt",
+        related_name="moneybird_attachment",
+        on_delete=models.CASCADE,
+    )
+    is_uploaded = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Moneybird attachment for {self.reimbursement_receipt}"
 
 
 class MoneybirdPayment(models.Model):

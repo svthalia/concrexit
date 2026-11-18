@@ -10,6 +10,10 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
+    {% if is_staging %}
+        <meta name="robots" content="none,noarchive,nosnippet,noimageindex,nocache">
+    {% endif %}
+
     {% if lustrumstyling %}
         <meta name="theme-color" content="#DAB34A"/>
     {% else %}

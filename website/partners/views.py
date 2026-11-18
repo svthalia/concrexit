@@ -11,8 +11,8 @@ def index(request):
     partners = Partner.objects.filter(
         is_active=True, is_main_partner=False, is_local_partner=False
     )
-    main_partner = Partner.objects.filter(is_main_partner=True).first()
-    local_partners = Partner.objects.filter(is_local_partner=True)
+    main_partner = Partner.objects.filter(is_main_partner=True, is_active=True).first()
+    local_partners = Partner.objects.filter(is_local_partner=True, is_active=True)
 
     fetch_thumbnails([p.logo for p in partners])
 
