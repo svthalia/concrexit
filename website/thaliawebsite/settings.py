@@ -833,6 +833,8 @@ OAUTH2_PROVIDER = {
         "sales:order": "Place Point of Sale orders on your behalf",
         "sales:admin": "Admin access to Point of Sale orders",
         "thabloid:read": "Read access to thabloids",
+        "promotion:read": "Read access to promotion requests",
+        "promotion:write": "Change the status of promotion requests",
     },
 }
 

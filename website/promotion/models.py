@@ -129,3 +129,9 @@ class PromotionRequest(models.Model):
     class Meta:
         verbose_name = _("Promotion request")
         verbose_name_plural = _("Promotion requests")
+        permissions = (
+            (
+                "use_promotion_tools",
+                _("Can use the promotion tools"),
+            ),
+        )
