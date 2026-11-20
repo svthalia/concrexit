@@ -31,7 +31,10 @@ def render_partner_banners(context):
 
     partners = [p for p in all_partners if p.id in chosen]
     fetch_thumbnails(
-        [p.alternate_logo or p.logo for p in partners],
+        [
+            p.dark_alternate_logo or p.dark_logo or p.alternate_logo or p.logo
+            for p in partners
+        ],
         "fit_medium",
     )
 

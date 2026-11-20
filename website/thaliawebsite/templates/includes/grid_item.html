@@ -4,7 +4,14 @@
         <a class="d-flex" href="{{ url }}" {{ anchor_attrs|safe }}>
     {% endif %}
     <div class="image{% if show_loading_animation %} pulsing-background{% endif %}">
-        <img alt="{{ title }}" src="{{ image_url }}" loading="lazy" />
+        {% if dark_image_url %}
+            <picture>
+                <source media="(prefers-color-scheme: dark)" srcset="{{ dark_image_url }}">
+                <img alt="{{ title }}" src="{{ image_url }}" loading="lazy">
+            </picture>
+        {% else %}
+            <img alt="{{ title }}" src="{{ image_url }}" loading="lazy">
+        {% endif %}
     </div>
     <div class="name">
         <span>{{ title }}</span>

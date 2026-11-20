@@ -5,10 +5,21 @@
             {% for partner in partners %}
                 <div class="banner col-6 col-md-4 col-lg-3">
                     <a href="{% url "partners:partner" partner.slug %}">
-                        <img class="image text-hide"
-                             alt="Logo {{ partner.name }}"
-                             src="{% if partner.alternate_logo %}{% thumbnail partner.alternate_logo thumb_size %}{% else %}{% thumbnail partner.logo thumb_size %}{% endif %}"
-                        />
+                        <picture>
+                            {% if partner.dark_alternate_logo %}
+                                <source media="(prefers-color-scheme: dark)"
+                                        srcset="{% thumbnail partner.dark_alternate_logo thumb_size %}">
+                            {% elif partner.dark_logo %}
+                                <source media="(prefers-color-scheme: dark)"
+                                        srcset="{% thumbnail partner.dark_logo thumb_size %}">
+                            {% elif partner.alternate_logo %}
+                                <source media="(prefers-color-scheme: dark)"
+                                        srcset="{% thumbnail partner.alternate_logo thumb_size %}">
+                            {% endif %}
+                            <img class="image text-hide"
+                                 alt="Logo {{ partner.name }}"
+                                 src="{% if partner.alternate_logo %}{% thumbnail partner.alternate_logo thumb_size %}{% else %}{% thumbnail partner.logo thumb_size %}{% endif %}">
+                        </picture>
                     </a>
                 </div>
             {% endfor %}

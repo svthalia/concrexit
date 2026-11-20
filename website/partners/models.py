@@ -41,6 +41,28 @@ class Partner(models.Model):
         ),
     )
 
+    dark_logo = ImageField(
+        upload_to=get_upload_to_function("partners/logos/"),
+        resize_source_to="source_png",
+        storage=storages["public"],
+        blank=True,
+        null=True,
+        help_text=_(
+            "If set, this logo will be shown instead of the regular logo when dark mode is enabled."
+        ),
+    )
+
+    dark_alternate_logo = ImageField(
+        upload_to=get_upload_to_function("partners/logos/"),
+        resize_source_to="source_png",
+        storage=storages["public"],
+        blank=True,
+        null=True,
+        help_text=_(
+            "If set, this transparent logo will be shown in the frontpage banner in dark mode."
+        ),
+    )
+
     site_header = ImageField(
         upload_to=get_upload_to_function("partners/headers/"),
         resize_source_to="source_png",
@@ -79,11 +101,24 @@ class Partner(models.Model):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._orig_logo = self.logo.name if self.logo else None
+        self._orig_alternate_logo = (
+            self.alternate_logo.name if self.alternate_logo else None
+        )
+        self._orig_dark_logo = self.dark_logo.name if self.dark_logo else None
+        self._orig_dark_alternate_logo = (
+            self.dark_alternate_logo.name if self.dark_alternate_logo else None
+        )
         self._orig_site_header = self.site_header.name if self.site_header else None
 
     def delete(self, using=None, keep_parents=False):
         if self.logo.name:
             self.logo.delete()
+        if self.alternate_logo.name:
+            self.alternate_logo.delete()
+        if self.dark_logo.name:
+            self.dark_logo.delete()
+        if self.dark_alternate_logo.name:
+            self.dark_alternate_logo.delete()
         if self.site_header.name:
             self.site_header.delete()
         return super().delete(using, keep_parents)
@@ -99,9 +134,24 @@ class Partner(models.Model):
         if self._orig_logo and self._orig_logo != self.logo.name:
             self.logo.storage.delete(self._orig_logo)
             self._orig_logo = None
+        if (
+            self._orig_alternate_logo
+            and self._orig_alternate_logo != self.alternate_logo.name
+        ):
+            self.alternate_logo.storage.delete(self._orig_alternate_logo)
+            self._orig_alternate_logo = None
         if self._orig_site_header and self._orig_site_header != self.site_header.name:
             self.site_header.storage.delete(self._orig_site_header)
             self._orig_site_header = None
+        if self._orig_dark_logo and self._orig_dark_logo != self.dark_logo.name:
+            self.dark_logo.storage.delete(self._orig_dark_logo)
+            self._orig_dark_logo = None
+        if (
+            self._orig_dark_alternate_logo
+            and self._orig_dark_alternate_logo != self.dark_alternate_logo.name
+        ):
+            self.dark_alternate_logo.storage.delete(self._orig_dark_alternate_logo)
+            self._orig_dark_alternate_logo = None
 
     def _reset_main_partner(self):
         """Reset the main partner status.
@@ -232,6 +282,12 @@ class Vacancy(models.Model):
         if self.partner:
             return self.partner.logo
         return self.company_logo
+
+    def get_company_dark_logo(self):
+        """Return the dark-mode logo for a company or partner."""
+        if self.partner:
+            return self.partner.dark_logo
+        return None
 
     def __str__(self):
         """Return vacancy partner or company and title."""

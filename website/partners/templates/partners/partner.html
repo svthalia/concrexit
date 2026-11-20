@@ -20,7 +20,12 @@
 
             <div class="row">
                 <div class="col-12 col-md-4">
-                    <img src="{% thumbnail partner.logo "fit_medium" %}" alt="Logo {{ partner.name }}"/>
+                    <picture>
+                        {% if partner.dark_logo %}
+                            <source media="(prefers-color-scheme: dark)" srcset="{% thumbnail partner.dark_logo "fit_medium" %}">
+                        {% endif %}
+                        <img src="{% thumbnail partner.logo "fit_medium" %}" alt="Logo {{ partner.name }}">
+                    </picture>
 
                     <h4 class="mt-4">{% trans "Address" %}</h4>
                     <p>
