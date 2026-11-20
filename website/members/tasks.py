@@ -21,3 +21,8 @@ def expiration_warning():
 @shared_task
 def expiration_reminder():
     emails.send_expiration_study_long_reminder()
+
+
+@shared_task
+def send_birthday_email():
+    emails.send_birthday_email()
