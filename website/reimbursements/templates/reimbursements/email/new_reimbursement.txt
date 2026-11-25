@@ -1,0 +1,15 @@
+Dear Treasurer,
+
+A new reimbursement has been submitted!
+
+Submitted by: {{ first_name }} {{ last_name }}
+Description: {{ description }}
+Amount: {{ amount }}
+
+Please review the reimbursement here: {{ admin_url }}.
+
+With kind regards,
+
+The Thalia website
+
+This email was automatically generated.

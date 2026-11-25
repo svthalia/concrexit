@@ -8,7 +8,10 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 
 from moneybirdsynchronization.tasks import synchronize_moneybird_reimbursement
-from reimbursements.emails import send_verdict_email
+from reimbursements.emails import (
+    send_verdict_email,
+    send_new_reimbursement_email,
+)
 
 from . import models
 
@@ -157,6 +160,7 @@ class ReimbursementsAdmin(admin.ModelAdmin):
             if form.is_valid():
                 form.instance.owner = request.user
                 reimbursement = form.save()
+                send_new_reimbursement_email(reimbursement)
                 for receipt in form.cleaned_data["receipts"]:
                     models.ReimbursementReceipt.objects.create(
                         reimbursement=reimbursement,
