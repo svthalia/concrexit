@@ -16,17 +16,50 @@ from reimbursements.emails import (
 from . import models
 
 
+class MultipleFileInput(forms.ClearableFileInput):
+    allow_multiple_selected = True
+
+
+class MultipleFileField(forms.FileField):
+    def clean(self, data, initial=None):
+        if not data:
+            return super().clean(data, initial)
+
+        if not isinstance(data, list | tuple):
+            data = [data]
+
+        clean_file = super().clean
+        return [clean_file(file, initial) for file in data]
+
+
 class ReimbursementForm(forms.ModelForm):
+    receipts = MultipleFileField(
+        label="Receipts",
+        widget=MultipleFileInput(attrs={"multiple": True}),
+        validators=models.RECEIPT_FILE_VALIDATORS,
+        required=True,
+    )
+
     class Meta:
         model = models.Reimbursement
-        fields = ["amount", "date_incurred", "description", "receipt", "confirm_iban"]
+        fields = ["amount", "date_incurred", "description", "receipts", "confirm_iban"]
 
     confirm_iban = forms.BooleanField(required=True)
     date_incurred = forms.DateField(required=True, widget=AdminDateWidget())
 
 
+class ReimbursementReceiptInline(admin.TabularInline):
+    model = models.ReimbursementReceipt
+    extra = 0
+
+    def get_readonly_fields(self, request, obj=None):
+        return ("file",) if obj and obj.verdict else ()
+
+
 @admin.register(models.Reimbursement)
 class ReimbursementsAdmin(admin.ModelAdmin):
+    inlines = [ReimbursementReceiptInline]
+
     list_display = (
         "owner",
         "created",
@@ -74,7 +107,6 @@ class ReimbursementsAdmin(admin.ModelAdmin):
                 "description",
                 "amount",
                 "date_incurred",
-                "receipt",
             ]
 
         return readonly
@@ -129,6 +161,11 @@ class ReimbursementsAdmin(admin.ModelAdmin):
                 form.instance.owner = request.user
                 reimbursement = form.save()
                 send_new_reimbursement_email(reimbursement)
+                for receipt in form.cleaned_data["receipts"]:
+                    models.ReimbursementReceipt.objects.create(
+                        reimbursement=reimbursement,
+                        file=receipt,
+                    )
                 self.message_user(request, "Successfully created a reimbursement.")
                 return redirect("admin:reimbursements_reimbursement_changelist")
         else:

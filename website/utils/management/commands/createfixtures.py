@@ -334,6 +334,7 @@ class Command(BaseCommand):
         event.location = _local_faker.street_address()
         event.map_location = event.location
         event.send_cancel_email = False
+        event.accessibility = True
 
         if random.random() < 0.5:
             event.price = Decimal(random.randint(100, 2500)) / Decimal(100)
