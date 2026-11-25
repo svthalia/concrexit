@@ -31,6 +31,8 @@ class PartnerAdmin(admin.ModelAdmin):
                     "company_profile",
                     "logo",
                     "alternate_logo",
+                    "dark_logo",
+                    "dark_alternate_logo",
                     "site_header",
                     "is_active",
                     "is_main_partner",

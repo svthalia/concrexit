@@ -21,7 +21,12 @@
     {% if main_partner %}
         <div class="row mt-4 justify-content-center">
             <div class="col-12 col-md-6 mt-auto">
-                    <img src="{% thumbnail main_partner.logo "fit_medium" %}"/>
+                    <picture>
+                        {% if main_partner.dark_logo %}
+                            <source media="(prefers-color-scheme: dark)" srcset="{% thumbnail main_partner.dark_logo "fit_medium" %}">
+                        {% endif %}
+                        <img src="{% thumbnail main_partner.logo "fit_medium" %}" alt="Logo {{ main_partner.name }}">
+                    </picture>
 
                 <div class="mt-3">
                     <h2>{% trans "our main partner"|capfirst %}</h2>
@@ -35,7 +40,12 @@
     <div class="row mt-4 justify-content-center">
         {% for local_partner in local_partners %}
             <div class="col-12 col-md-6 mt-4">
-                <img src="{% thumbnail local_partner.logo "fit_medium_pad" %}"/>
+                <picture>
+                    {% if local_partner.dark_logo %}
+                        <source media="(prefers-color-scheme: dark)" srcset="{% thumbnail local_partner.dark_logo "fit_medium_pad" %}">
+                    {% endif %}
+                    <img src="{% thumbnail local_partner.logo "fit_medium_pad" %}" alt="Logo {{ local_partner.name }}">
+                </picture>
 
                 <div class="mt-3">
                     <h2>{% trans "our local partner"|capfirst %}</h2>
