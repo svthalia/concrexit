@@ -10,6 +10,7 @@ def send_new_reimbursement_email(reimbursement: Reimbursement):
         html_template="reimbursements/email/new_reimbursement.html",
         context={
             "first_name": reimbursement.owner.first_name,
+            "last_name": reimbursement.owner.last_name,
             "description": reimbursement.description,
             "amount": reimbursement.amount,
         },

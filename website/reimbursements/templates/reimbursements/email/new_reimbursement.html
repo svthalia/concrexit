@@ -1,4 +1,4 @@
-{% extends "email/html_email.html" %}
+{% extends "email/board_email.html" %}
 
 
 {% block content %}
@@ -12,6 +12,6 @@
   <p><strong>Description:</strong> {{ description }}</p>
   <p><strong>Amount:</strong> {{ amount }}</p>
 
-  <p>Please review the reimbursement.</p>
+  <p>Please review the reimbursement here: https://thalia.nu/admin/reimbursements/reimbursement/.</p>
 
 {% endblock %}
