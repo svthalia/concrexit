@@ -8,10 +8,10 @@
 
   <p>A new reimbursement has been uploaded.</p>
 
-  <p><strong>Submitted by:</strong> {{ first_name }}</p>
+  <p><strong>Submitted by:</strong> {{ first_name }} {{last_name}}</p>
   <p><strong>Description:</strong> {{ description }}</p>
   <p><strong>Amount:</strong> {{ amount }}</p>
 
-  <p>Please review the reimbursement here: https://thalia.nu/admin/reimbursements/reimbursement/.</p>
+  <p>Please review the reimbursement <a href="{{ admin_url }}">here</a>.</p>
 
 {% endblock %}
