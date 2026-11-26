@@ -37,6 +37,7 @@ module "server" {
   ssh_public_key           = var.ssh_public_key
   ec2_instance_type        = var.ec2_instance_type
   facedetection_lambda_arn = var.facedetection_lambda_arn
+  ec2_ami                  = var.ec2_ami
 }
 
 module "cdn" {
