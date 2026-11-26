@@ -3,12 +3,10 @@ from datetime import date
 from typing import Any
 
 from django.conf import settings
-from django.db.models import Count, Exists, OuterRef, Q
-from django.utils import timezone
+from django.db.models import Q
 
 from members import emails
 from members.models import Member, Membership
-from registrations.models import Renewal
 from utils.snippets import datetime_to_lectureyear
 
 
@@ -198,60 +196,3 @@ def process_email_change(change_request) -> None:
     member.save()
 
     emails.send_email_change_completion_message(change_request)
-
-
-def execute_data_minimisation(dry_run=False, members=None) -> list[Member]:
-    """Clean the profiles of members/users of whom the last membership ended at least 90 days ago.
-
-    :param dry_run: does not really remove data if True
-    :param members: queryset of members to process, optional
-    :return: list of processed members
-    """
-    if not members:
-        members = Member.objects
-    members = (
-        members.annotate(membership_count=Count("membership"))
-        .exclude(
-            (
-                Q(membership__until__isnull=True)
-                | Q(membership__until__gt=timezone.now().date())
-            )
-            & Q(membership_count__gt=0)
-        )
-        .exclude(
-            Exists(
-                Renewal.objects.filter(member__id=OuterRef("pk")).exclude(
-                    status__in=(
-                        Renewal.STATUS_COMPLETED,
-                        Renewal.STATUS_REJECTED,
-                    )
-                )
-            )
-        )
-        .distinct()
-        .prefetch_related("membership_set", "profile")
-    )
-    deletion_period = timezone.now().date() - timezone.timedelta(days=90)
-    processed_members = []
-    for member in members:
-        if (
-            member.latest_membership is None
-            or member.latest_membership.until <= deletion_period
-        ):
-            processed_members.append(member)
-            profile = member.profile
-            profile.student_number = None
-            profile.phone_number = None
-            profile.address_street = None
-            profile.address_street2 = None
-            profile.address_postal_code = None
-            profile.address_city = None
-            profile.address_country = None
-            profile.birthday = None
-            profile.emergency_contact_phone_number = None
-            profile.emergency_contact = None
-            profile.is_minimized = True
-            if not dry_run:
-                profile.save()
-
-    return processed_members

@@ -270,7 +270,7 @@ class Profile(models.Model):
     )
 
     is_minimized = models.BooleanField(
-        verbose_name="The data from this profile has been minimized", default=False
+        verbose_name="The data from this profile has been minimised", default=False
     )
 
     def display_name(self):

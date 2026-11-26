@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             name="is_minimized",
             field=models.BooleanField(
                 default=False,
-                verbose_name="The data from this profile has been minimized",
+                verbose_name="The data from this profile has been minimised",
             ),
         ),
         migrations.AlterField(

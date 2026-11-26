@@ -1,11 +1,8 @@
+from warnings import warn
+
+from django.apps import apps
 from django.core.management.base import BaseCommand
 
-from events import services as events_services
-from facedetection import services as facedetection_services
-from members import services as members_services
-from payments import services as payments_services
-from pizzas import services as pizzas_services
-from sales import services as sales_services
 from utils.snippets import minimise_logentries_data
 
 
@@ -22,29 +19,12 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        processed = members_services.execute_data_minimisation(options["dry-run"])
-        for p in processed:
-            self.stdout.write(f"Removed data for {p}")
-
-        processed = events_services.execute_data_minimisation(options["dry-run"])
-        for p in processed:
-            self.stdout.write(f"Removed registration information for {p}")
-
-        processed = payments_services.execute_data_minimisation(options["dry-run"])
-        for p in processed:
-            self.stdout.write(f"Removed payments information for {p}")
-
-        processed = pizzas_services.execute_data_minimisation(options["dry-run"])
-        for p in processed:
-            self.stdout.write(f"Removed food events information for {p}")
-
-        processed = sales_services.execute_data_minimisation(options["dry-run"])
-        for p in processed:
-            self.stdout.write(f"Removed sales orders for {p}")
-
-        processed = facedetection_services.execute_data_minimisation(options["dry-run"])
-        for p in processed:
-            self.stdout.write(f"Removed reference faces: {p}")
+        # TODO make this actually sensible not just dumb
+        for app in apps.get_app_configs():
+            try:
+                app.execute_data_minimisation()
+            except Exception as e:
+                warn("Minimization failed:" + str(e))
 
         count = minimise_logentries_data(options["dry-run"])
         self.stdout.write(f"Removed {count} log entries")
