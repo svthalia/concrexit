@@ -33,6 +33,9 @@ STATUS_NONE = "registration-none"
 # User is not logged in so cannot register
 STATUS_LOGIN = "registration-login"
 
+# User is not eligible to register because they are not a member or are banned from events
+STATUS_INELIGIBLE = "registration-ineligible"
+
 CANCEL_NORMAL = "cancel-normal"  # Cancellation allowed
 CANCEL_FINAL = "cancel-final"  # Can cancel, but will not be able to re-register
 CANCEL_LATE = "cancel-late"  # Too late, will pay fine
