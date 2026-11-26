@@ -1,6 +1,8 @@
 import datetime
 from unittest.mock import MagicMock
 
+from django.conf import settings
+
 from django.test import TestCase
 from django.utils import timezone
 
@@ -10,6 +12,7 @@ from activemembers.models import Committee, MemberGroupMembership
 from members.models import Member, Profile
 from sales import services
 from sales.models.product import Product, ProductList
+from sales.models.order import Order
 from sales.models.shift import Shift
 from sales.services import is_manager
 
@@ -71,3 +74,23 @@ class SalesServicesTest(TestCase):
         self.member.has_perm = MagicMock()
         self.member.has_perm.return_value = True
         self.assertTrue(is_manager(self.member, self.shift))
+
+    def test_data_retention(self):
+        self.sale_old = Order.objects.create( #should be minimised
+            created_at = timezone.now() - datetime.timedelta(days=settings.DATA_RETENTION_PERIODS["SALES_ORDERS"] + 1),
+            created_by = self.member,
+            shift = self.shift,
+            payer = self.member
+        )
+
+        self.sale_new = Order.objects.create( #should not be minimised
+            created_at = timezone.now() - datetime.timedelta(days=settings.DATA_RETENTION_PERIODS["SALES_ORDERS"] - 1),
+            created_by = self.member,
+            shift = self.shift,
+            payer = self.member
+        )
+
+        result = services.execute_data_minimisation(dry_run=True)
+
+        self.assertTrue(result.filter(pk=self.sale_old.pk).exists())
+        self.assertFalse(result.filter(pk=self.sale_new.pk).exists())
