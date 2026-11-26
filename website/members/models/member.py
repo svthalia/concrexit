@@ -215,5 +215,9 @@ class Member(User):
             active=True,
         )
 
+    @cached_property
+    def member_groups(self):
+        return self.get_member_groups()
+
     def get_absolute_url(self):
         return reverse("members:profile", args=[str(self.pk)])
